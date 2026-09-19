@@ -1,0 +1,299 @@
+{
+  "intro": {
+    "title": "Spacing and Corner Radii",
+    "lead": "Tecton spacing and radius tokens are generated from the scientific density token set into CSS variables and TypeScript constants.",
+    "usageText": [
+      "Use spacing and radius tokens for layout rhythm, component padding, and corner shape. The active density source is Scientific; additional exported density sets are not part of the runtime contract until the token build supports density modes.",
+      "CSS variables are the public cross-framework contract; React code can import the generated constants from the theme entry."
+    ],
+    "cards": [
+      [
+        "Source tokens",
+        "Use source paths when tracing generated values back to Token Studio.",
+        "foundational.scale.space.200"
+      ],
+      [
+        "React and MUI",
+        "Import generated constants when component logic needs numeric token values.",
+        "import { spacing, borderRadius } from '@tecton/ui/theme';"
+      ],
+      [
+        "CSS consumers",
+        "Use generated CSS variables for vanilla CSS, Angular, Tailwind, PrimeNG, and other adapters.",
+        "var(--tecton-space-200)"
+      ]
+    ]
+  },
+  "tokens": [
+    {
+      "group": "Spacing",
+      "token": "space.0",
+      "description": "Remove spacing or collapse a gap.",
+      "value": "0px",
+      "sourceToken": "foundational.scale.space.0",
+      "cssVariable": "--tecton-space-0",
+      "tsToken": "spacing['0']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.25",
+      "description": "Hairline offset and very tight icon/text adjust…",
+      "value": "2px",
+      "sourceToken": "foundational.scale.space.25",
+      "cssVariable": "--tecton-space-25",
+      "tsToken": "spacing['25']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.50",
+      "description": "Tight inline gaps and compact control internals.",
+      "value": "4px",
+      "sourceToken": "foundational.scale.space.50",
+      "cssVariable": "--tecton-space-50",
+      "tsToken": "spacing['50']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.75",
+      "description": "Small offsets where 4px is too tight and 8px is…",
+      "value": "6px",
+      "sourceToken": "foundational.scale.space.75",
+      "cssVariable": "--tecton-space-75",
+      "tsToken": "spacing['75']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.100",
+      "description": "Default small spacing unit for compact groups.",
+      "value": "8px",
+      "sourceToken": "foundational.scale.space.100",
+      "cssVariable": "--tecton-space-100",
+      "tsToken": "spacing['100']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.150",
+      "description": "Comfortable internal padding and grouped lab…",
+      "value": "12px",
+      "sourceToken": "foundational.scale.space.150",
+      "cssVariable": "--tecton-space-150",
+      "tsToken": "spacing['150']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.200",
+      "description": "Standard component padding and common la…",
+      "value": "16px",
+      "sourceToken": "foundational.scale.space.200",
+      "cssVariable": "--tecton-space-200",
+      "tsToken": "spacing['200']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.250",
+      "description": "Medium layout spacing between related group…",
+      "value": "20px",
+      "sourceToken": "foundational.scale.space.250",
+      "cssVariable": "--tecton-space-250",
+      "tsToken": "spacing['250']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.300",
+      "description": "Large component spacing and section interiors.",
+      "value": "24px",
+      "sourceToken": "foundational.scale.space.300",
+      "cssVariable": "--tecton-space-300",
+      "tsToken": "spacing['300']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.400",
+      "description": "Small page section gaps.",
+      "value": "32px",
+      "sourceToken": "foundational.scale.space.400",
+      "cssVariable": "--tecton-space-400",
+      "tsToken": "spacing['400']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.500",
+      "description": "Medium page section gaps.",
+      "value": "40px",
+      "sourceToken": "foundational.scale.space.500",
+      "cssVariable": "--tecton-space-500",
+      "tsToken": "spacing['500']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.600",
+      "description": "Large page section gaps.",
+      "value": "48px",
+      "sourceToken": "foundational.scale.space.600",
+      "cssVariable": "--tecton-space-600",
+      "tsToken": "spacing['600']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.700",
+      "description": "Wide page spacing and major layout separation.",
+      "value": "56px",
+      "sourceToken": "foundational.scale.space.700",
+      "cssVariable": "--tecton-space-700",
+      "tsToken": "spacing['700']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.800",
+      "description": "Large layout rhythm for spacious compositions.",
+      "value": "64px",
+      "sourceToken": "foundational.scale.space.800",
+      "cssVariable": "--tecton-space-800",
+      "tsToken": "spacing['800']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.900",
+      "description": "Extra-large page spacing.",
+      "value": "72px",
+      "sourceToken": "foundational.scale.space.900",
+      "cssVariable": "--tecton-space-900",
+      "tsToken": "spacing['900']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.1000",
+      "description": "Major page region separation.",
+      "value": "80px",
+      "sourceToken": "foundational.scale.space.1000",
+      "cssVariable": "--tecton-space-1000",
+      "tsToken": "spacing['1000']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.1200",
+      "description": "Large empty-space rhythm for full-page layou…",
+      "value": "96px",
+      "sourceToken": "foundational.scale.space.1200",
+      "cssVariable": "--tecton-space-1200",
+      "tsToken": "spacing['1200']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.1400",
+      "description": "Extra-large region separation.",
+      "value": "112px",
+      "sourceToken": "foundational.scale.space.1400",
+      "cssVariable": "--tecton-space-1400",
+      "tsToken": "spacing['1400']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.1600",
+      "description": "Display-scale page spacing.",
+      "value": "128px",
+      "sourceToken": "foundational.scale.space.1600",
+      "cssVariable": "--tecton-space-1600",
+      "tsToken": "spacing['1600']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Spacing",
+      "token": "space.1800",
+      "description": "Maximum documented layout spacing.",
+      "value": "144px",
+      "sourceToken": "foundational.scale.space.1800",
+      "cssVariable": "--tecton-space-1800",
+      "tsToken": "spacing['1800']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Corner Radii",
+      "token": "radius.0",
+      "description": "Square edges and flush seams.",
+      "value": "0px",
+      "sourceToken": "foundational.scale.borderRadius.0",
+      "cssVariable": "--tecton-radius-0",
+      "tsToken": "borderRadius['0']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Corner Radii",
+      "token": "radius.25",
+      "description": "Subtle rounding for dense controls.",
+      "value": "2px",
+      "sourceToken": "foundational.scale.borderRadius.25",
+      "cssVariable": "--tecton-radius-25",
+      "tsToken": "borderRadius['25']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Corner Radii",
+      "token": "radius.50",
+      "description": "Default Tecton corner radius.",
+      "value": "4px",
+      "sourceToken": "foundational.scale.borderRadius.50",
+      "cssVariable": "--tecton-radius-50",
+      "tsToken": "borderRadius['50']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Corner Radii",
+      "token": "radius.100",
+      "description": "Medium rounded surfaces and grouped contro…",
+      "value": "8px",
+      "sourceToken": "foundational.scale.borderRadius.100",
+      "cssVariable": "--tecton-radius-100",
+      "tsToken": "borderRadius['100']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Corner Radii",
+      "token": "radius.150",
+      "description": "Large rounded surfaces.",
+      "value": "12px",
+      "sourceToken": "foundational.scale.borderRadius.150",
+      "cssVariable": "--tecton-radius-150",
+      "tsToken": "borderRadius['150']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Corner Radii",
+      "token": "radius.200",
+      "description": "Extra-large rounded surfaces.",
+      "value": "16px",
+      "sourceToken": "foundational.scale.borderRadius.200",
+      "cssVariable": "--tecton-radius-200",
+      "tsToken": "borderRadius['200']",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    },
+    {
+      "group": "Corner Radii",
+      "token": "radius.round",
+      "description": "Fully rounded pills and circular shapes.",
+      "value": "1000px",
+      "sourceToken": "foundational.scale.borderRadius.round",
+      "cssVariable": "--tecton-radius-round",
+      "tsToken": "borderRadius.round",
+      "notes": "tokens/tecton.tokens.json contains only foundational.color.*, so foundational.scale.* cannot be verified against it."
+    }
+  ]
+}
