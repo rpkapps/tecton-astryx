@@ -1,0 +1,112 @@
+/*
+ * Layout for the documentation site itself. Everything here is scoped to the
+ * site chrome: the design system supplies the look of the content.
+ */
+
+body {
+  margin: 0;
+  background-color: var(--color-background-body);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-body);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-leading);
+}
+
+.site {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  flex-wrap: wrap;
+  padding: var(--spacing-4) var(--spacing-6);
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-background-surface);
+}
+
+.site-header a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-title {
+  margin: 0;
+  font-size: var(--text-heading-3-size);
+  font-weight: var(--text-heading-3-weight);
+  letter-spacing: -0.01em;
+}
+
+.site-nav {
+  display: flex;
+  gap: var(--spacing-4);
+}
+
+.site-nav a {
+  color: var(--color-text-secondary);
+}
+
+.site-nav a[aria-current='page'] {
+  color: var(--color-text-accent);
+}
+
+.site-main {
+  flex: 1;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--spacing-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+.site-footer {
+  padding: var(--spacing-4) var(--spacing-6);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: var(--text-supporting-size);
+}
+
+.prose {
+  max-width: 68ch;
+  color: var(--color-text-secondary);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--spacing-4);
+}
+
+.prop-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-supporting-size);
+}
+
+.prop-table th,
+.prop-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: var(--spacing-2);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.prop-table code {
+  font-family: var(--font-family-code);
+}
+
+.guidance-do::before {
+  content: '✓ ';
+  color: var(--color-success);
+}
+
+.guidance-dont::before {
+  content: '✕ ';
+  color: var(--color-error);
+}

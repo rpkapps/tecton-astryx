@@ -1,0 +1,67 @@
+{
+  "name": "@tecton/react",
+  "version": "0.1.0",
+  "description": "Tecton design system — React components, theme and stylesheet.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./styles.css": "./dist/tecton.css",
+    "./theme": {
+      "types": "./dist/theme/index.d.ts",
+      "default": "./dist/theme/index.js"
+    },
+    "./Button": {
+      "types": "./dist/components/Button/index.d.ts",
+      "default": "./dist/components/Button/index.js"
+    },
+    "./Panel": {
+      "types": "./dist/components/Panel/index.d.ts",
+      "default": "./dist/components/Panel/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@astryxdesign/core": "0.6.2",
+    "@stylexjs/stylex": "0.19.1"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "devDependencies": {
+    "@astryxdesign/cli": "0.6.2",
+    "@babel/core": "^7.29.7",
+    "@babel/preset-react": "^7.29.7",
+    "@babel/preset-typescript": "^7.29.7",
+    "@stylexjs/babel-plugin": "0.19.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "jsdom": "^30.1.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.6",
+    "vitest": "^5.0.1"
+  }
+}

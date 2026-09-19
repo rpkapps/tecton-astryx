@@ -1,0 +1,12 @@
+node_modules/
+dist/
+build/
+.vite/
+coverage/
+*.tsbuildinfo
+playwright-report/
+test-results/
+apps/docs/src/generated/
+.DS_Store
+*.log
+.eslintcache
