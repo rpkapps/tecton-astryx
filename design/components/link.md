@@ -44,3 +44,6 @@ Row labels, verbatim: `State=enabled`, `State=hovered`, `State=pressed`, `State=
 - No prose captions; only the axis labels.
 - **Link carries no colour of its own.** In a dark product UI this means an inline link inside a paragraph is indistinguishable from its surroundings unless `Underline=always` is used — worth flagging.
 - `Underline=always` + `disabled` keeps the underline, which is unusual (most systems drop it).
+
+## Astryx note
+Astryx `Link` exposes `hasUnderline` (default `false`), which maps directly: `hasUnderline={false}` = Tecton `Underline=hover`, `hasUnderline` = `Underline=always`. It also has `isDisabled`, `isExternalLink` and a `size` scale Tecton does not show.
