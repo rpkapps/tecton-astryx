@@ -1,0 +1,1562 @@
+{
+  "1": {
+    "ab": {
+      "sheetOrder": ["a", "b"],
+      "a": {
+        "id": "a",
+        "mounted": true,
+        "panelBackground": "rgb(61, 19, 41)",
+        "panelPadding": "16px",
+        "panelColor": "rgb(223, 226, 229)",
+        "panelClasses": "tecton78zum5 tectondt5ytf tectonjcht0a tecton1shk3sm tecton10xzikg tecton1tgivj0 tecton1hviunn tecton1litavf tecton1y0btm7 tecton14i3s5s tecton1i5ehqx",
+        "buttonBackground": "rgb(255, 95, 162)",
+        "wrapperThemeAttr": "tecton",
+        "wrapperModeAttr": "dark",
+        "wrapperColorScheme": "dark",
+        "tokens": {
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "bodyBgVar": "light-dark(#fdf3f8, #2a0d1c)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)"
+        }
+      },
+      "b": {
+        "id": "b",
+        "mounted": true,
+        "panelBackground": "rgb(61, 19, 41)",
+        "panelPadding": "32px",
+        "panelColor": "rgb(223, 226, 229)",
+        "panelClasses": "tecton78zum5 tectondt5ytf tectonjcht0a tecton1bav0fz tecton10xzikg tecton1tgivj0 tecton1hviunn tecton1litavf tecton1y0btm7 tecton14i3s5s tecton1i5ehqx",
+        "buttonBackground": "rgb(255, 95, 162)",
+        "wrapperThemeAttr": "tecton",
+        "wrapperModeAttr": "dark",
+        "wrapperColorScheme": "dark",
+        "tokens": {
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "bodyBgVar": "light-dark(#fdf3f8, #2a0d1c)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)"
+        }
+      },
+      "layers": [
+        {
+          "sheet": "tecton-a.css",
+          "statement": ["reset", "astryx-base", "astryx-theme"]
+        },
+        {
+          "sheet": "tecton-a.css",
+          "block": "reset"
+        },
+        {
+          "sheet": "tecton-a.css",
+          "block": "astryx-base"
+        },
+        {
+          "sheet": "tecton-a.css",
+          "block": "astryx-base"
+        },
+        {
+          "sheet": "tecton-a.css",
+          "block": "reset"
+        },
+        {
+          "sheet": "tecton-a.css",
+          "block": "astryx-base"
+        },
+        {
+          "sheet": "tecton-a.css",
+          "block": "astryx-theme"
+        },
+        {
+          "sheet": "tecton-a.css",
+          "block": "astryx-theme"
+        },
+        {
+          "sheet": "tecton-b.css",
+          "statement": ["reset", "astryx-base", "astryx-theme"]
+        },
+        {
+          "sheet": "tecton-b.css",
+          "block": "reset"
+        },
+        {
+          "sheet": "tecton-b.css",
+          "block": "astryx-base"
+        },
+        {
+          "sheet": "tecton-b.css",
+          "block": "astryx-base"
+        },
+        {
+          "sheet": "tecton-b.css",
+          "block": "reset"
+        },
+        {
+          "sheet": "tecton-b.css",
+          "block": "astryx-base"
+        },
+        {
+          "sheet": "tecton-b.css",
+          "block": "astryx-theme"
+        },
+        {
+          "sheet": "tecton-b.css",
+          "block": "astryx-theme"
+        }
+      ],
+      "properties": {
+        "total": 48,
+        "duplicated": 48,
+        "conflicting": [],
+        "sample": [
+          {
+            "name": "--x---_avatar-group-overlap",
+            "count": 2
+          },
+          {
+            "name": "--x---_codeblock-gutter-width",
+            "count": 2
+          },
+          {
+            "name": "--x---_hover-delay",
+            "count": 2
+          }
+        ]
+      },
+      "root": {
+        "dataTheme": "dark",
+        "dataAstryxTheme": "tecton",
+        "colorScheme": "dark"
+      }
+    },
+    "ba": {
+      "sheetOrder": ["b", "a"],
+      "a": {
+        "id": "a",
+        "mounted": true,
+        "panelBackground": "rgb(61, 19, 41)",
+        "panelPadding": "16px",
+        "panelColor": "rgb(223, 226, 229)",
+        "panelClasses": "tecton78zum5 tectondt5ytf tectonjcht0a tecton1shk3sm tecton10xzikg tecton1tgivj0 tecton1hviunn tecton1litavf tecton1y0btm7 tecton14i3s5s tecton1i5ehqx",
+        "buttonBackground": "rgb(50, 201, 201)",
+        "wrapperThemeAttr": "tecton",
+        "wrapperModeAttr": "dark",
+        "wrapperColorScheme": "dark",
+        "tokens": {
+          "accentVar": "light-dark(#1f9fa0, #32c9c9)",
+          "bodyBgVar": "light-dark(#fdf3f8, #2a0d1c)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)"
+        }
+      },
+      "b": {
+        "id": "b",
+        "mounted": true,
+        "panelBackground": "rgb(61, 19, 41)",
+        "panelPadding": "32px",
+        "panelColor": "rgb(223, 226, 229)",
+        "panelClasses": "tecton78zum5 tectondt5ytf tectonjcht0a tecton1bav0fz tecton10xzikg tecton1tgivj0 tecton1hviunn tecton1litavf tecton1y0btm7 tecton14i3s5s tecton1i5ehqx",
+        "buttonBackground": "rgb(50, 201, 201)",
+        "wrapperThemeAttr": "tecton",
+        "wrapperModeAttr": "dark",
+        "wrapperColorScheme": "dark",
+        "tokens": {
+          "accentVar": "light-dark(#1f9fa0, #32c9c9)",
+          "bodyBgVar": "light-dark(#fdf3f8, #2a0d1c)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)"
+        }
+      },
+      "layers": [
+        {
+          "sheet": "tecton-b.css",
+          "statement": ["reset", "astryx-base", "astryx-theme"]
+        },
+        {
+          "sheet": "tecton-b.css",
+          "block": "reset"
+        },
+        {
+          "sheet": "tecton-b.css",
+          "block": "astryx-base"
+        },
+        {
+          "sheet": "tecton-b.css",
+          "block": "astryx-base"
+        },
+        {
+          "sheet": "tecton-b.css",
+          "block": "reset"
+        },
+        {
+          "sheet": "tecton-b.css",
+          "block": "astryx-base"
+        },
+        {
+          "sheet": "tecton-b.css",
+          "block": "astryx-theme"
+        },
+        {
+          "sheet": "tecton-b.css",
+          "block": "astryx-theme"
+        },
+        {
+          "sheet": "tecton-a.css",
+          "statement": ["reset", "astryx-base", "astryx-theme"]
+        },
+        {
+          "sheet": "tecton-a.css",
+          "block": "reset"
+        },
+        {
+          "sheet": "tecton-a.css",
+          "block": "astryx-base"
+        },
+        {
+          "sheet": "tecton-a.css",
+          "block": "astryx-base"
+        },
+        {
+          "sheet": "tecton-a.css",
+          "block": "reset"
+        },
+        {
+          "sheet": "tecton-a.css",
+          "block": "astryx-base"
+        },
+        {
+          "sheet": "tecton-a.css",
+          "block": "astryx-theme"
+        },
+        {
+          "sheet": "tecton-a.css",
+          "block": "astryx-theme"
+        }
+      ],
+      "properties": {
+        "total": 48,
+        "duplicated": 48,
+        "conflicting": [],
+        "sample": [
+          {
+            "name": "--x---_avatar-group-overlap",
+            "count": 2
+          },
+          {
+            "name": "--x---_codeblock-gutter-width",
+            "count": 2
+          },
+          {
+            "name": "--x---_hover-delay",
+            "count": 2
+          }
+        ]
+      },
+      "root": {
+        "dataTheme": "dark",
+        "dataAstryxTheme": "tecton",
+        "colorScheme": "dark"
+      }
+    },
+    "hostReset": {
+      "withTectonCss": {
+        "fontSize": "24px",
+        "fontWeight": "600",
+        "margin": "0px"
+      },
+      "withoutTectonCss": {
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "margin": "21.44px"
+      }
+    },
+    "hostProse": {
+      "withRootAttr": {
+        "fontSize": "24px",
+        "fontWeight": "600",
+        "fontFamily": "Figtree",
+        "color": "rgb(223, 226, 229)"
+      },
+      "withoutRootAttr": {
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "fontFamily": "system-ui",
+        "color": "rgb(255, 255, 255)"
+      }
+    }
+  },
+  "2": {
+    "steps": [
+      {
+        "name": "both mounted, nothing open",
+        "root": {
+          "dataTheme": "dark",
+          "dataAstryxTheme": "tecton",
+          "colorScheme": "dark"
+        },
+        "tooltip": {
+          "selector": "[role=tooltip]",
+          "found": true,
+          "inBody": false,
+          "ownerContainer": "a",
+          "themeScope": "tecton",
+          "themeScopeIsHtml": false,
+          "themeScopeMode": "dark",
+          "chain": [
+            "div#_r_3_[popover=manual]",
+            "div",
+            "section",
+            "div[data-container=a]",
+            "div[theme=tecton]",
+            "div#slot-a",
+            "div#shell",
+            "body"
+          ],
+          "color": "rgb(61, 19, 41)",
+          "backgroundColor": "rgb(223, 226, 229)",
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)",
+          "colorScheme": "dark"
+        },
+        "popover": {
+          "selector": "[data-testid=a-popover-content]",
+          "found": true,
+          "inBody": false,
+          "ownerContainer": "a",
+          "themeScope": "tecton",
+          "themeScopeIsHtml": false,
+          "themeScopeMode": "dark",
+          "chain": [
+            "div",
+            "div",
+            "div",
+            "div#_r_2_[popover=auto]",
+            "div",
+            "section",
+            "div[data-container=a]",
+            "div[theme=tecton]",
+            "div#slot-a",
+            "div#shell",
+            "body"
+          ],
+          "color": "rgb(255, 255, 255)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)",
+          "colorScheme": "dark"
+        },
+        "dialog": {
+          "selector": "[data-testid=a-dialog-content]",
+          "found": true,
+          "inBody": false,
+          "ownerContainer": "a",
+          "themeScope": "tecton",
+          "themeScopeIsHtml": false,
+          "themeScopeMode": "dark",
+          "chain": [
+            "div",
+            "div",
+            "dialog",
+            "div[data-container=a]",
+            "div[theme=tecton]",
+            "div#slot-a",
+            "div#shell",
+            "body"
+          ],
+          "color": "rgb(255, 255, 255)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)",
+          "colorScheme": "dark"
+        },
+        "toastVps": {
+          "fallbackCount": 0,
+          "viewports": []
+        },
+        "a": {
+          "id": "a",
+          "mounted": true,
+          "panelBackground": "rgb(61, 19, 41)",
+          "panelPadding": "16px",
+          "panelColor": "rgb(223, 226, 229)",
+          "panelClasses": "tecton78zum5 tectondt5ytf tectonjcht0a tecton1shk3sm tecton10xzikg tecton1tgivj0 tecton1hviunn tecton1litavf tecton1y0btm7 tecton14i3s5s tecton1i5ehqx",
+          "buttonBackground": "rgb(255, 95, 162)",
+          "wrapperThemeAttr": "tecton",
+          "wrapperModeAttr": "dark",
+          "wrapperColorScheme": "dark",
+          "tokens": {
+            "accentVar": "light-dark(#b8336a, #ff5fa2)",
+            "bodyBgVar": "light-dark(#fdf3f8, #2a0d1c)",
+            "surfaceVar": "light-dark(#ffe9f2, #3d1329)"
+          }
+        }
+      },
+      {
+        "name": "A's tooltip + popover + dialog + toast open",
+        "root": {
+          "dataTheme": "dark",
+          "dataAstryxTheme": "tecton",
+          "colorScheme": "dark"
+        },
+        "tooltip": {
+          "selector": "[role=tooltip]",
+          "found": true,
+          "inBody": false,
+          "ownerContainer": "a",
+          "themeScope": "tecton",
+          "themeScopeIsHtml": false,
+          "themeScopeMode": "dark",
+          "chain": [
+            "div#_r_3_[popover=manual]",
+            "div",
+            "section",
+            "div[data-container=a]",
+            "div[theme=tecton]",
+            "div#slot-a",
+            "div#shell",
+            "body"
+          ],
+          "color": "rgb(61, 19, 41)",
+          "backgroundColor": "rgb(223, 226, 229)",
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)",
+          "colorScheme": "dark"
+        },
+        "popover": {
+          "selector": "[data-testid=a-popover-content]",
+          "found": true,
+          "inBody": false,
+          "ownerContainer": "a",
+          "themeScope": "tecton",
+          "themeScopeIsHtml": false,
+          "themeScopeMode": "dark",
+          "chain": [
+            "div",
+            "div",
+            "div",
+            "div#_r_2_[popover=auto]",
+            "div",
+            "section",
+            "div[data-container=a]",
+            "div[theme=tecton]",
+            "div#slot-a",
+            "div#shell",
+            "body"
+          ],
+          "color": "rgb(255, 255, 255)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)",
+          "colorScheme": "dark"
+        },
+        "dialog": {
+          "selector": "[data-testid=a-dialog-content]",
+          "found": true,
+          "inBody": false,
+          "ownerContainer": "a",
+          "themeScope": "tecton",
+          "themeScopeIsHtml": false,
+          "themeScopeMode": "dark",
+          "chain": [
+            "div",
+            "div",
+            "dialog",
+            "div[data-container=a]",
+            "div[theme=tecton]",
+            "div#slot-a",
+            "div#shell",
+            "body"
+          ],
+          "color": "rgb(255, 255, 255)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)",
+          "colorScheme": "dark"
+        },
+        "toastVps": {
+          "fallbackCount": 0,
+          "viewports": [
+            {
+              "tag": "div",
+              "isFallback": false,
+              "ownerContainer": null,
+              "themeScope": "tecton",
+              "rect": {
+                "x": 0,
+                "y": 716,
+                "w": 1280,
+                "h": 84
+              },
+              "toastCount": 1,
+              "text": "toast from a"
+            }
+          ]
+        },
+        "a": {
+          "id": "a",
+          "mounted": true,
+          "panelBackground": "rgb(61, 19, 41)",
+          "panelPadding": "16px",
+          "panelColor": "rgb(223, 226, 229)",
+          "panelClasses": "tecton78zum5 tectondt5ytf tectonjcht0a tecton1shk3sm tecton10xzikg tecton1tgivj0 tecton1hviunn tecton1litavf tecton1y0btm7 tecton14i3s5s tecton1i5ehqx",
+          "buttonBackground": "rgb(255, 95, 162)",
+          "wrapperThemeAttr": "tecton",
+          "wrapperModeAttr": "dark",
+          "wrapperColorScheme": "dark",
+          "tokens": {
+            "accentVar": "light-dark(#b8336a, #ff5fa2)",
+            "bodyBgVar": "light-dark(#fdf3f8, #2a0d1c)",
+            "surfaceVar": "light-dark(#ffe9f2, #3d1329)"
+          }
+        }
+      },
+      {
+        "name": "container B unmounted while A's layers are open",
+        "root": {
+          "dataTheme": null,
+          "dataAstryxTheme": null,
+          "colorScheme": "light dark"
+        },
+        "tooltip": {
+          "selector": "[role=tooltip]",
+          "found": true,
+          "inBody": false,
+          "ownerContainer": "a",
+          "themeScope": "tecton",
+          "themeScopeIsHtml": false,
+          "themeScopeMode": "dark",
+          "chain": [
+            "div#_r_3_[popover=manual]",
+            "div",
+            "section",
+            "div[data-container=a]",
+            "div[theme=tecton]",
+            "div#slot-a",
+            "div#shell",
+            "body"
+          ],
+          "color": "rgb(61, 19, 41)",
+          "backgroundColor": "rgb(223, 226, 229)",
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)",
+          "colorScheme": "dark"
+        },
+        "popover": {
+          "selector": "[data-testid=a-popover-content]",
+          "found": true,
+          "inBody": false,
+          "ownerContainer": "a",
+          "themeScope": "tecton",
+          "themeScopeIsHtml": false,
+          "themeScopeMode": "dark",
+          "chain": [
+            "div",
+            "div",
+            "div",
+            "div#_r_2_[popover=auto]",
+            "div",
+            "section",
+            "div[data-container=a]",
+            "div[theme=tecton]",
+            "div#slot-a",
+            "div#shell",
+            "body"
+          ],
+          "color": "rgb(255, 255, 255)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)",
+          "colorScheme": "dark"
+        },
+        "dialog": {
+          "selector": "[data-testid=a-dialog-content]",
+          "found": true,
+          "inBody": false,
+          "ownerContainer": "a",
+          "themeScope": "tecton",
+          "themeScopeIsHtml": false,
+          "themeScopeMode": "dark",
+          "chain": [
+            "div",
+            "div",
+            "dialog",
+            "div[data-container=a]",
+            "div[theme=tecton]",
+            "div#slot-a",
+            "div#shell",
+            "body"
+          ],
+          "color": "rgb(255, 255, 255)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)",
+          "colorScheme": "dark"
+        },
+        "toastVps": {
+          "fallbackCount": 0,
+          "viewports": [
+            {
+              "tag": "div",
+              "isFallback": false,
+              "ownerContainer": null,
+              "themeScope": "tecton",
+              "rect": {
+                "x": 0,
+                "y": 716,
+                "w": 1280,
+                "h": 84
+              },
+              "toastCount": 1,
+              "text": "toast from a"
+            }
+          ]
+        },
+        "a": {
+          "id": "a",
+          "mounted": true,
+          "panelBackground": "rgb(61, 19, 41)",
+          "panelPadding": "16px",
+          "panelColor": "rgb(223, 226, 229)",
+          "panelClasses": "tecton78zum5 tectondt5ytf tectonjcht0a tecton1shk3sm tecton10xzikg tecton1tgivj0 tecton1hviunn tecton1litavf tecton1y0btm7 tecton14i3s5s tecton1i5ehqx",
+          "buttonBackground": "rgb(255, 95, 162)",
+          "wrapperThemeAttr": "tecton",
+          "wrapperModeAttr": "dark",
+          "wrapperColorScheme": "dark",
+          "tokens": {
+            "accentVar": "light-dark(#b8336a, #ff5fa2)",
+            "bodyBgVar": "light-dark(#fdf3f8, #2a0d1c)",
+            "surfaceVar": "light-dark(#ffe9f2, #3d1329)"
+          }
+        }
+      }
+    ],
+    "strays": [],
+    "afterManualReassert": {
+      "root": {
+        "dataTheme": "dark",
+        "dataAstryxTheme": "tecton",
+        "colorScheme": "dark"
+      },
+      "dialog": {
+        "selector": "[data-testid=a-dialog-content]",
+        "found": true,
+        "inBody": false,
+        "ownerContainer": "a",
+        "themeScope": "tecton",
+        "themeScopeIsHtml": false,
+        "themeScopeMode": "dark",
+        "chain": [
+          "div",
+          "div",
+          "dialog",
+          "div[data-container=a]",
+          "div[theme=tecton]",
+          "div#slot-a",
+          "div#shell",
+          "body"
+        ],
+        "color": "rgb(255, 255, 255)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "accentVar": "light-dark(#b8336a, #ff5fa2)",
+        "surfaceVar": "light-dark(#ffe9f2, #3d1329)",
+        "colorScheme": "dark"
+      },
+      "toastVps": {
+        "fallbackCount": 0,
+        "viewports": [
+          {
+            "tag": "div",
+            "isFallback": false,
+            "ownerContainer": null,
+            "themeScope": "tecton",
+            "rect": {
+              "x": 0,
+              "y": 716,
+              "w": 1280,
+              "h": 84
+            },
+            "toastCount": 1,
+            "text": "toast from a"
+          }
+        ]
+      }
+    },
+    "unsafeHost": {
+      "withRootAttr": {
+        "selector": "[data-testid=a-popover-content]",
+        "found": true,
+        "inBody": false,
+        "ownerContainer": null,
+        "themeScope": "tecton",
+        "themeScopeIsHtml": true,
+        "themeScopeMode": "dark",
+        "chain": [
+          "div",
+          "div",
+          "div",
+          "div#_r_2_[popover=auto]",
+          "div#shell",
+          "body"
+        ],
+        "color": "rgb(255, 255, 255)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "accentVar": "light-dark(#b8336a, #ff5fa2)",
+        "surfaceVar": "light-dark(#ffe9f2, #3d1329)",
+        "colorScheme": "dark"
+      },
+      "afterRootAttrsStripped": {
+        "selector": "[data-testid=a-popover-content]",
+        "found": true,
+        "inBody": false,
+        "ownerContainer": null,
+        "themeScope": null,
+        "themeScopeIsHtml": false,
+        "themeScopeMode": null,
+        "chain": [
+          "div",
+          "div",
+          "div",
+          "div#_r_2_[popover=auto]",
+          "div#shell",
+          "body"
+        ],
+        "color": "rgb(0, 0, 0)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "accentVar": "light-dark(#0064E0, #2694FE)",
+        "surfaceVar": "light-dark(#FFFFFF, #1F1F22)",
+        "colorScheme": "light dark"
+      }
+    }
+  },
+  "3": {
+    "aThenB": {
+      "opened": ["a:dialog", "b:popover"],
+      "before": {
+        "a": {
+          "dialog": true,
+          "popover": false,
+          "nestedPopover": false
+        },
+        "b": {
+          "dialog": false,
+          "popover": true,
+          "nestedPopover": false
+        },
+        "aDialogInDom": true,
+        "bPopoverInDom": true,
+        "aPopoverInDom": true
+      },
+      "after": {
+        "a": {
+          "dialog": false,
+          "popover": false,
+          "nestedPopover": false
+        },
+        "b": {
+          "dialog": false,
+          "popover": true,
+          "nestedPopover": false
+        },
+        "aDialogInDom": true,
+        "bPopoverInDom": true,
+        "aPopoverInDom": true
+      },
+      "trace": [
+        {
+          "at": "document-capture",
+          "defaultPrevented": false
+        },
+        {
+          "at": "window-bubble",
+          "defaultPrevented": true
+        }
+      ]
+    },
+    "bThenA": {
+      "opened": ["b:popover", "a:dialog"],
+      "before": {
+        "a": {
+          "dialog": true,
+          "popover": false,
+          "nestedPopover": false
+        },
+        "b": {
+          "dialog": false,
+          "popover": false,
+          "nestedPopover": false
+        },
+        "aDialogInDom": true,
+        "bPopoverInDom": true,
+        "aPopoverInDom": true
+      },
+      "after": {
+        "a": {
+          "dialog": false,
+          "popover": false,
+          "nestedPopover": false
+        },
+        "b": {
+          "dialog": false,
+          "popover": false,
+          "nestedPopover": false
+        },
+        "aDialogInDom": true,
+        "bPopoverInDom": true,
+        "aPopoverInDom": true
+      },
+      "trace": [
+        {
+          "at": "document-capture",
+          "defaultPrevented": false
+        },
+        {
+          "at": "window-bubble",
+          "defaultPrevented": true
+        }
+      ]
+    },
+    "sameCopy": {
+      "opened": ["a:dialog", "a:popover"],
+      "before": {
+        "a": {
+          "dialog": true,
+          "popover": true,
+          "nestedPopover": false
+        },
+        "b": {
+          "dialog": false,
+          "popover": false,
+          "nestedPopover": false
+        },
+        "aDialogInDom": true,
+        "bPopoverInDom": true,
+        "aPopoverInDom": true
+      },
+      "after": {
+        "a": {
+          "dialog": true,
+          "popover": false,
+          "nestedPopover": false
+        },
+        "b": {
+          "dialog": false,
+          "popover": false,
+          "nestedPopover": false
+        },
+        "aDialogInDom": true,
+        "bPopoverInDom": true,
+        "aPopoverInDom": true
+      },
+      "trace": [
+        {
+          "at": "document-capture",
+          "defaultPrevented": false
+        },
+        {
+          "at": "window-bubble",
+          "defaultPrevented": true
+        }
+      ]
+    },
+    "twoPresses": {
+      "s0": {
+        "a": {
+          "dialog": true,
+          "popover": false,
+          "nestedPopover": false
+        },
+        "b": {
+          "dialog": false,
+          "popover": true,
+          "nestedPopover": false
+        },
+        "aDialogInDom": true,
+        "bPopoverInDom": true,
+        "aPopoverInDom": true
+      },
+      "s1": {
+        "a": {
+          "dialog": false,
+          "popover": false,
+          "nestedPopover": false
+        },
+        "b": {
+          "dialog": false,
+          "popover": true,
+          "nestedPopover": false
+        },
+        "aDialogInDom": true,
+        "bPopoverInDom": true,
+        "aPopoverInDom": true
+      },
+      "s2": {
+        "a": {
+          "dialog": false,
+          "popover": false,
+          "nestedPopover": false
+        },
+        "b": {
+          "dialog": false,
+          "popover": false,
+          "nestedPopover": false
+        },
+        "aDialogInDom": true,
+        "bPopoverInDom": true,
+        "aPopoverInDom": true
+      }
+    },
+    "nested": {
+      "before": {
+        "aDialog": true,
+        "bNested": true,
+        "nestedInDom": true,
+        "placement": {
+          "selector": "[data-testid=b-foreign-popover-content]",
+          "found": true,
+          "inBody": false,
+          "ownerContainer": "a",
+          "themeScope": "tecton",
+          "themeScopeIsHtml": false,
+          "themeScopeMode": "dark",
+          "chain": [
+            "div",
+            "div",
+            "div",
+            "div#_r_8_[popover=auto]",
+            "div[theme=tecton]",
+            "div#a-dialog-slot",
+            "div",
+            "div",
+            "dialog",
+            "div[data-container=a]",
+            "div[theme=tecton]",
+            "div#slot-a",
+            "div#shell",
+            "body"
+          ],
+          "color": "rgb(255, 255, 255)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)",
+          "colorScheme": "dark"
+        }
+      },
+      "after": {
+        "aDialog": false,
+        "bNested": true,
+        "nestedInDom": true
+      },
+      "trace": [
+        {
+          "at": "document-capture",
+          "defaultPrevented": false
+        },
+        {
+          "at": "window-bubble",
+          "defaultPrevented": true
+        }
+      ]
+    },
+    "nestedSecondPress": {
+      "aDialog": false,
+      "bNested": false
+    },
+    "inertness": {
+      "bTriggerReachable": false,
+      "bTriggerHitTestsTo": "dialog",
+      "dialogIsModal": true,
+      "bTriggerInert": false
+    }
+  },
+  "4": {
+    "steps": [
+      {
+        "name": "0. scrolled to y=400",
+        "position": "(unset)",
+        "top": "(unset)",
+        "overflow": "(unset)",
+        "left": "(unset)",
+        "scrollY": 400,
+        "computedPosition": "static"
+      },
+      {
+        "name": "1. A's modal open",
+        "position": "fixed",
+        "top": "-400px",
+        "overflow": "hidden",
+        "left": "0px",
+        "scrollY": 0,
+        "computedPosition": "fixed"
+      },
+      {
+        "name": "2. B's modal also open",
+        "position": "fixed",
+        "top": "0px",
+        "overflow": "hidden",
+        "left": "0px",
+        "scrollY": 0,
+        "computedPosition": "fixed"
+      },
+      {
+        "name": "3. A's modal closed (B still open)",
+        "position": "(unset)",
+        "top": "(unset)",
+        "overflow": "(unset)",
+        "left": "(unset)",
+        "scrollY": 400,
+        "computedPosition": "static"
+      },
+      {
+        "name": "3b. tried to scroll while B modal open",
+        "position": "(unset)",
+        "top": "(unset)",
+        "overflow": "(unset)",
+        "left": "(unset)",
+        "scrollY": 900,
+        "computedPosition": "static"
+      },
+      {
+        "name": "4. B's modal closed (nothing open)",
+        "position": "fixed",
+        "top": "-400px",
+        "overflow": "hidden",
+        "left": "0px",
+        "scrollY": 0,
+        "computedPosition": "fixed"
+      },
+      {
+        "name": "5. tried to scroll with nothing open",
+        "position": "fixed",
+        "top": "-400px",
+        "overflow": "hidden",
+        "left": "0px",
+        "scrollY": 0,
+        "computedPosition": "fixed"
+      }
+    ],
+    "control": {
+      "position": "(unset)",
+      "top": "(unset)",
+      "overflow": "(unset)",
+      "left": "(unset)",
+      "scrollY": 400,
+      "computedPosition": "static"
+    }
+  },
+  "5": {
+    "beforeAnyToast": {
+      "fallbackCount": 0,
+      "viewports": []
+    },
+    "afterA": {
+      "fallbackCount": 0,
+      "viewports": [
+        {
+          "tag": "div",
+          "isFallback": false,
+          "ownerContainer": null,
+          "themeScope": "tecton",
+          "rect": {
+            "x": 0,
+            "y": 716,
+            "w": 1280,
+            "h": 84
+          },
+          "toastCount": 1,
+          "text": "toast from a"
+        }
+      ]
+    },
+    "afterBoth": {
+      "fallbackCount": 0,
+      "viewports": [
+        {
+          "tag": "div",
+          "isFallback": false,
+          "ownerContainer": null,
+          "themeScope": "tecton",
+          "rect": {
+            "x": 0,
+            "y": 716,
+            "w": 1280,
+            "h": 84
+          },
+          "toastCount": 1,
+          "text": "toast from a"
+        },
+        {
+          "tag": "div",
+          "isFallback": false,
+          "ownerContainer": null,
+          "themeScope": "tecton",
+          "rect": {
+            "x": 0,
+            "y": 716,
+            "w": 1280,
+            "h": 84
+          },
+          "toastCount": 1,
+          "text": "toast from b"
+        }
+      ]
+    },
+    "liveRegions": [
+      {
+        "politeness": "polite",
+        "text": "toast from a"
+      },
+      {
+        "politeness": "assertive",
+        "text": ""
+      },
+      {
+        "politeness": "polite",
+        "text": "toast from b"
+      },
+      {
+        "politeness": "assertive",
+        "text": ""
+      }
+    ],
+    "overlap": [
+      {
+        "pair": [0, 1],
+        "overlapPx": {
+          "x": 1280,
+          "y": 84
+        },
+        "overlaps": true
+      }
+    ],
+    "toastSurfaces": [
+      {
+        "text": "toast from a",
+        "rect": {
+          "x": 864,
+          "y": 732,
+          "w": 400,
+          "h": 52
+        },
+        "owner": null,
+        "bg": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "text": "toast from b",
+        "rect": {
+          "x": 864,
+          "y": 732,
+          "w": 400,
+          "h": 52
+        },
+        "owner": null,
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    ],
+    "f6": {
+      "tag": "button",
+      "label": "Dismiss notification",
+      "landedInViewportShowing": "toast from b",
+      "viewportIndex": 1,
+      "note": "both viewports install their own document F6 listener; the press reaches both"
+    }
+  },
+  "6": {
+    "ab": {
+      "mountOrder": "ab",
+      "root": {
+        "dataTheme": "light",
+        "dataAstryxTheme": "tecton",
+        "colorScheme": "light"
+      },
+      "a": {
+        "id": "a",
+        "mounted": true,
+        "panelBackground": "rgb(61, 19, 41)",
+        "panelPadding": "16px",
+        "panelColor": "rgb(223, 226, 229)",
+        "panelClasses": "tecton78zum5 tectondt5ytf tectonjcht0a tecton1shk3sm tecton10xzikg tecton1tgivj0 tecton1hviunn tecton1litavf tecton1y0btm7 tecton14i3s5s tecton1i5ehqx",
+        "buttonBackground": "rgb(255, 95, 162)",
+        "wrapperThemeAttr": "tecton",
+        "wrapperModeAttr": "dark",
+        "wrapperColorScheme": "dark",
+        "tokens": {
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "bodyBgVar": "light-dark(#fdf3f8, #2a0d1c)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)"
+        }
+      },
+      "b": {
+        "id": "b",
+        "mounted": true,
+        "panelBackground": "rgb(255, 233, 242)",
+        "panelPadding": "32px",
+        "panelColor": "rgb(10, 19, 23)",
+        "panelClasses": "tecton78zum5 tectondt5ytf tectonjcht0a tecton1bav0fz tecton10xzikg tecton1tgivj0 tecton1hviunn tecton1litavf tecton1y0btm7 tecton14i3s5s tecton1i5ehqx",
+        "buttonBackground": "rgb(184, 51, 106)",
+        "wrapperThemeAttr": "tecton",
+        "wrapperModeAttr": "light",
+        "wrapperColorScheme": "light",
+        "tokens": {
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "bodyBgVar": "light-dark(#fdf3f8, #2a0d1c)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)"
+        }
+      },
+      "aDialog": {
+        "selector": "[data-testid=a-dialog-content]",
+        "found": true,
+        "inBody": false,
+        "ownerContainer": "a",
+        "themeScope": "tecton",
+        "themeScopeIsHtml": false,
+        "themeScopeMode": "dark",
+        "chain": [
+          "div",
+          "div",
+          "dialog",
+          "div[data-container=a]",
+          "div[theme=tecton]",
+          "div#slot-a",
+          "div#shell",
+          "body"
+        ],
+        "color": "rgb(255, 255, 255)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "accentVar": "light-dark(#b8336a, #ff5fa2)",
+        "surfaceVar": "light-dark(#ffe9f2, #3d1329)",
+        "colorScheme": "dark"
+      },
+      "toastVps": {
+        "fallbackCount": 0,
+        "viewports": [
+          {
+            "tag": "div",
+            "isFallback": false,
+            "ownerContainer": null,
+            "themeScope": "tecton",
+            "rect": {
+              "x": 0,
+              "y": 716,
+              "w": 1280,
+              "h": 84
+            },
+            "toastCount": 1,
+            "text": "toast from a"
+          }
+        ]
+      }
+    },
+    "ba": {
+      "mountOrder": "ba",
+      "root": {
+        "dataTheme": "dark",
+        "dataAstryxTheme": "tecton",
+        "colorScheme": "dark"
+      },
+      "a": {
+        "id": "a",
+        "mounted": true,
+        "panelBackground": "rgb(61, 19, 41)",
+        "panelPadding": "16px",
+        "panelColor": "rgb(223, 226, 229)",
+        "panelClasses": "tecton78zum5 tectondt5ytf tectonjcht0a tecton1shk3sm tecton10xzikg tecton1tgivj0 tecton1hviunn tecton1litavf tecton1y0btm7 tecton14i3s5s tecton1i5ehqx",
+        "buttonBackground": "rgb(255, 95, 162)",
+        "wrapperThemeAttr": "tecton",
+        "wrapperModeAttr": "dark",
+        "wrapperColorScheme": "dark",
+        "tokens": {
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "bodyBgVar": "light-dark(#fdf3f8, #2a0d1c)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)"
+        }
+      },
+      "b": {
+        "id": "b",
+        "mounted": true,
+        "panelBackground": "rgb(255, 233, 242)",
+        "panelPadding": "32px",
+        "panelColor": "rgb(10, 19, 23)",
+        "panelClasses": "tecton78zum5 tectondt5ytf tectonjcht0a tecton1bav0fz tecton10xzikg tecton1tgivj0 tecton1hviunn tecton1litavf tecton1y0btm7 tecton14i3s5s tecton1i5ehqx",
+        "buttonBackground": "rgb(184, 51, 106)",
+        "wrapperThemeAttr": "tecton",
+        "wrapperModeAttr": "light",
+        "wrapperColorScheme": "light",
+        "tokens": {
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "bodyBgVar": "light-dark(#fdf3f8, #2a0d1c)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)"
+        }
+      },
+      "aDialog": {
+        "selector": "[data-testid=a-dialog-content]",
+        "found": true,
+        "inBody": false,
+        "ownerContainer": "a",
+        "themeScope": "tecton",
+        "themeScopeIsHtml": false,
+        "themeScopeMode": "dark",
+        "chain": [
+          "div",
+          "div",
+          "dialog",
+          "div[data-container=a]",
+          "div[theme=tecton]",
+          "div#slot-a",
+          "div#shell",
+          "body"
+        ],
+        "color": "rgb(255, 255, 255)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "accentVar": "light-dark(#b8336a, #ff5fa2)",
+        "surfaceVar": "light-dark(#ffe9f2, #3d1329)",
+        "colorScheme": "dark"
+      },
+      "toastVps": {
+        "fallbackCount": 0,
+        "viewports": [
+          {
+            "tag": "div",
+            "isFallback": false,
+            "ownerContainer": null,
+            "themeScope": "tecton",
+            "rect": {
+              "x": 0,
+              "y": 716,
+              "w": 1280,
+              "h": 84
+            },
+            "toastCount": 1,
+            "text": "toast from a"
+          }
+        ]
+      }
+    },
+    "beforeUnmount": {
+      "dataTheme": "light",
+      "dataAstryxTheme": "tecton",
+      "colorScheme": "light"
+    },
+    "afterUnmountB": {
+      "root": {
+        "dataTheme": null,
+        "dataAstryxTheme": null,
+        "colorScheme": "light dark"
+      },
+      "a": {
+        "id": "a",
+        "mounted": true,
+        "panelBackground": "rgb(61, 19, 41)",
+        "panelPadding": "16px",
+        "panelColor": "rgb(223, 226, 229)",
+        "panelClasses": "tecton78zum5 tectondt5ytf tectonjcht0a tecton1shk3sm tecton10xzikg tecton1tgivj0 tecton1hviunn tecton1litavf tecton1y0btm7 tecton14i3s5s tecton1i5ehqx",
+        "buttonBackground": "rgb(255, 95, 162)",
+        "wrapperThemeAttr": "tecton",
+        "wrapperModeAttr": "dark",
+        "wrapperColorScheme": "dark",
+        "tokens": {
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "bodyBgVar": "light-dark(#fdf3f8, #2a0d1c)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)"
+        }
+      }
+    }
+  },
+  "7": {
+    "emittedClasses": {
+      "button": {
+        "tag": "button",
+        "stable": ["astryx-button"],
+        "bare": ["primary", "md", "none"],
+        "dataAttrs": [
+          "data-variant=primary",
+          "data-size=md",
+          "data-elevation=none"
+        ]
+      },
+      "panel": {
+        "tag": "section",
+        "stable": [],
+        "bare": [],
+        "dataAttrs": ["data-tecton-panel="]
+      }
+    },
+    "dialogClasses": {
+      "stable": ["astryx-dialog"],
+      "bare": ["standard"],
+      "dataAttrs": ["data-variant=standard"]
+    },
+    "selectorMatches": {
+      "v06 attribute form .astryx-button[data-variant=primary]": 2,
+      "v05 bare-class form .astryx-button.primary": 2,
+      "v06 attribute form .astryx-dialog[data-variant=standard]": 2,
+      "v05 bare-class form .astryx-dialog.standard": 2,
+      "any element with a bare .primary class": 4,
+      "any element with a bare .sm class": 0
+    },
+    "injectedRules": {
+      "v05RuleApplied": true,
+      "v06RuleApplied": true,
+      "outlineColor": "rgb(1, 2, 3)",
+      "borderColor": "rgb(4, 5, 6)"
+    }
+  },
+  "8": {
+    "fonts": {
+      "fontFaceRules": [],
+      "resolvedBodyFamily": "Figtree, Helvetica, Arial, sans-serif",
+      "documentFontsSize": 0
+    },
+    "liveRegions": [
+      {
+        "politeness": "polite",
+        "text": "toast from a"
+      },
+      {
+        "politeness": "assertive",
+        "text": ""
+      },
+      {
+        "politeness": "polite",
+        "text": "toast from b"
+      },
+      {
+        "politeness": "assertive",
+        "text": ""
+      }
+    ],
+    "singletons": {
+      "interactionModalityShared": true,
+      "interactionModalityWritable": false,
+      "interactionModalityConfigurable": false,
+      "symbolKeysOnDocument": ["@astryxdesign/core/interaction-modality/v1"]
+    },
+    "styleTags": {
+      "injectedThemeStyles": 0,
+      "injectedProseStyles": 0,
+      "injectedBaseStyles": 0,
+      "linkSheets": 2,
+      "totalSheets": 3
+    },
+    "duplication": {
+      "totalStyleRules": 3982,
+      "exactDuplicates": 1987
+    },
+    "reactCopies": {
+      "devtoolsRenderers": null,
+      "note": "each bundle carries its own React; no global to count them directly"
+    }
+  },
+  "9": {
+    "guarded": {
+      "beforeUnmount": {
+        "root": {
+          "dataTheme": "dark",
+          "dataAstryxTheme": "tecton",
+          "colorScheme": "dark"
+        },
+        "strayLayer": {
+          "selector": "[data-testid=a-popover-content]",
+          "found": true,
+          "inBody": false,
+          "ownerContainer": null,
+          "themeScope": "tecton",
+          "themeScopeIsHtml": true,
+          "themeScopeMode": "dark",
+          "chain": [
+            "div",
+            "div",
+            "div",
+            "div#_r_2_[popover=auto]",
+            "div#shell",
+            "body"
+          ],
+          "color": "rgb(255, 255, 255)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)",
+          "colorScheme": "dark"
+        }
+      },
+      "afterUnmount": {
+        "root": {
+          "dataTheme": "dark",
+          "dataAstryxTheme": "tecton",
+          "colorScheme": "dark"
+        },
+        "strayLayer": {
+          "selector": "[data-testid=a-popover-content]",
+          "found": true,
+          "inBody": false,
+          "ownerContainer": null,
+          "themeScope": "tecton",
+          "themeScopeIsHtml": true,
+          "themeScopeMode": "dark",
+          "chain": [
+            "div",
+            "div",
+            "div",
+            "div#_r_2_[popover=auto]",
+            "div#shell",
+            "body"
+          ],
+          "color": "rgb(255, 255, 255)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "accentVar": "light-dark(#b8336a, #ff5fa2)",
+          "surfaceVar": "light-dark(#ffe9f2, #3d1329)",
+          "colorScheme": "dark"
+        },
+        "stats": {
+          "holders": 1,
+          "reasserts": 1,
+          "desired": {
+            "theme": "tecton",
+            "mode": "dark"
+          }
+        }
+      },
+      "afterBothUnmount": {
+        "root": {
+          "dataTheme": null,
+          "dataAstryxTheme": null,
+          "colorScheme": "light dark"
+        },
+        "stats": {
+          "holders": 0,
+          "reasserts": 1,
+          "desired": null
+        }
+      }
+    },
+    "perMajorName": {
+      "before": {
+        "aButton": "rgb(255, 95, 162)",
+        "bButton": "rgb(255, 95, 162)",
+        "aPanel": "rgb(61, 19, 41)",
+        "bPanel": "rgb(61, 19, 41)"
+      },
+      "after": {
+        "rewriteApplied": true,
+        "aButton": "rgb(50, 201, 201)",
+        "bButton": "rgb(255, 95, 162)",
+        "aPanel": "rgb(31, 31, 34)",
+        "bPanel": "rgb(61, 19, 41)",
+        "htmlThemeAttr": "tecton"
+      },
+      "strayNodeOutsideAnyWrapper": {
+        "accent": "light-dark(#1f9fa0, #32c9c9)"
+      }
+    },
+    "noReset": {
+      "withReset": {
+        "fontSize": "24px",
+        "fontWeight": "600"
+      },
+      "withoutReset": {
+        "hostH1": {
+          "fontSize": "32px",
+          "fontWeight": "700"
+        },
+        "containerPanel": {
+          "background": "rgb(61, 19, 41)",
+          "padding": "16px"
+        }
+      }
+    }
+  }
+}
