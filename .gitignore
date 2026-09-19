@@ -10,3 +10,4 @@ apps/docs/src/generated/
 .DS_Store
 *.log
 .eslintcache
+.claude/worktrees/
