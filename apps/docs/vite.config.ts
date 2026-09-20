@@ -18,7 +18,7 @@ import {stylexCssPlugin} from './scripts/vite-stylex-css.mjs';
  * mounted in the reader's browser after hydration, and `/api/search` is a JSON
  * document written at build time rather than a server.
  *
- * Four plugins carry the site:
+ * The plugins that carry it:
  *
  * - `fumadocsMdx` compiles `content/docs/**` and expands the `defineDocs`
  *   macro in `src/lib/source.ts` into the globs that back it. The collection is
@@ -28,8 +28,10 @@ import {stylexCssPlugin} from './scripts/vite-stylex-css.mjs';
  *   the prerenderer.
  * - `tailwindcss` draws fumadocs' shell.
  * - `stylex` compiles the eighteen examples that style themselves with StyleX,
- *   with the package's own compiler options, and appends the classes it
- *   extracted to the site's stylesheet after the design system's layers.
+ *   with the package's own compiler options, and `stylexCssPlugin` writes the
+ *   classes it extracted into `src/styles/stylex.css` — after the design
+ *   system's cascade layers, which is where a rule about a component has to sit
+ *   to outrank the component's theme.
  */
 const stylexPlugin = stylex(styleXOptions);
 
