@@ -87,17 +87,28 @@ const pages = readGenerated('sitePages');
  * component — `useToast` is a hook — so the check below matches a page by
  * either the name it is filed under or the name it is published as.
  */
-function barrelComponents() {
-  const source = read(path.join(PACKAGE_SRC, 'index.ts'));
+function barrelComponents(entry = 'index.ts', seen = new Set()) {
+  const file = path.join(PACKAGE_SRC, entry);
+  if (seen.has(file) || !fs.existsSync(file)) return new Set();
+  seen.add(file);
+  const source = read(file);
   const names = new Set();
   for (const match of source.matchAll(
-    /export\s+\{([^}]*)\}\s+from\s+'\.\/components\/[A-Za-z0-9]+\//g,
+    /export\s+\{([^}]*)\}\s+from\s+'(?:\.\.\/)*\.?\/?components\/[A-Za-z0-9]+\//g,
   )) {
     for (const name of match[1].split(',')) {
       const trimmed = name.trim();
       if (!trimmed || trimmed.startsWith('type ')) continue;
-      names.add(trimmed);
+      names.add(trimmed.replace(/^.*\s+as\s+/, ''));
     }
+  }
+  // The barrel keeps its generated pass-through components in a second
+  // module it re-exports wholesale (`export * from './generated/…'`); follow it.
+  for (const match of source.matchAll(/export\s+\*\s+from\s+'(\.[^']*)'/g)) {
+    const target = path
+      .join(path.dirname(entry), match[1])
+      .replace(/\.js$/, '.ts');
+    for (const name of barrelComponents(target, seen)) names.add(name);
   }
   return names;
 }

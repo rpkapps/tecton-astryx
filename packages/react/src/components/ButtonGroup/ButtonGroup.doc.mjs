@@ -70,7 +70,7 @@ export const docs = {
     },
   ],
 
-  examples: ['ButtonGroupBasic'],
+  examples: ['ButtonGroupBasic', 'ButtonGroupFloating', 'ButtonGroupShowcase'],
 
   notes: [
     'There is no group-level variant: emphasis is set per button, as it is on the group underneath.',

@@ -106,7 +106,14 @@ export const docs = {
     },
   ],
 
-  examples: ['TabsBasic'],
+  examples: [
+    'TabsBasic',
+    'TabsShowcase',
+    'TabsTabsFillLayout',
+    'TabsTabsWithBadge',
+    'TabsTabsWithMenu',
+    'TabsTabsWithStatusDot',
+  ],
 
   notes: [
     "Tecton's filled tab style lives on the strip in the design and has no variant axis; the closest thing is a ToggleButtonGroup, which the theme paints to match.",

@@ -130,7 +130,15 @@ export const docs = {
     },
   ],
 
-  examples: ['AlertBasic', 'AlertStatuses'],
+  examples: [
+    'AlertBasic',
+    'AlertDismissable',
+    'AlertFloating',
+    'AlertSectionVariant',
+    'AlertShowcase',
+    'AlertStatuses',
+    'AlertWithActionButton',
+  ],
 
   notes: [
     "Tecton's outlined alert emphasis — transparent fill, a 1px severity rule, severity-coloured text — has no slot underneath, so every alert is filled.",

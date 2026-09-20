@@ -38,3 +38,39 @@ export function renderIcon(
   const Glyph = icon;
   return <Glyph width={size} height={size} aria-hidden="true" />;
 }
+
+/**
+ * Let a pass-through prop take a Tecton glyph name as well as whatever it
+ * already took.
+ *
+ * A generated wrapper publishes the component underneath it unchanged, so its
+ * icon props keep accepting what they always accepted — an element, a glyph
+ * component, a slot's own icon type. These two helpers **widen** those props
+ * rather than replacing them: a Tecton glyph name is resolved, anything else
+ * is handed through untouched. That is what lets `icon="drill-bit"` and
+ * `icon={<NavIcon …/>}` both work on the same prop, so a Tecton consumer gets
+ * the Tecton icon set without losing the composition the component was built
+ * for.
+ *
+ * They are deliberately typed in terms of `unknown`: the prop's own type is
+ * whatever the component declares, and the generated wrapper casts back to it
+ * at the one call site. A narrower signature here would have to name every
+ * icon shape in the system.
+ */
+export function tectonIconValue(icon: unknown): unknown {
+  if (typeof icon === 'string' && icon in tectonIconRegistry) {
+    return tectonIconRegistry[icon as TectonIconName];
+  }
+  return icon;
+}
+
+/** The same widening for a slot that takes rendered content. */
+export function tectonIconNode(
+  icon: unknown,
+  size: TectonIconSize = 16,
+): unknown {
+  if (typeof icon === 'string' && icon in tectonIconRegistry) {
+    return <Icon name={icon as TectonIconName} size={size} />;
+  }
+  return icon;
+}

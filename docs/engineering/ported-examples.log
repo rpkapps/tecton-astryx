@@ -1,0 +1,1161 @@
+Ported examples and templates
+=============================
+
+Run of scripts/port-examples.mjs: 504 files ported (12 of them page templates), 59 refused before translation and 134 removed after it.
+
+Substituted glyphs
+------------------
+Tecton has one icon set; every glyph an upstream example used was replaced
+by the closest Tecton glyph. Left is what the example asked for, right is
+what it draws now.
+
+  MagnifyingGlassIcon → search  (17×)
+  CubeIcon → cube  (15×)
+  Cog6ToothIcon → settings  (14×)
+  StarIcon → crown  (13×)
+  HomeIcon → home  (11×)
+  ChartBarIcon → reports-analytics  (10×)
+  SparklesIcon → robot-2  (10×)
+  FolderIcon → folder  (9×)
+  PlusIcon → add  (9×)
+  ShieldCheckIcon → lock  (9×)
+  BellIcon → notifications  (8×)
+  LockClosedIcon → lock  (8×)
+  BookmarkIcon → add-pin  (7×)
+  calendar → diamond-mark  (7×)
+  DocumentTextIcon → reports-analytics  (7×)
+  ShareIcon → link  (7×)
+  TrashIcon → delete  (7×)
+  UserIcon → person  (7×)
+  UsersIcon → person  (7×)
+  wrench → diamond-mark  (7×)
+  TagIcon → numeric  (6×)
+  BoltIcon → electricity  (5×)
+  ClipboardDocumentIcon → copy  (5×)
+  DocumentDuplicateIcon → copy  (5×)
+  FunnelIcon → filter  (5×)
+  GlobeAltIcon → map  (5×)
+  PencilIcon → edit-square  (5×)
+  PencilSquareIcon → edit-square  (5×)
+  viewColumns → diamond-mark  (5×)
+  ArrowLeftIcon → arrow-left  (4×)
+  ArrowRightIcon → arrow-right  (4×)
+  AtSymbolIcon → link  (4×)
+  BoldIcon → annotate  (4×)
+  CalendarIcon → history  (4×)
+  CheckCircleIcon → check-circle  (4×)
+  ChevronRightIcon → chevron-right  (4×)
+  CodeBracketIcon → code  (4×)
+  InboxIcon → folder-open  (4×)
+  ItalicIcon → annotate  (4×)
+  PaperClipIcon → link  (4×)
+  UnderlineIcon → annotate  (4×)
+  UserCircleIcon → person  (4×)
+  AdjustmentsHorizontalIcon → controls  (3×)
+  ArrowPathIcon → rotate  (3×)
+  BookOpenIcon → reports-analytics  (3×)
+  ChevronDownIcon → chevron-down  (3×)
+  DocumentIcon → reports-analytics  (3×)
+  EllipsisHorizontalIcon → more-vert  (3×)
+  HandThumbUpIcon → check-circle-open  (3×)
+  HeartIcon → crown  (3×)
+  LinkIcon → link  (3×)
+  MapPinIcon → map  (3×)
+  MicrophoneIcon → microphone  (3×)
+  RocketLaunchIcon → play  (3×)
+  ShoppingCartIcon → money  (3×)
+  Squares2X2Icon → view-module  (3×)
+  ViewColumnsIcon → view-column  (3×)
+  XMarkIcon → close  (3×)
+  ArchiveBoxIcon → folder  (2×)
+  arrowsUpDown → diamond-mark  (2×)
+  ArrowUpIcon → arrow-up  (2×)
+  BellSlashIcon → notifications  (2×)
+  CheckIcon → check  (2×)
+  ComputerDesktopIcon → window  (2×)
+  CreditCardIcon → money  (2×)
+  EyeIcon → visibility  (2×)
+  FlagIcon → add-pin  (2×)
+  HandThumbDownIcon → cancel-circle  (2×)
+  ListBulletIcon → list  (2×)
+  moreHorizontal → diamond-mark  (2×)
+  PhotoIcon → image  (2×)
+  ShoppingBagIcon → money  (2×)
+  StrikethroughIcon → annotate  (2×)
+  TableCellsIcon → view-column  (2×)
+  TruckIcon → oil-rig-offshore  (2×)
+  UserPlusIcon → person  (2×)
+  ArrowDownIcon → arrow-down  (1×)
+  ArrowDownTrayIcon → export-upload  (1×)
+  ArrowsPointingOutIcon → expand-content  (1×)
+  ArrowsUpDownIcon → caret-up-down  (1×)
+  ArrowTopRightOnSquareIcon → open-in-new  (1×)
+  ArrowUturnLeftIcon → undo  (1×)
+  Banknote → money  (1×)
+  BanknotesIcon → money  (1×)
+  Bars4Icon → list  (1×)
+  BeakerIcon → discovery  (1×)
+  BellAlertIcon → notifications  (1×)
+  BriefcaseIcon → project  (1×)
+  BuildingLibraryIcon → facility  (1×)
+  ChatBubbleLeftIcon → annotate  (1×)
+  ChatBubbleLeftRightIcon → annotate  (1×)
+  CheckBadgeIcon → check-circle  (1×)
+  ChevronLeftIcon → chevron-left  (1×)
+  ChevronUpIcon → chevron-up  (1×)
+  CircleStackIcon → database  (1×)
+  ClipboardDocumentCheckIcon → copy  (1×)
+  ClipboardIcon → copy  (1×)
+  clock → diamond-mark  (1×)
+  ClockIcon → history  (1×)
+  CloudIcon → layers  (1×)
+  CpuChipIcon → node  (1×)
+  CreditCard → money  (1×)
+  CurrencyDollarIcon → money  (1×)
+  CursorArrowRaysIcon → select-cursor  (1×)
+  DevicePhoneMobileIcon → window  (1×)
+  DeviceTabletIcon → window  (1×)
+  Download → export-upload  (1×)
+  EnvelopeIcon → reports-analytics  (1×)
+  ExclamationTriangleIcon → warning  (1×)
+  eyeSlash → diamond-mark  (1×)
+  EyeSlashIcon → visibility-off  (1×)
+  FaceSmileIcon → person  (1×)
+  FireIcon → electricity  (1×)
+  Folder → folder  (1×)
+  FolderPlusIcon → folder-new  (1×)
+  GiftIcon → christmas-tree  (1×)
+  HandRaisedIcon → pan-tool  (1×)
+  HashtagIcon → numeric  (1×)
+  HomeModernIcon → home  (1×)
+  InformationCircleIcon → info  (1×)
+  LanguageIcon → apps  (1×)
+  LayoutGrid → grid-view  (1×)
+  LightBulbIcon → discovery  (1×)
+  List → list  (1×)
+  Lock → lock  (1×)
+  MapPin → map  (1×)
+  MegaphoneIcon → notifications  (1×)
+  Mic → microphone  (1×)
+  MinusIcon → remove  (1×)
+  MoonIcon → visibility-off  (1×)
+  PaperAirplaneIcon → arrow-right  (1×)
+  pencil → diamond-mark  (1×)
+  PlayCircleIcon → play  (1×)
+  PlayIcon → play  (1×)
+  Plus → add  (1×)
+  PlusCircleIcon → add-circle  (1×)
+  ReceiptPercentIcon → money  (1×)
+  RectangleStackIcon → layers  (1×)
+  ScissorsIcon → design  (1×)
+  Search → search  (1×)
+  ShoppingBag → money  (1×)
+  Smartphone → window  (1×)
+  SpeakerWaveIcon → microphone  (1×)
+  SquaresPlusIcon → view-module  (1×)
+  success → diamond-mark  (1×)
+  SunIcon → visibility  (1×)
+  SwatchIcon → design  (1×)
+  Tag → numeric  (1×)
+  trash → diamond-mark  (1×)
+  User → person  (1×)
+  UserGroupIcon → person  (1×)
+  UserMinusIcon → person  (1×)
+  Wallet → money  (1×)
+  WrenchScrewdriverIcon → engineering  (1×)
+  X → close  (1×)
+  XCircleIcon → cancel-circle  (1×)
+
+Props dropped in translation
+----------------------------
+A Tecton component is narrower than the one underneath it on purpose. These
+props had no Tecton equivalent and were removed from the ported example.
+
+  Dialog/examples/DialogDeleteConfirmation.tsx
+    - <Dialog> dropped `isInline`, which Tecton has no prop for
+    - <Dialog> dropped `onAction`, which Tecton has no prop for
+  AppShell/examples/AppShellWithBanner.tsx
+    - <Alert> dropped `container`, which Tecton has no prop for
+  AspectRatio/examples/AspectRatioShowcase.tsx
+    - <HStack> dropped `vAlign`
+    - <VStack> dropped `hAlign`
+  Avatar/examples/AvatarFallbackChain.tsx
+    - <HStack> dropped `vAlign`
+    - <HStack> dropped `vAlign`
+    - <HStack> dropped `vAlign`
+    - <HStack> dropped `vAlign`
+  Avatar/examples/AvatarInitialsFallback.tsx
+    - <Stack> dropped `vAlign`
+    - <Stack> dropped `hAlign`
+  Avatar/examples/AvatarInteractive.tsx
+    - <Stack> dropped `vAlign`
+    - <Stack> dropped `hAlign`
+    - <Stack> dropped `hAlign`
+  Avatar/examples/AvatarShowcase.tsx
+    - <Stack> dropped `vAlign`
+    - <Avatar> dropped `status`
+    - <Avatar> dropped `status`
+  Avatar/examples/AvatarTooltip.tsx
+    - <Stack> dropped `vAlign`
+  Avatar/examples/AvatarUserCard.tsx
+    - <Stack> dropped `vAlign`
+    - <Avatar> dropped `status`
+  Avatar/examples/AvatarWithImage.tsx
+    - <Stack> dropped `vAlign`
+  Avatar/examples/AvatarWithStatus.tsx
+    - <Stack> dropped `vAlign`
+    - <Avatar> dropped `status`
+    - <Avatar> dropped `status`
+    - <Avatar> dropped `status`
+  AvatarStatusDot/examples/AvatarStatusDotShowcase.tsx
+    - <HStack> dropped `vAlign`
+    - <Avatar> dropped `status`
+    - <Avatar> dropped `status`
+    - <Avatar> dropped `status`
+  AvatarStatusDot/examples/AvatarStatusDotVariants.tsx
+    - <HStack> dropped `vAlign`
+    - <Avatar> dropped `status`
+    - <Avatar> dropped `status`
+    - <Avatar> dropped `status`
+  Badge/examples/BadgeCategoryTags.tsx
+    - <Stack> dropped `style`
+    - <Badge> dropped `variant`
+    - <Badge> dropped `variant`
+    - <Badge> dropped `variant`
+    - <Badge> dropped `variant`
+    - <Badge> dropped `variant`
+    - <Badge> dropped `variant`
+    - <Badge> dropped `variant`
+    - <Badge> dropped `variant`
+    - <Badge> dropped `variant`
+  Badge/examples/BadgeCountBadges.tsx
+    - <Stack> dropped `hAlign`
+    - <Stack> dropped `vAlign`
+    - <Stack> dropped `hAlign`
+  Badge/examples/BadgeShowcase.tsx
+    - <Stack> dropped `hAlign`
+    - <Badge> dropped `variant`
+    - <Badge> dropped `variant`
+    - <Badge> dropped `variant`
+    - <Badge> dropped `variant`
+    - <Badge> dropped `variant`
+  Badge/examples/BadgeStatusLabels.tsx
+    - <Stack> dropped `vAlign`
+    - <Stack> dropped `vAlign`
+  Alert/examples/AlertFloating.tsx
+    - <Alert> dropped `elevation`, which Tecton has no prop for
+  Alert/examples/AlertSectionVariant.tsx
+    - <Alert> dropped `container`, which Tecton has no prop for
+    - <Alert> dropped `container`, which Tecton has no prop for
+    - <Alert> dropped `endContent`, which Tecton has no prop for
+  Alert/examples/AlertShowcase.tsx
+    - <Stack> dropped `style`
+  Alert/examples/AlertWithActionButton.tsx
+    - <Alert> dropped `endContent`, which Tecton has no prop for
+    - <Alert> dropped `endContent`, which Tecton has no prop for
+    - <Alert> dropped `endContent`, which Tecton has no prop for
+  Blockquote/examples/BlockquoteShowcase.tsx
+    - <Stack> dropped `style`
+  Blockquote/examples/BlockquoteTestimonials.tsx
+    - <Grid> dropped `style`
+  Blockquote/examples/BlockquoteWithCite.tsx
+    - <VStack> dropped `style`
+  BottomSheet/examples/BottomSheetHeights.tsx
+    - <VStack> dropped `style`
+  BottomSheet/examples/BottomSheetMobileKeyboard.tsx
+    - <VStack> dropped `style`
+  BottomSheet/examples/BottomSheetNoScrim.tsx
+    - <VStack> dropped `style`
+  BottomSheetSwitcher/examples/BottomSheetSwitcherReviewFlow.tsx
+    - <HStack> dropped `hAlign`
+    - <HStack> dropped `hAlign`
+  BottomSheetSwitcher/examples/BottomSheetSwitcherShowcase.tsx
+    - <HStack> dropped `hAlign`
+    - <HStack> dropped `hAlign`
+    - <HStack> dropped `hAlign`
+  BreadcrumbItem/examples/BreadcrumbItemShowcase.tsx
+    - <BreadcrumbItem> dropped `startIcon`
+  Breadcrumbs/examples/BreadcrumbsDeepHierarchy.tsx
+    - <BreadcrumbItem> dropped `startIcon`
+  Breadcrumbs/examples/BreadcrumbsWithIcons.tsx
+    - <BreadcrumbItem> dropped `startIcon`
+    - <BreadcrumbItem> dropped `startIcon`
+  Button/examples/ButtonShowcase.tsx
+    - <Stack> dropped `vAlign`
+  Button/examples/ButtonWithEndSlot.tsx
+    - <Stack> dropped `vAlign`
+    - <Button> dropped `endContent`
+    - <Button> dropped `endContent`
+    - <Button> dropped `endContent`
+  ButtonGroup/examples/ButtonGroupFloating.tsx
+    - <Stack> dropped `hAlign`
+    - <ButtonGroup> dropped `elevation`, which Tecton has no prop for
+  ButtonGroup/examples/ButtonGroupShowcase.tsx
+    - <Stack> dropped `vAlign`
+  Calendar/examples/CalendarConstraints.tsx
+    - <Stack> dropped `hAlign`
+  Calendar/examples/CalendarRangeWithValue.tsx
+    - <Stack> dropped `hAlign`
+  Calendar/examples/CalendarSingle.tsx
+    - <Stack> dropped `hAlign`
+  Calendar/examples/CalendarTwoMonths.tsx
+    - <Stack> dropped `hAlign`
+  Card/examples/CardElevations.tsx
+    - <Card> dropped `elevation`
+  Card/examples/CardWithInnerLayout.tsx
+    - <HStack> dropped `hAlign`
+  Carousel/examples/CarouselCards.tsx
+    - <Stack> dropped `style`
+  Carousel/examples/CarouselShowcase.tsx
+    - <Card> dropped `style`
+  Carousel/examples/CarouselSnap.tsx
+    - <Stack> dropped `style`
+    - <Stack> dropped `hAlign`
+    - <Stack> dropped `hAlign`
+  Center/examples/CenterHorizontal.tsx
+    - <Stack> dropped `vAlign`
+  Center/examples/CenterInsideACard.tsx
+    - <Stack> dropped `hAlign`
+    - <Icon> dropped `color`
+  Center/examples/CenterShowcase.tsx
+    - <Stack> dropped `hAlign`
+  ChatComposerDrawer/examples/ChatComposerDrawerShowcase.tsx
+    - <Button> dropped `isIconOnly`
+  ChatComposerDrawer/examples/ChatComposerDrawerWithProgress.tsx
+    - <Button> dropped `isIconOnly`
+    - <Button> dropped `isIconOnly`
+    - <Stack> dropped `vAlign`
+  ChatDictationButton/examples/ChatDictationButtonDictationInComposer.tsx
+    - <Stack> dropped `style`
+  ChatDictationButton/examples/ChatDictationButtonDictationStates.tsx
+    - <Stack> dropped `hAlign`
+    - <Stack> dropped `hAlign`
+    - <Stack> dropped `hAlign`
+    - <Stack> dropped `hAlign`
+  ChatDictationButton/examples/ChatDictationButtonSizes.tsx
+    - <Stack> dropped `vAlign`
+    - <Stack> dropped `vAlign`
+  ChatDictationButton/examples/ChatDictationButtonShowcase.tsx
+    - <HStack> dropped `vAlign`
+  ChatMessageBubble/examples/ChatMessageBubbleDensity.tsx
+    - <VStack> dropped `style`
+  ChatMessageBubble/examples/ChatMessageBubbleMetadata.tsx
+    - <Button> dropped `isIconOnly`
+  ChatMessageBubble/examples/ChatMessageBubbleVariants.tsx
+    - <Stack> dropped `style`
+  ChatMessageList/examples/ChatMessageListFullFeatured.tsx
+    - <VStack> dropped `style`
+  ChatMessageList/examples/ChatMessageListShowcase.tsx
+    - <VStack> dropped `style`
+  ChatMessageMetadata/examples/ChatMessageMetadataFooter.tsx
+    - <Button> dropped `isIconOnly`
+    - <Button> dropped `isIconOnly`
+    - <Button> dropped `isIconOnly`
+    - <Button> dropped `isIconOnly`
+  ChatMessageMetadata/examples/ChatMessageMetadataShowcase.tsx
+    - <VStack> dropped `style`
+    - <Button> dropped `isIconOnly`
+    - <Button> dropped `isIconOnly`
+    - <Button> dropped `isIconOnly`
+    - <Button> dropped `isIconOnly`
+    - <Button> dropped `isIconOnly`
+  ChatSendButton/examples/ChatSendButtonCustomIcon.tsx
+    - <Stack> dropped `vAlign`
+  ChatSendButton/examples/ChatSendButtonShowcase.tsx
+    - <Stack> dropped `vAlign`
+  ChatSendButton/examples/ChatSendButtonStates.tsx
+    - <Stack> dropped `vAlign`
+  Citation/examples/CitationInlineText.tsx
+    - <Stack> dropped `style`
+  Citation/examples/CitationShowcase.tsx
+    - <Stack> dropped `style`
+  Citation/examples/CitationSourceList.tsx
+    - <Stack> dropped `style`
+  Code/examples/CodeInlineInParagraph.tsx
+    - <Text> dropped `style`
+  CodeBlock/examples/CodeBlockBashCommand.tsx
+    - <VStack> dropped `style`
+  Accordion/examples/AccordionControlledAccordion.tsx
+    - <Stack> dropped `vAlign`
+  Accordion/examples/AccordionDividedAccordion.tsx
+    - <Link> dropped `isStandalone`
+    - <Link> dropped `hasUnderline`
+  CommandPalette/examples/CommandPalettePickerMode.tsx
+    - <Text> dropped `style`
+  DateInput/examples/DateInputClearable.tsx
+    - <Stack> dropped `style`
+  DateInput/examples/DateInputDateRange.tsx
+    - <Stack> dropped `style`
+  DateInput/examples/DateInputFormats.tsx
+    - <Stack> dropped `style`
+  DateInput/examples/DateInputShowcase.tsx
+    - <Stack> dropped `style`
+  DateInput/examples/DateInputWithDescription.tsx
+    - <Stack> dropped `style`
+  DateInput/examples/DateInputWithValidation.tsx
+    - <Stack> dropped `style`
+  DateRangeInput/examples/DateRangeInputShowcase.tsx
+    - <Stack> dropped `style`
+  DateRangeInput/examples/DateRangeInputWithPresets.tsx
+    - <Stack> dropped `style`
+  DateRangeInput/examples/DateRangeInputWithValidation.tsx
+    - <Stack> dropped `style`
+  DateTimeInput/examples/DateTimeInputShowcase.tsx
+    - <Stack> dropped `style`
+  DateTimeInput/examples/DateTimeInputWithValidation.tsx
+    - <Stack> dropped `xstyle`
+    - dropped the now-unreferenced constant `styles`
+  Divider/examples/DividerFullBleed.tsx
+    - <HStack> dropped `hAlign`
+    - <HStack> dropped `hAlign`
+    - <HStack> dropped `hAlign`
+    - <HStack> dropped `hAlign`
+  Divider/examples/DividerShowcase.tsx
+    - <Stack> dropped `style`
+  Divider/examples/DividerVertical.tsx
+    - <Divider> dropped `style`
+    - <Divider> dropped `style`
+    - dropped the now-unreferenced constant `dividerFill`
+  Field/examples/FieldShowcase.tsx
+    - <Stack> dropped `style`
+  Grid/examples/GridDashboardLayout.tsx
+    - <Grid> dropped `style`
+  Grid/examples/GridGalleryExample.tsx
+    - <Grid> dropped `style`
+  Grid/examples/GridResponsiveAutoFit.tsx
+    - <Card> dropped `height`
+    - <Card> dropped `style`
+  Grid/examples/GridWithGridSpan.tsx
+    - <Grid> dropped `style`
+    - <Card> dropped `variant`
+    - <Card> dropped `variant`
+  GridSpan/examples/GridSpanColumns.tsx
+    - <Card> dropped `height`
+    - <Card> dropped `height`
+    - <Card> dropped `height`
+    - <Card> dropped `height`
+  GridSpan/examples/GridSpanShowcase.tsx
+    - <Card> dropped `height`
+    - <Card> dropped `height`
+    - <Card> dropped `height`
+    - <Card> dropped `height`
+    - <Card> dropped `height`
+  HStack/examples/HStackShowcase.tsx
+    - <VStack> dropped `style`
+    - <HStack> dropped `hAlign`
+    - <HStack> dropped `hAlign`
+  Heading/examples/HeadingPageLayout.tsx
+    - <VStack> dropped `style`
+  Heading/examples/HeadingShowcase.tsx
+    - <VStack> dropped `hAlign`
+  HoverCard/examples/HoverCardInteractiveContent.tsx
+    - <VStack> dropped `style`
+    - <HStack> dropped `vAlign`
+    - <Icon> dropped `color`
+    - <Link> dropped `hasUnderline`
+  HoverCard/examples/HoverCardShowcase.tsx
+    - <Stack> dropped `style`
+    - <Stack> dropped `vAlign`
+  Icon/examples/IconNonSemanticColors.tsx
+    - <VStack> dropped `hAlign`
+    - <Icon> dropped `color`
+  Icon/examples/IconSemanticColors.tsx
+    - <VStack> dropped `hAlign`
+    - <Icon> dropped `color`
+    - <VStack> dropped `hAlign`
+    - <Icon> dropped `color`
+    - <VStack> dropped `hAlign`
+    - <Icon> dropped `color`
+    - <VStack> dropped `hAlign`
+    - glyph `clock` → `diamond-mark`
+    - <Icon> dropped `color`
+    - <VStack> dropped `hAlign`
+    - glyph `calendar` → `diamond-mark`
+    - <Icon> dropped `color`
+    - <VStack> dropped `hAlign`
+    - glyph `success` → `diamond-mark`
+    - <Icon> dropped `color`
+    - <VStack> dropped `hAlign`
+    - <Icon> dropped `color`
+    - <VStack> dropped `hAlign`
+    - <Icon> dropped `color`
+  Icon/examples/IconShowcase.tsx
+    - <Icon> dropped `color`
+  IconButton/examples/IconButtonActionBar.tsx
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+  IconButton/examples/IconButtonLoadingToggle.tsx
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+  IconButton/examples/IconButtonShowcase.tsx
+    - glyph `wrench` → `diamond-mark`
+    - <Icon> dropped `color`
+  IconButton/examples/IconButtonTooltipIconButton.tsx
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - glyph `moreHorizontal` → `diamond-mark`
+    - <Icon> dropped `color`
+  InputGroup/examples/InputGroupShowcase.tsx
+    - <Stack> dropped `style`
+  ItemRow/examples/ItemRowWithMedia.tsx
+    - <Badge> dropped `variant`
+    - <Icon> dropped `color`
+    - <Badge> dropped `variant`
+  ItemRow/examples/ItemRowWithMetadata.tsx
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+  Layout/examples/LayoutBasicCardLayout.tsx
+    - <Card> dropped `height`
+    - <Card> dropped `style`
+    - <HStack> dropped `hAlign`
+  Layout/examples/LayoutContentOnlyLayout.tsx
+    - <Card> dropped `style`
+  Layout/examples/LayoutContentWidth.tsx
+    - <HStack> dropped `hAlign`
+  Layout/examples/LayoutDualPanelLayout.tsx
+    - <Card> dropped `style`
+  Layout/examples/LayoutFullBleedContent.tsx
+    - <Card> dropped `style`
+    - <HStack> dropped `hAlign`
+  Layout/examples/LayoutShowcase.tsx
+    - <HStack> dropped `vAlign`
+    - <HStack> dropped `hAlign`
+  Layout/examples/LayoutSidebarLayout.tsx
+    - <Card> dropped `style`
+    - <HStack> dropped `hAlign`
+  LayoutFooter/examples/LayoutFooterActions.tsx
+    - <HStack> dropped `hAlign`
+  LayoutFooter/examples/LayoutFooterShowcase.tsx
+    - <HStack> dropped `hAlign`
+  LayoutHeader/examples/LayoutHeaderShowcase.tsx
+    - <HStack> dropped `vAlign`
+    - <HStack> dropped `hAlign`
+  LayoutHeader/examples/LayoutHeaderWithActions.tsx
+    - <HStack> dropped `vAlign`
+    - <HStack> dropped `hAlign`
+  Lightbox/examples/LightboxGallery.tsx
+    - <Grid> dropped `style`
+  Link/examples/LinkExternalLinks.tsx
+    - <Link> dropped `isExternalLink`, which Tecton has no prop for
+    - <Link> dropped `isStandalone`
+    - <Link> dropped `isExternalLink`, which Tecton has no prop for
+    - <Link> dropped `isStandalone`
+    - <Link> dropped `isExternalLink`, which Tecton has no prop for
+    - <Link> dropped `hasUnderline`
+    - <Link> dropped `isStandalone`
+  Link/examples/LinkShowcase.tsx
+    - <Link> dropped `isStandalone`
+  Link/examples/LinksWithTooltips.tsx
+    - <HStack> dropped `vAlign`
+    - <Link> dropped `isStandalone`
+    - <Link> dropped `isStandalone`
+    - <Link> dropped `isStandalone`
+  LinkProvider/examples/LinkProviderCustomLink.tsx
+    - <Link> dropped `isStandalone`
+  List/examples/ListBulletedFeatures.tsx
+    - <List> dropped `listStyle`, which Tecton has no prop for
+  List/examples/ListOrderedSteps.tsx
+    - <List> dropped `listStyle`, which Tecton has no prop for
+  ListItem/examples/ListItemShowcase.tsx
+    - <Badge> dropped `variant`
+    - glyph `eyeSlash` → `diamond-mark`
+    - glyph `wrench` → `diamond-mark`
+    - <Badge> dropped `variant`
+  ListItem/examples/ListItemWithMedia.tsx
+    - <Badge> dropped `variant`
+    - <Badge> dropped `variant`
+    - <Icon> dropped `color`
+  ListItem/examples/ListItemWithMetadata.tsx
+    - <Icon> dropped `color`
+    - <Badge> dropped `variant`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+  SurfaceTheme/examples/SurfaceThemeShowcase.tsx
+    - <Stack> dropped `vAlign`
+  MetadataListItem/examples/MetadataListItemBasic.tsx
+    - <Badge> dropped `variant`
+  MetadataListItem/examples/MetadataListItemShowcase.tsx
+    - <Badge> dropped `variant`
+    - <Badge> dropped `variant`
+  MobileNav/examples/MobileNavBasicMobileNav.tsx
+    - <Button> dropped `isIconOnly`
+    - <Icon> dropped `color`
+  MobileNav/examples/MobileNavShowcase.tsx
+    - <Button> dropped `isIconOnly`
+    - <Icon> dropped `color`
+  MobileNav/examples/MobileNavWithoutTitleMobileNav.tsx
+    - <Button> dropped `isIconOnly`
+    - <Icon> dropped `color`
+  MobileNavToggle/examples/MobileNavToggleBasic.tsx
+    - <HStack> dropped `vAlign`
+    - glyph `viewColumns` → `diamond-mark`
+  MobileNavToggle/examples/MobileNavToggleShowcase.tsx
+    - <HStack> dropped `vAlign`
+  NavIcon/examples/NavIconBasic.tsx
+    - <HStack> dropped `vAlign`
+    - glyph `calendar` → `diamond-mark`
+  NavIcon/examples/NavIconShowcase.tsx
+    - <HStack> dropped `vAlign`
+    - glyph `calendar` → `diamond-mark`
+    - glyph `wrench` → `diamond-mark`
+  Outline/examples/OutlineControlled.tsx
+    - <VStack> dropped `style`
+  Outline/examples/OutlineDensity.tsx
+    - <HStack> dropped `vAlign`
+    - <VStack> dropped `style`
+    - <VStack> dropped `style`
+  OverflowList/examples/OverflowListMultiRowTags.tsx
+    - <Card> dropped `style`
+  OverflowList/examples/OverflowListOverflowBadges.tsx
+    - <Card> dropped `style`
+  Overlay/examples/OverlayBottomStrip.tsx
+    - <Badge> dropped `variant`
+  Overlay/examples/OverlayShowcase.tsx
+    - <VStack> dropped `style`
+  Pagination/examples/PaginationDotsCarousel.tsx
+    - <Icon> dropped `color`
+    - <Stack> dropped `style`
+    - <Stack> dropped `vAlign`
+    - <Stack> dropped `hAlign`
+  Pagination/examples/PaginationPageSize.tsx
+    - <Stack> dropped `style`
+    - dropped the now-unreferenced constant `root`
+  Pagination/examples/PaginationVariants.tsx
+    - <Stack> dropped `hAlign`
+    - <Stack> dropped `style`
+  Pagination/examples/PaginationWithTable.tsx
+    - <Stack> dropped `style`
+  Popover/examples/PopoverConfirmAction.tsx
+    - <HStack> dropped `hAlign`
+  Popover/examples/PopoverFilterPanel.tsx
+    - <HStack> dropped `hAlign`
+  Popover/examples/PopoverShowcase.tsx
+    - <Heading> dropped `tabIndex`, which Tecton has no prop for
+  PowerSearch/examples/PowerSearchSearchWithTable.tsx
+    - <VStack> dropped `style`
+  Progress/examples/ProgressCustomFormat.tsx
+    - <Progress> dropped `formatValueLabel`, which Tecton has no prop for
+  Progress/examples/ProgressIndeterminate.tsx
+    - <Progress> dropped `style`
+  Progress/examples/ProgressWithValueLabel.tsx
+    - <Progress> dropped `style`
+  ResizeHandle/examples/ResizableSidebar.tsx
+    - <Card> dropped `height`
+  Section/examples/SectionWashHighlight.tsx
+    - <Stack> dropped `hAlign`
+    - <Stack> dropped `hAlign`
+    - <Stack> dropped `vAlign`
+    - <Stack> dropped `hAlign`
+    - <Stack> dropped `vAlign`
+  Select/examples/SelectBottomSheet.tsx
+    - <Select> dropped `presentation`, which Tecton has no prop for
+  Select/examples/SelectGhostToolbar.tsx
+    - <Select> dropped `variant`, which Tecton has no prop for
+    - <Select> dropped `variant`, which Tecton has no prop for
+    - <Select> dropped `statusVariant`, which Tecton has no prop for
+  SelectChoice/examples/SelectChoiceBasic.tsx
+    - <Select> dropped `style`
+    - <Select> dropped `renderOption`, which Tecton has no prop for
+    - dropped the now-unreferenced constant `descriptions`
+  SelectChoice/examples/SelectChoiceShowcase.tsx
+    - <Select> dropped `style`
+    - <Select> dropped `renderOption`, which Tecton has no prop for
+    - dropped the now-unreferenced constant `descriptions`
+  Skeleton/examples/SkeletonCardSkeleton.tsx
+    - <HStack> dropped `vAlign`
+  Skeleton/examples/SkeletonShowcase.tsx
+    - <HStack> dropped `vAlign`
+  Skeleton/examples/SkeletonTableRowSkeleton.tsx
+    - <HStack> dropped `vAlign`
+  Stack/examples/StackAlignment.tsx
+    - <Stack> dropped `style`
+    - <Stack> dropped `hAlign`
+    - <Stack> dropped `hAlign`
+    - <Stack> dropped `hAlign`
+  Stack/examples/StackDirections.tsx
+    - <HStack> dropped `hAlign`
+    - <HStack> dropped `vAlign`
+  Stack/examples/StackFillItem.tsx
+    - <Stack> dropped `style`
+    - <Stack> dropped `vAlign`
+  StackItem/examples/StackItemFill.tsx
+    - <HStack> dropped `vAlign`
+    - <HStack> dropped `style`
+  StackItem/examples/StackItemShowcase.tsx
+    - <HStack> dropped `vAlign`
+    - <HStack> dropped `style`
+  StatusDot/examples/StatusDotPulsing.tsx
+    - <HStack> dropped `vAlign`
+  StatusDot/examples/StatusDotShowcase.tsx
+    - <HStack> dropped `vAlign`
+  StatusDot/examples/StatusDotStatusIndicators.tsx
+    - <HStack> dropped `vAlign`
+  StatusDot/examples/StatusDotVariants.tsx
+    - <HStack> dropped `vAlign`
+  Stepper/examples/StepperIndicatorModes.tsx
+    - glyph `wrench` → `diamond-mark`
+  Switch/examples/SwitchSettingsPanel.tsx
+    - <Card> dropped `style`
+    - <Switch> dropped `labelSpacing`, which Tecton has no prop for
+    - <Switch> dropped `labelSpacing`, which Tecton has no prop for
+    - <Switch> dropped `labelSpacing`, which Tecton has no prop for
+  Switch/examples/SwitchWithStatus.tsx
+    - <VStack> dropped `style`
+    - <Switch> dropped `isRequired`, which Tecton has no prop for
+  CodeTheme/examples/CodeThemeShowcase.tsx
+    - <Stack> dropped `style`
+  Text/examples/TextWordBreak.tsx
+    - <Text> dropped `wordBreak`
+    - <Text> dropped `wordBreak`
+  Text/examples/TextWrap.tsx
+    - <Text> dropped `textWrap`
+    - <Text> dropped `textWrap`
+    - <Text> dropped `textWrap`
+    - <Text> dropped `textWrap`
+  TextArea/examples/TextAreaStates.tsx
+    - <Stack> dropped `style`
+    - <TextArea> dropped `isLoading`, which Tecton has no prop for
+  TextArea/examples/TextAreaValidation.tsx
+    - <Stack> dropped `style`
+  TextField/examples/TextFieldStates.tsx
+    - <TextField> dropped `isLoading`, which Tecton has no prop for
+  TextField/examples/TextFieldStatusVariant.tsx
+    - <TextField> dropped `statusVariant`, which Tecton has no prop for
+    - <TextField> dropped `statusVariant`, which Tecton has no prop for
+  TextField/examples/TextFieldTypes.tsx
+    - <TextField> dropped `labelTooltip`, which Tecton has no prop for
+  Thumbnail/examples/ThumbnailDisabled.tsx
+    - <Stack> dropped `vAlign`
+    - <Stack> dropped `vAlign`
+  Thumbnail/examples/ThumbnailGallery.tsx
+    - <Stack> dropped `vAlign`
+  Thumbnail/examples/ThumbnailRemovable.tsx
+    - <Stack> dropped `vAlign`
+  Thumbnail/examples/ThumbnailStates.tsx
+    - <Stack> dropped `vAlign`
+    - <Stack> dropped `hAlign`
+    - <Stack> dropped `hAlign`
+    - <Stack> dropped `hAlign`
+    - <Stack> dropped `hAlign`
+  TimeInput/examples/TimeInputShowcase.tsx
+    - <Stack> dropped `style`
+  Timestamp/examples/TimestampFormats.tsx
+    - <Stack> dropped `vAlign`
+    - <Stack> dropped `vAlign`
+  Timestamp/examples/TimestampTimezone.tsx
+    - <Stack> dropped `vAlign`
+    - <Stack> dropped `vAlign`
+  ToggleButton/examples/ToggleButtonColor.tsx
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+  ToggleButton/examples/ToggleButtonIconSwap.tsx
+    - <Stack> dropped `vAlign`
+  ToggleButton/examples/ToggleButtonStates.tsx
+    - <Stack> dropped `vAlign`
+    - <Stack> dropped `vAlign`
+    - <Stack> dropped `vAlign`
+    - <Stack> dropped `vAlign`
+    - <ToggleButton> dropped `isLoading`, which Tecton has no prop for
+    - <ToggleButton> dropped `isLoading`, which Tecton has no prop for
+  Chip/examples/ChipEndContent.tsx
+    - <Chip> dropped `endContent`, which Tecton has no prop for
+    - <Chip> dropped `endContent`, which Tecton has no prop for
+    - <Badge> dropped `variant`
+    - <Chip> dropped `endContent`, which Tecton has no prop for
+  Chip/examples/ChipIcon.tsx
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+    - <Icon> dropped `color`
+  Chip/examples/ChipShowcase.tsx
+    - <Stack> dropped `vAlign`
+    - <Icon> dropped `color`
+  Toolbar/examples/ToolbarCardHeader.tsx
+    - <Card> dropped `style`
+    - <Button> dropped `isIconOnly`
+    - <Button> dropped `isIconOnly`
+  Toolbar/examples/ToolbarSizes.tsx
+    - <Stack> dropped `style`
+    - <Button> dropped `isIconOnly`
+  Toolbar/examples/ToolbarThreeSlot.tsx
+    - <Card> dropped `style`
+    - <Button> dropped `isIconOnly`
+  Toolbar/examples/ToolbarWithTabs.tsx
+    - <Card> dropped `style`
+    - <Button> dropped `isIconOnly`
+    - dropped the now-unreferenced constant `card`
+  TopNav/examples/TopNavCenteredNavigation.tsx
+    - <Button> dropped `isIconOnly`
+    - <Icon> dropped `color`
+    - <Button> dropped `isIconOnly`
+  TopNav/examples/TopNavEnterpriseDashboard.tsx
+    - <Button> dropped `isIconOnly`
+    - <Icon> dropped `color`
+    - <Button> dropped `isIconOnly`
+  TopNav/examples/TopNavHoverMenu.tsx
+    - <Button> dropped `isIconOnly`
+  TopNav/examples/TopNavShowcase.tsx
+    - <Button> dropped `isIconOnly`
+    - <Icon> dropped `color`
+    - <Button> dropped `isIconOnly`
+    - <Button> dropped `isIconOnly`
+  TopNav/examples/TopNavWithLogo.tsx
+    - <Button> dropped `isIconOnly`
+  TopNavHeading/examples/TopNavHeadingBasic.tsx
+    - glyph `viewColumns` → `diamond-mark`
+  TopNavMenu/examples/TopNavMenuShowcase.tsx
+    - <Button> dropped `isIconOnly`
+  Autocomplete/examples/AutocompleteLimitedResults.tsx
+    - <Autocomplete> dropped `searchSource`, which Tecton has no prop for
+    - <Autocomplete> dropped `hasEntriesOnFocus`, which Tecton has no prop for
+    - <Autocomplete> dropped `maxMenuItems`, which Tecton has no prop for
+    - dropped the now-unreferenced constant `searchSource`
+    - dropped the now-unreferenced constant `items`
+  Autocomplete/examples/AutocompleteSearchField.tsx
+    - <Autocomplete> dropped `searchSource`, which Tecton has no prop for
+    - <Autocomplete> dropped `hasEntriesOnFocus`, which Tecton has no prop for
+    - dropped the now-unreferenced constant `searchSource`
+    - dropped the now-unreferenced constant `items`
+  Autocomplete/examples/AutocompleteShowcase.tsx
+    - <Autocomplete> dropped `searchSource`, which Tecton has no prop for
+    - dropped the now-unreferenced constant `fruitSource`
+    - dropped the now-unreferenced constant `fruits`
+  Autocomplete/examples/AutocompleteWithHelperText.tsx
+    - <Autocomplete> dropped `searchSource`, which Tecton has no prop for
+    - dropped the now-unreferenced constant `searchSource`
+    - dropped the now-unreferenced constant `items`
+  Autocomplete/examples/AutocompleteWithValidation.tsx
+    - <Autocomplete> dropped `searchSource`, which Tecton has no prop for
+    - dropped the now-unreferenced constant `searchSource`
+    - dropped the now-unreferenced constant `items`
+  VStack/examples/VStackShowcase.tsx
+    - <HStack> dropped `hAlign`
+  VisuallyHidden/examples/VisuallyHiddenLiveRegion.tsx
+    - <VStack> dropped `hAlign`
+    - <HStack> dropped `vAlign`
+  VisuallyHidden/examples/VisuallyHiddenStructuralHeading.tsx
+    - <VStack> dropped `hAlign`
+    - <HStack> dropped `vAlign`
+  templates/centered-hero/Template.tsx
+    - <VStack> dropped `hAlign`
+    - <VStack> dropped `hAlign`
+    - <Heading> dropped `textWrap`
+    - <Text> dropped `textWrap`
+    - <Button> dropped `endContent`
+    - <Icon> dropped `color`
+  templates/classic-gallery/Template.tsx
+    - <VStack> dropped `style`
+    - <VStack> dropped `hAlign`
+    - <VStack> dropped `style`
+    - <VStack> dropped `hAlign`
+    - dropped the now-unreferenced constant `textCenter`
+    - dropped the now-unreferenced constant `outer`
+  templates/documentation/Template.tsx
+    - <Card> dropped `variant`
+    - <HStack> dropped `vAlign`
+    - <Grid> dropped `style`
+    - <Card> dropped `style`
+    - dropped the now-unreferenced constant `cardGrid`
+    - dropped the now-unreferenced constant `previewCard`
+  templates/gallery-hero/Template.tsx
+    - <VStack> dropped `hAlign`
+    - <VStack> dropped `hAlign`
+    - <Heading> dropped `textWrap`
+    - <Text> dropped `textWrap`
+    - <Button> dropped `endContent`
+    - <Icon> dropped `color`
+  templates/login/Template.tsx
+    - <VStack> dropped `hAlign`
+    - <VStack> dropped `style`
+    - <VStack> dropped `hAlign`
+    - <Text> dropped `size`
+    - <VStack> dropped `hAlign`
+    - <VStack> dropped `hAlign`
+    - <Text> dropped `size`
+    - <Alert> dropped `container`, which Tecton has no prop for
+    - dropped the now-unreferenced constant `contentStyle`
+  templates/login-card/Template.tsx
+    - <VStack> dropped `hAlign`
+    - <VStack> dropped `style`
+    - <VStack> dropped `hAlign`
+    - <Text> dropped `size`
+    - <VStack> dropped `hAlign`
+    - <VStack> dropped `hAlign`
+    - <Text> dropped `size`
+    - <VStack> dropped `hAlign`
+    - <Link> dropped `size`
+    - <Link> dropped `type`
+    - <VStack> dropped `hAlign`
+    - <Button> dropped `icon`, which Tecton takes as a glyph name
+    - <Button> dropped `icon`, which Tecton takes as a glyph name
+    - <VStack> dropped `hAlign`
+    - <Link> dropped `type`
+    - <VStack> dropped `hAlign`
+    - <Link> dropped `type`
+    - <Link> dropped `type`
+    - dropped the now-unreferenced constant `contentStyle`
+    - dropped the now-unreferenced constant `GoogleIcon`
+    - dropped the now-unreferenced constant `AppleIcon`
+  templates/login-split/Template.tsx
+    - <Grid> dropped `className`
+    - <HStack> dropped `vAlign`
+    - <VStack> dropped `hAlign`
+    - <Text> dropped `as`
+    - <Text> dropped `size`
+    - <VStack> dropped `hAlign`
+    - <Link> dropped `size`
+    - <Link> dropped `type`
+    - <Button> dropped `icon`, which Tecton takes as a glyph name
+    - <Button> dropped `icon`, which Tecton takes as a glyph name
+    - <Link> dropped `type`
+    - <Card> dropped `height`
+    - <VStack> dropped `hAlign`
+    - <Link> dropped `type`
+    - <Link> dropped `type`
+    - dropped the now-unreferenced constant `GOOGLE_LOGO_URL`
+    - dropped the now-unreferenced constant `APPLE_LOGO_URL`
+  templates/mixed-gallery/Template.tsx
+    - <VStack> dropped `style`
+    - <VStack> dropped `hAlign`
+    - dropped the now-unreferenced constant `containerStyle`
+  templates/product-gallery/Template.tsx
+    - <VStack> dropped `hAlign`
+    - <Button> dropped `endContent`
+    - <Icon> dropped `color`
+  templates/settings/Template.tsx
+    - <HStack> dropped `vAlign`
+    - <Autocomplete> dropped `searchSource`, which Tecton has no prop for
+    - <Autocomplete> dropped `hasEntriesOnFocus`, which Tecton has no prop for
+    - <VStack> dropped `hAlign`
+    - dropped the now-unreferenced constant `settingsSearchSource`
+    - dropped the now-unreferenced constant `SETTINGS_ITEMS`
+  templates/side-gallery/Template.tsx
+    - <VStack> dropped `vAlign`
+    - <HStack> dropped `vAlign`
+
+Refused before translation
+--------------------------
+These reach for something Tecton does not publish at all. Each reason is a
+real gap, not a shortcut.
+
+  blocks/AppShell/AppShellMobileHookUsage.tsx: is an example for `useAppShellMobile`, which is not a Tecton component
+  blocks/Banner/BannerStatuses.tsx: would overwrite the hand-written example Alert/AlertStatuses.tsx
+  blocks/BaseTypeahead/BaseTypeaheadCustomSearch.tsx: needs `borderVars`, which Tecton does not publish
+  blocks/BaseTypeahead/BaseTypeaheadShowcase.tsx: needs `borderVars`, which Tecton does not publish
+  blocks/BreadcrumbItem/BreadcrumbItemBasic.tsx: would overwrite the hand-written example BreadcrumbItem/BreadcrumbItemBasic.tsx
+  blocks/Breadcrumbs/BreadcrumbsCustomSeparator.tsx: needs `rtlStyles`, which Tecton does not publish
+  blocks/Breadcrumbs/BreadcrumbsMenuItem.tsx: needs `BreadcrumbMenuOption`, which Tecton does not publish
+  blocks/Button/ButtonVariants.tsx: would overwrite the hand-written example Button/ButtonVariants.tsx
+  blocks/Button/ButtonWithIcon.tsx: would overwrite the hand-written example Button/ButtonWithIcon.tsx
+  blocks/ButtonGroup/ButtonGroupBasic.tsx: would overwrite the hand-written example ButtonGroup/ButtonGroupBasic.tsx
+  blocks/CheckboxInput/CheckboxInputBasic.tsx: would overwrite the hand-written example Checkbox/CheckboxBasic.tsx
+  blocks/CheckboxListItem/CheckboxListItemBasic.tsx: would overwrite the hand-written example Checkbox/CheckboxBasic.tsx
+  blocks/Collapsible/CollapsibleHookUsage.tsx: is an example for `useCollapsible`, which is not a Tecton component
+  blocks/ComplexSelector/ComplexSelectorShowcase.tsx: needs `borderVars`, which Tecton does not publish
+  blocks/Hooks/useContainerRevealHookUsage.tsx: is an example for `useContainerReveal`, which is not a Tecton component
+  blocks/Hooks/useKeyboardHintHookUsage.tsx: is an example for `useKeyboardHint`, which is not a Tecton component
+  blocks/Hooks/useStreamingTextHookUsage.tsx: is an example for `useStreamingText`, which is not a Tecton component
+  blocks/HoverCard/HoverCardHookUsage.tsx: is an example for `useHoverCard`, which is not a Tecton component
+  blocks/HStack/HStackBasic.tsx: would overwrite the hand-written example HStack/HStackBasic.tsx
+  blocks/Icon/IconSizes.tsx: would overwrite the hand-written example Icon/IconSizes.tsx
+  blocks/InternationalizationProvider/InternationalizationProvider01ShippedLocale.tsx: imports all of `@astryxdesign/core/locales/fr-FR.json`, which Tecton cannot map
+  blocks/Layer/LayerHookUsage.tsx: is an example for `useLayer`, which is not a Tecton component
+  blocks/Popover/PopoverBottomSheetAlternative.tsx: needs `spacingVars`, which Tecton does not publish
+  blocks/Popover/PopoverHookUsage.tsx: is an example for `usePopover`, which is not a Tecton component
+  blocks/RadioListItem/RadioListItemBasic.tsx: would overwrite the hand-written example Radio/RadioBasic.tsx
+  blocks/Resizable/ResizableShowcase.tsx: is an example for `Resizable`, which is not a Tecton component
+  blocks/Selector/SelectorWithSections.tsx: would overwrite the hand-written example Select/SelectWithSections.tsx
+  blocks/Table/ColumnResizeHookUsage.tsx: is an example for `useTableColumnResize`, which is not a Tecton component
+  blocks/Table/StickyColumnsHookUsage.tsx: is an example for `useTableStickyColumns`, which is not a Tecton component
+  blocks/Table/TableGroupedRowsTable.tsx: is an example for `useTableGroupedRows`, which is not a Tecton component
+  blocks/Table/TableRowExpansionTable.tsx: is an example for `useTableRowExpansion`, which is not a Tecton component
+  blocks/Table/TableRowIndexTable.tsx: is an example for `useTableRowIndex`, which is not a Tecton component
+  blocks/Table/TableRowStatusTable.tsx: is an example for `useTableRowStatus`, which is not a Tecton component
+  blocks/Table/TableTreeTable.tsx: is an example for `useTableTreeData`, which is not a Tecton component
+  blocks/Theme/ThemeApply.tsx: is an example for `Theme`, which is not a Tecton component
+  blocks/Theme/ThemeNested.tsx: is an example for `Theme`, which is not a Tecton component
+  blocks/Theme/ThemeShowcase.tsx: is an example for `Theme`, which is not a Tecton component
+  blocks/Theme/ThemeSwitcher.tsx: is an example for `Theme`, which is not a Tecton component
+  blocks/Theme/useThemeHookUsage.tsx: is an example for `useTheme`, which is not a Tecton component
+  blocks/Timestamp/TimestampAutoFormat.tsx: reads the clock during render, which the React rules this repository lints with forbid
+  blocks/Timestamp/TimestampRelativeFormat.tsx: reads the clock during render, which the React rules this repository lints with forbid
+  blocks/Token/TokenRemovable.tsx: would overwrite the hand-written example Chip/ChipRemovable.tsx
+  blocks/Tooltip/TooltipHookUsage.tsx: reads a ref during render, which the React rules this repository lints with forbid
+  blocks/VStack/VStackBasic.tsx: would overwrite the hand-written example VStack/VStackBasic.tsx
+  pages/dashboard-alert-rail/page.tsx: needs `StatusDotVariant`, which Tecton does not publish
+  pages/dashboard-cohort-funnel/page.tsx: depends on `recharts`, which Tecton does not ship
+  pages/dashboard-comparison/page.tsx: depends on `recharts`, which Tecton does not ship
+  pages/dashboard-composition/page.tsx: depends on `recharts`, which Tecton does not ship
+  pages/dashboard-progress/page.tsx: depends on `recharts`, which Tecton does not ship
+  pages/dashboard-scorecard/page.tsx: depends on `recharts`, which Tecton does not ship
+  pages/dashboard/page.tsx: depends on `recharts`, which Tecton does not ship
+  pages/kanban-board/page.tsx: the port produced code that does not parse: Identifier expected. (54:21)
+  pages/settings-dialog/page.tsx: needs `Theme`, which Tecton does not publish
+  pages/shell-side-nav/page.tsx: needs `StatusDotVariant`, which Tecton does not publish
+  pages/table-filter/page.tsx: needs `borderVars`, which Tecton does not publish
+  pages/table-grouped/page.tsx: needs `ResizableProps`, which Tecton does not publish
+  pages/table-inbox/page.tsx: needs `durationVars`, which Tecton does not publish
+  pages/table-page/page.tsx: needs `TablePlugin`, which Tecton does not publish
+  pages/work-item-detail/page.tsx: needs `colorVars`, which Tecton does not publish
+
+Removed after translation
+-------------------------
+These translated cleanly but do not compile against the Tecton API: almost
+always a component Tecton redesigned to take data where upstream took
+children. The line is the compiler's own first complaint.
+
+  blocks/AlertDialog/AlertDialogAsyncAction.tsx: line 5: 'isLoading' is declared but its value is never read.
+  blocks/Avatar/AvatarGroup.tsx: line 37: Type 'string' is not assignable to type 'AvatarSize | undefined'.
+  blocks/AvatarGroup/AvatarGroupInteractive.tsx: line 22: Type 'string' is not assignable to type 'AvatarSize | undefined'.
+  blocks/AvatarGroup/AvatarGroupShowcase.tsx: line 37: Type 'string' is not assignable to type 'AvatarSize | undefined'.
+  blocks/AvatarGroupOverflow/AvatarGroupOverflowCustomText.tsx: line 25: Type 'string' is not assignable to type 'AvatarSize | undefined'.
+  blocks/AvatarGroupOverflow/AvatarGroupOverflowDefault.tsx: line 25: Type 'string' is not assignable to type 'AvatarSize | undefined'.
+  blocks/AvatarGroupOverflow/AvatarGroupOverflowShowcase.tsx: line 26: Type 'string' is not assignable to type 'AvatarSize | undefined'.
+  blocks/Banner/BannerCollapsibleContent.tsx: line 9: Type '{ children: Element; status: "warning"; title: string; description: string; isDismissable: true; }' is not assignable to type 'IntrinsicAttributes & AlertProps'.   Property 'children' does not e
+  blocks/BottomSheet/BottomSheetSnapPoints.tsx: line 126: Property 'name' is missing in type '{ size: 16; }' but required in type 'IconProps'.
+  blocks/Button/ButtonFloating.tsx: line 20: Type '"secondary" | "primary" | "destructive" | "ghost"' is not assignable to type 'ButtonVariant | undefined'.   Type '"ghost"' is not assignable to type 'ButtonVariant | undefined'.
+  blocks/Button/ButtonSizeVariants.tsx: line 20: Type '"lg" | "sm" | "md"' is not assignable to type 'ControlSize | undefined'.   Type '"lg"' is not assignable to type 'ControlSize | undefined'.
+  blocks/Card/CardVariants.tsx: line 22: Type '"blue" | "green" | "orange" | "purple" | "default" | "muted"' is not assignable to type 'CardVariant | undefined'.   Type '"blue"' is not assignable to type 'CardVariant | undefined'.
+  blocks/ChatComposer/ChatComposerFlat.tsx: line 24: Object literal may only specify known properties, and 'onClick' does not exist in type 'MenuEntry'.
+  blocks/ChatComposer/ChatComposerFooterActions.tsx: line 23: Object literal may only specify known properties, and 'onClick' does not exist in type 'MenuEntry'.
+  blocks/ChatComposer/ChatComposerFullFeatured.tsx: line 58: Object literal may only specify known properties, and 'onClick' does not exist in type 'MenuEntry'.
+  blocks/ChatComposerDrawer/ChatComposerDrawerFeedback.tsx: line 30: Type 'Element' is not assignable to type 'string'.
+  blocks/ChatMessageList/ChatMessageListDensity.tsx: line 35: Type '"sm" | "md"' is not assignable to type 'AvatarSize | undefined'.   Type '"sm"' is not assignable to type 'AvatarSize | undefined'.
+  blocks/CheckboxList/CheckboxListSelectAllPattern.tsx: line 16: 'setSelected' is declared but its value is never read.
+  blocks/CheckboxList/CheckboxListShowcase.tsx: line 8: Type '{ children: Element[]; label: string; description: string; value: string[]; onChange: Dispatch<SetStateAction<string[]>>; hasDividers: true; }' is not assignable to type 'IntrinsicAttributes & C
+  blocks/CheckboxList/CheckboxListWithEndContent.tsx: line 8: Type '{ children: Element[]; label: string; value: string[]; onChange: Dispatch<SetStateAction<string[]>>; hasDividers: true; }' is not assignable to type 'IntrinsicAttributes & CheckboxGroupProps'.  
+  blocks/CheckboxListItem/CheckboxListItemShowcase.tsx: line 9: Type '{ children: Element[]; label: string; value: string[]; onChange: Dispatch<SetStateAction<string[]>>; hasDividers: true; }' is not assignable to type 'IntrinsicAttributes & CheckboxGroupProps'.  
+  blocks/CollapsibleGroup/CollapsibleGroupAccordion.tsx: line 55: Property 'title' is missing in type '{ children: Element; key: string; value: string; }' but required in type 'AccordionProps'.
+  blocks/CommandPalette/CommandPaletteRichItems.tsx: line 45: Type '(item: RichCommand) => React.JSX.Element' is not assignable to type '(item: SearchableItem<unknown>, isSelected: boolean) => ReactNode'.   Types of parameters 'item' and 'item' are incompatible.
+  blocks/CommandPaletteItem/CommandPaletteItemShowcase.tsx: line 39: Type '(item: CommandItem) => React.JSX.Element' is not assignable to type '(item: SearchableItem<unknown>, isSelected: boolean) => ReactNode'.   Types of parameters 'item' and 'item' are incompatible.
+  blocks/ComplexSelector/ComplexSelectorDeadlinePicker.tsx: line 40: Cannot find name 'ComplexSelector'.
+  blocks/ComplexSelector/ComplexSelectorTreeSearch.tsx: line 150: Type 'TreeListItemData[]' is not assignable to type 'readonly TreeItem[]'.   Type 'TreeListItemData' is not assignable to type 'TreeItem'.     Types of property 'label' are incompatible.       Type 'R
+  blocks/Dialog/DialogAdaptivePresentation.tsx: line 45: 'maxHeight' is declared but its value is never read.
+  blocks/Dialog/DialogConfirmationDialog.tsx: line 43: Property 'title' is missing in type '{ children: Element; isOpen: true; onOpenChange: () => void; width: number; }' but required in type 'DialogProps'.
+  blocks/Dialog/DialogFormDialog.tsx: line 63: Property 'title' is missing in type '{ children: Element; isOpen: true; onOpenChange: () => void; width: number; }' but required in type 'DialogProps'.
+  blocks/Dialog/DialogFullscreenDialog.tsx: line 56: Property 'title' is missing in type '{ children: Element; isOpen: boolean; onOpenChange: Dispatch<SetStateAction<boolean>>; }' but required in type 'DialogProps'.
+  blocks/Dialog/DialogScrollingContent.tsx: line 68: Property 'title' is missing in type '{ children: Element; isOpen: true; onOpenChange: () => void; }' but required in type 'DialogProps'.
+  blocks/Dialog/DialogShowcase.tsx: line 10: Property 'title' is missing in type '{ children: Element; isOpen: true; onOpenChange: () => void; }' but required in type 'DialogProps'.
+  blocks/Dialog/DialogWithSubtitle.tsx: line 46: Property 'title' is missing in type '{ children: Element; isOpen: true; onOpenChange: () => void; }' but required in type 'DialogProps'.
+  blocks/DialogHeader/DialogHeaderBasic.tsx: line 9: Property 'title' is missing in type '{ children: Element; isOpen: true; onOpenChange: () => void; }' but required in type 'DialogProps'.
+  blocks/DialogHeader/DialogHeaderShowcase.tsx: line 10: Property 'title' is missing in type '{ children: Element; isOpen: true; onOpenChange: () => void; }' but required in type 'DialogProps'.
+  blocks/DropdownMenu/DropdownMenuActions.tsx: line 13: Object literal may only specify known properties, and 'onClick' does not exist in type 'MenuEntry'.
+  blocks/DropdownMenu/DropdownMenuBottomSheet.tsx: line 19: 'isCompactTouchSurface' is declared but its value is never read.
+  blocks/DropdownMenu/DropdownMenuNoChevron.tsx: line 13: Object literal may only specify known properties, and 'onClick' does not exist in type 'MenuEntry'.
+  blocks/DropdownMenu/DropdownMenuShowcase.tsx: line 7: Object literal may only specify known properties, and 'onClick' does not exist in type 'MenuEntry'.
+  blocks/DropdownMenu/DropdownMenuWithDisabledItems.tsx: line 13: Object literal may only specify known properties, and 'onClick' does not exist in type 'MenuEntry'.
+  blocks/DropdownMenu/DropdownMenuWithSections.tsx: line 19: Type '{ type: "section"; title: string; items: { label: string; onClick: () => void; }[]; }' is not assignable to type 'MenuEntry'.   Types of property 'items' are incompatible.     Type '{ label: str
+  blocks/DropdownMenu/DropdownMenuWithSubmenu.tsx: line 13: Type '{ children: Element[]; }' is missing the following properties from type 'MenuProps': label, items
+  blocks/DropdownMenuItem/DropdownMenuItemBasic.tsx: line 6: Type '{ children: Element[]; }' is missing the following properties from type 'MenuProps': label, items
+  blocks/DropdownMenuItem/DropdownMenuItemShowcase.tsx: line 69: Type '{ children: Element[]; }' is missing the following properties from type 'MenuProps': label, items
+  blocks/FormLayout/FormLayoutMixedControls.tsx: line 26: Type '{ children: Element[]; label: string; value: string[]; onChange: Dispatch<SetStateAction<string[]>>; }' is not assignable to type 'IntrinsicAttributes & CheckboxGroupProps'.   Property 'children
+  blocks/HoverCard/HoverCardInlineTextHoverCard.tsx: line 6: 'content' is declared but its value is never read.
+  blocks/HoverCard/HoverCardProfileHoverCard.tsx: line 16: Type '48' is not assignable to type 'AvatarSize | undefined'.
+  blocks/Icon/IconStatusIcons.tsx: line 30: Property 'name' is missing in type '{ size: 16; }' but required in type 'IconProps'.
+  blocks/IconButton/IconButtonFloating.tsx: line 23: Type '"secondary" | "primary" | "destructive" | "ghost"' is not assignable to type 'IconButtonVariant | undefined'.   Type '"destructive"' is not assignable to type 'IconButtonVariant | undefined'.
+  blocks/InternationalizationProvider/InternationalizationProvider02Overrides.tsx: line 23: Type 'string | null' is not assignable to type 'string | undefined'.   Type 'null' is not assignable to type 'string | undefined'.
+  blocks/InternationalizationProvider/InternationalizationProvider03RtlDirection.tsx: line 23: Type '"sm"' is not assignable to type 'ToggleButtonSize | undefined'.
+  blocks/OverflowList/OverflowListCappedToolbar.tsx: line 17: Property 'label' is missing in type '{ items: { label: string; }[]; }' but required in type 'MenuProps'.
+  blocks/OverflowList/OverflowListOverflowDropdownActions.tsx: line 14: Property 'label' is missing in type '{ items: { label: string; onClick: () => void; }[]; }' but required in type 'MenuProps'.
+  blocks/ProgressBar/ProgressBarSemanticVariants.tsx: line 7: Type '"accent"' is not assignable to type 'ProgressVariant | undefined'.
+  blocks/SegmentedControl/SegmentedControlDisabledItem.tsx: line 8: Type '{ children: Element[]; value: string; onChange: Dispatch<SetStateAction<string>>; label: string; }' is not assignable to type 'IntrinsicAttributes & ToggleButtonGroupProps'.   Property 'children
+  blocks/SegmentedControl/SegmentedControlFillLayout.tsx: line 9: Type '{ children: Element[]; value: string; onChange: Dispatch<SetStateAction<string>>; label: string; layout: "fill"; }' is not assignable to type 'IntrinsicAttributes & ToggleButtonGroupProps'.   Pr
+  blocks/SegmentedControl/SegmentedControlIconOnly.tsx: line 50: Type '"sm"' is not assignable to type 'ToggleButtonSize | undefined'.
+  blocks/SegmentedControl/SegmentedControlShowcase.tsx: line 8: Type '{ children: Element[]; value: string; onChange: Dispatch<SetStateAction<string>>; label: string; }' is not assignable to type 'IntrinsicAttributes & ToggleButtonGroupProps'.   Property 'children
+  blocks/SegmentedControl/SegmentedControlWithIcons.tsx: line 64: Type '{ children: Element[]; value: string; onChange: Dispatch<SetStateAction<string>>; label: string; }' is not assignable to type 'IntrinsicAttributes & ToggleButtonGroupProps'.   Property 'children
+  blocks/SegmentedControlItem/SegmentedControlItemBasic.tsx: line 9: Type '{ children: Element[]; value: string; onChange: Dispatch<SetStateAction<string>>; label: string; }' is not assignable to type 'IntrinsicAttributes & ToggleButtonGroupProps'.   Property 'children
+  blocks/SegmentedControlItem/SegmentedControlItemShowcase.tsx: line 11: Type '{ children: Element[]; value: string; onChange: Dispatch<SetStateAction<string>>; label: string; }' is not assignable to type 'IntrinsicAttributes & ToggleButtonGroupProps'.   Property 'children
+  blocks/Selector/SelectorClearable.tsx: line 15: Type 'string | null' is not assignable to type 'string | undefined'.   Type 'null' is not assignable to type 'string | undefined'.
+  blocks/Selector/SelectorOptionDescriptions.tsx: line 32: Type '{ value: string; label: string; icon: string; description: string; }[]' is not assignable to type 'readonly SelectItem[]'.   Type '{ value: string; label: string; icon: string; description: stri
+  blocks/Selector/SelectorShowcase.tsx: line 9: Type 'string' is not assignable to type 'SelectItem'.
+  blocks/Slider/SliderFormattedValue.tsx: line 10: Type 'Dispatch<SetStateAction<number>>' is not assignable to type '(value: SliderValue) => void'.   Types of parameters 'value' and 'value' are incompatible.     Type 'SliderValue' is not assignable t
+  blocks/Slider/SliderRangeSlider.tsx: line 6: Type 'Dispatch<SetStateAction<[number, number]>>' is not assignable to type '(value: SliderValue) => void'.   Types of parameters 'value' and 'value' are incompatible.     Type 'SliderValue' is not as
+  blocks/Slider/SliderShowcase.tsx: line 6: Type 'Dispatch<SetStateAction<number>>' is not assignable to type '(value: SliderValue) => void'.   Types of parameters 'value' and 'value' are incompatible.     Type 'SliderValue' is not assignable t
+  blocks/Slider/SliderWithMarks.tsx: line 10: Type 'Dispatch<SetStateAction<number>>' is not assignable to type '(value: SliderValue) => void'.   Types of parameters 'value' and 'value' are incompatible.     Type 'SliderValue' is not assignable t
+  blocks/Slider/SliderWithStatus.tsx: line 15: Type 'Dispatch<SetStateAction<number>>' is not assignable to type '(value: SliderValue) => void'.   Types of parameters 'value' and 'value' are incompatible.     Type 'SliderValue' is not assignable t
+  blocks/Spinner/SpinnerOnMedia.tsx: line 7: Property 'label' is missing in type '{}' but required in type 'ProgressProps'.
+  blocks/Spinner/SpinnerShowcase.tsx: line 4: Property 'label' is missing in type '{ size: 32; }' but required in type 'ProgressProps'.
+  blocks/Spinner/SpinnerSizes.tsx: line 7: Property 'label' is missing in type '{ size: 16; }' but required in type 'ProgressProps'.
+  blocks/Spinner/SpinnerWithLabel.tsx: line 12: Type 'Element' is not assignable to type 'string'.
+  blocks/Step/StepIndicator.tsx: line 51: Property 'label' is missing in type '{ size: 32; }' but required in type 'ProgressProps'.
+  blocks/Tab/TabWithSelectedIcon.tsx: line 5: 'StarIcon' is declared but its value is never read.
+  blocks/Table/TableColumnSettingsTable.tsx: line 92: 'plugin' is declared but its value is never read.
+  blocks/Table/TableFilterableTable.tsx: line 74: Object literal may only specify known properties, and 'filter' does not exist in type 'TableColumn<Employee>'.
+  blocks/Table/TableGridDividersTable.tsx: line 50: Type '"compact"' is not assignable to type 'ControlSize | undefined'.
+  blocks/Table/TableInlineFilterTable.tsx: line 74: Object literal may only specify known properties, and 'filter' does not exist in type 'TableColumn<Employee>'.
+  blocks/Table/TablePaginatedTable.tsx: line 59: 'plugin' is declared but its value is never read.
+  blocks/Table/TableResizableTable.tsx: line 34: 'resizePlugin' is declared but its value is never read.
+  blocks/Table/TableSelectableTable.tsx: line 39: 'selectionPlugin' is declared but its value is never read.
+  blocks/Table/TableSortableTable.tsx: line 43: Object literal may only specify known properties, and 'sortable' does not exist in type 'TableColumn<Employee>'.
+  blocks/TabList/TabListTabsWithActions.tsx: line 6: 'FilterIcon' is declared but its value is never read.
+  blocks/TabList/TabListTabsWithIcons.tsx: line 5: 'HomeIcon' is declared but its value is never read.
+  blocks/Text/TextTypes.tsx: line 54: Type '"large" | "code" | "label" | "supporting" | "body"' is not assignable to type 'TextVariant | undefined'.   Type '"code"' is not assignable to type 'TextVariant | undefined'.
+  blocks/Text/TextWeight.tsx: line 15: Type '"bold" | "medium" | "semibold" | "normal"' is not assignable to type 'TextWeight | undefined'.   Type '"normal"' is not assignable to type 'TextWeight | undefined'.
+  blocks/Toast/ToastAction.tsx: line 1: Cannot find module '../Toast.js' or its corresponding type declarations.
+  blocks/Toast/ToastDeduplication.tsx: line 3: Cannot find module '../Toast.js' or its corresponding type declarations.
+  blocks/Toast/ToastDismiss.tsx: line 4: Cannot find module '../Toast.js' or its corresponding type declarations.
+  blocks/Toast/ToastShowcase.tsx: line 1: Cannot find module '../Toast.js' or its corresponding type declarations.
+  blocks/Toast/ToastStacking.tsx: line 3: Cannot find module '../Toast.js' or its corresponding type declarations.
+  blocks/Toast/ToastTypes.tsx: line 1: Cannot find module '../Toast.js' or its corresponding type declarations.
+  blocks/ToggleButton/ToggleButtonLabel.tsx: line 18: Type '{ children: string; label: string; icon: "visibility"; pressedIcon: "visibility-off"; isPressed: boolean; onPressedChange: Dispatch<SetStateAction<boolean>>; }' is not assignable to type 'Intrin
+  blocks/ToggleButton/ToggleButtonShowcase.tsx: line 28: Type '{ children: string; label: string; icon: "notifications"; pressedIcon: "notifications"; isPressed: boolean; onPressedChange: Dispatch<SetStateAction<boolean>>; }' is not assignable to type 'Intr
+  blocks/Token/TokenColors.tsx: line 28: Type '"blue" | "cyan" | "green" | "orange" | "pink" | "purple" | "red" | "teal" | "yellow" | "default" | "gray"' is not assignable to type 'ChipColor | undefined'.   Type '"blue"' is not assignable to
+  blocks/Toolbar/ToolbarBulkActions.tsx: line 32: 'selectionPlugin' is declared but its value is never read.
+  blocks/Toolbar/ToolbarTableFilter.tsx: line 35: Type 'string | null' is not assignable to type 'string | undefined'.   Type 'null' is not assignable to type 'string | undefined'.
+  blocks/TreeList/TreeListFileTreeWithIcons.tsx: line 12: Object literal may only specify known properties, and 'startContent' does not exist in type 'TreeItem'.
+  blocks/TreeList/TreeListInteractiveSettings.tsx: line 12: Object literal may only specify known properties, and 'startContent' does not exist in type 'TreeItem'.
+  blocks/TreeList/TreeListMailboxTree.tsx: line 14: Object literal may only specify known properties, and 'endContent' does not exist in type 'TreeItem'.
+  blocks/TreeList/TreeListNavigationTree.tsx: line 13: Object literal may only specify known properties, and 'children' does not exist in type 'TreeItem'.
+  blocks/TreeList/TreeListShowcase.tsx: line 13: Object literal may only specify known properties, and 'children' does not exist in type 'TreeItem'.
+  blocks/TreeList/TreeListVariants.tsx: line 36: Type 'TreeListItemData[]' is not assignable to type 'readonly TreeItem[]'.   Type 'TreeListItemData' is not assignable to type 'TreeItem'.     Types of property 'label' are incompatible.       Type 'R
+  blocks/TypeaheadItem/TypeaheadItemBasic.tsx: line 19: Type 'Dispatch<SetStateAction<PersonItem | null>>' is not assignable to type '(option: AutocompleteOption | null) => void'.   Types of parameters 'value' and 'option' are incompatible.     Type 'Autoc
+  blocks/TypeaheadItem/TypeaheadItemShowcase.tsx: line 19: Type 'Dispatch<SetStateAction<PersonItem | null>>' is not assignable to type '(option: AutocompleteOption | null) => void'.   Types of parameters 'value' and 'option' are incompatible.     Type 'Autoc
+  blocks/VisuallyHidden/VisuallyHiddenShowcase.tsx: line 32: 'icon' is declared but its value is never read.
+  blocks/VisuallyHidden/VisuallyHiddenSupplementaryContext.tsx: line 24: Property 'name' is missing in type '{ size: 16; }' but required in type 'IconProps'.
+  pages/ai-chat-landing/page.tsx: line 233: 'isModeMenuOpen' is declared but its value is never read.
+  pages/ai-chat/page.tsx: line 129: Property 'label' is missing in type '{ items: { label: string; }[]; }' but required in type 'MenuProps'.
+  pages/checkout-wizard/page.tsx: line 510: Property 'title' is missing in type '{ children: Element; defaultIsOpen: false; }' but required in type 'AccordionProps'.
+  pages/contact-form/page.tsx: line 123: Property 'name' is missing in type '{ size: 24; }' but required in type 'IconProps'.
+  pages/detail-page/page.tsx: line 502: Type '"success"' is not assignable to type 'ProgressVariant | undefined'.
+  pages/documentation-design/page.tsx: line 63: Property 'title' is missing in type '{ children: Element[]; isOpen: boolean; onOpenChange: Dispatch<SetStateAction<boolean>>; }' but required in type 'DialogProps'.
+  pages/documentation-technical/page.tsx: line 121: Object literal may only specify known properties, and 'onClick' does not exist in type 'MenuEntry'.
+  pages/editor/page.tsx: line 48: Type 'string' is not assignable to type 'IconComponent'.
+  pages/file-explorer/page.tsx: line 366: Type '{ children: Element[]; value: string; onChange: () => void; label: string; }' is not assignable to type 'IntrinsicAttributes & ToggleButtonGroupProps'.   Property 'children' does not exist on ty
+  pages/form-two-column/page.tsx: line 174: Type '"blue" | "default"' is not assignable to type 'ChipColor | undefined'.   Type '"blue"' is not assignable to type 'ChipColor | undefined'.
+  pages/form-wizard-dialog/page.tsx: line 210: Object literal may only specify known properties, and 'uniqueID' does not exist in type 'ToastPayload'.
+  pages/form-wizard-inline/page.tsx: line 391: Object literal may only specify known properties, and 'uniqueID' does not exist in type 'ToastPayload'.
+  pages/form-wizard-vertical/page.tsx: line 474: 'setHelpKey' is declared but its value is never read.
+  pages/form-wizard/page.tsx: line 591: Type '{ children: Element[]; label: string; description: string; value: string[]; onChange: Dispatch<SetStateAction<string[]>>; }' is not assignable to type 'IntrinsicAttributes & CheckboxGroupProps'.
+  pages/ide/page.tsx: line 250: Type 'TreeListItemData[]' is not assignable to type 'readonly TreeItem[]'.   Type 'TreeListItemData' is not assignable to type 'TreeItem'.     Types of property 'label' are incompatible.       Type 'R
+  pages/incident-console/page.tsx: line 343: Type '"green" | "red" | "yellow"' is not assignable to type 'ChipColor | undefined'.   Type '"green"' is not assignable to type 'ChipColor | undefined'.
+  pages/library/page.tsx: line 426: Property 'label' is missing in type '{ items: { label: string; onClick: () => void; }[]; }' but required in type 'MenuProps'.
+  pages/login-sso/page.tsx: line 165: Type '48' is not assignable to type 'AvatarSize | undefined'.
+  pages/messaging-shell/page.tsx: line 353: Type 'Element' is not assignable to type 'TectonIconRef'.
+  pages/payment-form/page.tsx: line 390: Type 'string[]' is not assignable to type 'readonly SelectItem[]'.   Type 'string' is not assignable to type 'SelectItem'.
+  pages/product-detail/page.tsx: line 167: Type '{ children: Element[]; value: string; onChange: Dispatch<SetStateAction<string>>; label: string; }' is not assignable to type 'IntrinsicAttributes & ToggleButtonGroupProps'.   Property 'children
+  pages/settings-sidebar/page.tsx: line 237: Property 'name' is missing in type '{}' but required in type 'IconProps'.
+  pages/shell-nav/page.tsx: line 201: Type '{ children: Element[]; key: string; menuWidth: number; }' is not assignable to type 'IntrinsicAttributes & MenuProps'.   Property 'children' does not exist on type 'IntrinsicAttributes & MenuPro
+  pages/shell-top-nav/page.tsx: line 72: Property 'name' is missing in type '{ size: 20; }' but required in type 'IconProps'.
+  pages/table/page.tsx: line 54: Type '"actions"' is not assignable to type 'keyof Item'.
+  pages/theme-showcase/page.tsx: line 1103: Type 'string' is not assignable to type 'SelectItem'.

@@ -99,7 +99,13 @@ export const docs = {
     },
   ],
 
-  examples: ['ListItemBasic'],
+  examples: [
+    'ListItemBasic',
+    'ListItemBasicItem',
+    'ListItemShowcase',
+    'ListItemWithMedia',
+    'ListItemWithMetadata',
+  ],
 
   notes: [
     "The inventory suggested the generic item primitive; the list's own row component is used instead, because it is what the list renders its children as and it carries the selected state Tecton's `activated` row needs.",

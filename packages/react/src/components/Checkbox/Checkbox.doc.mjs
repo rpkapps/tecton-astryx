@@ -116,7 +116,11 @@ export const docs = {
     },
   ],
 
-  examples: ['CheckboxBasic'],
+  examples: [
+    'CheckboxBasic',
+    'CheckboxIndeterminateState',
+    'CheckboxStatusVariations',
+  ],
 
   notes: [
     "Tecton's indeterminate box is filled with a dark dash; the box underneath keeps the unchecked fill and swaps the mark, and the indeterminate state is not addressable by the theme.",

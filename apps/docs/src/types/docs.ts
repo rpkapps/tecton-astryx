@@ -91,6 +91,8 @@ export interface ExampleDoc {
 export interface TemplateDoc {
   /** The exported component's name, and the id the loader map is keyed by. */
   id: string;
+  /** A ported page template's URL-safe identifier (also its directory). */
+  slug?: string;
   name: string;
   displayName?: string;
   description: string;
