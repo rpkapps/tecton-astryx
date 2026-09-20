@@ -860,10 +860,24 @@ copyright line was replaced by this single notice for the whole corpus. What
 each file changed on its way in is listed in
 \`docs/engineering/ported-examples.log\`.
 
+The 101 images under \`apps/docs/public/template-assets\` are the same corpus's
+own sample photography, copied verbatim from the Astryx documentation site
+(\`apps/docsite/public/template-assets\`) under the same licence. They are what
+the ported examples reference; nothing in them is Tecton's.
+
+The component pages are generated from the documentation objects that ship
+inside \`@astryxdesign/core\` (\`src/**/*.doc.mjs\` and \`groups.doc.mjs\`) — the
+prose, props, best practices, anatomy, accessibility requirements and theming
+targets of every module the package re-exports — with the library's name
+rewritten to Tecton's. The page layout itself is ported from that project's
+documentation site (\`apps/docsite/src/components/component-detail/*\`,
+\`ShowcaseThumbnail.tsx\`, \`eagerShowcases.ts\`, the components gallery and the
+template gallery), also under the licence below.
+
 The same licence covers \`@astryxdesign/core\`, which \`@tecton/react\` re-exports
 and which the package vendors the types of.
 
-## Astryx (\`@astryxdesign/cli\`, \`@astryxdesign/core\`)
+## Astryx (\`@astryxdesign/cli\`, \`@astryxdesign/core\`, the Astryx documentation site)
 
 \`\`\`
 ${readText(LICENSE).trim()}
