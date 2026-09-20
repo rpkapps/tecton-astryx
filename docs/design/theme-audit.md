@@ -20,7 +20,10 @@ showing what each component is supposed to do.
 examples** (`apps/docs/examples/components/<Dir>/<Name>.tsx`) twice:
 
 - **Tecton** — the built package, `@tecton/react/styles.css`, inside
-  `TectonProvider` (dark; light spot-checked with `--light`).
+  `TectonProvider`. The diff runs in **dark**, which is the mode the design was
+  transcribed from; `--light` adds a Tecton light capture for looking at, and
+  the light side of every pair is checked numerically in
+  `packages/react/src/theme/__tests__/contrast.test.ts` instead.
 - **Neutral** — the *same example files*, with every `@tecton/react/<Module>`
   specifier resolved to `@astryxdesign/core/<Module>` by a Vite resolver, inside
   upstream's `Theme` with `neutralTheme` and core's `reset.css` + `astryx.css` +
@@ -148,9 +151,9 @@ Tecton dark on the left of each pair, the reference render for comparison.
 
 ## Findings, by root cause
 
-Twelve causes, and one shape between the first ten of them: **a theme rule that says something the
-component was already saying, in a place where saying it again overrides
-something else.** Every Tecton rule lands in `@layer astryx-theme`, which comes
+Twelve causes, and one shape between the first ten of them: **a theme rule that
+says something the component was already saying, in a place where saying it
+again overrides something else.** Every Tecton rule lands in `@layer astryx-theme`, which comes
 after `@layer astryx-base` where the components' own CSS lives, so a theme
 declaration beats *any* component declaration of the same property regardless of
 selector specificity — including the per-corner, per-state and per-variant rules
@@ -178,9 +181,10 @@ corner pattern of `rrrr` where upstream has `r00r`, `0000`, `0rr0`.
 Every one of those declarations was saying 4px — which is what
 `--radius-element` already resolves to, because Tecton sets it. So they went,
 except where the design names a corner the component does not have: the menu
-panel and popover at 4px against the component's `--radius-container`
-(`design/components/menu.md`), the menu item at 2px, the card-container banner
-at 4px (`design/components/alert.md`), and `Token` as a pill.
+panel at 4px against its own `--radius-container` (`design/components/menu.md`),
+the menu item at 2px, the card-container banner at 4px
+(`design/components/alert.md`), and `Token` as a pill. Two of those three had to
+be narrowed further before they were safe — see §10.
 
 Same story, different property, on `badge` (already `--radius-full`),
 `checkbox-indicator` (already `--radius-inner`, which Tecton points at the 2px
@@ -285,10 +289,11 @@ theme layer beats `:focus-within` no matter how specific it is. Every
 `TextInput`, `TextArea`, `Selector`, `Typeahead` and `Tokenizer` in the system
 stopped showing keyboard focus (WCAG 2.4.7).
 
-`inputSurface` now restates the focused border, in the focus ink:
+A new `inputFocus` block restates the focused border, in the focus ink:
 `design/components/textfield.md` says focus is *"a 2px hot-pink `#ff52a8` ring
 around the field"*, which is the 1px border plus a 1px inset, both in
-`--focus-outline-color`.
+`--focus-outline-color`. It goes on all sixteen field targets, not only the five
+Tecton paints — see below for why.
 
 ### 8. A ring colour chosen against the page, used on a saturated fill
 
@@ -338,10 +343,10 @@ of the footer, so the two meet flush. Every one of those rules reads that
 variable; a shorthand overrode all of them and put corners in the middle of the
 banner.
 
-### And one more the audit found on its own
+### 11 and 12. Two the audit found that reading the theme would not have
 
-Two of these were not visible until the audit could see them, and both were
-found by the focus pass rather than by reading the theme.
+Both came out of the focus pass, and neither is a line that looks wrong on its
+own page.
 
 **Every field Tecton did *not* paint rang at 2.2:1.** A field shows keyboard
 focus by turning its border `--color-accent`. Tecton's accent is a dark violet,
@@ -400,3 +405,21 @@ and a severity fill is not the page.
 - **The borders Tecton adds to `dialog`, `popover` and `dropdown-menu`.** That
   is the design's own way of carrying depth — *"a 1px rule, and getting
   darker"* — and none of the three uses a border for anything else.
+
+## What is not covered
+
+- **Hover and pressed states.** The diff measures a resting render. The hover
+  and pressed fills are checked by the theme tests against
+  `design/foundations/colors.json` and shown in the state matrix in
+  `docs/design/fidelity/`, but nothing here drives a pointer over 646 examples.
+  What *is* covered is the mechanism: §4 and §5 are both about a theme having
+  taken away the component's say in **when** a hover happens, which is visible
+  at rest in the rules rather than in a render, and both are pinned by tests.
+- **Light mode, structurally.** The diff runs in dark, the mode the design was
+  transcribed from. Every token's light side is derived by the rule in
+  `docs/design/light-mode.md` and asserted numerically, including its contrast,
+  in `packages/react/src/theme/__tests__/`.
+- **Anything above 30 tab stops** in a single example, which a handful of the
+  larger page-scale examples exceed.
+- **`apps/docs`**, which renders these examples for people rather than for a
+  diff, and is somebody else's to change.
