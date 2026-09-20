@@ -48,7 +48,7 @@ declaration file reaches a consumer's editor.
 
 ### Examples and page templates
 
-- **502 examples and page templates ported** from upstream's example blocks,
+- **504 examples and page templates ported** (492 examples and 12 page templates) from upstream's example blocks,
   translated rather than copied: imports, component names, props and glyphs all
   go through the same tables the wrappers are generated from.
 - New: `@tecton/react/templates`, which publishes the page templates so a

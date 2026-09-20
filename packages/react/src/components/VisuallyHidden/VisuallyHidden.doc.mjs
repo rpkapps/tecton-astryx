@@ -59,11 +59,7 @@ export const docs = {
       default: "'span'",
     },
   ],
-  examples: [
-    'VisuallyHiddenLiveRegion',
-    'VisuallyHiddenStructuralHeading',
-    'VisuallyHiddenSupplementaryContext',
-  ],
+  examples: ['VisuallyHiddenLiveRegion', 'VisuallyHiddenStructuralHeading'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

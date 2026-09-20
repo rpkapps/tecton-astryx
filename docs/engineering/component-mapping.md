@@ -175,7 +175,7 @@ means emitted from the manifest and published with its behaviour unchanged.
 | `Alert`                      | `Banner` (`Banner`)                         | designed  | Feedback   | 7        |
 | `AppShell`                   | `AppShell` (`AppShell`)                     | generated | Layout     | 6        |
 | `AspectRatio`                | `AspectRatio` (`AspectRatio`)               | generated | Layout     | 6        |
-| `Autocomplete`               | `Typeahead` (`Typeahead`)                   | designed  | Forms      | 5        |
+| `Autocomplete`               | `Typeahead` (`Typeahead`)                   | designed  | Forms      | 6        |
 | `AutocompleteBase`           | `BaseTypeahead` (`Typeahead`)               | generated | Forms      | 0        |
 | `AutocompleteItem`           | `TypeaheadItem` (`Typeahead`)               | generated | Forms      | 0        |
 | `Avatar`                     | `Avatar` (`Avatar`)                         | designed  | Content    | 10       |
@@ -348,7 +348,7 @@ means emitted from the manifest and published with its behaviour unchanged.
 | `TopNavMegaMenuItem`         | `TopNavMegaMenuItem` (`TopNav`)             | generated | Navigation | 2        |
 | `TopNavMenu`                 | `TopNavMenu` (`TopNav`)                     | generated | Navigation | 2        |
 | `TreeView`                   | `TreeList` (`TreeList`)                     | designed  | Data       | 1        |
-| `VisuallyHidden`             | `VisuallyHidden` (`VisuallyHidden`)         | generated | Content    | 3        |
+| `VisuallyHidden`             | `VisuallyHidden` (`VisuallyHidden`)         | generated | Content    | 2        |
 | `VStack`                     | `VStack` (`VStack`)                         | designed  | Layout     | 2        |
 
 <!-- /generated:surface-table -->
@@ -377,17 +377,21 @@ thing do not survive the port, and none of them is a shortcut:
    a charting library, and a few blocks reach for StyleX token variables that
    Tecton does not publish. Tecton would have to take on a dependency or
    publish its token variables to keep them.
-2. **A model Tecton deliberately does not have.** Tecton's Menu, Select,
-   CheckboxGroup, RadioGroup, TreeView and Table take **data**, not children;
-   an upstream example written as `<Selector><SelectorOption/></Selector>` has
-   no mechanical translation. These are the bulk of the removals, and each one
-   is a candidate for a hand-written Tecton example instead.
-3. **A prop Tecton dropped that the example was about.** Where dropping the
-   prop left a required prop missing, the example went with it.
-4. **A pattern the repository's lint rules forbid** — reading a ref or the
-   clock during render. Those are listed in `EXCLUDED` in
-   `port-examples.mapping.mjs` with the reason, because an example is code
-   people copy.
+
+The page templates are where this bites hardest: 12 of 53 survive. A template
+is a whole screen, so it usually touches at least one of the components Tecton
+redesigned, and one blocker is enough to remove the file. Every one of the 41
+that did not make it is in the log with the compiler's own first complaint, and
+each is a candidate for a hand-written Tecton template rather than a
+translation. 2. **A model Tecton deliberately does not have.** Tecton's Menu, Select,
+CheckboxGroup, RadioGroup, TreeView and Table take **data**, not children;
+an upstream example written as `<Selector><SelectorOption/></Selector>` has
+no mechanical translation. These are the bulk of the removals, and each one
+is a candidate for a hand-written Tecton example instead. 3. **A prop Tecton dropped that the example was about.** Where dropping the
+prop left a required prop missing, the example went with it. 4. **A pattern the repository's lint rules forbid** — reading a ref or the
+clock during render. Those are listed in `EXCLUDED` in
+`port-examples.mapping.mjs` with the reason, because an example is code
+people copy.
 
 ## Where the wrappers are checked
 

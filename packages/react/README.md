@@ -63,7 +63,7 @@ are, under Tecton names and with Tecton glyphs on their icon props; they are
 generated from `wrappers.manifest.json`, and
 `docs/engineering/component-mapping.md` says which is which and why.
 
-Between them they carry 556 runnable examples and 10 page templates.
+Between them they carry 556 runnable examples and 12 page templates.
 
 ### Action
 

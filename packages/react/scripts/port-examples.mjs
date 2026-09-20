@@ -307,11 +307,14 @@ function port(source, fileName, targetDir) {
       for (const element of named) {
         const upstream = (element.propertyName ?? element.name).text;
         const local = element.name.text;
-        if (COMPONENT_MAP.has(upstream)) {
+        const support = SUPPORT[upstream];
+        // A name in both tables is a helper, not a component: Tecton's Toast
+        // *is* `useToast`, so the manifest maps the hook to the component and
+        // the support table has to win here.
+        if (!support && COMPONENT_MAP.has(upstream)) {
           componentBindings.set(local, COMPONENT_MAP.get(upstream));
           continue;
         }
-        const support = SUPPORT[upstream];
         if (support?.inline) {
           inlineBindings.add(local);
           continue;
@@ -521,6 +524,28 @@ function port(source, fileName, targetDir) {
             end: attribute.initializer.end,
             text: `"${iconBindings.get(attribute.initializer.expression.text)}"`,
           });
+        } else if (
+          ICON_PROP.test(name) &&
+          ALLOWED_PROPS.has(component) &&
+          attribute.initializer &&
+          ts.isJsxExpression(attribute.initializer) &&
+          attribute.initializer.expression &&
+          !ts.isStringLiteral(attribute.initializer.expression)
+        ) {
+          // A designed Tecton component's icon prop takes a glyph, not a slot.
+          // Where the port cannot reduce what was passed to a glyph name —
+          // an arbitrary element, a value computed at runtime — the prop goes,
+          // because leaving it would only produce an example that does not
+          // compile.
+          notes.push(
+            `<${component}> dropped \`${name}\`, which Tecton takes as a glyph name`,
+          );
+          edits.push({
+            start: attribute.getFullStart(),
+            end: attribute.end,
+            text: '',
+          });
+          continue;
         } else if (ICON_PROP.test(name)) {
           const value = attributeString(attribute);
           if (value !== undefined && !glyphNames.has(value)) {
@@ -842,8 +867,9 @@ function dropOrphanedConstants(code, notes) {
       if (!ts.isIdentifier(declaration.name)) continue;
       if (!isInert(declaration.initializer)) continue;
       const name = declaration.name.text;
-      const uses = code.match(new RegExp(`\\b${name}\\b`, 'g'))?.length ?? 0;
-      if (uses !== 1) continue;
+      // Counted through the syntax tree: a name that only survives in a
+      // comment or inside a string is not a use.
+      if (countIdentifier(file, name) !== 1) continue;
       code =
         code.slice(0, statement.getFullStart()) + code.slice(statement.end);
       notes.push(`dropped the now-unreferenced constant \`${name}\``);
@@ -890,10 +916,9 @@ function dropUnusedImports(code) {
     if (!ts.isImportDeclaration(statement)) continue;
     const bindings = statement.importClause?.namedBindings;
     if (!bindings || !ts.isNamedImports(bindings)) continue;
-    const kept = bindings.elements.filter(element => {
-      const name = element.name.text;
-      return (code.match(new RegExp(`\\b${name}\\b`, 'g'))?.length ?? 0) > 1;
-    });
+    const kept = bindings.elements.filter(
+      element => countIdentifier(file, element.name.text) > 1,
+    );
     if (kept.length === bindings.elements.length) continue;
     if (kept.length === 0) {
       edits.push({
@@ -916,6 +941,17 @@ function dropUnusedImports(code) {
   return out;
 }
 
+/** How many times `name` appears as an identifier in `file`. */
+function countIdentifier(file, name) {
+  let count = 0;
+  const walk = node => {
+    if (ts.isIdentifier(node) && node.text === name) count += 1;
+    ts.forEachChild(node, walk);
+  };
+  ts.forEachChild(file, walk);
+  return count;
+}
+
 /** True for an initializer that cannot do anything when it is removed. */
 function isInert(node) {
   if (!node) return false;
@@ -927,6 +963,7 @@ function isInert(node) {
   ) {
     return true;
   }
+  if (ts.isArrowFunction(node) || ts.isFunctionExpression(node)) return true;
   if (ts.isAsExpression(node) || ts.isSatisfiesExpression(node)) {
     return isInert(node.expression);
   }
@@ -1353,7 +1390,9 @@ const report = [
   'Ported examples and templates',
   '=============================',
   '',
-  `Run of scripts/port-examples.mjs. ${ported.length} files ported, ${refused.length} refused.`,
+  `Run of scripts/port-examples.mjs: ${ported.length} files ported ` +
+    `(${templates.length} of them page templates), ${refused.length} refused ` +
+    `before translation and ${pruned.length} removed after it.`,
   '',
   'Substituted glyphs',
   '------------------',

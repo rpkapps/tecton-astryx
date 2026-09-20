@@ -191,6 +191,7 @@ export const docs = {
     'AutocompleteBasic',
     'AutocompleteLimitedResults',
     'AutocompleteSearchField',
+    'AutocompleteShowcase',
     'AutocompleteWithHelperText',
     'AutocompleteWithValidation',
   ],

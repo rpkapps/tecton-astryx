@@ -3,9 +3,9 @@ import {Grid} from '../Grid.js';
 import {Layout} from '../../Layout/Layout.js';
 import {LayoutContent} from '../../LayoutContent/LayoutContent.js';
 import {LayoutPanel} from '../../LayoutPanel/LayoutPanel.js';
-import {ResizeHandle} from '../../ResizeHandle/ResizeHandle.js';
 import {Text} from '../../Text/Text.js';
 import {VStack} from '../../VStack/VStack.js';
+import {ResizeHandle} from '../../ResizeHandle/ResizeHandle.js';
 import {useResizable} from '../../../support/index.js';
 
 const teams = [

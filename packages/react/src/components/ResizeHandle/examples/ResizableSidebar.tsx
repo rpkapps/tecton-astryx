@@ -3,9 +3,9 @@ import {Card} from '../../Card/Card.js';
 import {Layout} from '../../Layout/Layout.js';
 import {LayoutContent} from '../../LayoutContent/LayoutContent.js';
 import {LayoutPanel} from '../../LayoutPanel/LayoutPanel.js';
-import {ResizeHandle} from '../ResizeHandle.js';
 import {Text} from '../../Text/Text.js';
 import {VStack} from '../../VStack/VStack.js';
+import {ResizeHandle} from '../ResizeHandle.js';
 import {useResizable} from '../../../support/index.js';
 
 export function ResizableSidebar() {

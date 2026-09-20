@@ -25,6 +25,8 @@ export {Template as ClassicGalleryTemplate} from './classic-gallery/Template.js'
 export {Template as DocumentationTemplate} from './documentation/Template.js';
 export {Template as GalleryHeroTemplate} from './gallery-hero/Template.js';
 export {Template as LoginTemplate} from './login/Template.js';
+export {Template as LoginCardTemplate} from './login-card/Template.js';
+export {Template as LoginSplitTemplate} from './login-split/Template.js';
 export {Template as MixedGalleryTemplate} from './mixed-gallery/Template.js';
 export {Template as ProductGalleryTemplate} from './product-gallery/Template.js';
 export {Template as SettingsTemplate} from './settings/Template.js';
@@ -73,6 +75,20 @@ export const tectonTemplates: readonly TectonTemplateEntry[] = [
     description:
       'Minimal centered credential form on a plain ground: two fields and a submit, nothing competing for attention. The least-chrome entry surface. Login, sign in, signin, authentication, credentials, or account access.',
     category: 'Login - Basic',
+  },
+  {
+    slug: 'login-card',
+    name: 'Login Card',
+    description:
+      'Credential form inside an elevated centered card, third-party provider buttons separated from the fields by a divider, secondary sign-up and legal links beneath. Login, sign in, signin, authentication, credentials, social, or account access.',
+    category: 'Login - Card',
+  },
+  {
+    slug: 'login-split',
+    name: 'Login Split',
+    description:
+      'Credential form filling one half of a two-pane split, full-bleed media holding the other. Same fields as the card variant, but the layout carries brand imagery. Login, sign in, signin, authentication, credentials, or account access.',
+    category: 'Login - Split',
   },
   {
     slug: 'mixed-gallery',
