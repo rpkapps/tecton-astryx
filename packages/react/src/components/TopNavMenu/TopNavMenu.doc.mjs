@@ -40,7 +40,7 @@ export const docs = {
       default: '200',
     },
   ],
-  examples: [],
+  examples: ['TopNavMenuBasic', 'TopNavMenuShowcase'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

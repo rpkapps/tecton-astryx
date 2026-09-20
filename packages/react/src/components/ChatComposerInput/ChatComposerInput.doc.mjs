@@ -103,7 +103,14 @@ export const docs = {
         'Key-down handler invoked before the built-in Enter/history behavior (after any open trigger menu). The seam for platform-specific keys: call event.preventDefault() to suppress the default submit (e.g. newline on a touch keyboard), or act on the event yourself to add behavior (e.g. submit on Cmd/Ctrl+Enter). IME composition is always respected; Enter never submits mid-composition.',
     },
   ],
-  examples: [],
+  examples: [
+    'ChatComposerInputControlledInput',
+    'ChatComposerInputDisabled',
+    'ChatComposerInputMentionTrigger',
+    'ChatComposerInputMultipleTriggers',
+    'ChatComposerInputShowcase',
+    'ChatComposerInputSlashCommands',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

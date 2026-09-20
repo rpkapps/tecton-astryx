@@ -132,7 +132,15 @@ export const docs = {
         "Default divider visibility for LayoutHeader and LayoutFooter children. Headers and footers that don't pass `hasDivider` use this value; when unset, nested layouts inherit from their parent context.",
     },
   ],
-  examples: [],
+  examples: [
+    'LayoutBasicCardLayout',
+    'LayoutContentOnlyLayout',
+    'LayoutContentWidth',
+    'LayoutDualPanelLayout',
+    'LayoutFullBleedContent',
+    'LayoutShowcase',
+    'LayoutSidebarLayout',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

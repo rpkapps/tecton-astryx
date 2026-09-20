@@ -225,7 +225,12 @@ export const docs = {
         'Inline styles applied to the root element. Takes priority over StyleX inline styles.',
     },
   ],
-  examples: [],
+  examples: [
+    'FieldRequired',
+    'FieldShowcase',
+    'FieldStatusVariants',
+    'FieldWithDescription',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

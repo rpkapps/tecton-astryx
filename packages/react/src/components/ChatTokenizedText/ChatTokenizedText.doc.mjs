@@ -28,7 +28,11 @@ export const docs = {
         'Chip definitions: same type returned by trigger onSelect. Each token has a value (the string to match), label (display text), and optional variant and icon. Uses the same type as the composer input, so token definitions work for both input and display.',
     },
   ],
-  examples: [],
+  examples: [
+    'ChatTokenizedTextBasic',
+    'ChatTokenizedTextColors',
+    'ChatTokenizedTextShowcase',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

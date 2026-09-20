@@ -283,6 +283,14 @@ export type {
  */
 export * from './generated/componentExports.js';
 
+/* Helpers, hooks and data types ------------------------------------------ */
+
+/**
+ * The non-component half of the surface — a table's sorting hook, a date
+ * type, an autocomplete source. Also published as `@tecton/react/support`.
+ */
+export * from './support/index.js';
+
 /* Shared types, icons and theme ------------------------------------------ */
 
 export type {FieldStatus, ControlSize} from './types/field.js';

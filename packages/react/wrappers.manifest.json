@@ -1270,7 +1270,7 @@
       }
     },
     {
-      "name": "SelectItem",
+      "name": "SelectChoice",
       "category": "Forms",
       "handwritten": false,
       "upstream": {

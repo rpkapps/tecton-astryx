@@ -79,7 +79,7 @@ export const docs = {
         'Controls vertical padding of the step. Falls back to the stepper-level density when unset.',
     },
   ],
-  examples: [],
+  examples: ['StepContent', 'StepIndicator', 'StepShowcase', 'StepStates'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

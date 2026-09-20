@@ -52,7 +52,14 @@ export const docs = {
         'Width of the bubble (number = pixels, string = used as-is). When set, replaces the default max(80%, 280px) width cap. Combine with variant="ghost" to let custom content (an artifact card, attachments) span the full message column.',
     },
   ],
-  examples: [],
+  examples: [
+    'ChatMessageBubbleCustomContent',
+    'ChatMessageBubbleDensity',
+    'ChatMessageBubbleGrouping',
+    'ChatMessageBubbleMetadata',
+    'ChatMessageBubbleShowcase',
+    'ChatMessageBubbleVariants',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

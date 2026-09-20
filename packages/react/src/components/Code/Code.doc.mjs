@@ -38,7 +38,12 @@ export const docs = {
       description: 'Inline styles. Prefer xstyle for StyleX-optimized styling.',
     },
   ],
-  examples: [],
+  examples: [
+    'CodeAcrossTextSizes',
+    'CodeInlineInParagraph',
+    'CodeShowcase',
+    'CodeVariousContent',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

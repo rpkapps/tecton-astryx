@@ -119,7 +119,7 @@ export const docs = {
       description: 'Ref forwarded to the overlay root element.',
     },
   ],
-  examples: [],
+  examples: ['OverlayBottomStrip', 'OverlayHoverReveal', 'OverlayShowcase'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

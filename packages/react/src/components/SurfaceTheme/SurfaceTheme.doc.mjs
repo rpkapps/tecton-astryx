@@ -73,7 +73,11 @@ export const docs = {
       required: true,
     },
   ],
-  examples: [],
+  examples: [
+    'SurfaceThemeImageOverlay',
+    'SurfaceThemeLightScrim',
+    'SurfaceThemeShowcase',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

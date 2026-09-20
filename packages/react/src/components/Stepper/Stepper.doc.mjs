@@ -114,7 +114,15 @@ export const docs = {
     ],
   },
   props: [],
-  examples: [],
+  examples: [
+    'StepperCustomContent',
+    'StepperIndicatorModes',
+    'StepperOnTrackHorizontal',
+    'StepperOnTrackVertical',
+    'StepperShowcase',
+    'StepperStatus',
+    'StepperWidthResponsiveCollapse',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

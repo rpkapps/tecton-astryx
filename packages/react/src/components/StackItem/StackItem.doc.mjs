@@ -13,7 +13,7 @@ export const docs = {
     description: 'StackItem is published as part of the Tecton surface.',
   },
   props: [],
-  examples: [],
+  examples: ['StackItemFill', 'StackItemShowcase'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

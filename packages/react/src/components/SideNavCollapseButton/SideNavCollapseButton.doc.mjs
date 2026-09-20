@@ -45,7 +45,7 @@ export const docs = {
         'Custom button content. Overrides the default chevron icon and label.',
     },
   ],
-  examples: [],
+  examples: ['SideNavCollapseButtonBasic', 'SideNavCollapseButtonShowcase'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

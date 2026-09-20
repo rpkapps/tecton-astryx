@@ -286,7 +286,13 @@ export const docs = {
       description: 'Callback fired when the user presses the Enter key.',
     },
   ],
-  examples: [],
+  examples: [
+    'NumberInputClearableNumberInput',
+    'NumberInputRangeNumberInput',
+    'NumberInputShowcase',
+    'NumberInputStatuses',
+    'NumberInputWithUnits',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

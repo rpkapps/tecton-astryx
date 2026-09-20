@@ -35,7 +35,12 @@ export const docs = {
         'Leading icon that reinforces the message type. Wrap in Icon for consistent sizing. Use for membership changes, encryption notices, or AI activity.',
     },
   ],
-  examples: [],
+  examples: [
+    'ChatSystemMessageShowcase',
+    'ChatSystemMessageStatusUpdates',
+    'ChatSystemMessageVariants',
+    'ChatSystemMessageWithIcon',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

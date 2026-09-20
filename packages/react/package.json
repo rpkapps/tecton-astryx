@@ -555,9 +555,9 @@
       "types": "./dist/components/SelectableCard/index.d.ts",
       "default": "./dist/components/SelectableCard/index.js"
     },
-    "./SelectItem": {
-      "types": "./dist/components/SelectItem/index.d.ts",
-      "default": "./dist/components/SelectItem/index.js"
+    "./SelectChoice": {
+      "types": "./dist/components/SelectChoice/index.d.ts",
+      "default": "./dist/components/SelectChoice/index.js"
     },
     "./SideNav": {
       "types": "./dist/components/SideNav/index.d.ts",
@@ -750,6 +750,10 @@
     "./VStack": {
       "types": "./dist/components/VStack/index.d.ts",
       "default": "./dist/components/VStack/index.js"
+    },
+    "./support": {
+      "types": "./dist/support/index.d.ts",
+      "default": "./dist/support/index.js"
     },
     "./templates": {
       "types": "./dist/templates/index.d.ts",

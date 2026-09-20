@@ -27,7 +27,7 @@ export const docs = {
         'StyleX styles for layout customization. Must be a stylex.create() value.',
     },
   ],
-  examples: [],
+  examples: ['CommandPaletteFooterBasic', 'CommandPaletteFooterShowcase'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

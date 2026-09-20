@@ -51,7 +51,12 @@ export const docs = {
       description: 'Visual density. Inherited from list context if not set.',
     },
   ],
-  examples: [],
+  examples: [
+    'ChatMessageAvatarName',
+    'ChatMessageGhost',
+    'ChatMessageMultiBubble',
+    'ChatMessageShowcase',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

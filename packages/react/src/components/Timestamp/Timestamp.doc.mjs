@@ -183,7 +183,15 @@ export const docs = {
       description: 'Font weight override.',
     },
   ],
-  examples: [],
+  examples: [
+    'TimestampAutoFormat',
+    'TimestampColors',
+    'TimestampFormats',
+    'TimestampRelativeFormat',
+    'TimestampShowcase',
+    'TimestampTimezone',
+    'TimestampTooltipTimezones',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

@@ -150,7 +150,13 @@ export const docs = {
       description: 'Test selector for automated testing frameworks.',
     },
   ],
-  examples: [],
+  examples: [
+    'ThumbnailDisabled',
+    'ThumbnailGallery',
+    'ThumbnailRemovable',
+    'ThumbnailShowcase',
+    'ThumbnailStates',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

@@ -1,0 +1,124 @@
+import {useState} from 'react';
+import {MultiSelector} from '../../MultiSelector/MultiSelector.js';
+import {Table} from '../Table.js';
+import {Text} from '../../Text/Text.js';
+import {Toolbar} from '../../Toolbar/Toolbar.js';
+import {VStack} from '../../VStack/VStack.js';
+import type {TableColumn} from '../Table.js';
+import {
+  useTableColumnSettings,
+  useTableColumnSettingsState,
+} from '../../../support/index.js';
+
+interface User extends Record<string, unknown> {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  department: string;
+  status: string;
+}
+
+const users: User[] = [
+  {
+    id: '1',
+    name: 'Alice Johnson',
+    email: 'alice@example.com',
+    role: 'Engineer',
+    department: 'Platform',
+    status: 'Active',
+  },
+  {
+    id: '2',
+    name: 'Bob Smith',
+    email: 'bob@example.com',
+    role: 'Designer',
+    department: 'Product',
+    status: 'Active',
+  },
+  {
+    id: '3',
+    name: 'Charlie Brown',
+    email: 'charlie@example.com',
+    role: 'Manager',
+    department: 'Platform',
+    status: 'Away',
+  },
+  {
+    id: '4',
+    name: 'Diana Prince',
+    email: 'diana@example.com',
+    role: 'Engineer',
+    department: 'Infra',
+    status: 'Active',
+  },
+  {
+    id: '5',
+    name: 'Eve Davis',
+    email: 'eve@example.com',
+    role: 'Admin',
+    department: 'Operations',
+    status: 'Inactive',
+  },
+];
+
+const allColumns: TableColumn<User>[] = [
+  {key: 'name', header: 'Name', width: {share: 1}},
+  {key: 'email', header: 'Email', width: {share: 2}},
+  {key: 'role', header: 'Role', width: {share: 1}},
+  {key: 'department', header: 'Department', width: {share: 1}},
+  {key: 'status', header: 'Status', width: {share: 1}},
+];
+
+const columnOptions = [
+  {key: 'name' as const, label: 'Name', isAlwaysVisible: true},
+  {key: 'email' as const, label: 'Email'},
+  {key: 'role' as const, label: 'Role'},
+  {key: 'department' as const, label: 'Department'},
+  {key: 'status' as const, label: 'Status'},
+];
+
+const allKeys: string[] = ['name', 'email', 'role', 'department', 'status'];
+
+export function TableColumnSettingsTable() {
+  const [activeKeys, setActiveKeys] = useState<string[]>(allKeys);
+
+  const state = useTableColumnSettingsState({
+    columns: columnOptions,
+    activeColumnKeys: activeKeys,
+    onChangeActiveColumnKeys: keys => setActiveKeys([...keys]),
+  });
+
+  const plugin = useTableColumnSettings<User>(state.columnSettingsConfig);
+
+  const selectorOptions = columnOptions.map(c => ({
+    value: c.key,
+    label: c.label,
+    disabled: c.isAlwaysVisible === true,
+  }));
+
+  return (
+    <VStack gap={3} width="100%">
+      <Toolbar
+        label="Table actions"
+        startContent={<Text variant="smallStrong">Team</Text>}
+        endContent={
+          <MultiSelector
+            label="Columns"
+            isLabelHidden
+            options={selectorOptions}
+            value={[...state.activeColumnKeys]}
+            onChange={state.setActiveColumnKeys}
+          />
+        }
+      />
+      <Table
+        data={users}
+        columns={allColumns}
+        idKey="id"
+        hasHover
+        plugins={{columnSettings: plugin}}
+      />
+    </VStack>
+  );
+}

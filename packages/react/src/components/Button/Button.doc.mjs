@@ -13,6 +13,7 @@ export const docs = {
     'secondary',
     'tertiary',
     'outlined',
+    'destructive',
     'loading',
   ],
 
@@ -135,6 +136,6 @@ export const docs = {
 
   notes: [
     "The design's `activated` state — a button stuck in the pressed look — is not on Button. A button that stays down is a ToggleButton.",
-    'There is no destructive variant: the design has none, and Tecton buttons are monochrome apart from the focus ring.',
+    "`destructive` is an addition to the design's five-step ladder. The design draws no such button, but the theme already colours one, and a delete that reads the same as a save is a defect rather than a restraint. It is the one variant that is about meaning rather than emphasis: use it only for an action that cannot be undone, and only once in a view.",
   ],
 };

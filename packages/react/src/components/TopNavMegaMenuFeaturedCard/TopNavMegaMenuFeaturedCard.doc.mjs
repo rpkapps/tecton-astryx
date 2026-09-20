@@ -52,7 +52,10 @@ export const docs = {
       description: 'Custom content rendered below the standard body.',
     },
   ],
-  examples: [],
+  examples: [
+    'TopNavMegaMenuFeaturedCardBasic',
+    'TopNavMegaMenuFeaturedCardShowcase',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

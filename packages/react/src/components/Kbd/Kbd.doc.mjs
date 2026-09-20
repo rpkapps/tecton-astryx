@@ -81,7 +81,12 @@ export const docs = {
         'Inline styles for the root element. Prefer xstyle for styling; inline styles bypass StyleX optimization.',
     },
   ],
-  examples: [],
+  examples: [
+    'KbdInlineInstructions',
+    'KbdMenuShortcuts',
+    'KbdModifierCombos',
+    'KbdShowcase',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

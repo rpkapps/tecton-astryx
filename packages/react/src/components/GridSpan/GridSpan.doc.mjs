@@ -29,7 +29,7 @@ export const docs = {
       description: 'Content.',
     },
   ],
-  examples: [],
+  examples: ['GridSpanColumns', 'GridSpanShowcase'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

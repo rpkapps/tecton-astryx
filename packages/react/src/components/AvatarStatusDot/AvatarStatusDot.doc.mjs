@@ -34,7 +34,7 @@ export const docs = {
         'Icon centered inside the dot (hidden at tiny sizes). A rendered icon replaces the built-in shape glyph, so use a different icon per status.',
     },
   ],
-  examples: [],
+  examples: ['AvatarStatusDotShowcase', 'AvatarStatusDotVariants'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

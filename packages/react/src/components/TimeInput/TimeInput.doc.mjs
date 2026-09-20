@@ -261,7 +261,13 @@ export const docs = {
         'StyleX styles for layout customization (margins, positioning, sizing). Must be a stylex.create() value, not an inline style object like style={{}}.',
     },
   ],
-  examples: [],
+  examples: [
+    'TimeInputConstrained',
+    'TimeInputFormats',
+    'TimeInputIncrement',
+    'TimeInputShowcase',
+    'TimeInputStates',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

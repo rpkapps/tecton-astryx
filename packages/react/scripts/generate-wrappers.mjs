@@ -479,6 +479,10 @@ function exportsMap(existing) {
       default: `./dist/components/${entry.name}/index.js`,
     };
   }
+  out['./support'] = {
+    types: './dist/support/index.d.ts',
+    default: './dist/support/index.js',
+  };
   out['./templates'] = {
     types: './dist/templates/index.d.ts',
     default: './dist/templates/index.js',

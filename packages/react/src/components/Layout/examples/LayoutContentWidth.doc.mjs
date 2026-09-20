@@ -1,0 +1,9 @@
+/** @type {import('@tecton/docs').ExampleDoc} */
+export const docs = {
+  id: 'LayoutContentWidth',
+  name: 'Content Width',
+  component: 'Layout',
+  description:
+    'A layout using contentWidth to constrain and center content while keeping dividers full-bleed.',
+  origin: 'ported',
+};

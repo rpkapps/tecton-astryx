@@ -64,7 +64,7 @@ export const docs = {
         'Custom component to render instead of <a>. Overrides the provider-level default set by LinkProvider. Must accept href, className, style, and children props.',
     },
   ],
-  examples: [],
+  examples: ['TopNavItemBasic', 'TopNavItemShowcase'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

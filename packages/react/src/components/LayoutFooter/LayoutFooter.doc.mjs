@@ -41,7 +41,7 @@ export const docs = {
       description: 'ARIA landmark role.',
     },
   ],
-  examples: [],
+  examples: ['LayoutFooterActions', 'LayoutFooterShowcase'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

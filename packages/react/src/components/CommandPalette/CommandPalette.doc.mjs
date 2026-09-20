@@ -203,7 +203,14 @@ export const docs = {
       default: 'false',
     },
   ],
-  examples: [],
+  examples: [
+    'CommandPaletteAsyncSearch',
+    'CommandPaletteAutoGrouped',
+    'CommandPaletteCustomFooter',
+    'CommandPalettePickerMode',
+    'CommandPaletteRichItems',
+    'CommandPaletteShowcase',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

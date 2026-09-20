@@ -62,7 +62,7 @@ export const docs = {
         'Content rendered at the trailing edge of the heading row, between text and chevron. Useful for badges, status indicators, or compact action buttons. Hidden when collapsed.',
     },
   ],
-  examples: [],
+  examples: ['SideNavHeadingBasic', 'SideNavHeadingShowcase'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

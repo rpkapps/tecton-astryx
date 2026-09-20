@@ -47,7 +47,7 @@ export const docs = {
         'Custom component to render instead of <a> for link items. Overrides the provider-level default set by LinkProvider.',
     },
   ],
-  examples: [],
+  examples: ['TopNavMegaMenuItemBasic', 'TopNavMegaMenuItemShowcase'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

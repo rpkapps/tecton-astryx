@@ -106,7 +106,7 @@ export const docs = {
         'External scroll container ref. When provided, auto-scroll and scroll-to-bottom target this element instead of the layout root. Use when the chat is embedded in a page where a parent element or the document body scrolls.',
     },
   ],
-  examples: [],
+  examples: ['ChatLayoutPanelChat', 'ChatLayoutShowcase'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

@@ -119,7 +119,16 @@ export const docs = {
       default: "'bottom'",
     },
   ],
-  examples: [],
+  examples: [
+    'ChatComposerAttachments',
+    'ChatComposerFlat',
+    'ChatComposerFooterActions',
+    'ChatComposerFullFeatured',
+    'ChatComposerShowcase',
+    'ChatComposerSimple',
+    'ChatComposerStreaming',
+    'ChatComposerValidation',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

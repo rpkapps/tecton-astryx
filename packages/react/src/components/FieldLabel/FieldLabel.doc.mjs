@@ -61,7 +61,7 @@ export const docs = {
       description: 'Tooltip text for info icon at end of label.',
     },
   ],
-  examples: [],
+  examples: ['FieldLabelBasic', 'FieldLabelShowcase'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

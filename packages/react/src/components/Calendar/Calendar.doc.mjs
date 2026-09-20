@@ -176,7 +176,13 @@ export const docs = {
       default: '0',
     },
   ],
-  examples: [],
+  examples: [
+    'CalendarConstraints',
+    'CalendarRangeWithValue',
+    'CalendarShowcase',
+    'CalendarSingle',
+    'CalendarTwoMonths',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

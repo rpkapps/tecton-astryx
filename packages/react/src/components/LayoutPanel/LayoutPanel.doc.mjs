@@ -59,7 +59,7 @@ export const docs = {
         "Resize props from useResizable(). When provided, the hook drives the panel width and a ResizeHandle should be placed adjacent to the panel. Carries the region's axis ('horizontal' | 'vertical'), which must match the adjacent ResizeHandle's direction.",
     },
   ],
-  examples: [],
+  examples: ['LayoutPanelNavigation', 'LayoutPanelShowcase'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

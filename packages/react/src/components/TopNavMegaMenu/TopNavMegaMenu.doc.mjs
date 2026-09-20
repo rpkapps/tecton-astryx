@@ -52,7 +52,7 @@ export const docs = {
         'Callback fired when the mega menu opens or closes. Useful for coordinating wrapper styles.',
     },
   ],
-  examples: [],
+  examples: ['TopNavMegaMenuBasic', 'TopNavMegaMenuShowcase'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

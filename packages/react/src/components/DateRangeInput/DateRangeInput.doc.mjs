@@ -275,7 +275,11 @@ export const docs = {
       description: 'StyleX styles for layout customization.',
     },
   ],
-  examples: [],
+  examples: [
+    'DateRangeInputShowcase',
+    'DateRangeInputWithPresets',
+    'DateRangeInputWithValidation',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

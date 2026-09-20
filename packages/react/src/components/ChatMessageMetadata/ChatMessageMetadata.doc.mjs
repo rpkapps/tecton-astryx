@@ -30,7 +30,12 @@ export const docs = {
       description: 'Message delivery status. Shows icon + label.',
     },
   ],
-  examples: [],
+  examples: [
+    'ChatMessageMetadataFooter',
+    'ChatMessageMetadataShowcase',
+    'ChatMessageMetadataStatus',
+    'ChatMessageMetadataTimestamp',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

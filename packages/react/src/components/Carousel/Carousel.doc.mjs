@@ -181,7 +181,7 @@ export const docs = {
       description: 'Test selector for automated testing frameworks.',
     },
   ],
-  examples: [],
+  examples: ['CarouselCards', 'CarouselShowcase', 'CarouselSnap'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

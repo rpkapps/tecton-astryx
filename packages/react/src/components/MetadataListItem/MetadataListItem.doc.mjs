@@ -31,7 +31,7 @@ export const docs = {
       description: 'Icon rendered before the label text.',
     },
   ],
-  examples: [],
+  examples: ['MetadataListItemBasic', 'MetadataListItemShowcase'],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

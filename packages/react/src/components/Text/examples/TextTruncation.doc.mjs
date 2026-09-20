@@ -1,0 +1,9 @@
+/** @type {import('@tecton/docs').ExampleDoc} */
+export const docs = {
+  id: 'TextTruncation',
+  name: 'Truncation',
+  component: 'Text',
+  description:
+    'Single-line and multi-line text truncation with ellipsis using maxLines in a width-constrained container.',
+  origin: 'ported',
+};

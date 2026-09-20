@@ -183,7 +183,15 @@ export const docs = {
     ],
   },
   props: [],
-  examples: [],
+  examples: [
+    'MultiSelectorBottomSheet',
+    'MultiSelectorColumnVisibilitySelector',
+    'MultiSelectorForm',
+    'MultiSelectorGhostToolbar',
+    'MultiSelectorSearchableMultiSelector',
+    'MultiSelectorSectionedMultiSelector',
+    'MultiSelectorShowcase',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

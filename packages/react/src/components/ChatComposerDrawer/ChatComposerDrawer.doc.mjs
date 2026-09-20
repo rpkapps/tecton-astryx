@@ -51,7 +51,13 @@ export const docs = {
       description: 'Callback fired when the user toggles the drawer.',
     },
   ],
-  examples: [],
+  examples: [
+    'ChatComposerDrawerAttachments',
+    'ChatComposerDrawerCollapsible',
+    'ChatComposerDrawerFeedback',
+    'ChatComposerDrawerShowcase',
+    'ChatComposerDrawerWithProgress',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],
