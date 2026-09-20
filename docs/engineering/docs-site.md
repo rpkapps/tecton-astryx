@@ -1,92 +1,168 @@
 # The documentation site
 
 `apps/docs` is the Tecton docsite: a landing page, nine written guides, seven
-foundations pages, a page for every component the package exports, a gallery of
-the page templates, and the changelog. It is a [fumadocs][] site on Next.js 16,
-exported as static HTML.
+foundations pages, a page for every module the package publishes, 53 page
+templates, and the changelog. It is a [fumadocs][] site on Next.js 16, exported
+as static HTML.
 
-Two things about it are worth knowing before anything else.
+Three things about it are worth knowing before anything else.
 
 **Almost none of it is written.** The only authored content in the app is the
-nine guides under `apps/docs/guides`. Everything else — every component page,
-every foundations table, every sidebar entry, every search record — is printed
-at build time from the package: from the doc files that live beside each
-component, from the built theme, and from the design JSON the theme was
-transcribed from. A component added to `@tecton/react` gains a page, a place in
-the sidebar and an entry in the search index without a line changing here.
+nine guides under `apps/docs/guides`. Every component page — its prose, its
+props, its anatomy, its best practices, its accessibility requirements, its
+theming targets — is printed at build time from the documentation objects that
+ship inside the component system `@tecton/react` re-exports. A module added
+upstream gains a page, a place in the sidebar and an entry in the search index
+without a line changing here.
 
 **The examples are the running components.** An example on a component page is
-not a screenshot and not a re-implementation: it is the same file that lives
-beside the component in `packages/react`, loaded and mounted in the reader's
-browser, with its source shown beside it in the Code tab. The two cannot drift,
-because they are the same file.
+not a screenshot and not a re-implementation: it is the file under
+`apps/docs/examples`, loaded and mounted in the reader's browser, with its
+source shown verbatim in the Code tab. The two cannot drift, because they are
+the same file.
+
+**The site is a port, not an invention.** Its shape — the component page, the
+gallery tile, the template gallery, the grouped sidebar — is ported from the
+component system's own documentation site, which is MIT and credited in
+`THIRD-PARTY-NOTICES.md` at the repository root. Where a file here is a port,
+its header says which file it came from.
 
 |            |                                                                             |
 | ---------- | --------------------------------------------------------------------------- |
-| Framework  | Next.js 16 (App Router, `output: 'export'`)                                 |
+| Framework  | Next.js 16 (App Router, `output: 'export'`, webpack)                        |
 | Docs shell | `fumadocs-ui` and `fumadocs-core` 16, `fumadocs-mdx` 15                     |
 | Styling    | Tailwind v4 (fumadocs requires it) over `@tecton/react/styles-no-reset.css` |
+| Also       | StyleX, compiled through Babel, for the examples that use it                |
 | Search     | Orama, exported as a static index                                           |
 | Tests      | Playwright, against the static export                                       |
 
 ## Routes
 
-| Route                      | What it is                                                                                                                                                 |
-| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/`                        | Landing page: hero, install snippet, counts, and the live component gallery                                                                                |
-| `/docs`                    | Index of everything, as tiles                                                                                                                              |
-| `/docs/<guide>`            | The nine guides: `getting-started`, `principles`, `theming`, `styling`, `typography-usage`, `icons-usage`, `accessibility`, `micro-frontends`, `upgrading` |
-| `/docs/foundations/<name>` | `colour`, `typography`, `spacing`, `shape`, `elevation`, `motion`, `icons`                                                                                 |
-| `/docs/components`         | The component index, grouped by category, one live tile each                                                                                               |
-| `/docs/components/<Name>`  | One per exported component                                                                                                                                 |
-| `/docs/templates`          | The page-template gallery                                                                                                                                  |
-| `/docs/templates/<Name>`   | One per published template                                                                                                                                 |
-| `/docs/changelog`          | The package's releases                                                                                                                                     |
-| `/api/search`              | The exported search index — a build artefact, not a server                                                                                                 |
+| Route                      | What it is                                                                       |
+| -------------------------- | -------------------------------------------------------------------------------- |
+| `/`                        | Landing page: what Tecton is, the two snippets, the counts, and the live gallery |
+| `/docs`                    | Index of everything, as tiles                                                    |
+| `/docs/<guide>`            | The nine guides                                                                  |
+| `/docs/foundations/<name>` | `colour`, `typography`, `spacing`, `shape`, `elevation`, `motion`, `icons`       |
+| `/docs/components`         | The gallery: one 16:10 live tile per component, in category sections             |
+| `/docs/components/<Name>`  | One page per module doc — 106 components and 38 hooks                            |
+| `/docs/templates`          | The template gallery, filterable by category group                               |
+| `/docs/templates/<slug>`   | One per page template: the whole page running, and its source                    |
+| `/docs/changelog`          | The package's releases                                                           |
+| `/api/search`              | The exported search index — a build artefact, not a server                       |
 
 ## Data flow
 
 ```
-packages/react/src/**/*.doc.mjs ─┐
-packages/react/src/**/examples/  │
-packages/react/src/templates/    ├─► apps/docs/scripts/generate-data.mjs ─┬─► apps/docs/content/docs/**  ──► fumadocs ──► out/
-packages/react/dist/theme/*      │                                        │      (MDX + meta.json)
-design/foundations/*.json        │                                        └─► apps/docs/src/generated/** ─► the page components
-apps/docs/guides/*.doc.mjs     ──┘                                               (registries + example modules)
+core/src/**/*.doc.mjs  ─┐   (229 docs + groups.doc.mjs, inside @tecton/react's
+                        │    node_modules — the component system's own)
+apps/docs/examples/**  ─┤
+apps/docs/guides/*     ─┼─► apps/docs/scripts/generate-data.mjs ─┬─► apps/docs/content/docs/**
+packages/react/dist/** ─┤                                        │     (MDX + meta.json)
+design/foundations/*   ─┘                                        └─► apps/docs/src/generated/**
+                                                                       (registries + loader maps)
 ```
 
-`generate-data.mjs` runs first in both `dev` and `build`
+`generate-data.mjs` runs first in `dev`, `build` and `typecheck`
 (`pnpm --filter @tecton/docs generate` runs it alone). It reads:
 
-- **component docs** — `packages/react/src/components/<Name>/<Name>.doc.mjs`,
-  the same files `scripts/check-docs-drift.mjs` already validates against the
-  implementation;
-- **example docs and sources** — `<Name>/examples/<Id>.doc.mjs` beside
-  `<Id>.tsx`;
-- **template docs and sources** — anything under `packages/react/src/templates`,
-  which is empty until that export exists;
-- **guides** — `apps/docs/guides/*.doc.mjs`;
-- **tokens** — `packages/react/dist/theme/{tokens,semantic,typography}.js`,
+- **the component docs** — every `.doc.mjs` under
+  `packages/react/node_modules/@astryxdesign/core/src`, plus `groups.doc.mjs`.
+  A doc with `subComponentOf` documents part of another component and becomes a
+  props table on that component's page; every other doc becomes a page;
+- **the examples** — `apps/docs/examples/components/<Dir>/<Name>.tsx` with its
+  `<Name>.doc.mjs`, and `apps/docs/examples/pages/<slug>/page.tsx` with its
+  `template.doc.mjs`;
+- **the guides** — `apps/docs/guides/*.doc.mjs`;
+- **the tokens** — `packages/react/dist/theme/{tokens,semantic,typography}.js`,
   `dist/icons/names.js` and the built stylesheets, plus
   `design/foundations/*.json` for the design's own descriptions. The package has
   to be built first, which is why `pnpm check` runs `build` before anything that
   reads `dist/`;
-- **the changelog** — `packages/react/CHANGELOG.md`, if it exists.
+- **the changelog** — `packages/react/CHANGELOG.md`.
 
 It writes two trees, both gitignored:
 
 `apps/docs/content/docs/**` — the MDX fumadocs compiles, and the `meta.json`
-files that order the sidebar. A component page is real MDX: its prose, its
-do/don't lists and its notes are Markdown, so they are indexed by search and
-read by the table of contents; its tables and previews are JSX elements that
-resolve to the components registered in `src/components/mdx.tsx`.
+files that list the pages. A component page is real MDX: its description, its
+best practices and its keywords are Markdown, so search indexes them; its
+tables, previews and playground are JSX elements resolving to the components
+registered in `src/components/mdx.tsx`.
 
 `apps/docs/src/generated/**` — typed modules the page components import:
-`componentRegistry`, `exampleRegistry`, `templateRegistry`, `guideRegistry`,
-`foundationData`, `foundationPages`, `changelog`, `sitePages`, one `.tsx` module
-per example and per template, and the `exampleLoaders` / `templateLoaders` maps
-of dynamic imports. `apps/docs/src/types/docs.ts` is the hand-written contract
-they are typed against.
+`componentRegistry`, `exampleRegistry`, `templateRegistry`, `componentSidebar`,
+`showcaseRegistry`, `eagerShowcases`, `guideRegistry`, `foundationData`,
+`foundationPages`, `changelog`, `sitePages`, and the `exampleLoaders` /
+`templateLoaders` maps of dynamic imports. `apps/docs/src/types/docs.ts` is the
+hand-written contract they are typed against.
+
+### Making the docs speak Tecton
+
+Every string in every doc object is rewritten on the way in:
+`@astryxdesign/core` → `@tecton/react`, `Astryx` → `Tecton`, `astryx` →
+`tecton`. Three things survive verbatim, because a reader meets them exactly as
+they are and a renamed one would match nothing:
+
+- `@astryx.…`, the library's own i18n message ids, which an override is keyed
+  on;
+- `data-astryx-…`, the attributes the theme is scoped to;
+- `astryx-…`, the class names and cascade-layer names the components carry —
+  `astryx-button`, `astryx-base`, `astryx-theme` — which are what a
+  `defineTheme` target and a hand-written selector both name.
+
+`speakTecton()` in the generator is the whole of that rule, and
+`scripts/check-docs-site.mjs` holds the same allowance: anything else naming the
+library, on a generated page or in the exported HTML, fails the check.
+
+## A component page
+
+The order is the one the component system's own site reads in, flattened from
+its tabs into a single page so that search and the table of contents see all of
+it:
+
+1. **the showcase**, as an example block — the preview, and its source a tab
+   away;
+2. **Usage** — the doc's description, then
+   `import {X} from '@tecton/react/<Module>'`;
+3. **Anatomy** — the parts the component draws;
+4. **Best practices** — one row per practice with its Do or Don't badge;
+5. **Signature** — a hook's parameters and returns;
+6. **Playground** or **Props** — when the doc carries a `playground`, the
+   component rendered from its defaults with a knob on every prop a control can
+   express; otherwise the plain props table;
+7. **Examples** — every block whose `exampleFor` belongs to this module;
+8. **Theming** — the targets a `defineTheme` config keys on, a copyable example
+   of that config, and the custom properties the component reads;
+9. **Accessibility** — the requirements, grouped by category, with the WCAG
+   criterion linked;
+10. **Parts** — a props table or hook signature for every entry in the doc's
+    `components[]` and for every sibling `subComponentOf` doc;
+11. **Keywords** and **Related**.
+
+The section components under `src/components/component-detail/` are ports of the
+component system's docsite files of the same name. What changed: previews render
+under Tecton's theme in a nested `TectonProvider` with a dark/light switch
+(upstream renders under its neutral theme), the shadcn, playground-link and
+analytics sections are dropped, and the inline type-definition popovers are
+dropped because the vendored docs carry no extracted declarations for them.
+
+## The sidebar
+
+144 flat entries is a list to scroll past, so the component pages are grouped
+the way the library groups them, by the rule in the component system's own
+generator: a doc's `group` makes a group, a group with one member flattens back
+to a plain entry, the group's label is its canonical member's display name (or a
+humanised form of the raw label when no member is named after it), hooks living
+in `hooks/` and anything in the `Utilities` group go to Utilities, and a hook
+whose parent doc has parts joins its parent's group. Items are alphabetised.
+
+`generate-data.mjs` works the grouping out and writes it to
+`src/generated/componentSidebar.ts`; `src/lib/source.ts` turns it into folders in
+the page tree fumadocs draws. **The folders are synthetic**: the files under
+`content/docs/components` stay flat, so a page's URL is
+`/docs/components/Button` and not `/docs/components/Button/Button`. A folder in
+fumadocs' page tree does not have to be a folder on disk, and fumadocs opens the
+folder holding the page being read while leaving the others collapsed.
 
 ## Examples
 
@@ -97,42 +173,18 @@ whole screen) in
 `apps/docs/scripts/port-examples.mjs` rewrites them into the docs app:
 
 ```
-apps/docs/examples/components/<Component>/<Name>.tsx   the example
-apps/docs/examples/components/<Component>/<Name>.doc.mjs   its doc object
-apps/docs/examples/pages/<slug>/page.tsx               the page template
-apps/docs/examples/pages/<slug>/template.doc.mjs       its doc object
+apps/docs/examples/components/<Component>/<Name>.tsx      the example
+apps/docs/examples/components/<Component>/<Name>.doc.mjs  its doc object
+apps/docs/examples/pages/<slug>/page.tsx                  the page template
+apps/docs/examples/pages/<slug>/template.doc.mjs          its doc object
 ```
 
-The directory mirrors upstream's own, so a block stays where its author put it.
-A block's doc carries `exampleFor`, which is the component whose page shows it,
-plus the `id` the port adds (the file stem); a page template's doc carries its
-`slug`.
-
-**The port is import rewriting.** `@tecton/react` re-exports
-`@astryxdesign/core` one for one — same component names, same props — so an
-example needs no translation. `'@astryxdesign/core/X'` becomes
-`'@tecton/react/X'`, heroicons and lucide glyphs become Tecton glyph components
-from `'@tecton/react/icons'`, `export default function X` becomes
-`export function X` named for its file, and the upstream copyright line is
-dropped in favour of `THIRD-PARTY-NOTICES.md` at the repository root. `react`,
-`recharts` and `@stylexjs/stylex` are left alone; they are dependencies of this
-app. Lucide's `size={n}`, which a Tecton glyph does not take, becomes
-`width={n} height={n}`, so an icon still draws the size the example drew it.
-
-**Prose names Tecton.** An example is documentation, and a page that names the
-library underneath Tecton is a page about something else, so
-`@astryxdesign/core` → `@tecton/react`, `Astryx` → `Tecton` and `astryx` →
-`tecton` are applied to comments, strings, template literals and JSX text, and
-to the doc objects' strings — and to nothing else. Identifiers, module
-specifiers and keys are left alone: an override keyed on one of the library's
-own message ids has to keep that id, or it reads right and matches nothing.
-
-Everything the port changed — every glyph substitution, every renamed export,
-every icon prop rewritten, every file whose prose changed, and the one file
-that needed a hand-written rule — is in
-`docs/engineering/ported-examples.log`, with the file it happened to. Its Notes
-list the subpaths the examples import beyond a component module, which is the
-surface `@tecton/react` has to cover for them to compile.
+**The port is import rewriting.** `@tecton/react` re-exports the component
+system one for one — same names, same props — so an example needs no
+translation: `'@astryxdesign/core/X'` becomes `'@tecton/react/X'`, heroicons and
+lucide glyphs become Tecton glyph components, and the prose is put through the
+same Tecton rewrite. Everything the port changed is in
+`docs/engineering/ported-examples.log`.
 
 ```
 pnpm examples:port    # rewrite apps/docs/examples from upstream
@@ -140,65 +192,102 @@ pnpm examples:check   # re-run the port in memory and fail on drift
 ```
 
 `apps/docs/examples` is generated and committed: hand-editing a file there is
-undone by the next port, and `pnpm examples:check` fails until it is. That is
-also what catches an upstream bump silently changing an example. ESLint skips
-the directory for the same reason it skips `apps/docs/src/generated`.
+undone by the next port, and `pnpm examples:check` fails until it is. ESLint
+skips the directory for the same reason it skips `apps/docs/src/generated`;
+`tsc` does not — the examples are inside the app's `tsconfig.json`, so
+`pnpm --filter @tecton/docs typecheck` covers all 699 of them.
 
-## How an example becomes a page
+### Which page renders which example
 
-Take `packages/react/src/components/Button/examples/ButtonBasic.tsx`:
+A block's doc carries `exampleFor`, the component it is an example of. That may
+be a module (`Button`), a part of one (`ChatMessageBubble`) or a hook
+(`useTableSelection`); either way the example belongs to the page that documents
+it, and the generator resolves it through a map built from every doc's own name,
+`components[]` and `hiddenComponents`. One directory upstream — `ChatDictation` —
+is named after no doc at all; the generator carries a one-line alias onto
+`ChatDictationButton`, which is the component those blocks render.
 
-```tsx
-import {Button} from '../Button.js';
+A block marked `isShowcase` leads its page; the rest follow under Examples.
 
-export function ButtonBasic() {
-  return <Button label="Generate facies model" variant="primary" />;
-}
-```
+### How an example reaches the browser
 
-1. **Rewrite.** Every relative import is a name the package's barrel exports, so
-   they all collapse into the entry point a consumer would use — `@tecton/react`
-   for a component, `@tecton/react/templates` for a template. A name no entry
-   point publishes fails the build, because it would mean the code on the page is
-   not code a reader can run. The result is written to
-   `src/generated/examples/ButtonBasic.tsx` with a `'use client'` banner.
-
-2. **Emit.** The rewritten source is also embedded in the component's MDX, inside
-   the JSX element that frames it:
+1. **Register.** `src/generated/exampleLoaders.ts` gains
+   `ButtonShowcase: () => import('../../examples/components/Button/ButtonShowcase')`.
+2. **Emit.** The file's text is embedded verbatim in the page's MDX, inside the
+   element that frames it:
 
    ````mdx
-   <ExampleFrame id={"ButtonBasic"} name={"Basic"} description={"A panel's committing action."}>
+   <ExampleBlock id={"ButtonShowcase"} name={"Button — Variants"} description={"…"}>
 
    ```tsx
-   import {Button} from '@tecton/react';
+   'use client';
 
-   export function ButtonBasic() {
-     return <Button label="Generate facies model" variant="primary" />;
-   }
+   import {Button} from '@tecton/react/Button';
+   …
    ```
 
-   </ExampleFrame>
+   </ExampleBlock>
    ````
 
    The fenced block is ordinary MDX, so fumadocs highlights it with Shiki and
-   gives it a copy button — the Code tab is a real fumadocs code block, not a
-   `<pre>` this site drew itself.
+   gives it a copy button — the Code tab is a real fumadocs code block.
 
-3. **Register.** `src/generated/exampleLoaders.ts` gains
-   `ButtonBasic: () => import('./examples/ButtonBasic')`.
-
-4. **Render.** `ExampleFrame` is a client component: a header with two Tecton
-   `ToggleButtonGroup`s (dark/light, Preview/Code), a preview stage and the code
-   block. The stage is a second `TectonProvider` with `scope="nested"` — nested
+3. **Render.** `ExampleBlock` is a client component: a header with the example's
+   name and a dark/light switch, a preview stage, and Description/Code tabs
+   below. The stage is a second `TectonProvider` with `scope="nested"` — nested
    matters, because a preview must not claim the document root or raise a second
    toast viewport. Inside it, `<LivePreview id>` resolves the id in the loader
    map and renders it under `<Suspense>`.
 
-Because the site is a **static export**, step 4 happens in the browser: the
+Because the site is a **static export**, step 3 happens in the browser: the
 prerendered HTML carries the frame and the code, and the example's own chunk is
-fetched and mounted after hydration. The component index and the template
-gallery go one step further and wait until a tile is near the viewport
-(`WhenVisible`), so opening the index does not fetch every module at once.
+fetched and mounted after hydration. The gallery goes one step further and waits
+until a tile is near the viewport (`WhenVisible`), except for the first twelve,
+which are statically imported through `src/generated/eagerShowcases.ts` so the
+top of the gallery is in the prerendered HTML.
+
+### StyleX
+
+Eighteen of the examples style themselves with `@stylexjs/stylex`, and seven of
+those read `@tecton/react/theme/tokens.stylex`. They are shown as source and run
+in the reader's browser, so the site compiles StyleX the way a consumer's build
+would:
+
+- `babel.config.json` runs `@stylexjs/babel-plugin` with the options the package
+  builds with (`classNamePrefix: 'tecton'`). It is JSON because Next's Babel
+  loader refuses a `.cjs` or `.mjs` config and this package is `"type":
+"module"`, so a `.js` one would be read as ESM.
+- A Babel config means webpack rather than Turbopack, so `dev` and `build` pass
+  `--webpack`.
+- `postcss.config.cjs` runs `@stylexjs/postcss-plugin` over `src/**` and
+  `examples/**` and writes the classes it compiled where `@stylex;` sits.
+- That `@stylex;` is in **`src/app/stylex.css`, on its own sheet**, not in
+  `global.css`. Tailwind v4 rebuilds the stylesheet it is handed from its own
+  tree and drops the rules the StyleX plugin injected, whichever order the two
+  plugins run in. On its own sheet nothing rewrites it.
+- `package.json` carries a modern `browserslist`. Without it, Babel down-levels
+  the Unicode property escapes in fumadocs' own dependencies and the build fails
+  on regular expressions nobody here wrote.
+
+## The gallery and the templates
+
+`/docs/components` is a port of upstream's own gallery page: a section per
+category in upstream's order (Action, Chat, Container, Content, Data
+Visualization, Feedback & Status, Form Controls, Layout, Navigation, Overlay,
+Table & List, Utility), a responsive grid of clickable 16:10 tiles, each
+rendering the component's showcase at 200% scaled by half with pointer events
+off, and a muted placeholder where a component has no showcase. A tile is a
+page, and a page is a module, so `Chat` has one tile rather than one per part.
+
+`/docs/templates` follows upstream's `templateGalleryOrder`: templates are
+grouped by the part of their category before the `-`, the groups are shown in
+upstream's order, and within a group they sort by title. Upstream's tile opens a
+dialog; ours links to the template's own page, which is where the source is —
+the site is a static export, and a page a reader can link to beats a dialog they
+cannot.
+
+The images the templates reference live in `apps/docs/public/template-assets`,
+copied verbatim from upstream and credited in `THIRD-PARTY-NOTICES.md`.
 
 ## Search
 
@@ -248,33 +337,36 @@ like the system it documents.
 `scripts/check-docs-site.mjs`, wired into `pnpm check` as `docs:site:check`,
 runs against the generated trees and the built export:
 
-1. every component the barrel exports has a page, and every page documents
-   something the barrel exports (a component, or a hook such as `useToast`);
+1. every module with a main doc has a page, every page documents one, and every
+   page's import path is a subpath the package actually exports;
 2. every page the generator claims exists on disk;
-3. every example in the registry is rendered by exactly one page, and no page
-   renders an example that is not in the registry;
-4. every generated example module imports `@tecton/react` and carries no
-   relative import;
-5. every guide, and each of the four sections, is in the sidebar's `meta.json`;
+3. every ported example is rendered by exactly one page, and no page renders an
+   example that is not in the registry;
+4. every example and every template has a source file and a loader entry;
+5. every guide and every section is in the sidebar, and every component page is
+   in the grouped component sidebar exactly once;
 6. every source a foundations page reads is still where it reads it from;
-7. every generated page is in the exported search index;
-8. no page names the upstream library Tecton is built on.
+7. the exported search index carries every page;
+8. nothing on a generated page or in the exported HTML names the upstream
+   library, beyond the message ids, attributes and class names listed above.
 
 `pnpm --filter @tecton/docs test:e2e` (or `pnpm docs:site:e2e`) drives the
 static export in Chromium, in two suites of different shapes.
 
 `tests/site.spec.ts` checks in detail the things a reader most depends on: the
-landing page's live tiles, a component page whose first example renders a real
-Tecton button and whose Code tab shows `@tecton/react`, the per-example mode
-switch, the icon gallery's filter and cut switch, the colour page's values in
-both modes, and search reaching `/docs/components/Button`.
+landing page's live tiles, the Button page's showcase, Code tab, mode switch and
+playground, the Table page's part props, the grouped sidebar opening, the
+gallery's categories and a keyboard journey into a tile, the icon gallery's
+filter and cut switch, the colour page's values in both modes, search reaching
+`/docs/components/Button`, and a template rendering live beside its source.
 
-`tests/every-page.spec.ts` is the opposite: one cheap pass over every page in
-the generated page list, asserting only what must never be untrue anywhere —
-the page is served, its title is its own, every example frame on it actually
-drew something, nothing logged a console error, and nothing a reader can see
-names the upstream library. It is driven by `sitePages`, so a component added to
-the package is covered here the moment it has a page.
+`tests/every-page.spec.ts` is the opposite: one cheap pass over all 217 pages,
+asserting only what must never be untrue anywhere — the page is served, its
+title is its own, every example frame on it drew something, a component page
+that documents examples rendered at least one frame, nothing logged a console
+error, and nothing a reader sees names the upstream library. It is driven by
+`sitePages`, so a module added to the package is covered here the moment it has
+a page.
 
 Both are outside `pnpm check` because they launch a browser.
 
@@ -282,7 +374,7 @@ Both are outside `pnpm check` because they launch a browser.
 
 ```bash
 pnpm --filter @tecton/react build     # the site reads dist/ for tokens
-pnpm --filter @tecton/docs dev        # generates, then next dev
+pnpm --filter @tecton/docs dev        # generates, then next dev --webpack
 pnpm --filter @tecton/docs build      # generates, then a static export into out/
 pnpm --filter @tecton/docs serve      # serves out/ the way a static host would
 pnpm --filter @tecton/docs test:e2e   # Playwright against the export
@@ -306,12 +398,11 @@ run `pnpm --filter @tecton/docs generate` (or restart `dev`).
    search records all appear. `scripts/check-docs-site.mjs` fails if the guide
    is not in the sidebar, which is the only way to forget it.
 
-### Adding a component or an example
+### Adding a component page
 
-Nothing here. Write the `.doc.mjs` beside the component, and the page appears. An
-example needs its `.tsx`, its `.doc.mjs`, and its id in the component doc's
-`examples` list; the generator fails loudly if any of the three is missing or if
-the example imports something the package does not publish.
+Nothing here. A page follows its doc object, and the doc objects come from the
+component system. `pnpm upgrade-astryx` brings a newer one in; the generator
+prints the new page, the guard notices if it did not.
 
 ### Adding a foundations page
 
@@ -320,15 +411,5 @@ printed from, add the data it needs to `buildFoundations()`, and add a component
 for it to the `FOUNDATIONS` map in
 `apps/docs/src/components/docs/foundations.tsx`. The guard checks that every
 declared source exists, so a page cannot quietly outlive its data.
-
-## Things that will change when other work lands
-
-- **Templates.** `@tecton/react/templates` does not exist yet. The section is
-  data-driven and empty-safe: `/docs/templates` renders an empty state today and
-  fills itself in — gallery, per-template pages, sidebar entries — as soon as
-  `packages/react/src/templates/<Name>/<Name>.doc.mjs` files appear beside their
-  sources. This was verified against a stub.
-- **The changelog.** `packages/react/CHANGELOG.md` does not exist yet;
-  `/docs/changelog` says so and starts printing releases the day it does.
 
 [fumadocs]: https://fumadocs.dev

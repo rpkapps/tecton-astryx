@@ -103,14 +103,14 @@ pnpm --filter @tecton/docs dev
 
 `pnpm check` also runs six guards:
 
-| Guard                                                 | Fails when                                                                                                                                                                                       |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `scripts/check-consumer-surface.mjs`                  | the upstream library's name reaches any published subpath's declarations — an exported name, a type alias's right-hand side, or a doc comment                                                    |
-| `scripts/check-docs-site.mjs`                         | a component has no page on the docs site, an example is rendered by no page or by two, a guide is missing from the sidebar, a foundations source has moved, or a page is not in the search index |
-| `packages/react/scripts/generate-palette.mjs --check` | the generated colour palette has drifted from `tokens/tecton.tokens.json`                                                                                                                        |
-| `packages/react/scripts/generate-icons.mjs --check`   | the generated icon components have drifted from `design/icons/tecton/`                                                                                                                           |
-| `packages/react/scripts/generate-modules.mjs --check` | the subpath modules or `package.json#exports` have drifted from the upstream exports map                                                                                                         |
-| `packages/react/scripts/generate-readme.mjs --check`  | the package README's module list has drifted from `package.json#exports`                                                                                                                         |
+| Guard                                                 | Fails when                                                                                                                                                                                                                                                                                                        |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `scripts/check-consumer-surface.mjs`                  | the upstream library's name reaches any published subpath's declarations — an exported name, a type alias's right-hand side, or a doc comment                                                                                                                                                                     |
+| `scripts/check-docs-site.mjs`                         | a module with a doc has no page on the docs site, a page names a subpath the package does not export, an example is rendered by no page or by two, a page is missing from the grouped sidebar, a foundations source has moved, a page is not in the search index, or the exported HTML names the upstream library |
+| `packages/react/scripts/generate-palette.mjs --check` | the generated colour palette has drifted from `tokens/tecton.tokens.json`                                                                                                                                                                                                                                         |
+| `packages/react/scripts/generate-icons.mjs --check`   | the generated icon components have drifted from `design/icons/tecton/`                                                                                                                                                                                                                                            |
+| `packages/react/scripts/generate-modules.mjs --check` | the subpath modules or `package.json#exports` have drifted from the upstream exports map                                                                                                                                                                                                                          |
+| `packages/react/scripts/generate-readme.mjs --check`  | the package README's module list has drifted from `package.json#exports`                                                                                                                                                                                                                                          |
 
 `pnpm check:mfe` builds `fixtures/consumers/mfe-harness` — two independently
 built versions of `@tecton/react` on one page — and asserts the multi-version
@@ -142,10 +142,12 @@ Requires Node >= 22 and pnpm 10.33.
 ## Status
 
 Phase 4: the documentation site. `apps/docs` is the Tecton docsite — a landing
-page, the written guides, the foundations printed from the built theme, a page
-per component with every example running and its source beside it, the icon
-gallery, the page templates and the changelog — built on fumadocs and Next.js,
-exported as static HTML, and generated from the package itself. See
+page, nine written guides, the foundations printed from the built theme, a page
+for each of the 144 modules the package publishes with every one of the 646
+examples running and its source beside it, the icon gallery, 53 page templates
+and the changelog — built on fumadocs and Next.js, exported as static HTML. Its
+component pages are printed from the documentation objects the component system
+ships, and its shape is ported from that system's own documentation site. See
 `docs/engineering/docs-site.md`.
 
 - `docs/engineering/surface.md` — what `@tecton/react` publishes, how the
@@ -203,9 +205,12 @@ Choices that differ from the briefs, and why.
 
 ### Phase 4
 
-- **The `/preview/theme` gallery is gone, with the upstream dependency it
-  needed.** `apps/docs` no longer depends on the component library underneath
-  Tecton in any form; the site is built from `@tecton/react` alone.
+- **The site renders `@tecton/react` and reads the component system's docs.**
+  Nothing on a page imports the library underneath Tecton — every example and
+  every preview goes through `@tecton/react` — but the generator reads that
+  library's own `.doc.mjs` files for the prose, props, anatomy, best practices,
+  accessibility and theming of every page, rewriting their strings to say
+  Tecton.
 - **The site is generated, not written.** `apps/docs/content` and
   `apps/docs/src/generated` are both build output and both gitignored; the only
   authored content is the nine guides under `apps/docs/guides`.
