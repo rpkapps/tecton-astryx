@@ -1,7 +1,7 @@
 {
   "name": "@tecton/react",
   "version": "0.1.0",
-  "description": "Tecton design system \u2014 React components, theme and stylesheet.",
+  "description": "Tecton design system — React components, theme and stylesheet.",
   "license": "MIT",
   "type": "module",
   "sideEffects": [
@@ -43,9 +43,25 @@
       "types": "./dist/components/Alert/index.d.ts",
       "default": "./dist/components/Alert/index.js"
     },
+    "./AppShell": {
+      "types": "./dist/components/AppShell/index.d.ts",
+      "default": "./dist/components/AppShell/index.js"
+    },
+    "./AspectRatio": {
+      "types": "./dist/components/AspectRatio/index.d.ts",
+      "default": "./dist/components/AspectRatio/index.js"
+    },
     "./Autocomplete": {
       "types": "./dist/components/Autocomplete/index.d.ts",
       "default": "./dist/components/Autocomplete/index.js"
+    },
+    "./AutocompleteBase": {
+      "types": "./dist/components/AutocompleteBase/index.d.ts",
+      "default": "./dist/components/AutocompleteBase/index.js"
+    },
+    "./AutocompleteItem": {
+      "types": "./dist/components/AutocompleteItem/index.d.ts",
+      "default": "./dist/components/AutocompleteItem/index.js"
     },
     "./Avatar": {
       "types": "./dist/components/Avatar/index.d.ts",
@@ -55,9 +71,29 @@
       "types": "./dist/components/AvatarGroup/index.d.ts",
       "default": "./dist/components/AvatarGroup/index.js"
     },
+    "./AvatarGroupOverflow": {
+      "types": "./dist/components/AvatarGroupOverflow/index.d.ts",
+      "default": "./dist/components/AvatarGroupOverflow/index.js"
+    },
+    "./AvatarStatusDot": {
+      "types": "./dist/components/AvatarStatusDot/index.d.ts",
+      "default": "./dist/components/AvatarStatusDot/index.js"
+    },
     "./Badge": {
       "types": "./dist/components/Badge/index.d.ts",
       "default": "./dist/components/Badge/index.js"
+    },
+    "./Blockquote": {
+      "types": "./dist/components/Blockquote/index.d.ts",
+      "default": "./dist/components/Blockquote/index.js"
+    },
+    "./BottomSheet": {
+      "types": "./dist/components/BottomSheet/index.d.ts",
+      "default": "./dist/components/BottomSheet/index.js"
+    },
+    "./BottomSheetSwitcher": {
+      "types": "./dist/components/BottomSheetSwitcher/index.d.ts",
+      "default": "./dist/components/BottomSheetSwitcher/index.js"
     },
     "./BreadcrumbItem": {
       "types": "./dist/components/BreadcrumbItem/index.d.ts",
@@ -75,9 +111,81 @@
       "types": "./dist/components/ButtonGroup/index.d.ts",
       "default": "./dist/components/ButtonGroup/index.js"
     },
+    "./Calendar": {
+      "types": "./dist/components/Calendar/index.d.ts",
+      "default": "./dist/components/Calendar/index.js"
+    },
     "./Card": {
       "types": "./dist/components/Card/index.d.ts",
       "default": "./dist/components/Card/index.js"
+    },
+    "./Carousel": {
+      "types": "./dist/components/Carousel/index.d.ts",
+      "default": "./dist/components/Carousel/index.js"
+    },
+    "./Center": {
+      "types": "./dist/components/Center/index.d.ts",
+      "default": "./dist/components/Center/index.js"
+    },
+    "./ChatComposer": {
+      "types": "./dist/components/ChatComposer/index.d.ts",
+      "default": "./dist/components/ChatComposer/index.js"
+    },
+    "./ChatComposerDrawer": {
+      "types": "./dist/components/ChatComposerDrawer/index.d.ts",
+      "default": "./dist/components/ChatComposerDrawer/index.js"
+    },
+    "./ChatComposerInput": {
+      "types": "./dist/components/ChatComposerInput/index.d.ts",
+      "default": "./dist/components/ChatComposerInput/index.js"
+    },
+    "./ChatComposerTokenElement": {
+      "types": "./dist/components/ChatComposerTokenElement/index.d.ts",
+      "default": "./dist/components/ChatComposerTokenElement/index.js"
+    },
+    "./ChatDictationButton": {
+      "types": "./dist/components/ChatDictationButton/index.d.ts",
+      "default": "./dist/components/ChatDictationButton/index.js"
+    },
+    "./ChatLayout": {
+      "types": "./dist/components/ChatLayout/index.d.ts",
+      "default": "./dist/components/ChatLayout/index.js"
+    },
+    "./ChatLayoutScrollButton": {
+      "types": "./dist/components/ChatLayoutScrollButton/index.d.ts",
+      "default": "./dist/components/ChatLayoutScrollButton/index.js"
+    },
+    "./ChatMessage": {
+      "types": "./dist/components/ChatMessage/index.d.ts",
+      "default": "./dist/components/ChatMessage/index.js"
+    },
+    "./ChatMessageBubble": {
+      "types": "./dist/components/ChatMessageBubble/index.d.ts",
+      "default": "./dist/components/ChatMessageBubble/index.js"
+    },
+    "./ChatMessageList": {
+      "types": "./dist/components/ChatMessageList/index.d.ts",
+      "default": "./dist/components/ChatMessageList/index.js"
+    },
+    "./ChatMessageMetadata": {
+      "types": "./dist/components/ChatMessageMetadata/index.d.ts",
+      "default": "./dist/components/ChatMessageMetadata/index.js"
+    },
+    "./ChatSendButton": {
+      "types": "./dist/components/ChatSendButton/index.d.ts",
+      "default": "./dist/components/ChatSendButton/index.js"
+    },
+    "./ChatSystemMessage": {
+      "types": "./dist/components/ChatSystemMessage/index.d.ts",
+      "default": "./dist/components/ChatSystemMessage/index.js"
+    },
+    "./ChatTokenizedText": {
+      "types": "./dist/components/ChatTokenizedText/index.d.ts",
+      "default": "./dist/components/ChatTokenizedText/index.js"
+    },
+    "./ChatToolCalls": {
+      "types": "./dist/components/ChatToolCalls/index.d.ts",
+      "default": "./dist/components/ChatToolCalls/index.js"
     },
     "./Checkbox": {
       "types": "./dist/components/Checkbox/index.d.ts",
@@ -91,33 +199,161 @@
       "types": "./dist/components/Chip/index.d.ts",
       "default": "./dist/components/Chip/index.js"
     },
+    "./Citation": {
+      "types": "./dist/components/Citation/index.d.ts",
+      "default": "./dist/components/Citation/index.js"
+    },
+    "./ClickableCard": {
+      "types": "./dist/components/ClickableCard/index.d.ts",
+      "default": "./dist/components/ClickableCard/index.js"
+    },
+    "./Code": {
+      "types": "./dist/components/Code/index.d.ts",
+      "default": "./dist/components/Code/index.js"
+    },
+    "./CodeBlock": {
+      "types": "./dist/components/CodeBlock/index.d.ts",
+      "default": "./dist/components/CodeBlock/index.js"
+    },
+    "./CodeTheme": {
+      "types": "./dist/components/CodeTheme/index.d.ts",
+      "default": "./dist/components/CodeTheme/index.js"
+    },
     "./ColorSwatch": {
       "types": "./dist/components/ColorSwatch/index.d.ts",
       "default": "./dist/components/ColorSwatch/index.js"
+    },
+    "./CommandPalette": {
+      "types": "./dist/components/CommandPalette/index.d.ts",
+      "default": "./dist/components/CommandPalette/index.js"
+    },
+    "./CommandPaletteEmpty": {
+      "types": "./dist/components/CommandPaletteEmpty/index.d.ts",
+      "default": "./dist/components/CommandPaletteEmpty/index.js"
+    },
+    "./CommandPaletteFooter": {
+      "types": "./dist/components/CommandPaletteFooter/index.d.ts",
+      "default": "./dist/components/CommandPaletteFooter/index.js"
+    },
+    "./CommandPaletteGroup": {
+      "types": "./dist/components/CommandPaletteGroup/index.d.ts",
+      "default": "./dist/components/CommandPaletteGroup/index.js"
+    },
+    "./CommandPaletteInput": {
+      "types": "./dist/components/CommandPaletteInput/index.d.ts",
+      "default": "./dist/components/CommandPaletteInput/index.js"
+    },
+    "./CommandPaletteItem": {
+      "types": "./dist/components/CommandPaletteItem/index.d.ts",
+      "default": "./dist/components/CommandPaletteItem/index.js"
+    },
+    "./CommandPaletteList": {
+      "types": "./dist/components/CommandPaletteList/index.d.ts",
+      "default": "./dist/components/CommandPaletteList/index.js"
+    },
+    "./ComplexSelector": {
+      "types": "./dist/components/ComplexSelector/index.d.ts",
+      "default": "./dist/components/ComplexSelector/index.js"
+    },
+    "./ContextMenu": {
+      "types": "./dist/components/ContextMenu/index.d.ts",
+      "default": "./dist/components/ContextMenu/index.js"
+    },
+    "./ContextMenuCheckboxItem": {
+      "types": "./dist/components/ContextMenuCheckboxItem/index.d.ts",
+      "default": "./dist/components/ContextMenuCheckboxItem/index.js"
+    },
+    "./ContextMenuItem": {
+      "types": "./dist/components/ContextMenuItem/index.d.ts",
+      "default": "./dist/components/ContextMenuItem/index.js"
+    },
+    "./ContextMenuRadioGroup": {
+      "types": "./dist/components/ContextMenuRadioGroup/index.d.ts",
+      "default": "./dist/components/ContextMenuRadioGroup/index.js"
+    },
+    "./ContextMenuRadioItem": {
+      "types": "./dist/components/ContextMenuRadioItem/index.d.ts",
+      "default": "./dist/components/ContextMenuRadioItem/index.js"
+    },
+    "./ContextMenuSeparator": {
+      "types": "./dist/components/ContextMenuSeparator/index.d.ts",
+      "default": "./dist/components/ContextMenuSeparator/index.js"
+    },
+    "./ContextMenuSubMenu": {
+      "types": "./dist/components/ContextMenuSubMenu/index.d.ts",
+      "default": "./dist/components/ContextMenuSubMenu/index.js"
+    },
+    "./DateInput": {
+      "types": "./dist/components/DateInput/index.d.ts",
+      "default": "./dist/components/DateInput/index.js"
+    },
+    "./DateRangeInput": {
+      "types": "./dist/components/DateRangeInput/index.d.ts",
+      "default": "./dist/components/DateRangeInput/index.js"
+    },
+    "./DateTimeInput": {
+      "types": "./dist/components/DateTimeInput/index.d.ts",
+      "default": "./dist/components/DateTimeInput/index.js"
     },
     "./Dialog": {
       "types": "./dist/components/Dialog/index.d.ts",
       "default": "./dist/components/Dialog/index.js"
     },
+    "./DialogHeader": {
+      "types": "./dist/components/DialogHeader/index.d.ts",
+      "default": "./dist/components/DialogHeader/index.js"
+    },
     "./Divider": {
       "types": "./dist/components/Divider/index.d.ts",
       "default": "./dist/components/Divider/index.js"
+    },
+    "./EmptyState": {
+      "types": "./dist/components/EmptyState/index.d.ts",
+      "default": "./dist/components/EmptyState/index.js"
     },
     "./Fab": {
       "types": "./dist/components/Fab/index.d.ts",
       "default": "./dist/components/Fab/index.js"
     },
+    "./Field": {
+      "types": "./dist/components/Field/index.d.ts",
+      "default": "./dist/components/Field/index.js"
+    },
+    "./FieldLabel": {
+      "types": "./dist/components/FieldLabel/index.d.ts",
+      "default": "./dist/components/FieldLabel/index.js"
+    },
+    "./FieldMessage": {
+      "types": "./dist/components/FieldMessage/index.d.ts",
+      "default": "./dist/components/FieldMessage/index.js"
+    },
+    "./FileInput": {
+      "types": "./dist/components/FileInput/index.d.ts",
+      "default": "./dist/components/FileInput/index.js"
+    },
+    "./FormLayout": {
+      "types": "./dist/components/FormLayout/index.d.ts",
+      "default": "./dist/components/FormLayout/index.js"
+    },
     "./Grid": {
       "types": "./dist/components/Grid/index.d.ts",
       "default": "./dist/components/Grid/index.js"
     },
-    "./HStack": {
-      "types": "./dist/components/HStack/index.d.ts",
-      "default": "./dist/components/HStack/index.js"
+    "./GridSpan": {
+      "types": "./dist/components/GridSpan/index.d.ts",
+      "default": "./dist/components/GridSpan/index.js"
     },
     "./Heading": {
       "types": "./dist/components/Heading/index.d.ts",
       "default": "./dist/components/Heading/index.js"
+    },
+    "./HoverCard": {
+      "types": "./dist/components/HoverCard/index.d.ts",
+      "default": "./dist/components/HoverCard/index.js"
+    },
+    "./HStack": {
+      "types": "./dist/components/HStack/index.d.ts",
+      "default": "./dist/components/HStack/index.js"
     },
     "./Icon": {
       "types": "./dist/components/Icon/index.d.ts",
@@ -127,9 +363,53 @@
       "types": "./dist/components/IconButton/index.d.ts",
       "default": "./dist/components/IconButton/index.js"
     },
+    "./InputGroup": {
+      "types": "./dist/components/InputGroup/index.d.ts",
+      "default": "./dist/components/InputGroup/index.js"
+    },
+    "./InputGroupText": {
+      "types": "./dist/components/InputGroupText/index.d.ts",
+      "default": "./dist/components/InputGroupText/index.js"
+    },
+    "./ItemRow": {
+      "types": "./dist/components/ItemRow/index.d.ts",
+      "default": "./dist/components/ItemRow/index.js"
+    },
+    "./Kbd": {
+      "types": "./dist/components/Kbd/index.d.ts",
+      "default": "./dist/components/Kbd/index.js"
+    },
+    "./Layout": {
+      "types": "./dist/components/Layout/index.d.ts",
+      "default": "./dist/components/Layout/index.js"
+    },
+    "./LayoutContent": {
+      "types": "./dist/components/LayoutContent/index.d.ts",
+      "default": "./dist/components/LayoutContent/index.js"
+    },
+    "./LayoutFooter": {
+      "types": "./dist/components/LayoutFooter/index.d.ts",
+      "default": "./dist/components/LayoutFooter/index.js"
+    },
+    "./LayoutHeader": {
+      "types": "./dist/components/LayoutHeader/index.d.ts",
+      "default": "./dist/components/LayoutHeader/index.js"
+    },
+    "./LayoutPanel": {
+      "types": "./dist/components/LayoutPanel/index.d.ts",
+      "default": "./dist/components/LayoutPanel/index.js"
+    },
+    "./Lightbox": {
+      "types": "./dist/components/Lightbox/index.d.ts",
+      "default": "./dist/components/Lightbox/index.js"
+    },
     "./Link": {
       "types": "./dist/components/Link/index.d.ts",
       "default": "./dist/components/Link/index.js"
+    },
+    "./LinkProvider": {
+      "types": "./dist/components/LinkProvider/index.d.ts",
+      "default": "./dist/components/LinkProvider/index.js"
     },
     "./List": {
       "types": "./dist/components/List/index.d.ts",
@@ -139,13 +419,109 @@
       "types": "./dist/components/ListItem/index.d.ts",
       "default": "./dist/components/ListItem/index.js"
     },
+    "./LocaleProvider": {
+      "types": "./dist/components/LocaleProvider/index.d.ts",
+      "default": "./dist/components/LocaleProvider/index.js"
+    },
+    "./Markdown": {
+      "types": "./dist/components/Markdown/index.d.ts",
+      "default": "./dist/components/Markdown/index.js"
+    },
     "./Menu": {
       "types": "./dist/components/Menu/index.d.ts",
       "default": "./dist/components/Menu/index.js"
     },
+    "./MenuActionItem": {
+      "types": "./dist/components/MenuActionItem/index.d.ts",
+      "default": "./dist/components/MenuActionItem/index.js"
+    },
+    "./MenuCheckboxItem": {
+      "types": "./dist/components/MenuCheckboxItem/index.d.ts",
+      "default": "./dist/components/MenuCheckboxItem/index.js"
+    },
+    "./MenuRadioGroup": {
+      "types": "./dist/components/MenuRadioGroup/index.d.ts",
+      "default": "./dist/components/MenuRadioGroup/index.js"
+    },
+    "./MenuRadioItem": {
+      "types": "./dist/components/MenuRadioItem/index.d.ts",
+      "default": "./dist/components/MenuRadioItem/index.js"
+    },
+    "./MenuSeparator": {
+      "types": "./dist/components/MenuSeparator/index.d.ts",
+      "default": "./dist/components/MenuSeparator/index.js"
+    },
+    "./MenuSubMenu": {
+      "types": "./dist/components/MenuSubMenu/index.d.ts",
+      "default": "./dist/components/MenuSubMenu/index.js"
+    },
+    "./MetadataList": {
+      "types": "./dist/components/MetadataList/index.d.ts",
+      "default": "./dist/components/MetadataList/index.js"
+    },
+    "./MetadataListItem": {
+      "types": "./dist/components/MetadataListItem/index.d.ts",
+      "default": "./dist/components/MetadataListItem/index.js"
+    },
+    "./MobileNav": {
+      "types": "./dist/components/MobileNav/index.d.ts",
+      "default": "./dist/components/MobileNav/index.js"
+    },
+    "./MobileNavToggle": {
+      "types": "./dist/components/MobileNavToggle/index.d.ts",
+      "default": "./dist/components/MobileNavToggle/index.js"
+    },
+    "./MoreMenu": {
+      "types": "./dist/components/MoreMenu/index.d.ts",
+      "default": "./dist/components/MoreMenu/index.js"
+    },
+    "./MultiSelector": {
+      "types": "./dist/components/MultiSelector/index.d.ts",
+      "default": "./dist/components/MultiSelector/index.js"
+    },
+    "./NavHeadingMenu": {
+      "types": "./dist/components/NavHeadingMenu/index.d.ts",
+      "default": "./dist/components/NavHeadingMenu/index.js"
+    },
+    "./NavHeadingMenuItem": {
+      "types": "./dist/components/NavHeadingMenuItem/index.d.ts",
+      "default": "./dist/components/NavHeadingMenuItem/index.js"
+    },
+    "./NavIcon": {
+      "types": "./dist/components/NavIcon/index.d.ts",
+      "default": "./dist/components/NavIcon/index.js"
+    },
+    "./NumberInput": {
+      "types": "./dist/components/NumberInput/index.d.ts",
+      "default": "./dist/components/NumberInput/index.js"
+    },
+    "./Outline": {
+      "types": "./dist/components/Outline/index.d.ts",
+      "default": "./dist/components/Outline/index.js"
+    },
+    "./OverflowList": {
+      "types": "./dist/components/OverflowList/index.d.ts",
+      "default": "./dist/components/OverflowList/index.js"
+    },
+    "./Overlay": {
+      "types": "./dist/components/Overlay/index.d.ts",
+      "default": "./dist/components/Overlay/index.js"
+    },
+    "./Pagination": {
+      "types": "./dist/components/Pagination/index.d.ts",
+      "default": "./dist/components/Pagination/index.js"
+    },
     "./Panel": {
       "types": "./dist/components/Panel/index.d.ts",
       "default": "./dist/components/Panel/index.js"
+    },
+    "./Popover": {
+      "types": "./dist/components/Popover/index.d.ts",
+      "default": "./dist/components/Popover/index.js"
+    },
+    "./PowerSearch": {
+      "types": "./dist/components/PowerSearch/index.d.ts",
+      "default": "./dist/components/PowerSearch/index.js"
     },
     "./Progress": {
       "types": "./dist/components/Progress/index.d.ts",
@@ -159,9 +535,53 @@
       "types": "./dist/components/RadioGroup/index.d.ts",
       "default": "./dist/components/RadioGroup/index.js"
     },
+    "./ResizeHandle": {
+      "types": "./dist/components/ResizeHandle/index.d.ts",
+      "default": "./dist/components/ResizeHandle/index.js"
+    },
+    "./ScrollableArea": {
+      "types": "./dist/components/ScrollableArea/index.d.ts",
+      "default": "./dist/components/ScrollableArea/index.js"
+    },
+    "./Section": {
+      "types": "./dist/components/Section/index.d.ts",
+      "default": "./dist/components/Section/index.js"
+    },
     "./Select": {
       "types": "./dist/components/Select/index.d.ts",
       "default": "./dist/components/Select/index.js"
+    },
+    "./SelectableCard": {
+      "types": "./dist/components/SelectableCard/index.d.ts",
+      "default": "./dist/components/SelectableCard/index.js"
+    },
+    "./SelectItem": {
+      "types": "./dist/components/SelectItem/index.d.ts",
+      "default": "./dist/components/SelectItem/index.js"
+    },
+    "./SideNav": {
+      "types": "./dist/components/SideNav/index.d.ts",
+      "default": "./dist/components/SideNav/index.js"
+    },
+    "./SideNavCollapseButton": {
+      "types": "./dist/components/SideNavCollapseButton/index.d.ts",
+      "default": "./dist/components/SideNavCollapseButton/index.js"
+    },
+    "./SideNavHeading": {
+      "types": "./dist/components/SideNavHeading/index.d.ts",
+      "default": "./dist/components/SideNavHeading/index.js"
+    },
+    "./SideNavItem": {
+      "types": "./dist/components/SideNavItem/index.d.ts",
+      "default": "./dist/components/SideNavItem/index.js"
+    },
+    "./SideNavSection": {
+      "types": "./dist/components/SideNavSection/index.d.ts",
+      "default": "./dist/components/SideNavSection/index.js"
+    },
+    "./Skeleton": {
+      "types": "./dist/components/Skeleton/index.d.ts",
+      "default": "./dist/components/Skeleton/index.js"
     },
     "./Slider": {
       "types": "./dist/components/Slider/index.d.ts",
@@ -170,6 +590,26 @@
     "./Stack": {
       "types": "./dist/components/Stack/index.d.ts",
       "default": "./dist/components/Stack/index.js"
+    },
+    "./StackItem": {
+      "types": "./dist/components/StackItem/index.d.ts",
+      "default": "./dist/components/StackItem/index.js"
+    },
+    "./StatusDot": {
+      "types": "./dist/components/StatusDot/index.d.ts",
+      "default": "./dist/components/StatusDot/index.js"
+    },
+    "./Step": {
+      "types": "./dist/components/Step/index.d.ts",
+      "default": "./dist/components/Step/index.js"
+    },
+    "./Stepper": {
+      "types": "./dist/components/Stepper/index.d.ts",
+      "default": "./dist/components/Stepper/index.js"
+    },
+    "./SurfaceTheme": {
+      "types": "./dist/components/SurfaceTheme/index.d.ts",
+      "default": "./dist/components/SurfaceTheme/index.js"
     },
     "./Switch": {
       "types": "./dist/components/Switch/index.d.ts",
@@ -182,6 +622,34 @@
     "./Table": {
       "types": "./dist/components/Table/index.d.ts",
       "default": "./dist/components/Table/index.js"
+    },
+    "./TableBody": {
+      "types": "./dist/components/TableBody/index.d.ts",
+      "default": "./dist/components/TableBody/index.js"
+    },
+    "./TableCell": {
+      "types": "./dist/components/TableCell/index.d.ts",
+      "default": "./dist/components/TableCell/index.js"
+    },
+    "./TableFooter": {
+      "types": "./dist/components/TableFooter/index.d.ts",
+      "default": "./dist/components/TableFooter/index.js"
+    },
+    "./TableHeader": {
+      "types": "./dist/components/TableHeader/index.d.ts",
+      "default": "./dist/components/TableHeader/index.js"
+    },
+    "./TableHeaderCell": {
+      "types": "./dist/components/TableHeaderCell/index.d.ts",
+      "default": "./dist/components/TableHeaderCell/index.js"
+    },
+    "./TableRow": {
+      "types": "./dist/components/TableRow/index.d.ts",
+      "default": "./dist/components/TableRow/index.js"
+    },
+    "./TabMenu": {
+      "types": "./dist/components/TabMenu/index.d.ts",
+      "default": "./dist/components/TabMenu/index.js"
     },
     "./Tabs": {
       "types": "./dist/components/Tabs/index.d.ts",
@@ -199,6 +667,18 @@
       "types": "./dist/components/TextField/index.d.ts",
       "default": "./dist/components/TextField/index.js"
     },
+    "./Thumbnail": {
+      "types": "./dist/components/Thumbnail/index.d.ts",
+      "default": "./dist/components/Thumbnail/index.js"
+    },
+    "./TimeInput": {
+      "types": "./dist/components/TimeInput/index.d.ts",
+      "default": "./dist/components/TimeInput/index.js"
+    },
+    "./Timestamp": {
+      "types": "./dist/components/Timestamp/index.d.ts",
+      "default": "./dist/components/Timestamp/index.js"
+    },
     "./Toast": {
       "types": "./dist/components/Toast/index.d.ts",
       "default": "./dist/components/Toast/index.js"
@@ -207,21 +687,73 @@
       "types": "./dist/components/ToggleButton/index.d.ts",
       "default": "./dist/components/ToggleButton/index.js"
     },
+    "./ToggleButtonBar": {
+      "types": "./dist/components/ToggleButtonBar/index.d.ts",
+      "default": "./dist/components/ToggleButtonBar/index.js"
+    },
     "./ToggleButtonGroup": {
       "types": "./dist/components/ToggleButtonGroup/index.d.ts",
       "default": "./dist/components/ToggleButtonGroup/index.js"
+    },
+    "./ToggleButtonGroupSegment": {
+      "types": "./dist/components/ToggleButtonGroupSegment/index.d.ts",
+      "default": "./dist/components/ToggleButtonGroupSegment/index.js"
+    },
+    "./Tokenizer": {
+      "types": "./dist/components/Tokenizer/index.d.ts",
+      "default": "./dist/components/Tokenizer/index.js"
+    },
+    "./Toolbar": {
+      "types": "./dist/components/Toolbar/index.d.ts",
+      "default": "./dist/components/Toolbar/index.js"
     },
     "./Tooltip": {
       "types": "./dist/components/Tooltip/index.d.ts",
       "default": "./dist/components/Tooltip/index.js"
     },
+    "./TopNav": {
+      "types": "./dist/components/TopNav/index.d.ts",
+      "default": "./dist/components/TopNav/index.js"
+    },
+    "./TopNavHeading": {
+      "types": "./dist/components/TopNavHeading/index.d.ts",
+      "default": "./dist/components/TopNavHeading/index.js"
+    },
+    "./TopNavItem": {
+      "types": "./dist/components/TopNavItem/index.d.ts",
+      "default": "./dist/components/TopNavItem/index.js"
+    },
+    "./TopNavMegaMenu": {
+      "types": "./dist/components/TopNavMegaMenu/index.d.ts",
+      "default": "./dist/components/TopNavMegaMenu/index.js"
+    },
+    "./TopNavMegaMenuFeaturedCard": {
+      "types": "./dist/components/TopNavMegaMenuFeaturedCard/index.d.ts",
+      "default": "./dist/components/TopNavMegaMenuFeaturedCard/index.js"
+    },
+    "./TopNavMegaMenuItem": {
+      "types": "./dist/components/TopNavMegaMenuItem/index.d.ts",
+      "default": "./dist/components/TopNavMegaMenuItem/index.js"
+    },
+    "./TopNavMenu": {
+      "types": "./dist/components/TopNavMenu/index.d.ts",
+      "default": "./dist/components/TopNavMenu/index.js"
+    },
     "./TreeView": {
       "types": "./dist/components/TreeView/index.d.ts",
       "default": "./dist/components/TreeView/index.js"
     },
+    "./VisuallyHidden": {
+      "types": "./dist/components/VisuallyHidden/index.d.ts",
+      "default": "./dist/components/VisuallyHidden/index.js"
+    },
     "./VStack": {
       "types": "./dist/components/VStack/index.d.ts",
       "default": "./dist/components/VStack/index.js"
+    },
+    "./templates": {
+      "types": "./dist/templates/index.d.ts",
+      "default": "./dist/templates/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -233,7 +765,9 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "clean": "rm -rf dist",
     "generate:icons": "node scripts/generate-icons.mjs",
-    "icons:check": "node scripts/generate-icons.mjs --check"
+    "icons:check": "node scripts/generate-icons.mjs --check",
+    "generate:wrappers": "node scripts/generate-wrappers.mjs",
+    "wrappers:check": "node scripts/generate-wrappers.mjs --check"
   },
   "dependencies": {
     "@stylexjs/stylex": "0.19.1",
@@ -255,6 +789,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "jsdom": "^30.1.0",
+    "prettier": "^3.9.8",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "typescript": "^5.9.3",

@@ -312,6 +312,17 @@ run(
   'generate-icons --check',
 );
 
+// 0c — wrapper drift ----------------------------------------------------------
+// Most of the component surface is generated from wrappers.manifest.json. An
+// upstream upgrade that moves a prop has to regenerate them, so the build
+// refuses to run against wrappers or documentation that no longer match.
+step('Checking the generated wrappers against the manifest');
+run(
+  process.execPath,
+  [path.join(PACKAGE_ROOT, 'scripts', 'generate-wrappers.mjs'), '--check'],
+  'generate-wrappers --check',
+);
+
 // 1 — clean -------------------------------------------------------------------
 step('Cleaning dist/');
 await fsp.rm(DIST, {recursive: true, force: true});
