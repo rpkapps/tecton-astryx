@@ -1010,6 +1010,10 @@ const orderedGuides = [...guides].sort((a, b) => {
 /* src/generated                                                              */
 /* -------------------------------------------------------------------------- */
 
+// Start from nothing: a checkout that ran an older generator may still hold
+// modules this one no longer writes, and the app's tsconfig would type-check
+// them against a surface they were not written for.
+await fsp.rm(OUT_DIR, {recursive: true, force: true});
 await fsp.mkdir(OUT_DIR, {recursive: true});
 
 /** A copy of an object without one key. */
