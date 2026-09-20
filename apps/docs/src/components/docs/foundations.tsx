@@ -63,7 +63,7 @@ function TokenTable({
                 {
                   key: 'light' as const,
                   header: '',
-                  width: {share: 1, minWidth: 90},
+                  width: {share: 2, minWidth: 80},
                   renderCell: render,
                 },
               ]
@@ -71,25 +71,25 @@ function TokenTable({
           {
             key: 'path',
             header,
-            width: {share: 2, minWidth: 130},
+            width: {share: 3, minWidth: 130},
             renderCell: row => mono(row.path),
           },
           {
             key: 'token',
             header: 'Custom property',
-            width: {share: 3, minWidth: 190},
+            width: {share: 4, minWidth: 190},
             renderCell: row => mono(row.token),
           },
           {
             key: 'value',
             header: 'Value',
-            width: {share: 2, minWidth: 120},
+            width: {share: 3, minWidth: 120},
             renderCell: row => mono(row.value ?? '—'),
           },
           {
             key: 'description',
             header: 'What it is for',
-            width: {share: 4, minWidth: 180},
+            width: {share: 6, minWidth: 180},
             renderCell: row => row.description ?? '',
           },
         ]}

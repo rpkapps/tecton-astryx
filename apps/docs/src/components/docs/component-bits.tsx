@@ -90,8 +90,19 @@ function Wrap({children}: {children: ReactNode}) {
   return <div className="not-prose my-4 overflow-x-auto">{children}</div>;
 }
 
+/** A short value that should stay on one line — a prop name, a token. */
 const mono = (value: ReactNode) => (
   <code className="text-[0.8125rem] whitespace-nowrap">{value}</code>
+);
+
+/**
+ * A value that may be long — a type, a default.
+ *
+ * A type like `MouseEventHandler<HTMLButtonElement>` is wider than any column
+ * worth giving it, so it wraps rather than being cut off at the cell's edge.
+ */
+const monoWrap = (value: ReactNode) => (
+  <code className="text-[0.8125rem] break-words">{value}</code>
 );
 
 export function PropsTable({name}: {name: string}) {
@@ -110,7 +121,7 @@ export function PropsTable({name}: {name: string}) {
           {
             key: 'name',
             header: 'Prop',
-            width: {share: 2, minWidth: 140},
+            width: {share: 3, minWidth: 140},
             renderCell: row => (
               <span className="flex items-center gap-1.5">
                 {mono(row.name)}
@@ -129,16 +140,16 @@ export function PropsTable({name}: {name: string}) {
           {
             key: 'type',
             header: 'Type',
-            width: {share: 3, minWidth: 160},
-            renderCell: row => mono(row.type),
+            width: {share: 4, minWidth: 170},
+            renderCell: row => monoWrap(row.type),
           },
           {
             key: 'default',
             header: 'Default',
-            width: {share: 2, minWidth: 110},
+            width: {share: 2, minWidth: 100},
             renderCell: row =>
               row.default ? (
-                mono(row.default)
+                monoWrap(row.default)
               ) : (
                 <Text variant="small" color="secondary">
                   —
@@ -148,7 +159,7 @@ export function PropsTable({name}: {name: string}) {
           {
             key: 'description',
             header: 'Description',
-            width: {share: 5, minWidth: 220},
+            width: {share: 7, minWidth: 260},
           },
         ]}
       />
@@ -177,7 +188,7 @@ export function AnatomyTable({name}: {name: string}) {
           {
             key: 'required',
             header: 'Required',
-            width: {share: 1, minWidth: 90},
+            width: {share: 1, minWidth: 70},
             renderCell: row => (row.required ? 'Yes' : 'No'),
           },
           {key: 'description', header: 'What it is', width: {share: 6}},
@@ -230,7 +241,7 @@ export function ThemingTable({name}: {name: string}) {
             key: 'token',
             header: 'Custom property',
             width: {share: 3, minWidth: 200},
-            renderCell: row => mono(row.token),
+            renderCell: row => monoWrap(row.token),
           },
           {key: 'description', header: 'What it changes', width: {share: 5}},
         ]}
