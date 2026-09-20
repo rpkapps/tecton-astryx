@@ -1,14 +1,11 @@
 'use client';
 import {useMemo, useState, type ReactNode} from 'react';
-import {
-  Heading,
-  Icon,
-  Table,
-  Text,
-  TextField,
-  ToggleButtonGroup,
-} from '@tecton/react';
-import type {TectonIconName} from '@tecton/react';
+import {Table, proportional} from '@tecton/react/Table';
+import {Heading, Text} from '@tecton/react/Text';
+import {TextInput} from '@tecton/react/TextInput';
+import {ToggleButton, ToggleButtonGroup} from '@tecton/react/ToggleButton';
+import {SearchIcon, tectonIconRegistry} from '@tecton/react/icons';
+import type {TectonIconName} from '@tecton/react/icons';
 import {foundationData} from '@/generated/foundationData';
 import type {TokenRow} from '@/types/docs';
 
@@ -55,7 +52,7 @@ function TokenTable({
       <Table
         data={rows.map(row => ({...row}))}
         idKey="path"
-        density="sm"
+        density="compact"
         isStriped
         columns={[
           ...(render
@@ -63,7 +60,7 @@ function TokenTable({
                 {
                   key: 'light' as const,
                   header: '',
-                  width: {share: 2, minWidth: 80},
+                  width: proportional(2, {minWidth: 80}),
                   renderCell: render,
                 },
               ]
@@ -71,25 +68,25 @@ function TokenTable({
           {
             key: 'path',
             header,
-            width: {share: 3, minWidth: 130},
+            width: proportional(3, {minWidth: 130}),
             renderCell: row => mono(row.path),
           },
           {
             key: 'token',
             header: 'Custom property',
-            width: {share: 4, minWidth: 190},
+            width: proportional(4, {minWidth: 190}),
             renderCell: row => mono(row.token),
           },
           {
             key: 'value',
             header: 'Value',
-            width: {share: 3, minWidth: 120},
+            width: proportional(3, {minWidth: 120}),
             renderCell: row => mono(row.value ?? '—'),
           },
           {
             key: 'description',
             header: 'What it is for',
-            width: {share: 6, minWidth: 180},
+            width: proportional(6, {minWidth: 180}),
             renderCell: row => row.description ?? '',
           },
         ]}
@@ -122,19 +119,19 @@ function ColourFoundation() {
 
   return (
     <div className="grid gap-2">
-      <Text display="block" color="secondary" variant="small">
+      <Text display="block" color="secondary" type="supporting">
         {foundationData.paletteTotal} colour roles, each with the value it takes
         in dark and in light. {foundationData.paletteDescribed} of them carry
         the design foundation&rsquo;s own description.
       </Text>
 
       <div className="not-prose my-4 max-w-sm">
-        <TextField
+        <TextInput
           label="Filter roles"
           placeholder="text, surface, #1d1c1f…"
           value={filter}
           onChange={setFilter}
-          startIcon="search"
+          startIcon={SearchIcon}
         />
       </div>
 
@@ -144,33 +141,33 @@ function ColourFoundation() {
             <Table
               data={group.rows.map(row => ({...row}))}
               idKey="path"
-              density="sm"
+              density="compact"
               isStriped
               columns={[
                 {
                   key: 'path',
                   header: 'Dark',
-                  width: {share: 1, minWidth: 74},
+                  width: proportional(1, {minWidth: 74}),
                   align: 'center',
                   renderCell: row => <Swatch value={row.dark} />,
                 },
                 {
                   key: 'light',
                   header: 'Light',
-                  width: {share: 1, minWidth: 74},
+                  width: proportional(1, {minWidth: 74}),
                   align: 'center',
                   renderCell: row => <Swatch value={row.light} />,
                 },
                 {
                   key: 'dark',
                   header: 'Role',
-                  width: {share: 3, minWidth: 160},
+                  width: proportional(3, {minWidth: 160}),
                   renderCell: row => mono(`${group.name}.${row.path}`),
                 },
                 {
                   key: 'description',
                   header: 'Values',
-                  width: {share: 3, minWidth: 170},
+                  width: proportional(3, {minWidth: 170}),
                   renderCell: row => (
                     <span className="flex flex-col">
                       {mono(`dark  ${row.dark}`)}
@@ -248,7 +245,7 @@ function TypographyFoundation() {
                     {row.sample}
                   </p>
                   {row.description ? (
-                    <Text variant="small" color="secondary" display="block">
+                    <Text type="supporting" color="secondary" display="block">
                       {row.description}
                     </Text>
                   ) : null}
@@ -393,6 +390,26 @@ function MotionFoundation() {
 /* Icons                                                                      */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * One glyph, drawn from the registry by name.
+ *
+ * `Icon` resolves a *semantic* role through the theme; the icons page is about
+ * the set itself, so it reaches for the glyph component the registry holds and
+ * draws it at the size the gallery uses.
+ */
+function Glyph({
+  name,
+  variant,
+}: {
+  name: TectonIconName;
+  variant: 'outline' | 'filled';
+}) {
+  const Component = tectonIconRegistry[name];
+  return (
+    <Component width={24} height={24} variant={variant} aria-hidden="true" />
+  );
+}
+
 function IconsFoundation() {
   const [variant, setVariant] = useState<'outline' | 'filled'>('outline');
   const [filter, setFilter] = useState('');
@@ -407,26 +424,27 @@ function IconsFoundation() {
     <div className="not-prose grid gap-6">
       <div className="flex flex-wrap items-end gap-4">
         <div className="min-w-[16rem] flex-1">
-          <TextField
+          <TextInput
             label="Filter glyphs"
             placeholder="well, chevron, layers…"
             value={filter}
             onChange={setFilter}
-            startIcon="search"
+            startIcon={SearchIcon}
           />
         </div>
         <ToggleButtonGroup
           label="Which cut of the glyph to draw"
-          items={[
-            {value: 'outline', label: 'Outline'},
-            {value: 'filled', label: 'Filled'},
-          ]}
           value={variant}
-          onChange={value => setVariant(value as 'outline' | 'filled')}
-        />
+          onChange={value =>
+            setVariant((value as 'outline' | 'filled') ?? 'outline')
+          }
+        >
+          <ToggleButton label="Outline" value="outline" />
+          <ToggleButton label="Filled" value="filled" />
+        </ToggleButtonGroup>
       </div>
 
-      <Text variant="small" color="secondary" display="block">
+      <Text type="supporting" color="secondary" display="block">
         {names.length} of {foundationData.iconNames.length} glyphs.
       </Text>
 
@@ -436,7 +454,7 @@ function IconsFoundation() {
             key={name}
             className="flex flex-col items-center gap-2 rounded-md border border-fd-border p-3 text-center"
           >
-            <Icon name={name as TectonIconName} variant={variant} size={24} />
+            <Glyph name={name as TectonIconName} variant={variant} />
             <code className="text-[0.6875rem] leading-tight break-words">
               {name}
             </code>

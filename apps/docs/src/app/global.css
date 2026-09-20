@@ -131,3 +131,54 @@ figure[data-rehype-pretty-code-figure],
     transition: none !important;
   }
 }
+
+/*
+ * A gallery tile.
+ *
+ * The showcase renders at twice the tile's width and is scaled back by half, so
+ * a 260px tile shows a 520px-wide composition: the example is drawn at a size it
+ * was designed for rather than squeezed into a thumbnail. Expressing it as
+ * `200%` plus `scale(0.5)` keeps it pure CSS — no measured width, so no
+ * ResizeObserver, so a tile can render on the server.
+ */
+.tecton-thumbnail-scaler {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  width: 200%;
+  height: 200%;
+  transform: scale(0.5);
+  transform-origin: top left;
+  pointer-events: none;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* A best-practice row's prose sits inside a card, outside the page's prose. */
+.tecton-guidance p {
+  margin: 0;
+}
+
+/*
+ * Keyboard focus, everywhere the chrome draws a control of its own.
+ *
+ * Tecton's components carry their own focus ring; these are the links and
+ * buttons this site draws itself, and a reader tabbing through the sidebar, the
+ * gallery or the related links has to be able to see where they are.
+ */
+#nd-docs-layout a:focus-visible,
+#nd-docs-layout button:focus-visible,
+#nd-nav a:focus-visible,
+#nd-nav button:focus-visible,
+#nd-subnav a:focus-visible,
+#nd-subnav button:focus-visible,
+#nd-sidebar a:focus-visible,
+#nd-sidebar button:focus-visible,
+#nd-tocnav a:focus-visible,
+#nd-toc a:focus-visible {
+  outline: 2px solid var(--color-fd-ring);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
