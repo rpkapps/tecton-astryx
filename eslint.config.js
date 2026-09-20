@@ -16,6 +16,10 @@ export default tseslint.config(
       // to do with this tree.
       '.claude/**',
       'apps/docs/src/generated/**',
+      'apps/docs/content/**',
+      'apps/docs/.next/**',
+      'apps/docs/.source/**',
+      'apps/docs/out/**',
       'design/**',
       'tokens/**',
       'screenshots/**',
