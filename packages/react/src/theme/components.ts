@@ -872,6 +872,16 @@ export const tectonComponents = {
       backgroundColor: local('--tecton-color-table-header'),
       color: 'var(--color-text-primary)',
       fontWeight: 'var(--font-weight-medium)',
+      /**
+       * The header is the lightest surface in the component — `#433d47`, which
+       * is what `design/components/table.md` measures — and on it the subtlest
+       * ink is one step too subtle: a sort arrow, a filter chevron or a
+       * tree-table's expand-all button paints from `--color-icon-secondary`
+       * and comes out at 2.88:1 there, under the 3:1 WCAG 1.4.11 asks of a
+       * control's glyph. The secondary ink, one stop up the same ramp, clears
+       * 4.3:1 on the same fill.
+       */
+      '--color-icon-secondary': 'var(--color-text-secondary)',
     },
   },
   'table-row': {
