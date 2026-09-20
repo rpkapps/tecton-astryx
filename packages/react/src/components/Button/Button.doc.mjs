@@ -1,4 +1,4 @@
-/** @type {import('@astryxdesign/cli/authoring').ComponentDoc} */
+/** @type {import('@tecton/docs').ComponentDoc} */
 export const docs = {
   name: 'Button',
   displayName: 'Button',
@@ -9,37 +9,36 @@ export const docs = {
     'button',
     'action',
     'submit',
-    'cta',
     'primary',
     'secondary',
-    'ghost',
-    'destructive',
+    'tertiary',
+    'outlined',
     'loading',
   ],
 
   usage: {
     description:
-      'Button triggers an action: submitting a form, confirming a choice, or starting a task. Its variant carries the emphasis, so the most important action in a view reads first.',
+      'Button triggers an action: submitting a form, confirming a choice, starting a job. The variant carries the emphasis, so the most important action in a view reads first.',
     bestPractices: [
       {
         guidance: true,
         description:
-          'Reserve the primary variant for the single most important action in a view; everything else is secondary or ghost.',
+          'Reserve `primary` for the single most important action in a view; everything else is quieter.',
       },
       {
         guidance: true,
         description:
-          'Write labels that name the action — "Save changes", "Delete project" — rather than "OK" or "Submit".',
+          'Write labels that name the action — "Save changes", "Generate model" — rather than "OK".',
       },
       {
         guidance: true,
         description:
-          'Turn on the loading state for actions that take time, so the button reports its own progress.',
+          'Turn on `isLoading` for an action that takes time, so the button reports its own progress.',
       },
       {
         guidance: false,
         description:
-          'Put two primary buttons in the same view; the hierarchy stops meaning anything.',
+          'Put two primary buttons in one view; the hierarchy stops meaning anything.',
       },
       {
         guidance: false,
@@ -47,6 +46,8 @@ export const docs = {
           'Use a button to navigate somewhere. Navigation belongs to links.',
       },
     ],
+    accessibility:
+      'The label is the accessible name, so a button always has one. Loading is announced, not only drawn.',
     anatomy: [
       {
         name: 'Icon',
@@ -56,8 +57,7 @@ export const docs = {
       {
         name: 'Label',
         required: true,
-        description:
-          'The visible text, which is also the accessible name of the control.',
+        description: 'The visible text, which is also the accessible name.',
       },
       {
         name: 'Spinner',
@@ -71,37 +71,47 @@ export const docs = {
     {
       name: 'label',
       type: 'string',
-      description: 'Accessible label, rendered as the visible button text.',
+      description:
+        'The visible text, which is also the accessible name of the control.',
       required: true,
     },
     {
       name: 'variant',
-      type: "'primary' | 'secondary' | 'ghost' | 'destructive'",
+      type: 'ButtonVariant',
       description: 'Visual emphasis.',
       default: "'secondary'",
     },
     {
       name: 'size',
-      type: "'sm' | 'md' | 'lg'",
+      type: 'ButtonSize',
       description: 'Control height.',
       default: "'md'",
     },
     {
+      name: 'icon',
+      type: 'TectonIconRef',
+      description:
+        'Glyph rendered before the label, by name or as an SVG component.',
+    },
+    {
       name: 'isDisabled',
       type: 'boolean',
-      description: 'Prevents interaction and dims the control.',
+      description: 'Prevents interaction and recesses the fill.',
       default: 'false',
     },
     {
       name: 'isLoading',
       type: 'boolean',
-      description: 'Shows a spinner while the action is in flight.',
+      description:
+        'Shows a spinner in place of the icon and blocks interaction while the action is in flight.',
       default: 'false',
     },
     {
-      name: 'icon',
-      type: 'ReactNode',
-      description: 'Icon element rendered before the label.',
+      name: 'isFullWidth',
+      type: 'boolean',
+      description:
+        "Stretches the button across its container — the shape a panel's committing action takes.",
+      default: 'false',
     },
     {
       name: 'type',
@@ -110,9 +120,21 @@ export const docs = {
       default: "'button'",
     },
     {
+      name: 'tooltip',
+      type: 'string',
+      description: 'Short text shown on hover and keyboard focus.',
+    },
+    {
       name: 'onClick',
       type: 'MouseEventHandler<HTMLButtonElement>',
       description: 'Click handler.',
     },
+  ],
+
+  examples: ['ButtonBasic', 'ButtonVariants', 'ButtonWithIcon'],
+
+  notes: [
+    "The design's `activated` state — a button stuck in the pressed look — is not on Button. A button that stays down is a ToggleButton.",
+    'There is no destructive variant: the design has none, and Tecton buttons are monochrome apart from the focus ring.',
   ],
 };

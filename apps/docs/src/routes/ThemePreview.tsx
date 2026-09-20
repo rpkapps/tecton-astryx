@@ -40,12 +40,20 @@ import {
 } from '@astryxdesign/core/Table';
 
 /*
- * The theme declares eight custom `Text` types, and the theme compiler emits
- * their CSS but not their type augmentation (its augmentation lookup expects a
- * `TextTypeMap` interface; the extension point for text types is
- * `CustomTextTypes` on the theme module). Declaring them here keeps this page
- * type-safe; the fidelity report records the gap.
+ * The names the Tecton theme adds to the upstream vocabulary, declared here.
+ *
+ * `@tecton/react` declares these for itself, but it does not publish them: a
+ * Tecton component maps its own vocabulary onto them, so nothing a consumer
+ * writes names an upstream type. This page is not a consumer — it drives the
+ * upstream components directly — so it declares what it needs.
+ *
+ * The eight custom `Text` types are the ones whose CSS the theme compiler
+ * emits without their augmentation (its lookup expects a `<Component><Prop>Map`
+ * interface; the extension point for text types is `CustomTextTypes` on the
+ * theme module). The fidelity report records that gap.
  */
+import type {} from '@astryxdesign/core/theme';
+
 declare module '@astryxdesign/core/theme' {
   interface CustomTextTypes {
     mediumStrong: true;
@@ -56,6 +64,25 @@ declare module '@astryxdesign/core/theme' {
     smallData: true;
     actionMedium: true;
     actionSmall: true;
+  }
+}
+
+declare module '@astryxdesign/core/Button' {
+  interface ButtonVariantMap {
+    outlined: true;
+    'text-only': true;
+  }
+}
+
+declare module '@astryxdesign/core/Banner' {
+  interface BannerStatusMap {
+    neutral: true;
+  }
+}
+
+declare module '@astryxdesign/core/Badge' {
+  interface BadgeVariantMap {
+    lime: true;
   }
 }
 

@@ -42,8 +42,127 @@ one component without the barrel:
 ```tsx
 import {Button} from '@tecton/react/Button';
 import {Panel} from '@tecton/react/Panel';
-import {tectonTheme, tectonToken} from '@tecton/react/theme';
+import {tecton, tectonToken} from '@tecton/react/theme';
+import {Icon} from '@tecton/react/icons';
 ```
+
+## Components
+
+Every component is exported from the package root and from its own subpath
+(`@tecton/react/Button`). The icon set lives at `@tecton/react/icons` and the
+tokens at `@tecton/react/theme`.
+
+### Actions
+
+| Component           | What it is                                                           |
+| ------------------- | -------------------------------------------------------------------- |
+| `Button`            | Triggers an action; five emphases from `primary` down to `textOnly`. |
+| `ButtonGroup`       | Joins buttons into one control for actions that belong together.     |
+| `Fab`               | The one action a screen is for, lifted off the surface.              |
+| `IconButton`        | A button whose whole content is one glyph.                           |
+| `Link`              | Navigates. Tecton links are marked by the underline, not by colour.  |
+| `Menu`              | A button that opens a list of actions, described as data.            |
+| `ToggleButton`      | A button that stays down — the activated look, as a state.           |
+| `ToggleButtonGroup` | A row of segments of which exactly one is chosen.                    |
+
+### Forms
+
+| Component       | What it is                                                            |
+| --------------- | --------------------------------------------------------------------- |
+| `Autocomplete`  | Narrows a long list as the person types, from memory or from a fetch. |
+| `Checkbox`      | One independent choice: on, off, or indeterminate.                    |
+| `CheckboxGroup` | A labelled set of checkboxes sharing one value.                       |
+| `Radio`         | One option inside a radio group.                                      |
+| `RadioGroup`    | A labelled set of mutually exclusive options.                         |
+| `Select`        | Picks one value from a known list, with optional search and sections. |
+| `Slider`        | Picks a number, or a range of two, by position.                       |
+| `Switch`        | An immediate on/off setting, with no separate save.                   |
+| `TextArea`      | Several lines of text, in the outlined appearance.                    |
+| `TextField`     | One line of text, in the outlined appearance.                         |
+
+### Content and status
+
+| Component     | What it is                                                              |
+| ------------- | ----------------------------------------------------------------------- |
+| `Alert`       | States something about the system; five statuses including `neutral`.   |
+| `Avatar`      | A person or a thing, as a photograph or as initials.                    |
+| `AvatarGroup` | Several avatars as one overlapping run, with a `+N` marker.             |
+| `Badge`       | A small pill labelling the thing next to it.                            |
+| `Chip`        | A compact label for a value the person put there; removable.            |
+| `ColorSwatch` | A square of colour standing for a series, with the lime selection ring. |
+| `Icon`        | One of the 131 Tecton glyphs, at 16, 20 or 24px.                        |
+| `Progress`    | How far along something is, linear or circular.                         |
+| `Tooltip`     | A short note revealed on hover and keyboard focus.                      |
+
+### Data
+
+| Component  | What it is                                                                 |
+| ---------- | -------------------------------------------------------------------------- |
+| `List`     | A vertical run of rows belonging to one collection.                        |
+| `ListItem` | One row of a list: a label, a second line, content at either end.          |
+| `Table`    | Rows of records with one column per field; columns render their own cells. |
+| `TreeView` | A hierarchy of rows that open and close.                                   |
+
+### Navigation
+
+| Component        | What it is                                                      |
+| ---------------- | --------------------------------------------------------------- |
+| `Breadcrumbs`    | The trail from the top of the hierarchy to where the person is. |
+| `BreadcrumbItem` | One crumb in that trail.                                        |
+| `Tabs`           | The strip that knows which stop is current.                     |
+| `Tab`            | One stop in a tab strip, for a panel or for a page.             |
+
+### Surfaces and overlays
+
+| Component        | What it is                                                          |
+| ---------------- | ------------------------------------------------------------------- |
+| `Accordion`      | One disclosure: a header that opens the content under it.           |
+| `AccordionGroup` | Coordinates a stack of accordions, one open at a time or many.      |
+| `Card`           | Bounds one thing: a record, a summary, a choice.                    |
+| `Dialog`         | Interrupts, for a decision or a consequence. Also the confirmation. |
+| `Panel`          | The titled surface Tecton builds screens out of.                    |
+| `useToast`       | Raises a short, transient message from a plain data payload.        |
+
+### Layout and type
+
+| Component                   | What it is                                                  |
+| --------------------------- | ----------------------------------------------------------- |
+| `Divider`                   | A hairline; three emphases, all 1px.                        |
+| `Grid`                      | Columns, fixed in number or fitted to a minimum width.      |
+| `Stack`, `HStack`, `VStack` | One direction, one gap, both on the 4px grid.               |
+| `Heading`                   | Names a section; level sets the element and the size.       |
+| `Text`                      | A run of words in one of the fourteen Tecton text variants. |
+
+`docs/engineering/component-mapping.md` in the repository lists, for each
+component, what it is built on, how the props map, and where Tecton's design
+and what the component can express disagree.
+
+## Icons
+
+131 glyphs drawn for Tecton, about a quarter of them subsurface shapes with no
+equivalent anywhere else. Every glyph paints in `currentColor`, so an icon takes
+the colour of the text beside it.
+
+```tsx
+import {Icon, DrillBitIcon} from '@tecton/react/icons';
+
+<Icon name="drill-bit" size={20} />
+<Icon name="warning" size={24} label="Warning" />
+<DrillBitIcon />;
+```
+
+Any Tecton prop that takes an icon takes a glyph **name**, so nothing a Tecton
+component needs is ever imported from anywhere else:
+
+```tsx
+<Button label="Add horizon" icon="add" />
+<TextField label="Search" value={query} onChange={setQuery} startIcon="search" />
+```
+
+An icon is decorative by default and hidden from assistive technology; pass
+`label` only when the glyph carries meaning nothing else repeats. Two cuts —
+`outline` and `filled` — come from the same artwork, and `strata` is the one
+glyph that carries its own colour.
 
 ## Colour mode
 
@@ -96,8 +215,10 @@ Sixteen text styles, in three groups: interface (`display1`–`3`, `heading1`–
 (`largeData`, `mediumData`, `smallData` — monospace with tabular figures, for
 anything measured) and action (`actionMedium`, `actionSmall`).
 
-The theme has two weights, 400 and 500, because the design has two. A component
-asking for `semibold` gets 500.
+`Text` carries the fourteen non-heading variants and `Heading` the rest;
+`weight` names all four steps — `regular`, `medium`, `semibold`, `bold`. The
+Tecton foundation defines two weights, 400 and 500, so `semibold` and `bold`
+resolve to the heaviest the theme carries, which today are 500 and 600.
 
 ## Fonts
 

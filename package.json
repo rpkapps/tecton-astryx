@@ -20,8 +20,10 @@
     "format:check": "prettier --check .",
     "palette:check": "pnpm --filter @tecton/react palette:check",
     "surface:check": "node scripts/check-consumer-surface.mjs",
-    "check": "pnpm format:check && pnpm lint && pnpm palette:check && pnpm build && pnpm typecheck && pnpm test && pnpm surface:check",
-    "clean": "pnpm -r --if-present clean && rm -rf node_modules/.cache"
+    "check": "pnpm format:check && pnpm lint && pnpm palette:check && pnpm icons:check && pnpm build && pnpm typecheck && pnpm test && pnpm surface:check && pnpm docs:check",
+    "clean": "pnpm -r --if-present clean && rm -rf node_modules/.cache",
+    "icons:check": "pnpm --filter @tecton/react icons:check",
+    "docs:check": "node scripts/check-docs-drift.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

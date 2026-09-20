@@ -37,10 +37,14 @@ pnpm --filter @tecton/react test
 pnpm --filter @tecton/docs dev
 ```
 
-`pnpm check` also runs `scripts/check-consumer-surface.mjs`, which fails if the
-name of the upstream component library leaks into the consumer-facing surface,
-and `packages/react/scripts/generate-palette.mjs --check`, which fails if the
-generated colour palette has drifted from `tokens/tecton.tokens.json`.
+`pnpm check` also runs four guards:
+
+| Guard                                                 | Fails when                                                                                                                                    |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `scripts/check-consumer-surface.mjs`                  | the upstream library's name reaches any published subpath's declarations — an exported name, a type alias's right-hand side, or a doc comment |
+| `scripts/check-docs-drift.mjs`                        | a component has no doc, a documented prop does not exist, a declared prop is undocumented, or an example is missing or does not compile       |
+| `packages/react/scripts/generate-palette.mjs --check` | the generated colour palette has drifted from `tokens/tecton.tokens.json`                                                                     |
+| `packages/react/scripts/generate-icons.mjs --check`   | the generated icon components have drifted from `design/icons/tecton/`                                                                        |
 
 `node scripts/capture-fidelity.mjs` screenshots the theme gallery at
 `/preview/theme` in both colour modes into `docs/design/fidelity/`; the renders
@@ -50,10 +54,15 @@ Requires Node >= 22 and pnpm 10.33.
 
 ## Status
 
-Phase 1: repository skeleton, a verified build pipeline, and the real Tecton
-palette, type scale and component theme. The component set and the documentation
-site are still placeholders that later phases replace.
+Phase 2: the consumer-facing component surface. 47 components and the `useToast`
+hook, each with its documentation, its examples and its tests; the 131 Tecton
+glyphs generated from the design delivery; and two new drift guards. The
+documentation site still renders from generated data rather than a real site —
+Phase 4 builds that.
 
+- `docs/engineering/component-mapping.md` — every component, what it is built
+  on, how its props map, and where Tecton's design and the upstream model
+  disagree.
 - `docs/engineering/build-pipeline.md` — how the package is built.
 - `docs/design/fidelity-report.md` — what survived the port from the design, what
   was approximated, and what could not be expressed. Read its open questions.
@@ -62,7 +71,43 @@ site are still placeholders that later phases replace.
 
 ## Deviations
 
-Choices that differ from the phase-1 brief, and why.
+Choices that differ from the briefs, and why.
+
+### Phase 2
+
+- **`tectonTheme` is exported as an opaque handle, not as the theme object.**
+  The object's shape is an upstream type, so publishing it would have put the
+  upstream name in `@tecton/react/theme`'s declarations. `@tecton/react/theme`
+  is now `src/theme/public.ts`, which exports `tectonTheme: TectonTheme` — a
+  Tecton interface with one member, `name`. `src/theme/index.ts` stays as the
+  package-internal barrel `TectonProvider` reads the real object through.
+- **Tecton's Badge is the standalone pill, not the overlay.** The design has
+  both; the overlay (anchored to a child, count capped at "99+") is a different
+  component and is not built. `Chip` is the interactive sibling.
+- **Text fields ship the outlined appearance only.** The design's filled and
+  text-only field appearances have no variant axis upstream. `Select` is the
+  exception: its `appearance` prop offers `textOnly`, because the upstream
+  selector has a borderless variant and the panel designs use it inline.
+- **`Accordion` has no header action row.** The design puts icon buttons in the
+  header; the trigger upstream is one button, and nesting buttons inside it is
+  not something assistive technology handles. Recorded in the component's docs.
+- **Four font weights are exposed, two exist.** `Text`, `Heading` and `Link`
+  take `regular | medium | semibold | bold`. The Tecton foundation defines 400
+  and 500, so `semibold` and `bold` resolve to the heaviest weights the theme
+  carries — 500 and 600 today.
+- **`src/theme/augmentations.d.ts` declares the theme's type augmentations.**
+  The theme compiler emits four of them into `dist/`, but not the custom `Text`
+  types, and `src/` has to type-check before a build has run. The file is
+  internal and is not emitted.
+- **The `/preview/theme` page declares those augmentations for itself.** It
+  drives the upstream components directly, so it is not a consumer and cannot
+  reach them through Tecton. Phase 4 removes the page.
+- **Generated files are formatted with Prettier by their generator**, so
+  `pnpm format` and `--check` never disagree about one.
+- **`packages/react` type-checks with `vite/client` types.** The test that
+  renders every example finds them with `import.meta.glob`.
+
+### Phase 1
 
 - **Token vars are imported from the `theme/tokens.stylex` subpath**, not the
   `theme` barrel. StyleX has to resolve the vars module statically at compile

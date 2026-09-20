@@ -29,9 +29,36 @@ export interface ComponentDoc {
   usage: {
     description: string;
     bestPractices?: readonly DocGuidance[];
+    /** How the component behaves for assistive technology. */
+    accessibility?: string;
     anatomy?: readonly DocAnatomyPart[];
   };
   props?: readonly DocProp[];
+  /** Ids of the examples that belong to this component. */
+  examples?: readonly string[];
+  /**
+   * The exported type the props table describes, when it is not
+   * `<name>Props` — a hook documents its payload instead.
+   */
+  propsType?: string;
+  /** Where Tecton's design and what the component can express disagree. */
+  notes?: readonly string[];
+}
+
+/** One runnable example, authored beside the component it demonstrates. */
+export interface ExampleDoc {
+  /** Matches the file name, and the ids a component doc lists. */
+  id: string;
+  /** What the example is called in the documentation. */
+  name: string;
+  /** The component the example belongs to. */
+  component: string;
+  description: string;
+  /**
+   * Where the example lives, relative to `packages/react/src`. Filled in by
+   * `scripts/generate-data.mjs`; the authored file does not carry it.
+   */
+  path?: string;
 }
 
 export interface DocProseBlock {

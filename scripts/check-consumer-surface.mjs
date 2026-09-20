@@ -8,8 +8,16 @@
  *
  *   1. any file under `fixtures/consumers/<app>/src/**` mentions the upstream
  *      name (case-insensitive), or
- *   2. any exported name of `packages/react/dist/index.d.ts` (following local
- *      `export * from` re-exports) contains it.
+ *   2. the declarations behind **any** exported subpath of `@tecton/react`
+ *      mention it — in an exported name, in the right-hand side of a type
+ *      alias, in an `import(...)` inside a published type, or in a doc comment
+ *      an editor will show. A `.d.ts` carries no implementation, so every
+ *      mention in one is part of what a consumer is handed.
+ *
+ * Rule 2 is deliberately blunt: re-exporting an upstream type under a Tecton
+ * name (`export type ButtonVariant = AstryxButtonVariant`) hides the name from
+ * the export list but not from the consumer's editor, so the text of every
+ * reachable declaration file is checked, not just the names it exports.
  *
  * Internal imports inside packages/react/src are expected and not checked.
  */
@@ -18,6 +26,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const PACKAGE = path.join(ROOT, 'packages', 'react');
 const FORBIDDEN = /astryx/i;
 
 /** @type {string[]} */
@@ -75,6 +84,20 @@ function resolveDeclaration(fromFile, specifier) {
   return candidates.find(c => fs.existsSync(c) && c.endsWith('.d.ts'));
 }
 
+/** Every declaration file reachable from an entry point by re-export. */
+function reachable(file, seen = new Set()) {
+  if (!file || seen.has(file)) return seen;
+  seen.add(file);
+  const source = fs.readFileSync(file, 'utf8');
+  for (const match of source.matchAll(
+    /export\s+(?:\*|type\s+\*|\{[^}]*\})\s+from\s+['"](\.[^'"]+)['"]/g,
+  )) {
+    reachable(resolveDeclaration(file, match[1]), seen);
+  }
+  return seen;
+}
+
+/** The names an entry point exports, following local re-exports. */
 function exportedNames(file, seen = new Set()) {
   if (!file || seen.has(file)) return [];
   seen.add(file);
@@ -108,29 +131,68 @@ function exportedNames(file, seen = new Set()) {
   return names;
 }
 
-const entryTypes = path.join(ROOT, 'packages', 'react', 'dist', 'index.d.ts');
-if (!fs.existsSync(entryTypes)) {
+const pkg = JSON.parse(
+  fs.readFileSync(path.join(PACKAGE, 'package.json'), 'utf8'),
+);
+
+/** Every subpath the package publishes types for, with its entry `.d.ts`. */
+const entries = Object.entries(pkg.exports ?? {})
+  .map(([subpath, target]) => [
+    subpath,
+    typeof target === 'object' && target !== null ? target.types : undefined,
+  ])
+  .filter(([, types]) => typeof types === 'string')
+  .map(([subpath, types]) => [subpath, path.join(PACKAGE, types)]);
+
+if (entries.length === 0) {
   failures.push(
-    'packages/react/dist/index.d.ts is missing — build @tecton/react before running this check.',
+    'packages/react/package.json publishes no typed subpaths — is the manifest broken?',
   );
-} else {
-  const names = exportedNames(entryTypes);
+}
+
+const checkedFiles = new Set();
+let checkedNames = 0;
+
+for (const [subpath, entry] of entries) {
+  if (!fs.existsSync(entry)) {
+    failures.push(
+      `${path.relative(ROOT, entry)} is missing — build @tecton/react before running this check (subpath "${subpath}").`,
+    );
+    continue;
+  }
+
+  const names = exportedNames(entry);
   if (names.length === 0) {
     failures.push(
-      'packages/react/dist/index.d.ts exports nothing — is the build broken?',
+      `${path.relative(ROOT, entry)} exports nothing — is the build broken?`,
     );
   }
+  checkedNames += names.length;
   for (const name of names) {
     if (FORBIDDEN.test(name)) {
       failures.push(
-        `packages/react/dist/index.d.ts exports "${name}", which leaks the upstream name.`,
+        `"${name}", exported from "@tecton/react${subpath.slice(1)}", leaks the upstream name.`,
       );
     }
   }
-  console.log(
-    `Checked ${names.length} exported names in packages/react/dist/index.d.ts.`,
-  );
+
+  for (const file of reachable(entry)) {
+    if (checkedFiles.has(file)) continue;
+    checkedFiles.add(file);
+    const lines = fs.readFileSync(file, 'utf8').split('\n');
+    lines.forEach((line, i) => {
+      if (FORBIDDEN.test(line)) {
+        failures.push(
+          `${path.relative(ROOT, file)}:${i + 1} puts the upstream name in the published types: ${line.trim()}`,
+        );
+      }
+    });
+  }
 }
+
+console.log(
+  `Checked ${checkedNames} exported names across ${entries.length} subpaths and ${checkedFiles.size} declaration files.`,
+);
 
 if (failures.length > 0) {
   console.error('\nConsumer surface check FAILED:\n');

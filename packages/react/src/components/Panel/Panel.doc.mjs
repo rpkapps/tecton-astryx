@@ -1,38 +1,30 @@
-/** @type {import('@astryxdesign/cli/authoring').ComponentDoc} */
+/** @type {import('@tecton/docs').ComponentDoc} */
 export const docs = {
   name: 'Panel',
   displayName: 'Panel',
   group: 'Panel',
-  category: 'Layout',
+  category: 'Surfaces',
 
-  keywords: [
-    'panel',
-    'surface',
-    'section',
-    'card',
-    'container',
-    'header',
-    'region',
-  ],
+  keywords: ['panel', 'surface', 'region', 'header', 'sidebar'],
 
   usage: {
     description:
-      'Panel is a titled surface that groups related content into one region of a page. It renders a section element with an optional header row for a title, supporting copy and controls.',
+      'Panel is the titled surface Tecton builds screens out of: a header row with a title, optional actions and an optional close, a 1px rule under it, and the content below. Like every Tecton surface it is darker than the page it floats on.',
     bestPractices: [
       {
         guidance: true,
         description:
-          'Give a panel a title whenever its content is not obvious from context; the title becomes the landmark people scan for.',
+          'Give a panel a title; it is the landmark people scan for.',
       },
       {
         guidance: true,
         description:
-          'Keep header actions to the one or two that operate on the whole panel.',
+          'Keep header actions to the one or two that act on the whole panel.',
       },
       {
         guidance: true,
         description:
-          'When a panel has no visible title, pass an accessible label so the region is still announced.',
+          'Pass an accessible label when a panel has no visible title, so the region is still announced.',
       },
       {
         guidance: false,
@@ -42,25 +34,36 @@ export const docs = {
       {
         guidance: false,
         description:
-          'Use a panel purely to add padding around content. Reach for layout primitives instead.',
+          'Use a panel purely to add padding. Reach for a stack instead.',
       },
     ],
+    accessibility:
+      'A panel is a labelled region: the title names it, and `aria-label` stands in when there is no visible title.',
     anatomy: [
+      {
+        name: 'Icon',
+        required: false,
+        description: 'Leading glyph in the header.',
+      },
       {
         name: 'Title',
         required: false,
-        description: 'Heading that names the region.',
+        description: 'Names the region.',
       },
       {
         name: 'Description',
         required: false,
-        description: 'Supporting copy rendered under the title.',
+        description: 'Supporting copy under the title.',
       },
       {
         name: 'Actions',
         required: false,
-        description:
-          'Controls aligned to the end of the header row, acting on the whole panel.',
+        description: 'Controls acting on the whole panel.',
+      },
+      {
+        name: 'Close',
+        required: false,
+        description: 'Takes the panel away.',
       },
       {
         name: 'Body',
@@ -77,6 +80,12 @@ export const docs = {
       description: 'Heading shown in the panel header.',
     },
     {
+      name: 'icon',
+      type: 'TectonIconRef',
+      description:
+        'Glyph rendered before the title, by name or as an SVG component.',
+    },
+    {
       name: 'description',
       type: 'ReactNode',
       description: 'Supporting copy rendered under the title.',
@@ -87,9 +96,21 @@ export const docs = {
       description: 'Controls aligned to the end of the header row.',
     },
     {
+      name: 'onClose',
+      type: '() => void',
+      description:
+        'When set, the header ends with a close button that calls this.',
+    },
+    {
+      name: 'closeLabel',
+      type: 'string',
+      description: 'Accessible name for the close button.',
+      default: "'Close panel'",
+    },
+    {
       name: 'children',
       type: 'ReactNode',
-      description: 'The content the panel groups.',
+      description: 'Panel content.',
     },
     {
       name: 'id',
@@ -99,7 +120,14 @@ export const docs = {
     {
       name: 'aria-label',
       type: 'string',
-      description: 'Accessible label for a panel with no visible title.',
+      description: 'Accessible label when the panel has no visible title.',
     },
+  ],
+
+  examples: ['PanelBasic', 'PanelWithActions'],
+
+  notes: [
+    'Tecton owns this component outright. It is written in StyleX against the design tokens, which is what proves the package can ship its own compiled styles.',
+    'There is no shadow and no elevation prop. Depth in Tecton is carried by darkness and a rule, which is the inverse of the usual convention.',
   ],
 };

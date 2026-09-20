@@ -20,16 +20,204 @@
     },
     "./styles.css": "./dist/tecton.css",
     "./theme": {
-      "types": "./dist/theme/index.d.ts",
-      "default": "./dist/theme/index.js"
+      "types": "./dist/theme/public.d.ts",
+      "default": "./dist/theme/public.js"
+    },
+    "./icons": {
+      "types": "./dist/icons/index.d.ts",
+      "default": "./dist/icons/index.js"
+    },
+    "./Accordion": {
+      "types": "./dist/components/Accordion/index.d.ts",
+      "default": "./dist/components/Accordion/index.js"
+    },
+    "./AccordionGroup": {
+      "types": "./dist/components/AccordionGroup/index.d.ts",
+      "default": "./dist/components/AccordionGroup/index.js"
+    },
+    "./Alert": {
+      "types": "./dist/components/Alert/index.d.ts",
+      "default": "./dist/components/Alert/index.js"
+    },
+    "./Autocomplete": {
+      "types": "./dist/components/Autocomplete/index.d.ts",
+      "default": "./dist/components/Autocomplete/index.js"
+    },
+    "./Avatar": {
+      "types": "./dist/components/Avatar/index.d.ts",
+      "default": "./dist/components/Avatar/index.js"
+    },
+    "./AvatarGroup": {
+      "types": "./dist/components/AvatarGroup/index.d.ts",
+      "default": "./dist/components/AvatarGroup/index.js"
+    },
+    "./Badge": {
+      "types": "./dist/components/Badge/index.d.ts",
+      "default": "./dist/components/Badge/index.js"
+    },
+    "./BreadcrumbItem": {
+      "types": "./dist/components/BreadcrumbItem/index.d.ts",
+      "default": "./dist/components/BreadcrumbItem/index.js"
+    },
+    "./Breadcrumbs": {
+      "types": "./dist/components/Breadcrumbs/index.d.ts",
+      "default": "./dist/components/Breadcrumbs/index.js"
     },
     "./Button": {
       "types": "./dist/components/Button/index.d.ts",
       "default": "./dist/components/Button/index.js"
     },
+    "./ButtonGroup": {
+      "types": "./dist/components/ButtonGroup/index.d.ts",
+      "default": "./dist/components/ButtonGroup/index.js"
+    },
+    "./Card": {
+      "types": "./dist/components/Card/index.d.ts",
+      "default": "./dist/components/Card/index.js"
+    },
+    "./Checkbox": {
+      "types": "./dist/components/Checkbox/index.d.ts",
+      "default": "./dist/components/Checkbox/index.js"
+    },
+    "./CheckboxGroup": {
+      "types": "./dist/components/CheckboxGroup/index.d.ts",
+      "default": "./dist/components/CheckboxGroup/index.js"
+    },
+    "./Chip": {
+      "types": "./dist/components/Chip/index.d.ts",
+      "default": "./dist/components/Chip/index.js"
+    },
+    "./ColorSwatch": {
+      "types": "./dist/components/ColorSwatch/index.d.ts",
+      "default": "./dist/components/ColorSwatch/index.js"
+    },
+    "./Dialog": {
+      "types": "./dist/components/Dialog/index.d.ts",
+      "default": "./dist/components/Dialog/index.js"
+    },
+    "./Divider": {
+      "types": "./dist/components/Divider/index.d.ts",
+      "default": "./dist/components/Divider/index.js"
+    },
+    "./Fab": {
+      "types": "./dist/components/Fab/index.d.ts",
+      "default": "./dist/components/Fab/index.js"
+    },
+    "./Grid": {
+      "types": "./dist/components/Grid/index.d.ts",
+      "default": "./dist/components/Grid/index.js"
+    },
+    "./HStack": {
+      "types": "./dist/components/HStack/index.d.ts",
+      "default": "./dist/components/HStack/index.js"
+    },
+    "./Heading": {
+      "types": "./dist/components/Heading/index.d.ts",
+      "default": "./dist/components/Heading/index.js"
+    },
+    "./Icon": {
+      "types": "./dist/components/Icon/index.d.ts",
+      "default": "./dist/components/Icon/index.js"
+    },
+    "./IconButton": {
+      "types": "./dist/components/IconButton/index.d.ts",
+      "default": "./dist/components/IconButton/index.js"
+    },
+    "./Link": {
+      "types": "./dist/components/Link/index.d.ts",
+      "default": "./dist/components/Link/index.js"
+    },
+    "./List": {
+      "types": "./dist/components/List/index.d.ts",
+      "default": "./dist/components/List/index.js"
+    },
+    "./ListItem": {
+      "types": "./dist/components/ListItem/index.d.ts",
+      "default": "./dist/components/ListItem/index.js"
+    },
+    "./Menu": {
+      "types": "./dist/components/Menu/index.d.ts",
+      "default": "./dist/components/Menu/index.js"
+    },
     "./Panel": {
       "types": "./dist/components/Panel/index.d.ts",
       "default": "./dist/components/Panel/index.js"
+    },
+    "./Progress": {
+      "types": "./dist/components/Progress/index.d.ts",
+      "default": "./dist/components/Progress/index.js"
+    },
+    "./Radio": {
+      "types": "./dist/components/Radio/index.d.ts",
+      "default": "./dist/components/Radio/index.js"
+    },
+    "./RadioGroup": {
+      "types": "./dist/components/RadioGroup/index.d.ts",
+      "default": "./dist/components/RadioGroup/index.js"
+    },
+    "./Select": {
+      "types": "./dist/components/Select/index.d.ts",
+      "default": "./dist/components/Select/index.js"
+    },
+    "./Slider": {
+      "types": "./dist/components/Slider/index.d.ts",
+      "default": "./dist/components/Slider/index.js"
+    },
+    "./Stack": {
+      "types": "./dist/components/Stack/index.d.ts",
+      "default": "./dist/components/Stack/index.js"
+    },
+    "./Switch": {
+      "types": "./dist/components/Switch/index.d.ts",
+      "default": "./dist/components/Switch/index.js"
+    },
+    "./Tab": {
+      "types": "./dist/components/Tab/index.d.ts",
+      "default": "./dist/components/Tab/index.js"
+    },
+    "./Table": {
+      "types": "./dist/components/Table/index.d.ts",
+      "default": "./dist/components/Table/index.js"
+    },
+    "./Tabs": {
+      "types": "./dist/components/Tabs/index.d.ts",
+      "default": "./dist/components/Tabs/index.js"
+    },
+    "./Text": {
+      "types": "./dist/components/Text/index.d.ts",
+      "default": "./dist/components/Text/index.js"
+    },
+    "./TextArea": {
+      "types": "./dist/components/TextArea/index.d.ts",
+      "default": "./dist/components/TextArea/index.js"
+    },
+    "./TextField": {
+      "types": "./dist/components/TextField/index.d.ts",
+      "default": "./dist/components/TextField/index.js"
+    },
+    "./Toast": {
+      "types": "./dist/components/Toast/index.d.ts",
+      "default": "./dist/components/Toast/index.js"
+    },
+    "./ToggleButton": {
+      "types": "./dist/components/ToggleButton/index.d.ts",
+      "default": "./dist/components/ToggleButton/index.js"
+    },
+    "./ToggleButtonGroup": {
+      "types": "./dist/components/ToggleButtonGroup/index.d.ts",
+      "default": "./dist/components/ToggleButtonGroup/index.js"
+    },
+    "./Tooltip": {
+      "types": "./dist/components/Tooltip/index.d.ts",
+      "default": "./dist/components/Tooltip/index.js"
+    },
+    "./TreeView": {
+      "types": "./dist/components/TreeView/index.d.ts",
+      "default": "./dist/components/TreeView/index.js"
+    },
+    "./VStack": {
+      "types": "./dist/components/VStack/index.d.ts",
+      "default": "./dist/components/VStack/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -39,7 +227,9 @@
     "palette:check": "node scripts/generate-palette.mjs --check",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "generate:icons": "node scripts/generate-icons.mjs",
+    "icons:check": "node scripts/generate-icons.mjs --check"
   },
   "dependencies": {
     "@astryxdesign/core": "0.6.2",

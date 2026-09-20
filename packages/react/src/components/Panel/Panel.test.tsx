@@ -1,5 +1,5 @@
-import {describe, expect, it} from 'vitest';
-import {render, screen} from '@testing-library/react';
+import {describe, expect, it, vi} from 'vitest';
+import {fireEvent, render, screen} from '@testing-library/react';
 import {TectonProvider} from '../../provider/TectonProvider.js';
 import {Panel} from './Panel.js';
 
@@ -30,5 +30,19 @@ describe('Panel', () => {
     );
 
     expect(screen.getByRole('region', {name: 'Activity'})).toBeInTheDocument();
+  });
+
+  it('closes through the header button when it is given a close handler', () => {
+    const onClose = vi.fn();
+    render(
+      <TectonProvider>
+        <Panel title="AI Agent" onClose={onClose} closeLabel="Close AI Agent">
+          <p>Body</p>
+        </Panel>
+      </TectonProvider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', {name: 'Close AI Agent'}));
+    expect(onClose).toHaveBeenCalledOnce();
   });
 });

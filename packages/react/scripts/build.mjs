@@ -4,6 +4,7 @@
  *
  * Steps, in order:
  *   0. check the generated palette is in sync with tokens/tecton.tokens.json
+ *      and the generated icons with design/icons/tecton/
  *   1. clean dist/
  *   2. compile src/**\/*.{ts,tsx} with Babel (TypeScript + automatic JSX +
  *      StyleX), collecting the StyleX rules every file produces
@@ -79,6 +80,14 @@ run(
   process.execPath,
   [path.join(PACKAGE_ROOT, 'scripts', 'generate-palette.mjs'), '--check'],
   'generate-palette --check',
+);
+
+// 0b — icon drift -------------------------------------------------------------
+step('Checking the generated icons against the design delivery');
+run(
+  process.execPath,
+  [path.join(PACKAGE_ROOT, 'scripts', 'generate-icons.mjs'), '--check'],
+  'generate-icons --check',
 );
 
 // 1 — clean -------------------------------------------------------------------
