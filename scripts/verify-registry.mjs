@@ -18,7 +18,7 @@
  *      npmjs uplink (so the consumers' own dependencies resolve normally);
  *   2. builds the package, publishes it as version A = whatever
  *      `packages/react/package.json` says, then derives version B — the patch
- *      version bumped, `--color-accent` retuned and Panel's own padding moved
+ *      version bumped, `--color-accent` retuned and the card's padding moved
  *      one step up the spacing scale — and publishes that too;
  *   3. installs and builds `fixtures/consumers/registry-vite-app` with plain
  *      `npm` (not pnpm), and asserts in Chromium that the built page is
@@ -448,13 +448,13 @@ function stage(dir, version) {
 
 /**
  * Turn a staged copy into "the next release": one retuned theme token and one
- * component whose own declaration moved with it.
+ * per-component decision that moved with it.
  *
- * The token lives in the built CSS as a plain declaration, and a StyleX class
- * name is a hash of its declaration — so giving Panel's padding a new class
- * with a new value reproduces exactly what a rebuild from changed source would
- * have produced, which is what makes the two versions' component rules coexist
- * on a page the way two real releases' do.
+ * Both live in the built CSS as plain declarations inside the theme's own
+ * `@scope`, because Tecton is a theme: it publishes the component system as it
+ * is and every rule Tecton itself ships is a theme rule. Rewriting them here
+ * therefore reproduces exactly what a rebuild from changed source would have
+ * produced.
  */
 function deriveVersionB(dir) {
   const sheet = file => path.join(dir, 'dist', file);
@@ -482,49 +482,37 @@ function deriveVersionB(dir) {
     throw new Error('No stylesheet carried a --color-accent declaration.');
   }
 
-  // Panel's own padding, found through the class its built code actually uses
-  // rather than through a hard-coded value.
-  const panelJs = path.join(dir, 'dist', 'components', 'Panel', 'Panel.js');
-  const panelCode = fs.readFileSync(panelJs, 'utf8');
+  // The card's padding: a per-component decision the theme makes, read out of
+  // the built CSS rather than hard-coded, and moved one step up the scale.
+  const CARD_PADDING = '--astryx-card-padding';
   const bundle = fs.readFileSync(sheet('tecton.css'), 'utf8');
-  let padding = null;
-  for (const match of bundle.matchAll(
-    /\.([A-Za-z_][\w-]*)\{padding:var\(--spacing-(\d+)\)\}/g,
-  )) {
-    if (panelCode.includes(match[1])) {
-      padding = {className: match[1], step: Number(match[2])};
-      break;
-    }
-  }
-  if (!padding) {
+  const declared = bundle.match(
+    new RegExp(`${CARD_PADDING}:\\s*var\\(--spacing-(\\d+)\\)`),
+  );
+  if (!declared) {
     throw new Error(
-      "Could not find Panel's padding class in the built CSS — has Panel changed?",
+      `No stylesheet set ${CARD_PADDING} from the spacing scale — has the theme's card override changed?`,
     );
   }
-  const toStep = padding.step * 2;
-  const classB = `tectonb${toStep}pad`;
+  const fromStep = Number(declared[1]);
+  const toStep = fromStep * 2;
   let paddingEdits = 0;
   for (const file of STYLESHEETS) {
     paddingEdits += rewrite(sheet(file), css =>
       css.replaceAll(
-        `.${padding.className}{padding:var(--spacing-${padding.step})}`,
-        `.${classB}{padding:var(--spacing-${toStep})}`,
+        new RegExp(`(${CARD_PADDING}:\\s*)var\\(--spacing-${fromStep}\\)`, 'g'),
+        `$1var(--spacing-${toStep})`,
       ),
     );
   }
   if (paddingEdits === 0) {
-    throw new Error(`No stylesheet carried .${padding.className}`);
-  }
-  if (
-    rewrite(panelJs, code => code.replaceAll(padding.className, classB)) === 0
-  ) {
-    throw new Error(`Panel.js does not reference ${padding.className}`);
+    throw new Error(`No stylesheet carried ${CARD_PADDING}`);
   }
 
   return {
     tokenEdits,
     paddingEdits,
-    fromVar: `--spacing-${padding.step}`,
+    fromVar: `--spacing-${fromStep}`,
     toVar: `--spacing-${toStep}`,
   };
 }
@@ -574,7 +562,7 @@ async function publishVersions(registry) {
     'publish',
     'version B was derived in a copy, not in the workspace',
     workspaceStill === a,
-    `--color-accent in ${derived.tokenEdits} sheets, Panel ${derived.fromVar} → ${derived.toVar}`,
+    `--color-accent in ${derived.tokenEdits} sheets, card padding ${derived.fromVar} → ${derived.toVar}`,
   );
 
   publish(stageA, registry.url);
@@ -859,17 +847,19 @@ async function verifyMfe(registry, versions, browser) {
     );
     check(
       'consumer-2',
-      "each container's Panel padding comes from its own version",
-      containers.a.padding === containers.a.spacingFrom &&
-        containers.b.padding === containers.b.spacingTo &&
-        containers.a.padding !== containers.b.padding,
-      `A ${containers.a.padding} (${versions.fromVar}), B ${containers.b.padding} (${versions.toVar})`,
+      "both containers take the host's card padding",
+      containers.a.padding === containers.b.padding,
+      // Tecton is a theme: its per-component decisions live in the theme layer
+      // beside its tokens, under one theme name, so the host's single
+      // tokens.css decides them for every container — exactly as it decides
+      // the accent above. One theme layer on the page, nothing contested.
+      `${containers.a.padding} in both (${versions.fromVar} → ${versions.toVar} between versions)`,
     );
     check(
       'consumer-2',
-      'the two Panels carry different atomic classes',
-      containers.a.classes !== containers.b.classes,
-      'each element carries only its own version’s rule',
+      'both containers render the same component classes',
+      containers.a.classes === containers.b.classes,
+      'the components are the component system’s own, so their class names match',
     );
     check(
       'consumer-2',
@@ -970,7 +960,7 @@ async function verifyMfe(registry, versions, browser) {
       'one layer stack across two installed copies',
     );
 
-    // --- one toast viewport for the page ----------------------------------
+    // --- each copy's toasts reach its own viewport -------------------------
     await openPage(page, site.url);
     await page.click('[data-testid="a-raise-toast"]');
     await page.click('[data-testid="b-raise-toast"]');
@@ -984,11 +974,14 @@ async function verifyMfe(registry, versions, browser) {
     });
     check(
       'consumer-2',
-      'toasts from both versions land in one viewport',
-      shown.viewports === 1 &&
+      'both versions show their toasts',
+      // One viewport per installed copy: `useToast` is the component system's
+      // own hook and its toast body is a ReactNode, which cannot cross from
+      // one copy's React to another's. Each container shows what it raised.
+      shown.viewports === 2 &&
         shown.bodies.join(' ').includes('toast from container a') &&
         shown.bodies.join(' ').includes('toast from container b'),
-      `${shown.bodies.length} toasts in ${shown.viewports} viewport`,
+      `${shown.bodies.length} toasts in ${shown.viewports} viewports`,
     );
   } finally {
     await page.close();

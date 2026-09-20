@@ -5,19 +5,26 @@
  * package, imports one stylesheet, and reaches everything it needs — including
  * icons — without naming anything underneath. `scripts/check-consumer-surface.mjs`
  * reads this directory and fails if the upstream library's name appears.
+ *
+ * Everything below a `TectonProvider` is the component system's own API: its
+ * names, its props, its types. The only Tecton names here are the provider,
+ * the tokens and the glyphs.
  */
 import {useState} from 'react';
 import {
   Button,
-  Panel,
+  Card,
+  Heading,
+  HStack,
   TectonProvider,
-  TextField,
   Text,
+  TextInput,
   VStack,
   useToast,
 } from '@tecton/react';
 import {Badge} from '@tecton/react/Badge';
-import {Icon} from '@tecton/react/icons';
+import {Icon} from '@tecton/react/Icon';
+import {AddIcon, InfoIcon, SearchIcon} from '@tecton/react/icons';
 import {tecton} from '@tecton/react/theme';
 
 function Report() {
@@ -25,34 +32,35 @@ function Report() {
   const toast = useToast();
 
   return (
-    <Panel
-      title="Horizons"
-      icon="horizon"
-      actions={<Badge label="2 active" variant="info" />}
-    >
+    <Card>
       <VStack gap={3}>
-        <TextField
+        <HStack gap={2} vAlign="center">
+          <Heading level={2}>Horizons</Heading>
+          <Badge label="2 active" variant="info" />
+        </HStack>
+
+        <TextInput
           label="Horizon name"
           value={name}
           onChange={setName}
           placeholder="Type here"
-          startIcon="search"
+          startIcon={SearchIcon}
         />
-        <Text variant="mediumData" hasTabularNumbers>
-          2,525 m TVDSS
-        </Text>
+        <Text type="mediumData">2,525 m TVDSS</Text>
         <Button
           label="Save horizon"
           variant="primary"
-          icon="add"
+          icon={<Icon icon={AddIcon} />}
           onClick={() => toast({body: `Saved ${name || 'the horizon'}.`})}
         />
-        <Text variant="small" color="secondary">
-          <Icon name="info" /> Tokens are plain custom properties:{' '}
-          {tecton.color.text.primary}
+        {/* A theme custom variant: another value for `variant`, not a component. */}
+        <Button label="Cancel" variant="text-only" />
+        <Text type="supporting">
+          <InfoIcon width={16} height={16} aria-hidden="true" /> Tokens are
+          plain custom properties: {tecton.color.text.primary}
         </Text>
       </VStack>
-    </Panel>
+    </Card>
   );
 }
 

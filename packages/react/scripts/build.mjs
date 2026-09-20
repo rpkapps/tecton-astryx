@@ -3,8 +3,9 @@
  * @tecton/react production build.
  *
  * Steps, in order:
- *   0. check the generated palette is in sync with tokens/tecton.tokens.json
- *      and the generated icons with design/icons/tecton/
+ *   0. check the generated palette is in sync with tokens/tecton.tokens.json,
+ *      the generated icons with design/icons/tecton/, and the generated
+ *      subpath modules and README with the component system's exports map
  *   1. clean dist/
  *   2. compile src/**\/*.{ts,tsx} with Babel (TypeScript + automatic JSX +
  *      StyleX), collecting the StyleX rules every file produces
@@ -14,9 +15,10 @@
  *      theme compiler, replacing the source placeholder in dist/theme/
  *   6. check the theme's token coverage against theme-token-manifest.json
  *   7. assemble the consumer stylesheets (dist/tecton*.css)
- *   8. vendor the upstream library into dist/vendor/core and rewrite every
+ *   8. vendor the upstream library into dist/vendor/core, rewrite every
  *      upstream import in the compiled JS and the emitted .d.ts to a relative
- *      path into it
+ *      path into it, and scrub the vendored declarations' comments and import
+ *      specifiers of the upstream name
  *   9. verify the output actually loads and contains what it must, then report
  *      what the published package weighs
  *
@@ -95,6 +97,7 @@ function listSourceFiles(dir, out = []) {
 function tokenizeModule(source) {
   const masked = [];
   const strings = [];
+  const comments = [];
   let i = 0;
   /** The last code character seen, for telling `/` division from `/`regex. */
   let previous = '';
@@ -108,6 +111,7 @@ function tokenizeModule(source) {
     if (char === '/' && next === '*') {
       const end = source.indexOf('*/', i + 2);
       const stop = end === -1 ? source.length : end + 2;
+      comments.push({start: i, end: stop});
       masked.push(blank(source.slice(i, stop)));
       i = stop;
       continue;
@@ -115,6 +119,7 @@ function tokenizeModule(source) {
     if (char === '/' && next === '/') {
       const end = source.indexOf('\n', i);
       const stop = end === -1 ? source.length : end;
+      comments.push({start: i, end: stop});
       masked.push(blank(source.slice(i, stop)));
       i = stop;
       continue;
@@ -161,7 +166,7 @@ function tokenizeModule(source) {
     i += 1;
   }
 
-  return {masked: masked.join(''), strings};
+  return {masked: masked.join(''), strings, comments};
 }
 
 /** Where a module position names the upstream package: `{specifier, start, end}`. */
@@ -312,22 +317,23 @@ run(
   'generate-icons --check',
 );
 
-// 0c — wrapper drift ----------------------------------------------------------
-// Most of the component surface is generated from wrappers.manifest.json. An
-// upstream upgrade that moves a prop has to regenerate them, so the build
-// refuses to run against wrappers or documentation that no longer match.
-step('Checking the generated wrappers against the manifest');
+// 0c — subpath drift ----------------------------------------------------------
+// Every module the component system exports is published at the same path
+// under `@tecton/react/`, from a one-line file generated out of its exports
+// map. An upgrade that adds, moves or removes a module has to regenerate
+// them, so the build refuses to run against a subpath set that no longer
+// matches the release it is building against.
+step('Checking the generated subpath modules against the exports map');
 run(
   process.execPath,
-  [path.join(PACKAGE_ROOT, 'scripts', 'generate-wrappers.mjs'), '--check'],
-  'generate-wrappers --check',
+  [path.join(PACKAGE_ROOT, 'scripts', 'generate-modules.mjs'), '--check'],
+  'generate-modules --check',
 );
 
 // 0d — README drift ----------------------------------------------------------
-// The README's component table is generated from the components' own
-// documentation. It is the package's front page, so it fails the build rather
-// than going stale.
-step('Checking the README component list');
+// The README's module list is generated from the same exports map. It is the
+// package's front page, so it fails the build rather than going stale.
+step('Checking the README module list');
 run(
   process.execPath,
   [path.join(PACKAGE_ROOT, 'scripts', 'generate-readme.mjs'), '--check'],
@@ -362,17 +368,37 @@ console.log(`  ${sourceFiles.length} files compiled to dist/`);
 
 // 3 — component CSS -----------------------------------------------------------
 step('Extracting component CSS from StyleX');
+/**
+ * Tecton styles no component of its own.
+ *
+ * Tecton is a theme: the components are the component system's, and every
+ * Tecton rule is a token override or a component override inside the theme's
+ * own `@scope` (step 5). So this extract is empty today, and an empty extract
+ * is correct rather than a mis-wired Babel plugin — the old
+ * "no CSS means no plugin" check was a check on hand-written Tecton
+ * components, and there are none.
+ *
+ * The step itself stays, and so does the StyleX transform in step 2: the
+ * moment a Tecton module reaches for `stylex.create` its rules flow into
+ * `dist/css/tecton-components.css` and into the bundle below with nothing to
+ * configure. What replaces the old assertion is `hasComponentCss`, which the
+ * assertions in step 9 read so they check what is actually true of this build.
+ */
 const componentCss = styleXBabelPlugin.processStylexRules(styleXRules, false);
-if (!componentCss.trim()) {
-  throw new Error('StyleX produced no CSS — is the Babel plugin wired up?');
-}
+const hasComponentCss = componentCss.trim().length > 0;
 const componentCssPath = path.join(DIST_CSS, 'tecton-components.css');
 await fsp.writeFile(
   componentCssPath,
-  `/* Tecton component styles, extracted from StyleX at build time. */\n${componentCss}`,
+  hasComponentCss
+    ? `/* Tecton component styles, extracted from StyleX at build time. */\n${componentCss}`
+    : '/* Tecton styles no component of its own: the theme carries every Tecton rule. */\n',
   'utf8',
 );
-console.log(`  ${styleXRules.length} rules → dist/css/tecton-components.css`);
+console.log(
+  hasComponentCss
+    ? `  ${styleXRules.length} rules → dist/css/tecton-components.css`
+    : '  no Tecton component rules — every Tecton rule is in the theme layer',
+);
 
 // 4 — declarations ------------------------------------------------------------
 step('Emitting type declarations');
@@ -537,11 +563,13 @@ const header = headerFor(`the complete Tecton stylesheet.
  *
  * Import this file once and nothing else.`);
 
-const componentsLayer = `/* ----- Tecton components (StyleX, extracted at build time) ----- */
+const componentsLayer = hasComponentCss
+  ? `/* ----- Tecton components (StyleX, extracted at build time) ----- */
 @layer astryx-base {
 ${indent(componentCss)}
 }
-`;
+`
+  : '/* ----- Tecton adds no component rules: see the theme layer ----- */\n';
 
 const bundle = [
   header,
@@ -753,9 +781,90 @@ for (const file of ownModules) {
   rewrittenFiles += 1;
 }
 
+/**
+ * Scrub the vendored declarations of the upstream name — and nothing else.
+ *
+ * A `.d.ts` is surface: an editor shows its prose, its `@example` blocks and
+ * the specifiers it imports from, so a consumer reading `TableProps` would
+ * otherwise be reading the name of the system Tecton is built on. Two, and
+ * only two, kinds of span are rewritten:
+ *
+ *   - **comments**, where the name appears as prose, in `@example` imports and
+ *     in `@file`/`SYNC` headers;
+ *   - **import specifiers in module positions**, which name a package.
+ *
+ * Everything else is left exactly as it is, because everything else is
+ * MEANING, not prose:
+ *
+ *   - a **string-literal type** (`'data-astryx-theme'`, `'astryx-toast-'`) is
+ *     a value the runtime compares against and the CSS is scoped by. Rewriting
+ *     it would make the types describe attributes the code never sets.
+ *   - an **identifier** (`AstryxTheme`, `dataAstryx`) is a name the emitted
+ *     JavaScript imports and exports. Rewriting it would break the link
+ *     between the declarations and the modules they describe.
+ *   - **`.js` files are never touched at all**: they are the program.
+ *
+ * What survives the scrub is therefore real, and is the guard's business:
+ * `scripts/check-consumer-surface.mjs` lists every remaining mention with the
+ * reason it has to stay.
+ */
+const SCRUBS = [
+  [new RegExp(`${corePkg.name}(?=/|$|[^\\w-])`, 'g'), '@tecton/react'],
+  [/Astryx/g, 'Tecton'],
+  [/astryx/g, 'tecton'],
+];
+
+function scrubText(text) {
+  let out = text;
+  for (const [pattern, replacement] of SCRUBS)
+    out = out.replace(pattern, replacement);
+  return out;
+}
+
+let scrubbedFiles = 0;
+let scrubbedSpans = 0;
+for (const file of listFiles(VENDOR, f => f.endsWith('.d.ts'))) {
+  const before = await fsp.readFile(file, 'utf8');
+  const {masked, strings, comments} = tokenizeModule(before);
+
+  /** The spans this file may rewrite: its comments and its specifiers. */
+  const spans = [...comments];
+  for (const literal of strings) {
+    const lead = masked.slice(
+      Math.max(0, literal.start - 64),
+      literal.start - 1,
+    );
+    if (
+      /(?:^|[^\w$.])(?:from|import|require|declare\s+module)\s*\(?\s*$/.test(
+        lead,
+      )
+    ) {
+      spans.push({start: literal.start, end: literal.end});
+    }
+  }
+
+  // Right to left, so an earlier replacement cannot move a later offset.
+  let after = before;
+  let touched = 0;
+  for (const span of spans.sort((a, b) => b.start - a.start)) {
+    const original = before.slice(span.start, span.end);
+    const replaced = scrubText(original);
+    if (replaced === original) continue;
+    after = after.slice(0, span.start) + replaced + after.slice(span.end);
+    touched += 1;
+  }
+  if (touched === 0) continue;
+  await fsp.writeFile(file, after, 'utf8');
+  scrubbedFiles += 1;
+  scrubbedSpans += touched;
+}
+
 console.log(
   `  ${corePkg.name}@${corePkg.version} → dist/vendor/core ` +
     `(${directorySizeMb(VENDOR)} MB, ${strippedMapComments} declaration-map comments removed)`,
+);
+console.log(
+  `  ${scrubbedSpans} comments and specifiers scrubbed in ${scrubbedFiles} vendored declarations`,
 );
 console.log(
   `  ${rewrittenSpecifiers} upstream specifiers rewritten in ${rewrittenFiles} of ` +
@@ -848,7 +957,9 @@ const assertions = [
   ['dist/tecton.css', bundle, '@layer reset'],
   ['dist/tecton.css', bundle, '@layer astryx-base'],
   ['dist/tecton.css', bundle, THEME_SELECTOR],
-  ['dist/css/tecton-components.css', componentCss, '.tecton'],
+  ...(hasComponentCss
+    ? [['dist/css/tecton-components.css', componentCss, '.tecton']]
+    : []),
 ];
 for (const [label, haystack, needle] of assertions) {
   if (!haystack.includes(needle)) {
@@ -877,17 +988,13 @@ for (const [file, css] of [
   }
   console.log(`  ✓ dist/${file} contains no @layer reset block`);
 }
-if (
-  !noResetBundle.includes(THEME_SELECTOR) ||
-  !noResetBundle.includes('.tecton')
-) {
-  throw new Error(
-    'dist/tecton-no-reset.css lost the theme or the Tecton component styles',
-  );
+if (!noResetBundle.includes(THEME_SELECTOR)) {
+  throw new Error('dist/tecton-no-reset.css lost the theme');
 }
-console.log(
-  '  ✓ dist/tecton-no-reset.css is still themed and still has components',
-);
+if (hasComponentCss && !noResetBundle.includes('.tecton')) {
+  throw new Error('dist/tecton-no-reset.css lost the Tecton component styles');
+}
+console.log('  ✓ dist/tecton-no-reset.css is still themed');
 
 /**
  * The split has to be a real split: tokens.css carries no component styling of
@@ -927,22 +1034,43 @@ for (const [file, css] of [
       `dist/${file} contains a theme scope; it must carry no tokens`,
     );
   }
-  if (!css.includes('.tecton')) {
+  if (!css.includes('.astryx')) {
+    throw new Error(`dist/${file} is missing the component stylesheet`);
+  }
+  if (hasComponentCss && !css.includes('.tecton')) {
     throw new Error(`dist/${file} is missing Tecton's own component styles`);
   }
   console.log(`  ✓ dist/${file} carries components but no theme scope`);
 }
 
-/** The export map has to actually point at what was just written. */
-for (const [subpath, target] of Object.entries(pkg.exports)) {
-  if (!subpath.endsWith('.css')) continue;
-  const file = path.join(PACKAGE_ROOT, target);
-  if (!fs.existsSync(file)) {
-    throw new Error(
-      `exports["${subpath}"] points at a missing file: ${target}`,
+/**
+ * The export map has to actually point at what was just written — every entry,
+ * not just the stylesheets. Two of them (`./theme/tokens.stylex` and the
+ * `./locales/*.json` pattern) point straight into the vendored copy, which is
+ * exactly why they are worth checking here: nothing else would notice if the
+ * vendoring stopped putting them where the map says they are.
+ */
+let resolvedTargets = 0;
+for (const [subpath, entry] of Object.entries(pkg.exports)) {
+  if (subpath === './package.json') continue;
+  const targets = typeof entry === 'string' ? [entry] : Object.values(entry);
+  for (const target of targets) {
+    // A pattern entry names a directory of files; check the directory and one
+    // real file in it rather than inventing a name.
+    const star = target.indexOf('*');
+    const file = path.join(
+      PACKAGE_ROOT,
+      star === -1 ? target : path.dirname(target.slice(0, star)),
     );
+    if (!fs.existsSync(file)) {
+      throw new Error(
+        `exports["${subpath}"] points at a missing path: ${target}`,
+      );
+    }
+    resolvedTargets += 1;
   }
 }
+console.log(`  ✓ ${resolvedTargets} export targets resolve`);
 const cssExports = Object.keys(pkg.exports).filter(s => s.endsWith('.css'));
 if (cssExports.length !== entryPoints.length) {
   throw new Error(

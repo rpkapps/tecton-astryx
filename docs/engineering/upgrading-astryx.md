@@ -48,17 +48,33 @@ the run, says why in full, and leaves the tree where a person can pick it up.
    resolving from its working directory, so it runs once per workspace; a
    fixture with no upstream dependency is reported as skipped rather than
    silently passed over.
-5. **Regenerate.** `packages/react/scripts/build.mjs` — the theme compiled with
-   the new CLI, the token coverage checked, the patched upstream `dist`
-   re-vendored — and then the palette and icon generators, which are checked
-   first and only re-run if they really drifted. If the token _set_ moved, the
-   diff is printed **before** `--update-manifest` re-pins it, never after.
+5. **Regenerate.** In order:
+   - `scripts/generate-modules.mjs` and `scripts/generate-readme.mjs`, which
+     rewrite the subpath modules, the package's `exports` map and the README's
+     module list from the new release's own exports map. They run **before** the
+     build, which checks both for drift and would otherwise stop at the first
+     module the release moved. The diff they leave in the tree is the record of
+     what the release added, moved or removed — read it.
+   - `packages/react/scripts/build.mjs` — the theme compiled with the new CLI,
+     the token coverage checked, the patched upstream `dist` re-vendored and its
+     declarations re-scrubbed. If the token _set_ moved, the diff is printed
+     **before** `--update-manifest` re-pins it, never after.
+   - the palette and icon generators, which are checked first and only re-run if
+     they really drifted.
+   - `node apps/docs/scripts/port-examples.mjs`, which re-ports the
+     documentation site's examples and page templates from the new release's own
+     showcase blocks. If that script is not in the tree the step warns and
+     carries on: everything the package needs is already done, and the site can
+     be re-ported separately.
 6. **Inventories.** What the new release contains: components, theme targets
    and the tokens its own base stylesheet declares.
 7. **Report.** `docs/engineering/upgrades/<old>-to-<new>.md`; see below.
 8. **Checks.** `pnpm check` and `pnpm check:mfe`, unless `--skip-checks`. The
-   four harness assertions are the upgrade's acceptance test for the two
-   upstream patches specifically.
+   harness's scroll-lock and layer-stack assertions are the upgrade's
+   acceptance test for the two upstream patches specifically, and
+   `surface:check` is its acceptance test for the declaration scrub: a release
+   that puts the upstream name somewhere the scrub does not reach fails there,
+   with the file and the line.
 9. **Snapshots.** `scripts/astryx-snapshot/` is re-pinned at the new version,
    so the _next_ upgrade's report diffs against this one.
 
@@ -104,10 +120,11 @@ the script so `pnpm format:check` stays quiet:
   a footnote;
 - the **component inventory** and **theme-target** diffs against
   `scripts/astryx-snapshot/`;
-- the **wrapper check**: every `@astryxdesign/core/<X>` import in
-  `packages/react/src` resolved through the new release's own `exports` map,
-  and any Tecton wrapper whose upstream component the release removed or
-  renamed.
+- the **module check**: every upstream import in `packages/react/src` resolved
+  through the new release's own `exports` map, and any module whose upstream
+  component the release removed or renamed. Since the subpath modules are
+  generated from that same map, an entry here is a module the tree still names
+  but the release no longer has.
 
 Two worked examples are committed:
 [`0.6.2-to-0.6.1.md`](./upgrades/0.6.2-to-0.6.1.md) and

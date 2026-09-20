@@ -7,9 +7,11 @@
  * between them, which is exactly the micro-frontend situation.
  *
  * Nothing here imports anything but `@tecton/react`: a container is an
- * ordinary consumer, and a consumer never sees what Tecton is built on.
+ * ordinary consumer, and a consumer never sees what Tecton is built on. What
+ * it does see is the component system's own API — `Card`, `Button`,
+ * `DropdownMenu`, `Dialog`, `useToast` — themed by Tecton.
  *
- * Beside the panel the styling assertions read, each container can open the
+ * Beside the card the styling assertions read, each container can open the
  * three things that used to fight across containers: a modal dialog (which
  * pins the body), a menu (a dismissible layer, opened over everything else),
  * and a toast (which needs a viewport to land in).
@@ -24,9 +26,13 @@ import {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {
   TectonProvider,
   Button,
+  Card,
   Dialog,
-  Menu,
-  Panel,
+  DialogHeader,
+  DropdownMenu,
+  Heading,
+  Text,
+  VStack,
   useToast,
 } from '@tecton/react';
 
@@ -34,8 +40,8 @@ import {
  * Hands this container's `useToast` back out to the imperative handle.
  *
  * It has to be rendered inside the provider, which is the point: the toast is
- * raised by *this* container's copy of Tecton, wherever the page ends up
- * showing it.
+ * raised by *this* container's copy of Tecton, and lands in the viewport its
+ * own provider mounts.
  */
 function ToastBinding({toastRef}) {
   const toast = useToast();
@@ -73,60 +79,60 @@ export function Container({id, version, mode, scope, handleRef}) {
     <TectonProvider mode={mode} scope={scope}>
       <ToastBinding toastRef={toastRef} />
       <div data-container={id} data-version={version}>
-        <Panel
-          data-testid={`${id}-panel`}
-          title={`Container ${upper}`}
-          description={`@tecton/react ${version} · mode=${mode} · scope=${scope}`}
-        >
-          <p data-testid={`${id}-probe-body`}>token probe</p>
-          <Button
-            data-testid={`${id}-btn-primary`}
-            variant="primary"
-            label="Primary"
-          />
-          <Button
-            data-testid={`${id}-open-dialog`}
-            variant="secondary"
-            label={`Open ${upper} dialog`}
-            onClick={() => setIsDialogOpen(true)}
-          />
-          <Menu
-            data-testid={`${id}-menu`}
-            label={`${upper} menu`}
-            isOpen={isMenuOpen}
-            onOpenChange={setIsMenuOpen}
-            items={[
-              {label: `Rename ${upper}`, onSelect: () => {}},
-              {label: `Duplicate ${upper}`, onSelect: () => {}},
-            ]}
-          />
-          <Button
-            data-testid={`${id}-raise-toast`}
-            variant="tertiary"
-            label={`Toast from ${upper}`}
-            onClick={() =>
-              toastRef.current?.({body: `toast from container ${id}`})
-            }
-          />
-        </Panel>
+        <Card data-testid={`${id}-panel`}>
+          <VStack gap={3}>
+            <Heading level={2}>Container {upper}</Heading>
+            <Text type="supporting">
+              @tecton/react {version} · mode={mode} · scope={scope}
+            </Text>
+            <p data-testid={`${id}-probe-body`}>token probe</p>
+            <Button
+              data-testid={`${id}-btn-primary`}
+              variant="primary"
+              label="Primary"
+            />
+            <Button
+              data-testid={`${id}-open-dialog`}
+              variant="secondary"
+              label={`Open ${upper} dialog`}
+              onClick={() => setIsDialogOpen(true)}
+            />
+            <DropdownMenu
+              data-testid={`${id}-menu`}
+              button={{label: `${upper} menu`}}
+              isMenuOpen={isMenuOpen}
+              onOpenChange={setIsMenuOpen}
+              items={[
+                {label: `Rename ${upper}`, onClick: () => {}},
+                {label: `Duplicate ${upper}`, onClick: () => {}},
+              ]}
+            />
+            <Button
+              data-testid={`${id}-raise-toast`}
+              variant="ghost"
+              label={`Toast from ${upper}`}
+              onClick={() =>
+                toastRef.current?.({body: `toast from container ${id}`})
+              }
+            />
+          </VStack>
+        </Card>
 
         <Dialog
           data-testid={`${id}-dialog`}
           isOpen={isDialogOpen}
           onOpenChange={setIsDialogOpen}
-          title={`Dialog ${upper}`}
-          footer={
-            <Button
-              data-testid={`${id}-dialog-close`}
-              variant="secondary"
-              label="Close"
-              onClick={() => setIsDialogOpen(false)}
-            />
-          }
         >
+          <DialogHeader title={`Dialog ${upper}`} />
           <p data-testid={`${id}-dialog-body`}>
             A modal from container {upper}.
           </p>
+          <Button
+            data-testid={`${id}-dialog-close`}
+            variant="secondary"
+            label="Close"
+            onClick={() => setIsDialogOpen(false)}
+          />
         </Dialog>
       </div>
     </TectonProvider>

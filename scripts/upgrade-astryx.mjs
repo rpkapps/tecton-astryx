@@ -453,7 +453,7 @@ function changelogSections(astryx) {
 }
 
 // ---------------------------------------------------------------------------
-// The wrappers, and what they import
+// What packages/react/src imports from upstream
 // ---------------------------------------------------------------------------
 
 function listFiles(dir, test, out = []) {
@@ -468,7 +468,10 @@ function listFiles(dir, test, out = []) {
 
 /**
  * Every `@astryxdesign/core/<X>` import in `packages/react/src`, with the
- * names each one brings in and the Tecton component it belongs to.
+ * names each one brings in and the module it belongs to.
+ *
+ * Most of them are the generated subpath modules, one line each; the rest are
+ * the provider, the theme and the package root.
  */
 function wrapperImports() {
   const hits = [];
@@ -488,7 +491,7 @@ function wrapperImports() {
         .map(name => name[1])
         .filter(name => name !== 'type');
       const relative = path.relative(ROOT, file);
-      const component = /src\/components\/([^/]+)\//.exec(
+      const component = /src\/modules\/(.+)\/index\.ts$/.exec(
         relative.split(path.sep).join('/'),
       )?.[1];
       hits.push({file: relative, specifier: match[3], names, component});
@@ -1123,7 +1126,18 @@ function regenerate(options) {
   // Measured while `dist/` is still the last build, i.e. the old release.
   const sizeBefore = measurePackage();
 
-  // The theme build is the whole of it: the new CLI compiles the theme, the
+  // The subpath modules come straight out of the new release's exports map,
+  // and the README's module list out of the package's. Both have to be written
+  // BEFORE the build, which checks them for drift and would otherwise stop at
+  // the first one the new release moved. The diff they leave in the tree is
+  // the record of what the release added, moved or removed.
+  for (const script of ['generate-modules.mjs', 'generate-readme.mjs']) {
+    mustRun(process.execPath, [path.join(REACT, 'scripts', script)], {
+      cwd: REACT,
+    });
+  }
+
+  // The theme build is the rest of it: the new CLI compiles the theme, the
   // token coverage is checked against the committed manifest, and the patched
   // upstream dist is re-vendored and re-asserted.
   let build = sh(process.execPath, [path.join(REACT, 'scripts', 'build.mjs')], {
@@ -1212,6 +1226,29 @@ function regenerate(options) {
     mustRun(process.execPath, [file], {cwd: REACT});
     mustRun(process.execPath, [file, '--check'], {cwd: REACT});
     regenerated.push(name);
+  }
+
+  // The documentation site's examples and page templates are ported from the
+  // new release's own showcase blocks, so they move with it. The port script
+  // belongs to the documentation site; if it is not there, say so rather than
+  // failing the upgrade — everything the package needs is already done.
+  const portScript = path.join(
+    ROOT,
+    'apps',
+    'docs',
+    'scripts',
+    'port-examples.mjs',
+  );
+  if (fs.existsSync(portScript)) {
+    mustRun(process.execPath, [portScript], {cwd: ROOT});
+    regenerated.push('ported examples');
+  } else {
+    warn(
+      'apps/docs/scripts/port-examples.mjs is not in the tree — the examples ' +
+        'and page templates were NOT re-ported from the new release. Run it ' +
+        'yourself once it is there, or the documentation site will show the ' +
+        "previous release's code.",
+    );
   }
 
   const sizeAfter = measurePackage();
@@ -1438,9 +1475,9 @@ function writeReport(context) {
     '',
     list(targets.removed, 'none'),
     '',
-    '## Tecton wrappers',
+    '## Tecton modules',
     '',
-    `${imports.length} upstream imports across \`packages/react/src\`.`,
+    `${imports.length} upstream imports across \`packages/react/src\` — the generated subpath modules, the provider and the theme.`,
     '',
     unresolved.length === 0
       ? "✓ Every `@astryxdesign/core/<X>` specifier still resolves through the release's own `exports` map."
@@ -1449,8 +1486,8 @@ function writeReport(context) {
           .join('\n')}`,
     '',
     orphanedWrappers.length === 0
-      ? '✓ No Tecton wrapper is built on a component this release removed or renamed.'
-      : `**Wrappers whose upstream component is gone:**\n\n${orphanedWrappers
+      ? '✓ No Tecton module names a component this release removed or renamed.'
+      : `**Modules whose upstream component is gone:**\n\n${orphanedWrappers
           .map(
             hit =>
               `- ${hit.component ? `\`${hit.component}\`` : hit.file} — imports ${hit.gone
@@ -1639,7 +1676,7 @@ async function main() {
       `${regeneration.manifest.updated ? ' (re-pinned)' : ''}`,
   );
   console.log(
-    `  wrapper imports        ${report.unresolved.length} unresolved, ${report.orphanedWrappers.length} on removed components`,
+    `  upstream imports       ${report.unresolved.length} unresolved, ${report.orphanedWrappers.length} on removed components`,
   );
   console.log('');
   console.log('  Next: read the report, then `git diff`, then commit.');

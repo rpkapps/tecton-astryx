@@ -252,8 +252,7 @@ run `pnpm --filter @tecton/docs generate` (or restart `dev`).
 
 ### Adding a component or an example
 
-Nothing here. Write the `.doc.mjs` beside the component in `packages/react`, as
-`docs/engineering/component-mapping.md` describes, and the page appears. An
+Nothing here. Write the `.doc.mjs` beside the component, and the page appears. An
 example needs its `.tsx`, its `.doc.mjs`, and its id in the component doc's
 `examples` list; the generator fails loudly if any of the three is missing or if
 the example imports something the package does not publish.

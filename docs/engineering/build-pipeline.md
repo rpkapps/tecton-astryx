@@ -19,18 +19,22 @@ ships pre-built CSS and compiled ESM. Two constraints follow from that:
    for which upstream version Tecton is built against. No exported identifier,
    type name or documented string names the upstream system;
    `scripts/check-consumer-surface.mjs` enforces that on every `pnpm check`.
-2. **Consumers must not need a StyleX toolchain.** Tecton's own components are
+2. **Consumers must not need a StyleX toolchain.** The upstream components are
    written in StyleX (`stylex.create`, `stylex.props`), which is a compile-time
    API: `stylex.create` throws if it is ever reached at runtime. So the package
    ships compiled JavaScript plus the extracted atomic CSS, exactly as the
-   upstream library does.
+   upstream library does. Tecton itself styles no component — every Tecton rule
+   is a theme rule (step 5) — so its own StyleX extract is empty today. The
+   transform and the extraction step stay in the pipeline anyway: the moment a
+   Tecton module reaches for `stylex.create` its rules flow into the bundle
+   with nothing to configure.
 
 A third constraint now shapes both: several versions of `@tecton/react` may end
 up on one page in a micro-frontend. Nothing in the package keeps mutable
 module-level state, so no copy can stomp another, and the page-level state that
-copies would otherwise fight over is arbitrated through document-keyed records
-(`src/runtime/rootRegistry.ts` for the `<html>` attributes,
-`src/runtime/toastBus.ts` for toasts). The build's share of that constraint is
+copies would otherwise fight over is arbitrated through a document-keyed
+record (`src/runtime/rootRegistry.ts`, for the `<html>` attributes). The
+build's share of that constraint is
 three things: the **token-coverage manifest** (step 6), the **five stylesheet
 entry points** (step 7) and the **vendoring** (step 8) — which is also what
 carries the two upstream patches
@@ -70,6 +74,12 @@ those have to exist first.
 `packages/react/scripts/build.mjs` runs ten steps (0–9) in order. Every step is
 verified — the script fails loudly rather than producing half a package.
 
+Steps 0–0d are drift checks on generated files: the palette against the design
+tokens, the icons against the design delivery, the subpath modules against the
+upstream `exports` map, and the README's module list against the package's own.
+They run first because a stale generated file is cheaper to report than to
+build on.
+
 ### 0. Check the generated palette
 
 ```bash
@@ -92,6 +102,30 @@ palettes in the same file (`MPL`, `Colorcet`, `custom`) have no `onDark` /
 `onLight` ramps and are deliberately left out. One stop name is normalised on
 the way through (`hotPink.460 (focus outline)` → `460`), and the module header
 records it.
+
+### 0c. Check the generated subpath modules
+
+```bash
+node scripts/generate-modules.mjs --check
+```
+
+Every module the upstream `exports` map publishes is republished at the same
+path under `@tecton/react/`, from a generated one-line file
+(`src/modules/<Path>/index.ts`), together with the `exports` entry that points
+at it. The generator owns both, so they cannot disagree; `--check` regenerates
+in memory and fails on a missing module, a stale one, a module upstream no
+longer has, or an `exports` map that has drifted from the files.
+
+118 subpaths today, plus `./theme`, `./icons` and the two entries published
+straight from the vendored files (`./theme/tokens.stylex`, `./locales/*.json`).
+`docs/engineering/surface.md` says what is skipped and why.
+
+### 0d. Check the README's module list
+
+The README's `## Modules` section is generated from `package.json#exports` by
+`scripts/generate-readme.mjs`, which is generated from the upstream map in
+turn. It is the package's front page, so it fails the build rather than going
+stale.
 
 ### 1. Clean
 
@@ -127,10 +161,15 @@ Each transform returns the StyleX rules for that file in
 ### 3. Extract the component CSS
 
 The accumulated rules go through the plugin's `processStylexRules(rules, false)`
-— `false` because Tecton wraps the output in its own cascade layer in step 6 —
-and are written to `dist/css/tecton-components.css`. An empty result fails the
-build, which is the cheap way to catch a mis-wired Babel plugin: without it,
-components compile fine and render completely unstyled.
+— `false` because Tecton wraps the output in its own cascade layer in step 7 —
+and are written to `dist/css/tecton-components.css`.
+
+**The extract is empty today, and that is correct.** Tecton publishes the
+upstream components as they are and styles them from the theme, so it has no
+StyleX of its own. The build records that in `hasComponentCss` and the
+assertions in step 9 read it, rather than asserting a `.tecton` class that no
+longer exists. (The old "no CSS means a mis-wired Babel plugin" check was a
+check on hand-written Tecton components; there are none.)
 
 ### 4. Emit declarations
 
@@ -298,8 +337,9 @@ dist/vendor/core/locales/   its JSON message catalogues
 ```
 
 The upstream `dist` and `locales` directories are copied into
-`dist/vendor/core/` and every upstream import in Tecton's compiled JavaScript
-**and** its emitted `.d.ts` is rewritten to a relative path into that copy:
+`dist/vendor/core/`, every upstream import in Tecton's compiled JavaScript
+**and** its emitted `.d.ts` is rewritten to a relative path into that copy, and
+the vendored declarations are then scrubbed of the upstream name:
 
 ```js
 import {Dialog} from '@astryxdesign/core/Dialog';
@@ -344,6 +384,37 @@ Details that matter:
   `//# sourceMappingURL=` comments are stripped with them.
 - **Step 7 still reads the stylesheets from `node_modules`.** The CSS is
   assembled, not referenced, so it has no import to rewrite.
+- **Two public subpaths point into the vendored directory.**
+  `@tecton/react/theme/tokens.stylex` and `@tecton/react/locales/*.json` are
+  published as the vendored file itself, because StyleX's compiler has to see
+  the real `defineVars()` call site and JSON has no module to wrap it in. They
+  are the only exceptions, and step 9 checks that they resolve.
+
+#### The declaration scrub
+
+A `.d.ts` carries no implementation, so everything in one is surface: an editor
+shows its prose, its `@example` blocks and the specifiers it imports from.
+After the import rewrite, the build therefore rewrites two — and only two —
+kinds of span in every vendored `.d.ts`:
+
+- **comments**, where the upstream name appears as prose, in `@example` imports
+  and in `@file`/`SYNC` headers;
+- **import specifiers in module positions**, which name a package.
+
+with three substitutions, in order: `@astryxdesign/core` → `@tecton/react`,
+`Astryx` → `Tecton`, `astryx` → `tecton`. 182 spans across 122 files today.
+
+Everything else is left alone, because everything else is meaning rather than
+prose: a string-literal type or exported constant (`'data-astryx-theme'`,
+`NAMESPACE = "astryx"`) is a value the runtime compares against and the CSS is
+scoped by; an identifier is a name the emitted JavaScript imports and exports;
+and `.js` files are never touched at all, because they are the program.
+
+The scrub reuses the build's own tokenizer, so it works on positions rather
+than on patterns: a specifier quoted inside a template literal is never
+mistaken for an import. What survives it is real, and
+`scripts/check-consumer-surface.mjs` lists the five surviving mentions with the
+reason each one has to stay — see `docs/engineering/surface.md`.
 
 ### 9. Verify
 
@@ -354,8 +425,9 @@ The build refuses to finish unless:
   bundler;
 - `dist/tecton.css` contains `@layer reset`, `@layer astryx-base` and
   `[data-astryx-theme="tecton"]`;
-- `dist/css/tecton-components.css` contains at least one `.tecton` class, i.e.
-  StyleX really ran;
+- `dist/css/tecton-components.css` contains at least one `.tecton` class **if
+  Tecton produced any StyleX at all** — it produces none today, so this
+  assertion is skipped rather than failed;
 - every entry point declares the layer order;
 - the two reset-free entry points contain no `@layer reset` block, and
   `tecton-no-reset.css` is still themed and still carries Tecton's components;
@@ -363,8 +435,10 @@ The build refuses to finish unless:
   `@scope`, and does contain that scope;
 - `tecton-components.css` and `tecton-components-no-reset.css` contain no
   `[data-astryx-theme=` scope at all, and do contain Tecton's components;
-- every `.css` path in `package.json#exports` resolves to a file that was just
-  written, and there are exactly as many of them as the build produced;
+- **every** path in `package.json#exports` resolves to something that was just
+  written — 250 targets, not only the stylesheets, because the two entries that
+  point into `dist/vendor/core` would otherwise have nothing watching them — and
+  there are exactly as many `.css` entries as the build produced stylesheets;
 - **no module position anywhere in `dist/` names `@astryxdesign/*`** — compiled
   JS and emitted `.d.ts`, the vendored code included. One surviving specifier
   means a consumer's bundler tries to resolve a package that is not in their
@@ -393,8 +467,8 @@ dist/
   tecton-tokens.css                @tecton/react/tokens.css
   tecton-components.css            @tecton/react/components.css
   tecton-components-no-reset.css   @tecton/react/components-no-reset.css
-  components/Button/…              Button, compiled + declarations
-  components/Panel/…               Panel, compiled + declarations
+  modules/Button/index.js          @tecton/react/Button — generated re-export
+  modules/…                        one per upstream module (118 of them)
   provider/TectonProvider.js       the provider
   runtime/rootRegistry.js          the document-keyed root-ownership registry
   theme/
@@ -408,23 +482,23 @@ dist/
     localTokens.js                 theme-local tokens for roles with no token
     typography.js                  the Tecton type scale
     components.js                  the component override map
+    variants.js                    the theme's custom variants, as declarations
     tokens.js                      token helpers and the `tecton` token map
   css/
     reset.css, foundation.css, tecton-components.css, tecton-theme.css
-  runtime/toastBus.js              the document-keyed toast bus
   vendor/core/                     THE UPSTREAM LIBRARY, PATCHED (step 8)
     dist/                            its compiled ESM + declarations, verbatim
     locales/                         its JSON message catalogues
 ```
 
-`dist/vendor/` is internal. It is not in `package.json#exports`, nothing public
-re-exports from it, and the only references to it are the rewritten import
-paths inside Tecton's own modules and declarations.
+`dist/vendor/` is internal apart from the two entries named above. Nothing
+public re-exports from it, and the only other references to it are the
+rewritten import paths inside Tecton's own modules and declarations.
 
-`package.json#exports` maps `.`, the five `*.css` entry points, `./theme`,
-`./Button`, `./Panel` and `./package.json`. Adding a component means adding a directory
-under `src/components/`, exporting it from `src/index.ts`, and adding an
-`exports` entry — the build picks it up with no further configuration.
+`package.json#exports` is generated: `.`, the five `*.css` entry points,
+`./theme`, `./icons`, `./package.json`, the two direct entries and one per
+upstream module. Nothing is added to it by hand — `generate-modules.mjs` writes
+it, and the build fails if it has drifted.
 
 ## Fidelity capture
 
@@ -468,7 +542,25 @@ derivation from the rule, so they compare the theme against the _design_ rather
 than against a second copy of itself. `src/**/__tests__/**` is excluded from the
 declaration build so those helpers never reach `dist/`.
 
+Two files cover the surface itself rather than the theme:
+
+- `src/__tests__/surface.test.ts` — every named export of the upstream root is
+  exported by `@tecton/react` with the **same reference**; every generated
+  subpath re-exports its module's names, again by reference; `@tecton/react/theme`
+  carries both halves with no name in common; and the only names Tecton adds
+  are the provider, `configureTectonRoot` and the theme's four values. It reads
+  the `exports` map the package actually publishes, so it tests the contract a
+  consumer is handed rather than a copy of it.
+- `src/__tests__/smoke.test.tsx` — Button (including both of the theme's custom
+  variants), TextInput, an open Dialog, Table, TabList and Selector rendered
+  inside `TectonProvider`, each asserted to sit under the Tecton theme
+  attribute. That is the theme exercised at runtime rather than read.
+
 ## Documentation data
+
+> The documentation site's data pipeline is being rebuilt against the upstream
+> doc objects. What follows describes the previous shape and will be replaced
+> with it; `docs/engineering/docs-site.md` is the site's own document.
 
 Component documentation lives beside each component as `*.doc.mjs`, in the
 upstream `ComponentDoc` shape (`name`, `displayName`, `group`, `category`,
@@ -482,8 +574,8 @@ git-ignored; `dev`, `build` and `typecheck` all regenerate it first.
 ## The micro-frontend harness
 
 `fixtures/consumers/mfe-harness` builds the package, derives a second "released
-version" from the built `dist/` (three retuned tokens and a Panel whose padding
-moved, so its StyleX class is a different hash), bundles both into separate
+version" from the built `dist/` (three retuned tokens and a card whose padding
+moved one step up the scale), bundles both into separate
 IIFEs with their own React, and drives a two-container page in Chromium.
 
 `pnpm check:mfe` builds and runs it. It is **not** part of `pnpm check`: it
@@ -492,10 +584,9 @@ adding to every check. The fixture's own README lists what the spec asserts.
 
 ## Extending this
 
-- **A new component**: `src/components/<Name>/{<Name>.tsx, <Name>.doc.mjs, <Name>.test.tsx, index.ts}`,
-  export it from `src/index.ts`, add an `exports` entry. Style it with
-  `stylex.create` against the token vars; the CSS flows into `dist/tecton.css`
-  automatically.
+- **Upstream added a module**: `pnpm --filter @tecton/react generate:modules`
+  and commit the result. The subpath, the file and the `exports` entry all come
+  out of that one command.
 - **A theme change**: edit the module that owns it.
 
   | File                             | Owns                                                                    |

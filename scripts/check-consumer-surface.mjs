@@ -19,6 +19,11 @@
  * the export list but not from the consumer's editor, so the text of every
  * reachable declaration file is checked, not just the names it exports.
  *
+ * The one relief valve is `ALLOWED` below: five string-literal *values* the
+ * build must not rewrite, each named by file and by the exact text of its
+ * line, each with the reason it has to stay. Nothing else is excused, and an
+ * entry that stops matching fails the check rather than lingering.
+ *
  * Internal imports inside packages/react/src are expected and not checked.
  *
  * The build vendors the upstream library into `dist/vendor/core/` and rewrites
@@ -38,6 +43,63 @@ import {fileURLToPath} from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PACKAGE = path.join(ROOT, 'packages', 'react');
 const FORBIDDEN = /astryx/i;
+
+/**
+ * The mentions that have to stay, each with the reason it has to.
+ *
+ * The build scrubs the vendored declarations' comments and import specifiers
+ * (`packages/react/scripts/build.mjs`, step 8). What it deliberately does not
+ * touch is anything that carries MEANING rather than prose: a string-literal
+ * type or an exported constant is a value the runtime compares against, writes
+ * to the DOM, or scopes CSS by, and rewriting it would make the declarations
+ * describe a program that does not exist.
+ *
+ * Every entry below is therefore a *value*, not a name a consumer reads as
+ * English, and every one is matched exactly — by file and by the text of the
+ * line — so a new mention anywhere else still fails. An entry that stops
+ * matching fails too: a stale exception is a hole.
+ */
+const ALLOWED = [
+  {
+    file: 'packages/react/dist/vendor/core/dist/Layout/edgeCompensation.stylex.d.ts',
+    text: 'export declare const EDGE_COMP_ATTR = "data-astryx-edge-comp";',
+    why: 'the DOM attribute the layout edge compensation sets and its CSS selects on — a literal value, not prose.',
+  },
+  {
+    file: 'packages/react/dist/vendor/core/dist/naming.d.ts',
+    text: 'export declare const NAMESPACE = "astryx";',
+    why: 'the namespace every generated class name, data attribute and custom property is built from; changing it would rename the whole shipped stylesheet.',
+  },
+  {
+    file: 'packages/react/dist/vendor/core/dist/naming.d.ts',
+    text: 'export declare const classPrefix = "astryx";',
+    why: 'the class-name prefix in the shipped CSS (`.astryx-button`); the declaration has to state the value the stylesheet actually uses.',
+  },
+  {
+    file: 'packages/react/dist/vendor/core/dist/naming.d.ts',
+    text: 'export declare const dataAttrNamespace = "astryx";',
+    why: 'the data-attribute namespace (`data-astryx-theme`), which the theme CSS is `@scope`d by and the root registry writes.',
+  },
+  {
+    file: 'packages/react/dist/vendor/core/dist/naming.d.ts',
+    text: 'export declare const cssVarNamespace = "astryx";',
+    why: 'the custom-property namespace the token variables are named with; it is the wire format of the stylesheet.',
+  },
+];
+
+/** Which allowlist entries were actually used, so a stale one can be caught. */
+const usedAllowances = new Set();
+
+/** Is this line one of the mentions that has to stay? */
+function isAllowed(file, line) {
+  const relative = path.relative(ROOT, file).split(path.sep).join('/');
+  const index = ALLOWED.findIndex(
+    entry => entry.file === relative && line.includes(entry.text),
+  );
+  if (index === -1) return false;
+  usedAllowances.add(index);
+  return true;
+}
 
 /** @type {string[]} */
 const failures = [];
@@ -191,11 +253,11 @@ for (const [subpath, entry] of entries) {
     checkedFiles.add(file);
     const lines = fs.readFileSync(file, 'utf8').split('\n');
     lines.forEach((line, i) => {
-      if (FORBIDDEN.test(line)) {
-        failures.push(
-          `${path.relative(ROOT, file)}:${i + 1} puts the upstream name in the published types: ${line.trim()}`,
-        );
-      }
+      if (!FORBIDDEN.test(line)) return;
+      if (isAllowed(file, line)) return;
+      failures.push(
+        `${path.relative(ROOT, file)}:${i + 1} puts the upstream name in the published types: ${line.trim()}`,
+      );
     });
   }
 }
@@ -203,6 +265,19 @@ for (const [subpath, entry] of entries) {
 console.log(
   `Checked ${checkedNames} exported names across ${entries.length} subpaths and ${checkedFiles.size} declaration files.`,
 );
+
+if (ALLOWED.length > 0) {
+  console.log(`\n${ALLOWED.length} allowed mentions, each a literal value:`);
+  for (const [index, entry] of ALLOWED.entries()) {
+    console.log(`  - ${entry.file}: ${entry.text}\n      ${entry.why}`);
+    if (!usedAllowances.has(index)) {
+      failures.push(
+        `The allowlist entry for "${entry.text}" in ${entry.file} no longer matches anything. ` +
+          'Remove it: an exception nothing needs is a hole in the guard.',
+      );
+    }
+  }
+}
 
 if (failures.length > 0) {
   console.error('\nConsumer surface check FAILED:\n');

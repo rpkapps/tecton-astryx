@@ -1,9 +1,0 @@
-/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
-/** @type {import('@tecton/docs').ExampleDoc} */
-export const docs = {
-  id: 'ChatToolCallsInteractiveToolCalls',
-  name: 'Expandable',
-  component: 'ChatToolCalls',
-  description:
-    'Tool calls with expandable result details showing diffs and command output in code blocks. Click a row to reveal its result.',
-};
