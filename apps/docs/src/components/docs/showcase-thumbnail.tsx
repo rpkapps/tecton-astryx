@@ -50,7 +50,12 @@ function ThumbnailFrame({children}: {children: ReactNode}) {
   return (
     <div
       className="tecton-thumbnail relative aspect-[16/10] w-full overflow-hidden rounded-lg"
-      style={{background: 'var(--color-background-muted)'}}
+      // The frame is drawn here rather than left to the surface underneath: a
+      // tile has to read as a tile on the page background, in both modes.
+      style={{
+        background: 'var(--color-background-card)',
+        border: '1px solid var(--color-border)',
+      }}
       inert
     >
       <div className="tecton-thumbnail-scaler">
@@ -76,7 +81,10 @@ export function ShowcaseThumbnail({name}: {name: string}) {
     return (
       <div
         className="aspect-[16/10] w-full rounded-lg"
-        style={{background: 'var(--color-background-muted)'}}
+        style={{
+          background: 'var(--color-background-card)',
+          border: '1px solid var(--color-border)',
+        }}
       />
     );
   }
