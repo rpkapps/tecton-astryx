@@ -26,7 +26,7 @@
     "surface:check": "node scripts/check-consumer-surface.mjs",
     "check:mfe": "pnpm --filter @tecton-fixture/mfe-harness build && pnpm --filter @tecton-fixture/mfe-harness test:e2e",
     "verify:registry": "node scripts/verify-registry.mjs",
-    "check": "pnpm format:check && pnpm lint && pnpm palette:check && pnpm icons:check && pnpm modules:check && pnpm readme:check && pnpm build && pnpm typecheck && pnpm test && pnpm surface:check && pnpm docs:site:check",
+    "check": "pnpm format:check && pnpm lint && pnpm palette:check && pnpm icons:check && pnpm modules:check && pnpm readme:check && pnpm examples:check && pnpm build && pnpm typecheck && pnpm test && pnpm surface:check && pnpm docs:site:check",
     "clean": "pnpm -r --if-present clean && rm -rf node_modules/.cache",
     "icons:check": "pnpm --filter @tecton/react icons:check",
     "modules:check": "pnpm --filter @tecton/react modules:check",
