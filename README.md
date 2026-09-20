@@ -23,7 +23,8 @@ pnpm check      # everything CI runs
 
 `pnpm doctor` tells you which of those you still need to run and why. Nothing
 else is required: the docs site generates its own content when it starts, and
-every generated file inside `packages/react` (palette, icons, subpath modules,
+`pnpm dev` reinstalls first, so a pull that adds a dependency needs no extra
+step. Every generated file inside `packages/react` (palette, icons, subpath modules,
 README module list) is committed, so you never run a generator by hand — the
 build only checks that they are current.
 
@@ -64,7 +65,7 @@ Run from the repository root:
 | Command                | What it does                                                                         |
 | ---------------------- | ------------------------------------------------------------------------------------ |
 | `pnpm setup`           | `pnpm install` plus one build of `@tecton/react`                                     |
-| `pnpm dev`             | Build the package, then start the docs site (Next.js dev server)                     |
+| `pnpm dev`             | Install, build the package, then start the docs site with live examples              |
 | `pnpm doctor`          | Check Node, pnpm, line endings, install state and the built package                  |
 | `pnpm build:package`   | Build `@tecton/react` only (do this after editing its source)                        |
 | `pnpm install`         | Install every workspace                                                              |
