@@ -15,7 +15,7 @@
  *   node scripts/audit.mjs [--out <dir>] [--only <substring>] [--limit N]
  *                          [--shots <all|findings|none>] [--light]
  */
-import {createServer} from 'vite';
+import {build, preview} from 'vite';
 import {chromium} from '@playwright/test';
 import {mkdir, writeFile, rm} from 'node:fs/promises';
 import {existsSync} from 'node:fs';
@@ -52,14 +52,28 @@ const args = parseArgs(process.argv.slice(2));
 
 // ------------------------------------------------------------------ servers
 
+/**
+ * Build one side and serve it static.
+ *
+ * Not a dev server: the package and core together are about 1700 ES modules,
+ * and a dev server hands every one of them to the browser as its own request
+ * with its own transform. That is fine for one page and hours for 646. Bundled
+ * once up front, a page load is two requests, and the whole catalogue fits in
+ * the time a couple of hundred examples used to take.
+ */
 async function startServer(side, port) {
-  const server = await createServer({
+  process.stdout.write(`  building ${side}\n`);
+  await build({
     configFile: path.join(HERE, 'vite.config.ts'),
     mode: side,
-    server: {port, strictPort: true},
     logLevel: 'warn',
   });
-  await server.listen();
+  const server = await preview({
+    configFile: path.join(HERE, 'vite.config.ts'),
+    mode: side,
+    preview: {port, strictPort: true},
+    logLevel: 'warn',
+  });
   return {server, origin: `http://localhost:${port}`};
 }
 
@@ -69,6 +83,23 @@ async function startServer(side, port) {
 const BOX_TOLERANCE = 0.15;
 /** Below this, a percentage difference on a tiny box is just rounding. */
 const MIN_ABS_DELTA = 1.5;
+/** An icon is held to its exact size, give or take subpixel rounding. */
+const SVG_TOLERANCE = 0.5;
+/** How long to let a render settle before measuring it. */
+const SETTLE_MS = 500;
+
+/**
+ * Controls the *reference* theme resizes.
+ *
+ * The neutral theme is the reference for "not broken", not for "unstyled": it
+ * makes geometric decisions of its own, and where it does, Tecton differing
+ * from it says nothing. `segmented-control-item` is the one control it
+ * resizes — `neutralTheme.ts` sets every size to
+ * `calc(var(--size-element-*) - 8px)` where the component's own is `- 4px`, to
+ * give the strip a roomier inset. Tecton is the side agreeing with the
+ * component there.
+ */
+const REFERENCE_THEME_RESIZES = ['astryx-segmented-control-item'];
 
 function relDiff(a, b) {
   const scale = Math.max(Math.abs(a), Math.abs(b));
@@ -178,19 +209,16 @@ function diffTrees(tecton, neutral) {
    * unconditionally below, because a control's height comes from
    * `--size-element-*`, which Tecton and upstream both set to 28/32/36.
    */
-  const typeTainted = new Set();
+  const tainted = new Set();
   for (const row of tecton.rows) {
     const other = byPath.get(row.path);
     if (!other) continue;
-    if (
-      row.fontSize === other.fontSize &&
-      row.lineHeight === other.lineHeight
-    ) {
-      continue;
-    }
+    const typeDiffers =
+      row.fontSize !== other.fontSize || row.lineHeight !== other.lineHeight;
+    if (!typeDiffers && row.padding === other.padding) continue;
     let prefix = row.path;
     for (;;) {
-      typeTainted.add(prefix);
+      tainted.add(prefix);
       const cut = prefix.lastIndexOf('/');
       if (cut < 0) break;
       prefix = prefix.slice(0, cut);
@@ -207,9 +235,15 @@ function diffTrees(tecton, neutral) {
     const label = row.astryx || row.tag;
 
     if (row.tag === 'svg') {
-      if (row.w !== other.w || row.h !== other.h) {
-        findings.push({
-          kind: 'svg-size',
+      // An `svg` sized in `em` follows whatever type it sits in, so an icon in
+      // differently-typed surroundings comes out a different size on purpose.
+      if (
+        Math.abs(row.w - other.w) > SVG_TOLERANCE ||
+        Math.abs(row.h - other.h) > SVG_TOLERANCE
+      ) {
+        const typed = tainted.has(row.path);
+        (typed ? typography : findings).push({
+          kind: typed ? 'type-svg-size' : 'svg-size',
           path: row.path,
           label,
           tecton: `${row.w}x${row.h}`,
@@ -224,7 +258,7 @@ function diffTrees(tecton, neutral) {
     // has 17/1.41. An element whose own font differs is therefore expected to
     // measure differently; that is the *look*, not a break. It is recorded
     // separately so the report can show it without it counting as a finding.
-    const sameType = !typeTainted.has(row.path);
+    const sameType = !tainted.has(row.path);
     const bucket = sameType ? findings : typography;
 
     const dw = relDiff(row.w, other.w);
@@ -252,7 +286,18 @@ function diffTrees(tecton, neutral) {
           : `${row.fontSize}/${row.lineHeight} vs ${other.fontSize}/${other.lineHeight}`,
       });
     }
-    if (isControl(row) && Math.abs(row.h - other.h) > MIN_ABS_DELTA) {
+    // A control whose own height is its content's — a `TextArea` is `rows`
+    // line boxes tall, a `Selector` grows with its option descriptions — is
+    // exempt for the same reason everything else is. A control with a height
+    // from `--size-element-*` is not: its label's leading cannot move it, so a
+    // difference there is the theme having resized the control.
+    if (
+      isControl(row) &&
+      sameType &&
+      Math.abs(row.h - other.h) > MIN_ABS_DELTA &&
+      row.padding === other.padding &&
+      !REFERENCE_THEME_RESIZES.some(cls => row.astryx.split(' ').includes(cls))
+    ) {
       findings.push({
         kind: 'control-height',
         path: row.path,
@@ -262,7 +307,13 @@ function diffTrees(tecton, neutral) {
       });
     }
     if (row.overflows && !other.overflows) {
-      findings.push({kind: 'overflow', path: row.path, label});
+      // Text that clips because it is set at a different leading is the type
+      // scale reaching a fixed-height container, not a geometry break.
+      bucket.push({
+        kind: sameType ? 'overflow' : 'type-overflow',
+        path: row.path,
+        label,
+      });
     }
     if (
       row.lines != null &&
@@ -518,8 +569,14 @@ async function main() {
           )
           .catch(() => null);
       await Promise.all([ready(tectonDark), ready(neutral)]);
-      await tectonDark.waitForTimeout(120);
-      await neutral.waitForTimeout(120);
+      // Long enough for a layer to mount and a transition to finish. Several
+      // examples open a BottomSheet or a tooltip on mount, and measuring one
+      // render before it lands and the other after reads as a DOM difference
+      // that has nothing to do with either theme.
+      await Promise.all([
+        tectonDark.waitForTimeout(SETTLE_MS),
+        neutral.waitForTimeout(SETTLE_MS),
+      ]);
 
       let [tectonTree, neutralTree] = await Promise.all([
         tectonDark.evaluate(() => window.__measure()),
@@ -575,7 +632,21 @@ async function main() {
           tectonDark,
           Math.min(stops + 2, 30),
         );
-        const neutralStops = await tabThrough(neutral, Math.min(stops + 2, 30));
+        // The neutral render is only tabbed when there is something to compare
+        // against: a stop with no ring, a low-contrast one, or a clipped one.
+        // Most examples have none, and tabbing them twice was half the run.
+        const suspect = tectonStops.some(
+          stop =>
+            stop.focusVisible &&
+            (!stop.hasRing ||
+              (stop.outlineStyle !== 'auto' &&
+                stop.contrast > 0 &&
+                stop.contrast < MIN_RING_CONTRAST) ||
+              stop.clipped),
+        );
+        const neutralStops = suspect
+          ? await tabThrough(neutral, Math.min(stops + 2, 30))
+          : [];
         const focus = auditFocus(tectonStops, neutralStops);
         record.focus = focus.findings;
         record.focusNotes = focus.notes;

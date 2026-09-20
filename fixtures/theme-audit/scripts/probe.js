@@ -116,6 +116,12 @@
         ].join(' '),
         border: [cs.borderTopWidth, cs.borderLeftWidth].join(' '),
       });
+      // An `svg`'s insides are artwork, not layout. Tecton's glyphs and the
+      // reference theme's Lucide ones are different drawings — a different
+      // number of paths, at different coordinates — and walking into them
+      // compares one icon set with another rather than one theme with another.
+      // The `svg` element itself is measured; what is inside it is not.
+      if (el.tagName.toLowerCase() === 'svg') return;
       let index = 0;
       for (const child of el.children) {
         walk(child, `${path}/${index}:${child.tagName.toLowerCase()}`);
@@ -178,17 +184,36 @@
     return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
   };
 
-  /** The nearest painted background behind an element. */
+  /**
+   * What is actually painted behind an element.
+   *
+   * Not simply "the nearest ancestor with a background": several of the colours
+   * in play are alpha washes — a hue tint on a Token, an overlay on a row — and
+   * a wash has to be composited onto what is under *it*, not onto a guess. So
+   * the ancestors are collected until one is opaque, then painted back down in
+   * order.
+   */
   const backdrop = el => {
+    const stack = [];
     let node = el.parentElement;
     while (node) {
       const colour = parseColor(getComputedStyle(node).backgroundColor);
-      if (colour && colour.a > 0.05) {
-        return composite(colour, {r: 255, g: 255, b: 255, a: 1});
+      if (colour && colour.a > 0.004) {
+        stack.push(colour);
+        if (colour.a >= 0.999) break;
       }
       node = node.parentElement;
     }
-    return {r: 255, g: 255, b: 255, a: 1};
+    // Nothing opaque underneath: the canvas is what shows through.
+    let base = {r: 255, g: 255, b: 255, a: 1};
+    const canvas = parseColor(
+      getComputedStyle(document.documentElement).backgroundColor,
+    );
+    if (canvas && canvas.a >= 0.999) base = canvas;
+    for (let i = stack.length - 1; i >= 0; i -= 1) {
+      base = composite(stack[i], base);
+    }
+    return base;
   };
 
   const FOCUSABLE =
@@ -216,12 +241,41 @@
   window.__snapshotResting = () => {
     const stage = stageEl();
     if (!stage) return 0;
-    const all = [stage, ...stage.querySelectorAll('*')];
-    for (const el of all) {
-      el.__restingShadow = getComputedStyle(el).boxShadow;
+    // The elements that can become `document.activeElement`, plus the few
+    // ancestors that might ring on their behalf. Reading a computed style
+    // forces a style resolution, and doing it for every node of every example
+    // was the slowest thing in the run.
+    const all = new Set([stage]);
+    for (const el of stage.querySelectorAll(FOCUSABLE)) {
+      all.add(el);
+      let node = el.parentElement;
+      for (let up = 0; up < RING_ANCESTORS && node && node !== stage; up += 1) {
+        all.add(node);
+        node = node.parentElement;
+      }
     }
-    return all.length;
+    for (const el of all) {
+      const cs = getComputedStyle(el);
+      el.__restingShadow = cs.boxShadow;
+      el.__restingBorder = cs.borderTopColor;
+    }
+    return all.size;
   };
+
+  /**
+   * How far up to look for the ring.
+   *
+   * A field's focusable element is a bare `<input>` with `outline: none`; the
+   * ring is the wrapper's, drawn on `:focus-within` as a border colour and an
+   * inset shadow. A checkbox's is painted on the indicator beside it. So "does
+   * this stop show focus" cannot be answered by looking at the stop alone.
+   *
+   * And a focus indicator is not only an outline. A border that *changes
+   * colour* on focus is the affordance for every field in the system, so it
+   * counts — and it is what stops counting when a theme repaints the resting
+   * border from a later cascade layer.
+   */
+  const RING_ANCESTORS = 4;
 
   window.__describeActive = () => {
     const el = document.activeElement;
@@ -247,6 +301,7 @@
     let ringStyle = style;
     let ringOffset = offset;
     let ringColorValue = hasOutline ? cs.outlineColor : '';
+    let ringShadow = hasShadowRing ? shadow : '';
     if (!hasOutline) {
       for (const descendant of el.parentElement
         ? el.parentElement.querySelectorAll('*')
@@ -263,8 +318,55 @@
         }
       }
     }
+    // Still nothing: look up. A field rings itself on `:focus-within`, on the
+    // wrapper, as a border colour plus an inset shadow — neither of which is on
+    // the `<input>` that actually has focus.
+    if (ringOwner == null && !hasShadowRing) {
+      let node = el.parentElement;
+      for (let up = 0; up < RING_ANCESTORS && node && node !== stage; up += 1) {
+        const acs = getComputedStyle(node);
+        const aw = parseFloat(acs.outlineWidth) || 0;
+        if (aw > 0 && acs.outlineStyle !== 'none') {
+          ringOwner = node;
+          ringWidth = aw;
+          ringStyle = acs.outlineStyle;
+          ringOffset = parseFloat(acs.outlineOffset) || 0;
+          ringColorValue = acs.outlineColor;
+          break;
+        }
+        // A border focus turned a different colour is the field affordance.
+        const aBorder = acs.borderTopColor;
+        const restingBorder = node.__restingBorder;
+        const borderWidth = parseFloat(acs.borderTopWidth) || 0;
+        if (
+          borderWidth > 0 &&
+          restingBorder != null &&
+          aBorder !== restingBorder
+        ) {
+          ringOwner = node;
+          ringWidth = borderWidth;
+          ringStyle = 'border';
+          ringOffset = 0;
+          ringColorValue = aBorder;
+          break;
+        }
+        const aShadow =
+          acs.boxShadow && acs.boxShadow !== 'none' ? acs.boxShadow : '';
+        const aResting = node.__restingShadow;
+        if (aShadow && aResting != null && aShadow !== aResting) {
+          ringOwner = node;
+          ringWidth = 0;
+          ringStyle = 'none';
+          ringOffset = 0;
+          ringColorValue = '';
+          ringShadow = aShadow;
+          break;
+        }
+        node = node.parentElement;
+      }
+    }
     const drawn = ringOwner != null || hasShadowRing;
-    const colour = parseColor(ringColorValue) || parseColor(shadow);
+    const colour = parseColor(ringColorValue) || parseColor(ringShadow);
     const target = ringOwner || el;
     const bg = backdrop(target);
     const ratio = colour ? contrast(composite(colour, bg), bg) : 0;
@@ -291,13 +393,26 @@
         el.getAttribute('aria-label') ||
         (el.textContent || '').trim().slice(0, 40),
       focusVisible: el.matches(':focus-visible'),
-      ringOn: ringOwner === el ? 'self' : ringOwner ? 'descendant' : 'none',
+      ringOwner:
+        ringOwner == null
+          ? ''
+          : astryxClasses(ringOwner) || ringOwner.tagName.toLowerCase(),
+      ringOn:
+        ringOwner === el
+          ? 'self'
+          : ringOwner == null
+            ? hasShadowRing
+              ? 'self'
+              : 'none'
+            : ringOwner.contains(el)
+              ? 'ancestor'
+              : 'descendant',
       outlineWidth: ringWidth,
       outlineStyle: ringStyle,
       outlineOffset: ringOffset,
       outlineColor: ringColorValue,
       backdrop: `rgb(${Math.round(bg.r)}, ${Math.round(bg.g)}, ${Math.round(bg.b)})`,
-      boxShadow: shadow.slice(0, 200),
+      boxShadow: (ringShadow || shadow).slice(0, 200),
       hasRing: drawn,
       contrast: Math.round(ratio * 100) / 100,
       clipped,

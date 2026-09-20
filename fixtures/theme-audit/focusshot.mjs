@@ -36,7 +36,9 @@ for (const [side, offset] of [
 }
 
 const browser = await chromium.launch({args: ['--disable-dev-shm-usage']});
-const context = await browser.newContext({viewport: {width: 1100, height: 900}});
+const context = await browser.newContext({
+  viewport: {width: 1100, height: 900},
+});
 await context.addInitScript({path: path.join(HERE, 'scripts', 'probe.js')});
 
 for (const side of ['tecton', 'neutral']) {
@@ -49,6 +51,9 @@ for (const side of ['tecton', 'neutral']) {
     timeout: 20000,
   });
   await page.waitForTimeout(200);
+  // The probe tells a focus ring from a resting shadow by comparing the two, so
+  // the resting state has to be recorded before anything is focused.
+  await page.evaluate(() => window.__snapshotResting());
   for (let i = 0; i < tabs; i += 1) await page.keyboard.press('Tab');
   await page.waitForTimeout(120);
   const stop = await page.evaluate(() => window.__describeActive());

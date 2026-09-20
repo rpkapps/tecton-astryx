@@ -113,9 +113,28 @@ export default defineConfig(({mode}) => {
   const side = mode === 'neutral' ? 'neutral' : 'tecton';
   return {
     root: here,
+    // Relative, so the built pages work from any static root.
+    base: './',
     plugins: [resolveSurface(side), exampleStyleX(), react()],
     resolve: {
       dedupe: ['react', 'react-dom'],
+    },
+    build: {
+      // Each side is built once and served static. On a dev server every one of
+      // the package's ~1700 modules is a separate request with its own
+      // transform, and 646 page loads of that is hours; bundled, a page load is
+      // two requests.
+      outDir: `dist/${side}`,
+      emptyOutDir: true,
+      target: 'esnext',
+      minify: false,
+      sourcemap: false,
+      chunkSizeWarningLimit: 100_000,
+      rollupOptions: {
+        input: {
+          [side]: `${here}${side === 'neutral' ? 'neutral' : 'tecton'}.html`,
+        },
+      },
     },
     server: {
       fs: {
