@@ -8,6 +8,11 @@
  * therefore renders no viewport — is shown here, in one stack, with one set of
  * dismiss timers.
  *
+ * A `scope="nested"` provider renders it too, with `owning={false}`, but only
+ * when the bus has asked it to stand in for a page that has no `scope="root"`
+ * provider at all. The only difference is the claim: a stand-in viewport hands
+ * the page back the moment an owning one publishes.
+ *
  * This is the only place that turns toast *data* into toast *elements*. The bus
  * carries strings and one action descriptor, because an element created by
  * another copy's React cannot be rendered by this one.
@@ -40,7 +45,17 @@ const styles = stylex.create({
   },
 });
 
-export function ToastBridge() {
+export interface ToastBridgeProps {
+  /**
+   * Whether this viewport claims the page's toast surface.
+   *
+   * `true` (the default) for a `scope="root"` provider; `false` for a nested
+   * provider standing in while the page has no owning viewport.
+   */
+  owning?: boolean;
+}
+
+export function ToastBridge({owning = true}: ToastBridgeProps = {}) {
   const showToast = useBaseToast();
 
   // The bus calls `add` during an event, outside React's render, so it has to
@@ -54,41 +69,44 @@ export function ToastBridge() {
     /** How to take each toast this viewport is showing back down. */
     const dismissers = new Map<string, () => void>();
 
-    return publishToastViewport({
-      add(id: string, toast: TectonToastData) {
-        const {title, body, type = 'info', durationMs, action} = toast;
-        dismissers.set(
-          id,
-          showToastRef.current({
-            body:
-              title === undefined ? (
-                body
-              ) : (
-                <span {...stylex.props(styles.body)}>
-                  <span {...stylex.props(styles.title)}>{title}</span>
-                  <span>{body}</span>
-                </span>
-              ),
-            type,
-            autoHideDuration: durationMs,
-            endContent:
-              action === undefined ? undefined : (
-                <Button
-                  label={action.label}
-                  variant="text-only"
-                  size="sm"
-                  onClick={action.onAction}
-                />
-              ),
-          }),
-        );
+    return publishToastViewport(
+      {
+        add(id: string, toast: TectonToastData) {
+          const {title, body, type = 'info', durationMs, action} = toast;
+          dismissers.set(
+            id,
+            showToastRef.current({
+              body:
+                title === undefined ? (
+                  body
+                ) : (
+                  <span {...stylex.props(styles.body)}>
+                    <span {...stylex.props(styles.title)}>{title}</span>
+                    <span>{body}</span>
+                  </span>
+                ),
+              type,
+              autoHideDuration: durationMs,
+              endContent:
+                action === undefined ? undefined : (
+                  <Button
+                    label={action.label}
+                    variant="text-only"
+                    size="sm"
+                    onClick={action.onAction}
+                  />
+                ),
+            }),
+          );
+        },
+        remove(id: string) {
+          dismissers.get(id)?.();
+          dismissers.delete(id);
+        },
       },
-      remove(id: string) {
-        dismissers.get(id)?.();
-        dismissers.delete(id);
-      },
-    });
-  }, []);
+      {owning},
+    );
+  }, [owning]);
 
   return null;
 }

@@ -9,6 +9,12 @@ export default tseslint.config(
       '**/node_modules/**',
       '**/dist/**',
       '**/coverage/**',
+      // Agent worktrees are whole checkouts of this repository living inside
+      // it (they are in .gitignore, and Prettier skips them already because
+      // the directory is a dotfile). Linting another checkout's work in
+      // progress from here fails `pnpm check` for reasons that have nothing
+      // to do with this tree.
+      '.claude/**',
       'apps/docs/src/generated/**',
       'design/**',
       'tokens/**',

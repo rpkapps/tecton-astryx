@@ -55,6 +55,10 @@ describe('getToastBus', () => {
 
     expect(second).toBe(first);
     expect(first?.version).toBe(TOAST_BUS_VERSION);
+    // Version 2 added stand-ins; a copy that finds a version 1 record simply
+    // does not offer to stand in, so the method is optional on the interface.
+    expect(TOAST_BUS_VERSION).toBe(2);
+    expect(typeof first?.requestStandIn).toBe('function');
 
     const descriptor = Object.getOwnPropertyDescriptor(
       doc,
@@ -152,6 +156,128 @@ describe('routing', () => {
     expect(next.shown.map(entry => entry.toast.body)).toEqual([
       'raised with nothing on the page',
     ]);
+  });
+});
+
+describe('standing in for a page with no owner', () => {
+  it('asks the first offer, and only the first, while nothing owns the page', () => {
+    const bus = busFor(freshDocument());
+    const first = vi.fn();
+    const second = vi.fn();
+
+    bus.requestStandIn?.(first);
+    bus.requestStandIn?.(second);
+
+    // The answer is already known when the offer is made, so the first one is
+    // told synchronously; the second is never asked at all while the first is
+    // doing the job, which is what keeps one viewport on a six-container page.
+    expect(first).toHaveBeenCalledExactlyOnceWith(true);
+    expect(second).not.toHaveBeenCalled();
+  });
+
+  it('shows every copy’s toasts through the stand-in', () => {
+    const bus = busFor(freshDocument());
+    const standIn = recordingViewport();
+    bus.requestStandIn?.(needed => {
+      if (needed) bus.publish(standIn, {owning: false});
+    });
+
+    bus.show({body: 'from a nested container'});
+
+    expect(standIn.shown.map(entry => entry.toast.body)).toEqual([
+      'from a nested container',
+    ]);
+    expect(bus.inspect?.()).toMatchObject({
+      publishers: 1,
+      owners: 0,
+      standInRequests: 1,
+      standingIn: true,
+    });
+  });
+
+  it('hands the page over when an owning viewport publishes, and back when it leaves', () => {
+    const bus = busFor(freshDocument());
+    const standIn = recordingViewport();
+    const owner = recordingViewport();
+
+    let release: (() => void) | null = null;
+    const asked: boolean[] = [];
+    bus.requestStandIn?.(needed => {
+      asked.push(needed);
+      if (needed) {
+        release = bus.publish(standIn, {owning: false});
+      } else {
+        release?.();
+        release = null;
+      }
+    });
+
+    expect(asked).toEqual([true]);
+    bus.show({body: 'before the root provider mounts'});
+    expect(standIn.shown).toHaveLength(1);
+
+    // A scope="root" provider mounts. The stand-in is told it is no longer
+    // needed and takes its viewport down, so the page still has exactly one.
+    const releaseOwner = bus.publish(owner);
+    expect(asked).toEqual([true, false]);
+    expect(bus.inspect?.()).toMatchObject({
+      publishers: 1,
+      owners: 1,
+      standingIn: false,
+    });
+
+    bus.show({body: 'while the root provider is up'});
+    expect(owner.shown.map(entry => entry.toast.body)).toEqual([
+      'while the root provider is up',
+    ]);
+    expect(standIn.shown).toHaveLength(1);
+
+    // ...and the offer is taken up again when the owner leaves the page.
+    releaseOwner();
+    expect(asked).toEqual([true, false, true]);
+    bus.show({body: 'after the root provider unmounted'});
+    expect(standIn.shown.map(entry => entry.toast.body)).toEqual([
+      'before the root provider mounts',
+      'after the root provider unmounted',
+    ]);
+  });
+
+  it('asks the next offer when the one standing in withdraws', () => {
+    const bus = busFor(freshDocument());
+    const second = vi.fn();
+    const withdrawFirst = bus.requestStandIn?.(() => {});
+    bus.requestStandIn?.(second);
+
+    expect(second).not.toHaveBeenCalled();
+    withdrawFirst?.();
+    expect(second).toHaveBeenCalledExactlyOnceWith(true);
+  });
+
+  it('never tells an offer the answer it already has', () => {
+    const bus = busFor(freshDocument());
+    const listener = vi.fn();
+    bus.requestStandIn?.(listener);
+
+    // A second and a third owning publisher change nothing for the stand-in:
+    // it was already told the page has an owner.
+    const releaseOne = bus.publish(recordingViewport());
+    const releaseTwo = bus.publish(recordingViewport());
+    releaseTwo();
+
+    expect(listener.mock.calls).toEqual([[true], [false]]);
+    releaseOne();
+    expect(listener.mock.calls).toEqual([[true], [false], [true]]);
+  });
+
+  it('queues, as it always did, when no offer is made at all', () => {
+    const bus = busFor(freshDocument());
+    bus.show({body: 'nothing to show this on'});
+    expect(bus.inspect?.()).toMatchObject({
+      publishers: 0,
+      queued: 1,
+      standInRequests: 0,
+      standingIn: false,
+    });
   });
 });
 

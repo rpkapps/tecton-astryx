@@ -31,6 +31,20 @@ Run from the repository root:
 | `pnpm check:mfe`    | Build and run the micro-frontend harness (browser, not part of `check`) |
 | `pnpm clean`        | Remove build output                                                     |
 
+Upgrading the library Tecton is built on is one command:
+
+| Command                                  | What it does                                                               |
+| ---------------------------------------- | -------------------------------------------------------------------------- |
+| `pnpm upgrade-astryx --to <version>`     | Move the whole repository to a new upstream release, end to end            |
+| `pnpm upgrade-astryx --to <v> --dry-run` | Report what that release would change, touching nothing                    |
+| `pnpm snapshot:astryx`                   | Re-pin `scripts/astryx-snapshot/` — the inventories a report diffs against |
+
+It bumps every pin and the `pnpm patch` key, installs, runs the upstream
+codemods, rebuilds the theme and the token manifest, writes
+`docs/engineering/upgrades/<old>-to-<new>.md`, and runs both checks. It never
+commits. A failed patch stops it, loudly, with the recovery procedure printed:
+read `docs/engineering/upgrading-astryx.md` before running it.
+
 Per workspace, for example:
 
 ```bash
@@ -73,6 +87,9 @@ Phase 4 builds that.
   on, how its props map, and where Tecton's design and the upstream model
   disagree.
 - `docs/engineering/build-pipeline.md` — how the package is built.
+- `docs/engineering/upgrading-astryx.md` — how the repository moves to a new
+  upstream release, what the report says, and what to do when the patch stops
+  applying. Two worked examples are in `docs/engineering/upgrades/`.
 - `docs/engineering/micro-frontends/README.md` — what a host shell must do when
   several Tecton versions share a page, and what is unsupported.
 - `docs/design/fidelity-report.md` — what survived the port from the design, what
@@ -83,6 +100,38 @@ Phase 4 builds that.
 ## Deviations
 
 Choices that differ from the briefs, and why.
+
+### Phase 5
+
+- **The upgrade script runs the codemods once per workspace, not once.** The
+  upstream runner refuses a `--path` outside its own project root and finds the
+  release by resolving from its working directory, so `packages/react` and
+  `apps/docs` are each scanned from their own directory. A consumer fixture
+  that does not depend on the upstream package at all makes the runner abort;
+  that is reported as a skipped tree in the report rather than treated as a
+  failure, because a fixture that only imports `@tecton/react` has no upstream
+  API to migrate.
+- **`--dry-run` installs the target into `node_modules/.cache/` to report from.**
+  Nothing else can say what a release contains — the component list, the theme
+  targets and the token surface all come from the installed package. The
+  repository is untouched; what a dry run cannot do is compile the theme, so
+  the report's theme sections say "not run" instead of "no change".
+- **A dry run's codemod preview is for the range up to the _installed_
+  release, and says so.** The runner takes its target from what is installed,
+  and a dry run installs nothing into the workspace. What it reports instead is
+  the codemod catalogue the target ships that the current release does not.
+- **The pins are bumped as a text edit, not a JSON round-trip**, so an
+  upgrade's diff is the versions it changed and nothing else (a round-trip
+  re-prints escapes and would show up as unrelated noise).
+- **A nested provider can publish a toast viewport after all.** The Phase 3
+  design gave the page one viewport, owned by the first `scope="root"`
+  provider — but the recommended host shape has no root provider anywhere, so
+  toasts queued for ever in exactly the shape the documentation recommends. The
+  toast bus now lets the first `scope="nested"` provider stand in, and hand
+  over to a `scope="root"` provider if one mounts. The record gained one
+  optional method (`requestStandIn`) and its version went to 2; version 1
+  readers are unaffected, and a version 2 reader that finds a version 1 record
+  simply never stands in.
 
 ### Phase 2
 

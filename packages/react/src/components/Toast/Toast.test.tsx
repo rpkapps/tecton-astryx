@@ -3,6 +3,7 @@ import {describe, expect, it, vi} from 'vitest';
 import {fireEvent, render, screen} from '@testing-library/react';
 import {TectonProvider} from '../../provider/TectonProvider.js';
 import {Button} from '../Button/Button.js';
+import {getToastBus} from '../../runtime/toastBus.js';
 import {useToast, type DismissToast, type ToastPayload} from './useToast.js';
 
 function Raise({payload}: {payload: ToastPayload}) {
@@ -85,20 +86,71 @@ describe('toast routing across providers', () => {
   const viewportOf = (text: string) =>
     screen.getByText(text).closest('[data-toast-id]')?.parentElement ?? null;
 
-  it('renders no viewport of its own for a nested provider', () => {
+  it('stands in with one viewport when the page has no root provider', () => {
+    // The recommended host shape: a non-React shell called
+    // configureTectonRoot() and every container mounts nested. Nothing here is
+    // scope="root", and before the stand-in this page showed no toast at all.
     render(
-      <TectonProvider scope="nested">
-        <Raise payload={{body: 'from a container with no viewport'}} />
-      </TectonProvider>,
+      <>
+        <TectonProvider scope="nested">
+          <Raise payload={{body: 'from the first container'}} />
+        </TectonProvider>
+        <TectonProvider scope="nested">
+          <Raise payload={{body: 'from the second container'}} />
+        </TectonProvider>
+      </>,
     );
 
-    fireEvent.click(screen.getByRole('button', {name: 'Raise'}));
+    const [first, second] = screen.getAllByRole('button', {name: 'Raise'});
+    fireEvent.click(first!);
+    fireEvent.click(second!);
 
-    // Nothing renders it, so nothing is shown: the toast waits on the bus for
-    // a viewport to publish. Dismissing it takes it back off the queue, which
-    // is also what keeps this test from leaking into the next one.
-    expect(toastNodes()).toHaveLength(0);
-    fireEvent.click(screen.getByRole('button', {name: 'Dismiss'}));
+    // One viewport for the page, published by the first nested provider, and
+    // both containers' toasts are in it.
+    expect(toastNodes()).toHaveLength(2);
+    expect(viewportOf('from the first container')).not.toBeNull();
+    expect(viewportOf('from the second container')).toBe(
+      viewportOf('from the first container'),
+    );
+
+    const [dismissFirst, dismissSecond] = screen.getAllByRole('button', {
+      name: 'Dismiss',
+    });
+    fireEvent.click(dismissFirst!);
+    fireEvent.click(dismissSecond!);
+  });
+
+  it('renders no viewport of its own once a root provider owns the page', () => {
+    const page = render(
+      <>
+        <TectonProvider>
+          <Raise payload={{body: 'from the shell'}} />
+        </TectonProvider>
+        <TectonProvider scope="nested">
+          <Raise payload={{body: 'from a container with no viewport'}} />
+        </TectonProvider>
+      </>,
+    );
+
+    const [, container] = screen.getAllByRole('button', {name: 'Raise'});
+    fireEvent.click(container!);
+
+    // The nested provider renders nothing of its own: one publisher on the
+    // page, the owning one, and the nested provider's standing offer to cover
+    // for it is not being taken up.
+    expect(toastNodes()).toHaveLength(1);
+    expect(getToastBus()?.inspect?.()).toMatchObject({
+      publishers: 1,
+      owners: 1,
+      standInRequests: 1,
+      standingIn: false,
+    });
+
+    const [, dismissContainer] = screen.getAllByRole('button', {
+      name: 'Dismiss',
+    });
+    fireEvent.click(dismissContainer!);
+    page.unmount();
   });
 
   it('lands a nested container’s toast in the root provider’s one viewport', () => {
@@ -120,5 +172,47 @@ describe('toast routing across providers', () => {
     expect(toastNodes()).toHaveLength(2);
     expect(viewportOf('from the shell')).not.toBeNull();
     expect(viewportOf('from the container')).toBe(viewportOf('from the shell'));
+  });
+
+  it('hands the viewport over when a root provider mounts later', () => {
+    // A page that starts in the all-nested shape: the first container stands
+    // in, and its viewport is the page's.
+    const container = render(
+      <TectonProvider scope="nested">
+        <Raise payload={{body: 'while standing in'}} />
+      </TectonProvider>,
+    );
+    fireEvent.click(screen.getByRole('button', {name: 'Raise'}));
+    expect(toastNodes()).toHaveLength(1);
+    expect(getToastBus()?.inspect?.()).toMatchObject({standingIn: true});
+
+    // A scope="root" provider turns up — a shell mounting its own tree, say.
+    // The stand-in hands the page back: one publisher, the owning one.
+    const shell = render(
+      <TectonProvider>
+        <Raise payload={{body: 'from the new owner'}} />
+      </TectonProvider>,
+    );
+    expect(getToastBus()?.inspect?.()).toMatchObject({
+      publishers: 1,
+      owners: 1,
+      standInRequests: 1,
+      standingIn: false,
+    });
+    // The stand-in's viewport went with it, and the toast it was showing with
+    // it: a viewport is a rendering surface, not a store.
+    expect(toastNodes()).toHaveLength(0);
+
+    // Toasts raised from either tree now land in the owner's one viewport.
+    const [standIn, owner] = screen.getAllByRole('button', {name: 'Raise'});
+    fireEvent.click(standIn!);
+    fireEvent.click(owner!);
+    expect(toastNodes()).toHaveLength(2);
+    expect(viewportOf('from the new owner')).toBe(
+      viewportOf('while standing in'),
+    );
+
+    shell.unmount();
+    container.unmount();
   });
 });

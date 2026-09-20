@@ -216,10 +216,14 @@ work through it:
 
 ---
 
-## What `scripts/upgrade-astryx.mjs` must do (Phase 5, not yet implemented)
+## What `scripts/upgrade-astryx.mjs` does
 
-The upgrade script owns this flow end to end. It is not part of this phase; this
-is the requirement list it has to satisfy:
+The upgrade script owns this flow end to end —
+`pnpm upgrade-astryx --to <version>`, documented in
+[`upgrading-astryx.md`](./upgrading-astryx.md). This is the requirement list it
+satisfies; step 3 above is what it prints when the patch stops applying, and it
+leaves the pins and the patch file name bumped so `pnpm patch` can be run
+against the new version straight away:
 
 1. Bump the exact pins in `packages/react/package.json`
    (`@astryxdesign/core` and `@astryxdesign/cli`, both `devDependencies` now) —

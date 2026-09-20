@@ -473,12 +473,86 @@ test('toasts from both containers land in one viewport', async ({page}) => {
   expect(shown.bodies.join(' ')).toContain('toast from container b');
 });
 
+/** What the page's toast bus reports about itself. */
+function toastBus(page: Page) {
+  return page.evaluate(() => {
+    const record = (
+      document as unknown as Record<symbol, {inspect?: () => unknown}>
+    )[Symbol.for('tecton.toast/v1')];
+    return (record?.inspect?.() ?? null) as {
+      publishers: number;
+      owners?: number;
+      standInRequests?: number;
+      standingIn?: boolean;
+      queued: number;
+    } | null;
+  });
+}
+
+test('the recommended split shape shows toasts with every container nested', async ({
+  page,
+}) => {
+  // The shape §1 of the README recommends, exactly as written: the shell owns
+  // the page through configureTectonRoot() and BOTH containers are nested, so
+  // nothing on the page is scope="root". Every toast raised here used to queue
+  // for ever, because a nested provider rendered no viewport and no other
+  // provider was going to.
+  await open(page, '?styles=split');
+
+  await page.click('[data-testid="a-raise-toast"]');
+  await page.click('[data-testid="b-raise-toast"]');
+  await page.waitForTimeout(200);
+
+  // One viewport — the stand-in published by the first nested provider — and
+  // both containers' toasts in it, each rendered by the copy that raised it.
+  const shown = await toasts(page);
+  expect(shown.viewports).toBe(1);
+  expect(shown.bodies.join(' ')).toContain('toast from container a');
+  expect(shown.bodies.join(' ')).toContain('toast from container b');
+
+  // Standing in claims nothing else: the shell still owns the root, and the
+  // page still has the same three holders it had before.
+  expect(await toastBus(page)).toMatchObject({
+    publishers: 1,
+    owners: 0,
+    standInRequests: 2,
+    standingIn: true,
+    queued: 0,
+  });
+  expect(await registry(page)).toMatchObject({holders: 3});
+  expect(await root(page)).toMatchObject({mode: 'dark', theme: 'tecton'});
+});
+
+test('the stand-in passes to the next container when the first one leaves', async ({
+  page,
+}) => {
+  await open(page, '?styles=split');
+
+  // Container A is standing in for the page. It goes away — a container being
+  // unmounted is routine in a shell — and B picks the viewport up.
+  await page.evaluate(() => window.__mfe.unmount('a'));
+  await page.waitForTimeout(100);
+
+  await page.click('[data-testid="b-raise-toast"]');
+  await page.waitForTimeout(200);
+
+  const shown = await toasts(page);
+  expect(shown.viewports).toBe(1);
+  expect(shown.bodies.join(' ')).toContain('toast from container b');
+  expect(await toastBus(page)).toMatchObject({
+    publishers: 1,
+    owners: 0,
+    standInRequests: 1,
+    standingIn: true,
+  });
+});
+
 test("a nested container's toast lands in the root provider's viewport", async ({
   page,
 }) => {
-  // The recommended split shape, with container A as the page's toast owner:
-  // the host shell holds the root, A mounts scope="root" and B scope="nested",
-  // so only A renders a viewport at all.
+  // The same split shape with container A mounted scope="root" instead: A owns
+  // the page's toast surface outright, so B's standing offer to cover for a
+  // page with no owner is never taken up and only A renders a viewport.
   await open(page, '?styles=split&scopeA=root&scopeB=nested');
 
   await page.click('[data-testid="b-raise-toast"]');
@@ -489,6 +563,12 @@ test("a nested container's toast lands in the root provider's viewport", async (
   expect(shown.viewports).toBe(1);
   expect(shown.bodies.join(' ')).toContain('toast from container a');
   expect(shown.bodies.join(' ')).toContain('toast from container b');
+  expect(await toastBus(page)).toMatchObject({
+    publishers: 1,
+    owners: 1,
+    standInRequests: 1,
+    standingIn: false,
+  });
 });
 
 // ---------------------------------------------------------------------------

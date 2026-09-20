@@ -52,7 +52,7 @@ pnpm --filter @tecton/react test   # just its tests
 pnpm --filter @tecton/docs dev     # the documentation site
 node scripts/check-consumer-surface.mjs
 node scripts/capture-fidelity.mjs                # screenshot the theme gallery
-node scripts/upgrade-astryx.mjs --to <version>   # stub, a later phase fills it in
+pnpm upgrade-astryx --to <version>               # move to a new upstream release
 
 pnpm --filter @tecton/react generate:palette     # regenerate the palette module
 pnpm palette:check                               # fail if it has drifted

@@ -13,7 +13,11 @@
  * draw their toasts on top of each other (measured, F8/F12 in
  * `docs/engineering/micro-frontends/analysis.md`). An element built by one
  * copy's React cannot be rendered by another's, so only data crosses; the copy
- * that owns the viewport renders it with its own components.
+ * that owns the viewport renders it with its own components. Which copy that
+ * is needs no configuration: a `scope="root"` provider publishes the page's
+ * viewport, and on a page with no root provider — the recommended
+ * micro-frontend shape — the first `scope="nested"` provider stands in until
+ * one appears.
  *
  * @example
  * const toast = useToast();

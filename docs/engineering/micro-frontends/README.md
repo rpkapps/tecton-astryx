@@ -96,13 +96,28 @@ Sometimes you cannot split — a container ships one file and that is that. Then
 - **Make every container pass `scope="nested"`.** A nested provider still themes
   its own tree in its own `mode`, and still holds a non-owning claim so the
   attributes survive _its_ unmount, but it does not try to decide the page.
-- **Give the page exactly one toast viewport owner.** A `scope="nested"`
-  provider renders no toast viewport — that is what stops two of them landing in
-  the same corner — so **one** Tecton tree on the page must be `scope="root"`:
-  either the shell mounts a `TectonProvider` of its own, or one container does.
-  Toasts raised anywhere on the page, by any copy of Tecton, are shown by that
-  one viewport; a toast raised before it exists waits for it. If nothing on the
-  page is `scope="root"`, toasts queue and nothing is shown.
+- **Toasts need no configuration, and one viewport is all the page ever gets.**
+  A `scope="nested"` provider normally renders no toast viewport — that is what
+  stops two of them landing in the same corner — but a page where _nothing_ is
+  `scope="root"`, which is exactly the shape this document recommends, is not a
+  page without toasts: the first nested provider to mount publishes a
+  **stand-in** viewport for the page. Toasts raised anywhere, by any copy of
+  Tecton, are shown in it.
+
+  If a `scope="root"` provider does mount — the shell renders its own
+  `TectonProvider`, or one container is deliberately the page's Tecton root —
+  it takes the viewport over and the stand-in takes its own down, in that
+  order, so the page never has two. When it unmounts again, a nested provider
+  stands in once more. Toasts on screen belong to the viewport showing them and
+  go when it does; a toast raised while the page has no viewport at all waits
+  for the next one.
+
+  There is nothing to opt into and nothing to arbitrate between containers —
+  the bus asks one provider at a time. The one thing worth knowing is _which_
+  copy of Tecton renders the stack: the stand-in is the first nested provider
+  on the page, so on a page mixing Tecton versions the toast styling is that
+  container's.
+
 - **Decide the colour mode once.** There is one `<html>`; a container cannot
   have different browser chrome from its host.
 - **Own your own reset, or accept Tecton's.** `styles.css` and `components.css`
@@ -149,22 +164,22 @@ behaviour is understood, deterministic and written down, not changed.
 
 Every "fixed" row is asserted by the harness, and the assertion is named.
 
-| #   | Failure                                                                    | Sev | Status                                                                | What ships                                                                                                       |
-| --- | -------------------------------------------------------------------------- | --- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| F1  | Modals in two containers overlap; body left `position: fixed`, page frozen | S1  | **fixed by patch**                                                    | One scroll lock per document (patch 1). Harness: _two containers, one scroll lock…_ and _…the other order_       |
-| F2  | Two versions' token values contest each other; last-loaded wins for all    | S2  | **fixed** in the split shape; **documented** for two complete bundles | `tokens.css` / `components.css`, one theme layer on the page; load order rule otherwise                          |
-| F3  | A version that overrides a token another does not wins it for both         | S2  | **fixed**                                                             | `theme-token-manifest.json` — the build fails if the built theme's token set drifts, so coverage cannot differ   |
-| F4  | Any container unmounting strips the `<html>` attributes for the whole page | S2  | **fixed**                                                             | `rootRegistry` — ref-counted claims, `MutationObserver` re-assertion, clean-up on the last release               |
-| F5  | Two containers with different `mode` fight over the page chrome            | S3  | **fixed**                                                             | First owning claim wins; `configureTectonRoot()` + `scope="nested"` make the shell the owner                     |
-| F6  | Escape closes the wrong layer across containers                            | S3  | **fixed by patch**                                                    | One layer stack and one listener per document (patch 2). Harness: _one Escape dismisses the layer on top…_ ×2    |
-| F7  | A layer nested into another container's DOM is orphaned by one Escape      | S2  | **fixed by patch**                                                    | Same stack: the press goes to the layer on top, not to the copy that listened first. Still unsupported by policy |
-| F8  | Two toast viewports at identical coordinates; one toast invisible          | S3  | **fixed**                                                             | Document-keyed toast bus; one viewport per page. Harness: _toasts from both containers land in one viewport_     |
-| F9  | Any Tecton stylesheet restyles host-owned headings and prose               | S3  | **mitigated**                                                         | `styles-no-reset.css` / `components-no-reset.css`; the prose scope is documented and cannot be narrowed          |
-| F10 | A modal in one container makes every other container unreachable           | S3  | **documented**                                                        | Correct modal semantics; a policy question for the shell, not a bug                                              |
-| F11 | Duplicate live regions; double announcements                               | S4  | **not yet**                                                           | Announce singleton (proposal §8)                                                                                 |
-| F12 | One F6 press lands in the last-registered toast viewport                   | S4  | **fixed**                                                             | Falls out of the toast bus: there is only one viewport to land in                                                |
-| F13 | +190 kB of mostly duplicate CSS per extra version                          | S4  | **mitigated**                                                         | The split entry points remove the duplicated theme layer; bound concurrent versions by policy                    |
-| F14 | Two different upstream majors                                              | S2  | **documented**                                                        | Unsupported; complete token coverage makes the contested `:root` defaults unreachable                            |
+| #   | Failure                                                                    | Sev | Status                                                                | What ships                                                                                                                                                                                                       |
+| --- | -------------------------------------------------------------------------- | --- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F1  | Modals in two containers overlap; body left `position: fixed`, page frozen | S1  | **fixed by patch**                                                    | One scroll lock per document (patch 1). Harness: _two containers, one scroll lock…_ and _…the other order_                                                                                                       |
+| F2  | Two versions' token values contest each other; last-loaded wins for all    | S2  | **fixed** in the split shape; **documented** for two complete bundles | `tokens.css` / `components.css`, one theme layer on the page; load order rule otherwise                                                                                                                          |
+| F3  | A version that overrides a token another does not wins it for both         | S2  | **fixed**                                                             | `theme-token-manifest.json` — the build fails if the built theme's token set drifts, so coverage cannot differ                                                                                                   |
+| F4  | Any container unmounting strips the `<html>` attributes for the whole page | S2  | **fixed**                                                             | `rootRegistry` — ref-counted claims, `MutationObserver` re-assertion, clean-up on the last release                                                                                                               |
+| F5  | Two containers with different `mode` fight over the page chrome            | S3  | **fixed**                                                             | First owning claim wins; `configureTectonRoot()` + `scope="nested"` make the shell the owner                                                                                                                     |
+| F6  | Escape closes the wrong layer across containers                            | S3  | **fixed by patch**                                                    | One layer stack and one listener per document (patch 2). Harness: _one Escape dismisses the layer on top…_ ×2                                                                                                    |
+| F7  | A layer nested into another container's DOM is orphaned by one Escape      | S2  | **fixed by patch**                                                    | Same stack: the press goes to the layer on top, not to the copy that listened first. Still unsupported by policy                                                                                                 |
+| F8  | Two toast viewports at identical coordinates; one toast invisible          | S3  | **fixed**                                                             | Document-keyed toast bus; one viewport per page, root-owned or stood in for. Harness: _toasts from both containers land in one viewport_, _the recommended split shape shows toasts with every container nested_ |
+| F9  | Any Tecton stylesheet restyles host-owned headings and prose               | S3  | **mitigated**                                                         | `styles-no-reset.css` / `components-no-reset.css`; the prose scope is documented and cannot be narrowed                                                                                                          |
+| F10 | A modal in one container makes every other container unreachable           | S3  | **documented**                                                        | Correct modal semantics; a policy question for the shell, not a bug                                                                                                                                              |
+| F11 | Duplicate live regions; double announcements                               | S4  | **not yet**                                                           | Announce singleton (proposal §8)                                                                                                                                                                                 |
+| F12 | One F6 press lands in the last-registered toast viewport                   | S4  | **fixed**                                                             | Falls out of the toast bus: there is only one viewport to land in                                                                                                                                                |
+| F13 | +190 kB of mostly duplicate CSS per extra version                          | S4  | **mitigated**                                                         | The split entry points remove the duplicated theme layer; bound concurrent versions by policy                                                                                                                    |
+| F14 | Two different upstream majors                                              | S2  | **documented**                                                        | Unsupported; complete token coverage makes the contested `:root` defaults unreachable                                                                                                                            |
 
 F11 is what is left of the "a wrapper can only coordinate the document-level
 state it is in the call path for" conclusion: Tecton's own announcements can be
@@ -226,8 +241,11 @@ Nothing about this changes how Tecton is installed: a consumer still installs
   on `document`, so the page has one toast stack however many copies of Tecton
   raise into it. The payload is **data** — a title, a body, a kind, a duration
   and one action descriptor — never a React node, because an element built by
-  one copy's React cannot be rendered by another's. `scope="nested"` providers
-  render no viewport; see the host-shell rule in §2.
+  one copy's React cannot be rendered by another's. The bus also decides who
+  renders the stack: a `scope="root"` provider owns it, and on a page with no
+  root provider the first `scope="nested"` provider stands in and hands over if
+  one appears later. See the host-shell rule in §2, and
+  `document[Symbol.for('tecton.toast/v1')].inspect()` for who is publishing.
 - The library underneath is **patched and shipped inside the package**: one
   scroll lock and one layer stack per document, whatever is on the page
   (`../upstream-patches.md`). You install `@tecton/react` and nothing else, so

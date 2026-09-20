@@ -24,7 +24,9 @@
     "check": "pnpm format:check && pnpm lint && pnpm palette:check && pnpm icons:check && pnpm build && pnpm typecheck && pnpm test && pnpm surface:check && pnpm docs:check",
     "clean": "pnpm -r --if-present clean && rm -rf node_modules/.cache",
     "icons:check": "pnpm --filter @tecton/react icons:check",
-    "docs:check": "node scripts/check-docs-drift.mjs"
+    "docs:check": "node scripts/check-docs-drift.mjs",
+    "upgrade-astryx": "node scripts/upgrade-astryx.mjs",
+    "snapshot:astryx": "node scripts/upgrade-astryx.mjs --snapshot"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

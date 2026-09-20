@@ -343,6 +343,13 @@ export function useTectonToast(): (t: TectonToastPayload) => () => void;
 - `useTectonToast` in **any** copy sends through the registry, so every toast
   lands in one viewport, in one stack, with one set of dismiss timers.
 - `scope="nested"` providers render no viewport at all.
+
+  **Refined in Phase 5**: a page whose containers are _all_ nested — the shape
+  §1 of the README recommends — had no publisher and therefore showed nothing.
+  The first nested provider now publishes a _stand-in_ viewport and hands it to
+  a `scope="root"` provider if one ever mounts. One viewport per page either
+  way; see `README.md` §2 and `packages/react/src/runtime/toastBus.ts`.
+
 - If no publisher exists yet, queue and flush on publish (upstream's own fallback
   proxy does the same thing within one copy).
 
