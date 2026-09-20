@@ -22,7 +22,7 @@ const suffix = process.argv[3] ?? 'before';
 const side = suffix === 'neutral' ? 'neutral' : 'tecton';
 
 /**
- * [name, example id, {hover, press, click, width}] — a CSS selector inside
+ * [name, example id, {hover, press, click, clickThenHover, width}] — a selector inside
  * `#stage` to put into the named state before the shot, or nothing for a
  * resting one, plus the capture width when the default 620 cuts something off.
  */
@@ -43,7 +43,11 @@ const SHOTS = [
     'CheckboxInput/CheckboxInputShowcase',
     {hover: 'input[type="checkbox"]:checked'},
   ],
-  ['radio', 'RadioList/RadioListShowcase', {click: 'input[type="radio"]'}],
+  [
+    'radio-hover',
+    'RadioList/RadioListShowcase',
+    {clickThenHover: 'input[type="radio"]'},
+  ],
   ['link-hover', 'Link/LinkShowcase', {hover: 'a[href]'}],
   // §15 — a fill colour used as ink: the Stepper's accent glyphs and its
   // number badge, and an accent-coloured Icon on a toggle.
@@ -52,7 +56,7 @@ const SHOTS = [
   [
     'pressed-row',
     'SideNav/SideNavShowcase',
-    {press: '[aria-current], a[href]'},
+    {press: 'a[href="/projects"]', width: 520},
   ],
   // §17 — the ghost ink of a banner's collapse chevron on a severity fill.
   ['banner-ghost', 'Banner/BannerCollapsibleContent', {width: 960}],
@@ -92,8 +96,9 @@ for (const [name, example, how] of SHOTS) {
     .catch(() => null);
   await page.waitForTimeout(500);
   try {
-    if (how.hover || how.press || how.click) {
-      const selector = how.hover ?? how.press ?? how.click;
+    if (how.hover || how.press || how.click || how.clickThenHover) {
+      const selector =
+        how.hover ?? how.press ?? how.click ?? how.clickThenHover;
       const box = await page.evaluate(sel => {
         const el = document.querySelector(`#stage ${sel}`);
         if (!el) return null;
@@ -102,11 +107,15 @@ for (const [name, example, how] of SHOTS) {
       }, selector);
       if (box) {
         await page.mouse.move(box.x, box.y);
-        if (how.press || how.click) await page.mouse.down();
+        if (how.press || how.click || how.clickThenHover) {
+          await page.mouse.down();
+        }
         await page.waitForTimeout(250);
-        if (how.click) {
+        if (how.click || how.clickThenHover) {
           await page.mouse.up();
-          await page.mouse.move(2, 2);
+          // `clickThenHover` leaves the pointer where it clicked, so the shot
+          // shows a control both in its new state and under the mouse.
+          if (how.click) await page.mouse.move(2, 2);
           await page.waitForTimeout(250);
         }
       }

@@ -589,9 +589,9 @@ Tecton dark on the left of each pair, the reference render for comparison.
 | §14 `Switch` on, hovered — inert, then the track brightens | ![](theme-audit/switch-hover-before.png) | ![](theme-audit/switch-hover-after.png) | ![](theme-audit/switch-hover-neutral.png) |
 | §19 `TextInput` validation — a solid tinted box bleeding into the field, then a coloured rule and plain coloured helper text | ![](theme-audit/text-input-validation-before.png) | ![](theme-audit/text-input-validation-after.png) | ![](theme-audit/text-input-validation-neutral.png) |
 | §14 `CheckboxInput`, checked, hovered — inert, then the chip brightens a step | ![](theme-audit/checkbox-hover-before.png) | ![](theme-audit/checkbox-hover-after.png) | ![](theme-audit/checkbox-hover-neutral.png) |
-| §14 `RadioList`, checked — the ring, the transparent centre and the near-white dot | ![](theme-audit/radio-before.png) | ![](theme-audit/radio-after.png) | ![](theme-audit/radio-neutral.png) |
+| §14 `RadioList`, checked and hovered — the ring inert, then brightening a step | ![](theme-audit/radio-hover-before.png) | ![](theme-audit/radio-hover-after.png) | ![](theme-audit/radio-hover-neutral.png) |
 | §15 `Stepper` — the accent glyphs at 2.2:1 and the number badge at 2.0:1, then in the adornment lilac | ![](theme-audit/accent-as-ink-before.png) | ![](theme-audit/accent-as-ink-after.png) | ![](theme-audit/accent-as-ink-neutral.png) |
-| §16 `SideNav`, an item held down — the row lifted 20 % under a glyph chosen against the page, then 10 % | ![](theme-audit/pressed-row-before.png) | ![](theme-audit/pressed-row-after.png) | ![](theme-audit/pressed-row-neutral.png) |
+| §16 `SideNav`, "Projects" held down — the row lifted 20 % under a glyph chosen against the page, then 10 % | ![](theme-audit/pressed-row-before.png) | ![](theme-audit/pressed-row-after.png) | ![](theme-audit/pressed-row-neutral.png) |
 | §17 `Banner` — the collapse chevron and the close mark at 1.2:1 on the warning band, then in the band's own ink | ![](theme-audit/banner-ghost-before.png) | ![](theme-audit/banner-ghost-after.png) | ![](theme-audit/banner-ghost-neutral.png) |
 | §18 `Link`, hovered — unchanged, which is what the design asks for | ![](theme-audit/link-hover-before.png) | ![](theme-audit/link-hover-after.png) | ![](theme-audit/link-hover-neutral.png) |
 
