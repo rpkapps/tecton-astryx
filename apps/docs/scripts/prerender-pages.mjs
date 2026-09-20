@@ -66,8 +66,12 @@ export function prerenderPages() {
       prerender: {enabled: true, outputPath: '/api/search'},
     },
   ];
+  // With the trailing slash, because that is the form every link on the site
+  // carries and therefore the form the crawler finds. Listed without it, each
+  // page would be rendered twice — once from this list and once from a link —
+  // into the same `index.html`.
   for (const page of readGenerated('sitePages')) {
-    pages.push({path: page.url});
+    pages.push({path: `${page.url}/`});
   }
   return pages;
 }
