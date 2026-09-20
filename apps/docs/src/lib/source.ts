@@ -89,8 +89,9 @@ function groupComponentTree(root: PageTree.Root): PageTree.Root {
     });
   }
 
-  // Anything the grouping did not claim is appended rather than dropped: a page
-  // missing from the sidebar is a page nobody finds.
+  // Anything the grouping did not claim is kept rather than dropped: a page
+  // missing from the sidebar is a page nobody finds. The gallery leads the
+  // section, the way upstream's own sidebar opens with its overview.
   const claimed = new Set<string>();
   const collect = (nodes: readonly PageTree.Node[]) => {
     for (const node of nodes) {
@@ -102,12 +103,16 @@ function groupComponentTree(root: PageTree.Root): PageTree.Root {
   const leftovers = components.children.filter(
     node => node.type === 'page' && !claimed.has(node.url),
   );
+  const gallery = leftovers.filter(
+    node => node.type === 'page' && node.url === '/docs/components',
+  );
+  const rest = leftovers.filter(node => !gallery.includes(node));
 
   return {
     ...root,
     children: root.children.map(node =>
       node === components
-        ? {...components, children: [...children, ...leftovers]}
+        ? {...components, children: [...gallery, ...children, ...rest]}
         : node,
     ),
   };
