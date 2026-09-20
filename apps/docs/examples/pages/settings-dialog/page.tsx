@@ -24,7 +24,7 @@
  * its settings cannot be named honestly by an existing destination.
  *
  * **Customise from the system outward.** Stop at the first level that works:
- * (1) an Astryx component prop, (2) a theme token or component override when
+ * (1) an Tecton component prop, (2) a theme token or component override when
  * the value belongs across the surface, (3) local `xstyle` for layout the
  * component cannot express. Anything after that needs a comment recording the
  * missing system capability; otherwise one local fix becomes the next
@@ -272,7 +272,7 @@ const row = stylex.create({
 
 /** The miniature drawn inside each theme card. */
 const preview = stylex.create({
-  // One bar of "text". Astryx has no primitive for a content placeholder at
+  // One bar of "text". Tecton has no primitive for a content placeholder at
   // this scale — `Skeleton` is the near miss, and it animates.
   bar: {
     height: 4,
@@ -302,7 +302,7 @@ const preview = stylex.create({
 
 /**
  * The chosen face, as a TOKEN override rather than a `font-family` on the
- * words. Astryx's type rules resolve `var(--font-family-body)`, so
+ * words. Tecton's type rules resolve `var(--font-family-body)`, so
  * re-declaring the token re-points every `Text` inside the preview whatever
  * specificity those rules carry; setting `font-family` reaches only what
  * inherits it, and a preview built that way silently keeps showing the system
@@ -329,7 +329,7 @@ type PanelId =
 /**
  * Icons are heroicons outline, and only heroicons outline.
  *
- * Not a style preference: Astryx's own semantic icons — what
+ * Not a style preference: Tecton's own semantic icons — what
  * `<Icon icon="close" />` renders — are drawn at strokeWidth 1.5 to match
  * heroicons, and this dialog uses one for its close control. lucide draws at
  * 2, so a lucide row icon puts two stroke weights in one surface. One set
@@ -552,7 +552,7 @@ function settingMatchesSearch(
  * A filled, divided group of settings rows.
  *
  * `variant="muted"` does two jobs: it is the well the group reads as against
- * the dialog canvas, and — because Astryx draws a border on the `default`
+ * the dialog canvas, and — because Tecton draws a border on the `default`
  * variant only — it is also what removes the hairline, so the group is
  * separated once rather than twice.
  *
@@ -643,7 +643,7 @@ function SettingsRow({
   /**
    * Content belonging to this setting that cannot fit beside it — a live
    * preview, a picker of tiles. It rides INSIDE the row's own box rather than
-   * as a following sibling, because Astryx stacks take only two padding axes:
+   * as a following sibling, because Tecton stacks take only two padding axes:
    * a sibling would pay a second full inset and land twice as far from the
    * control it belongs to.
    *
@@ -1024,7 +1024,7 @@ function BillingPanel({settings, update}: PanelProps) {
  *
  * ## How a Light swatch survives inside a dark app
  *
- * It cannot be drawn with `--color-background-card` and friends. Every Astryx
+ * It cannot be drawn with `--color-background-card` and friends. Every Tecton
  * colour ships as a `light-dark()` pair, and `light-dark()` resolves where the
  * custom property is DECLARED, not where it is used: by the time a token
  * inherits down from the theme root it is already the flat dark value, and no
@@ -1064,11 +1064,9 @@ function ThemePreviewCanvas({mode}: {mode: 'light' | 'dark'}) {
   );
 
   return (
-    // Use the bundled theme directly rather than discovering the ambient theme
-    // through registry hooks. Template previews run against the installed
-    // package's runtime surface, which can lag this repository's source types;
-    // `Theme` + `neutralTheme` is the stable public composition the docsite and
-    // generated applications already use.
+    // A nested provider, not a nested theme object: Tecton's theme is
+    // applied by `TectonProvider`, and `scope="nested"` renders this subtree
+    // in its own colour mode without taking over the page's.
     <TectonProvider scope="nested" mode={mode}>
       {canvas}
     </TectonProvider>
@@ -1120,7 +1118,7 @@ const THEME_CHOICES: {
  * appearance settings — a segmented control names the options, a card shows
  * them.
  *
- * `SelectableCard` is the Astryx card that carries selection: it owns the
+ * `SelectableCard` is the Tecton card that carries selection: it owns the
  * accent border, the pressed semantics, the hover and the focus ring, so a
  * tile here is a picture and a name and nothing else. Keep the preview inset,
  * as this example does with `padding={2}`: the component draws its selection
@@ -1222,7 +1220,7 @@ function interfaceFont(value: string) {
  * READS gets a sample of the thing itself, not a description of it.
  *
  * The face is applied by re-declaring `--font-family-body` on the surface, not
- * by setting `font-family` on the words. Astryx's own type rules resolve that
+ * by setting `font-family` on the words. Tecton's own type rules resolve that
  * token, so overriding it re-points every `Text` inside; setting `font-family`
  * instead reaches only what inherits it, and a preview built that way silently
  * keeps showing the system font whatever the selector says.
@@ -1665,7 +1663,7 @@ function ShortcutRow({
             />
           ) : (
             <Button
-              // `Kbd` goes in as CHILDREN and `label` stays the words: Astryx
+              // `Kbd` goes in as CHILDREN and `label` stays the words: Tecton
               // makes `label` the `aria-label` as soon as there are children,
               // so the keycaps are what you see and the chord is what a screen
               // reader says.
@@ -2541,7 +2539,7 @@ export function Page() {
         // transform or `overflow: hidden` can clip — an open one inside a scaled
         // preview tile paints over the whole gallery instead of inside its tile.
         // The docsite's own preview is also a Dialog, which a modal here would
-        // then nest inside, and Astryx forbids nesting dialogs.
+        // then nest inside, and Tecton forbids nesting dialogs.
         //
         // Everything else on this page is the composition you want: drop
         // `isInline`, drive `isOpen` from state, hand `onOpenChange` the setter,

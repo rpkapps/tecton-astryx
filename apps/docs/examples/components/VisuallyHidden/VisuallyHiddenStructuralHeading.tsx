@@ -7,9 +7,9 @@ import {Text} from '@tecton/react/Text';
 import {Badge} from '@tecton/react/Badge';
 
 const items = [
-  {name: 'astryx-core', status: 'Passing', variant: 'success'},
-  {name: 'astryx-charts', status: 'Failing', variant: 'error'},
-  {name: 'astryx-cli', status: 'Passing', variant: 'success'},
+  {name: 'tecton-core', status: 'Passing', variant: 'success'},
+  {name: 'tecton-charts', status: 'Failing', variant: 'error'},
+  {name: 'tecton-cli', status: 'Passing', variant: 'success'},
 ] as const;
 
 export function VisuallyHiddenStructuralHeading() {

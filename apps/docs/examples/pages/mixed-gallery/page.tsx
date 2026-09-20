@@ -9,9 +9,9 @@ import {AspectRatio} from '@tecton/react/AspectRatio';
 // The masonry needs a responsive column count AND a hero that spans 2 columns
 // on desktop but goes full-width on mobile. Grid forces grid-template-columns
 // inline, so a responsive span can't be expressed through its props — this is a
-// @container grid (the sanctioned Astryx pattern for container-responsive layout).
+// @container grid (the sanctioned Tecton pattern for container-responsive layout).
 // The container query lives in a plain <style> tag below so it needs NO CSS
-// compiler. Image fill + radius are custom because Astryx has no image
+// compiler. Image fill + radius are custom because Tecton has no image
 // primitive (#2582).
 
 // Named inline-size container on the page column so the grid responds to the
@@ -36,7 +36,7 @@ const clipStyle: CSSProperties = {
 // images' intrinsic min-width. The hero spans 2 columns on desktop, then fills
 // the row once it's single-column — and switches from 3:1 to 3:2 with a plain
 // aspect-ratio override. AspectRatio's ratio is a class-level declaration in
-// @layer astryx-base, and this <style> tag is unlayered, so the override wins
+// the base layer, and this <style> tag is unlayered, so the override wins
 // regardless of specificity — every stacked tile is uniform without rendering
 // the hero twice.
 const GALLERY_CSS = `

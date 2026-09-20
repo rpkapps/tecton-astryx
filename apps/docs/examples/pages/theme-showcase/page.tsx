@@ -49,7 +49,7 @@ import {
   ChatSystemMessage,
 } from '@tecton/react/Chat';
 
-// Styles passed to Astryx components via their `style` prop. Astryx components
+// Styles passed to Tecton components via their `style` prop. Tecton components
 // forward the DOM `style` prop, so these work with no CSS compiler — in
 // compiled builds and in the live playground preview alike.
 const styles: Record<string, CSSProperties> = {
@@ -289,7 +289,7 @@ const DEFAULT_PRODUCTS: ProductSpec[] = [
   },
 ];
 
-// Neutral product photos, served from the shared astryx asset CDN so the
+// Neutral product photos, served from the shared tecton asset CDN so the
 // scaffolded template renders real imagery without needing local public assets.
 const DEFAULT_IMAGES: Record<string, string> = {
   watch: '/template-assets/Neutral-Watch.png',
@@ -413,7 +413,7 @@ function StorePreview({
                   tooltip="Search"
                   variant="ghost"
                   isIconOnly
-                  icon={<SearchIcon />}
+                  icon={<SearchIcon width={20} height={20} />}
                   href="#"
                 />
                 <Button
@@ -421,7 +421,7 @@ function StorePreview({
                   tooltip="Account"
                   variant="ghost"
                   isIconOnly
-                  icon={<PersonIcon />}
+                  icon={<PersonIcon width={20} height={20} />}
                   href="#"
                 />
                 <Button
@@ -429,7 +429,7 @@ function StorePreview({
                   tooltip="Cart"
                   variant="ghost"
                   isIconOnly
-                  icon={<MoneyIcon />}
+                  icon={<MoneyIcon width={20} height={20} />}
                   href="#"
                 />
               </HStack>
@@ -591,7 +591,7 @@ function CheckoutCard({isMobile}: {isMobile: boolean}) {
                   hAlign="center"
                   style={styles.paymentCardContent}
                 >
-                  <MoneyIcon />
+                  <MoneyIcon width={20} height={20} />
                   <Text type="supporting" weight="bold">
                     Card
                   </Text>
@@ -608,7 +608,7 @@ function CheckoutCard({isMobile}: {isMobile: boolean}) {
                   hAlign="center"
                   style={styles.paymentCardContent}
                 >
-                  <WindowIcon />
+                  <WindowIcon width={20} height={20} />
                   <Text type="supporting" weight="bold">
                     Apple Pay
                   </Text>
@@ -625,7 +625,7 @@ function CheckoutCard({isMobile}: {isMobile: boolean}) {
                   hAlign="center"
                   style={styles.paymentCardContent}
                 >
-                  <MoneyIcon />
+                  <MoneyIcon width={20} height={20} />
                   <Text type="supporting" weight="bold">
                     Google Pay
                   </Text>
@@ -639,7 +639,9 @@ function CheckoutCard({isMobile}: {isMobile: boolean}) {
             placeholder="1234 1234 1234 1234"
             value=""
             onChange={() => {}}
-            startIcon={isMobile ? undefined : <MoneyIcon />}
+            startIcon={
+              isMobile ? undefined : <MoneyIcon width={16} height={16} />
+            }
             size="lg"
           />
 
@@ -687,7 +689,7 @@ function CheckoutCard({isMobile}: {isMobile: boolean}) {
           variant="primary"
           size="lg"
           label="Pay now"
-          icon={<LockIcon />}
+          icon={<LockIcon width={16} height={16} />}
         />
       </VStack>
     </Card>
@@ -718,7 +720,7 @@ function ChatCard() {
             isIconOnly
             label="Export conversation"
             tooltip="Export conversation"
-            icon={<ExportUploadIcon />}
+            icon={<ExportUploadIcon width={16} height={16} />}
           />
           <Button
             variant="ghost"
@@ -726,7 +728,7 @@ function ChatCard() {
             isIconOnly
             label="Close chat"
             tooltip="Close chat"
-            icon={<CloseIcon />}
+            icon={<CloseIcon width={16} height={16} />}
           />
         </HStack>
       </HStack>
@@ -830,7 +832,7 @@ function ChatCard() {
               isIconOnly
               label="Attach"
               tooltip="Attach"
-              icon={<AddIcon />}
+              icon={<AddIcon width={16} height={16} />}
             />
           }
           sendActions={
@@ -840,7 +842,7 @@ function ChatCard() {
               isIconOnly
               label="Voice input"
               tooltip="Voice input"
-              icon={<MicrophoneIcon />}
+              icon={<MicrophoneIcon width={16} height={16} />}
             />
           }
         />
@@ -861,7 +863,7 @@ interface ActivityRow {
 const ACTIVITY: ActivityRow[] = [
   {
     id: '1',
-    icon: <MoneyIcon />,
+    icon: <MoneyIcon width={16} height={16} />,
     label: 'Order #1043',
     detail: 'Placed · 1:59 pm',
     time: '1:59 pm',
@@ -869,7 +871,7 @@ const ACTIVITY: ActivityRow[] = [
   },
   {
     id: '2',
-    icon: <MoneyIcon />,
+    icon: <MoneyIcon width={16} height={16} />,
     label: 'Order #1041',
     detail: 'Refunded · 12:40 pm',
     time: '12:40 pm',
@@ -877,7 +879,7 @@ const ACTIVITY: ActivityRow[] = [
   },
   {
     id: '3',
-    icon: <MoneyIcon />,
+    icon: <MoneyIcon width={16} height={16} />,
     label: 'Order #1040',
     detail: 'Placed · 10:30 am',
     time: '10:30 am',
@@ -885,7 +887,7 @@ const ACTIVITY: ActivityRow[] = [
   },
   {
     id: '4',
-    icon: <MoneyIcon />,
+    icon: <MoneyIcon width={16} height={16} />,
     label: 'Order #1038',
     detail: 'Placed · 9:11 am',
     time: '9:11 am',
@@ -893,7 +895,7 @@ const ACTIVITY: ActivityRow[] = [
   },
   {
     id: '5',
-    icon: <MoneyIcon />,
+    icon: <MoneyIcon width={16} height={16} />,
     label: 'Order #1037',
     detail: 'Placed · 8:42 am',
     time: '8:42 am',
@@ -1132,7 +1134,7 @@ function InventoryCard({
           label="Add item"
           variant="primary"
           size="sm"
-          icon={<AddIcon />}
+          icon={<AddIcon width={16} height={16} />}
         />
       </HStack>
 
@@ -1151,7 +1153,7 @@ function InventoryCard({
             placeholder="Type and hit enter…"
             value=""
             onChange={() => {}}
-            startIcon={<SearchIcon />}
+            startIcon={<SearchIcon width={16} height={16} />}
             style={styles.searchInput}
           />
           <OverflowList
@@ -1161,7 +1163,7 @@ function InventoryCard({
                 label="Filters"
                 variant="ghost"
                 size="sm"
-                icon={<NumericIcon />}
+                icon={<NumericIcon width={16} height={16} />}
               />
             )}
           >
@@ -1170,7 +1172,7 @@ function InventoryCard({
               isLabelHidden
               placeholder="Categories"
               size="sm"
-              startIcon={<FolderIcon />}
+              startIcon={<FolderIcon width={16} height={16} />}
               value={undefined}
               onChange={() => {}}
               options={['Wearables', 'Audio', 'Bags', 'Drinkware', 'Home']}
@@ -1180,7 +1182,7 @@ function InventoryCard({
               isLabelHidden
               placeholder="Locations"
               size="sm"
-              startIcon={<MapIcon />}
+              startIcon={<MapIcon width={16} height={16} />}
               value={undefined}
               onChange={() => {}}
               options={[
@@ -1197,7 +1199,7 @@ function InventoryCard({
               isLabelHidden
               placeholder="Tags"
               size="sm"
-              startIcon={<NumericIcon />}
+              startIcon={<NumericIcon width={16} height={16} />}
               value={undefined}
               onChange={() => {}}
               options={[
@@ -1218,7 +1220,7 @@ function InventoryCard({
             isIconOnly
             label="List view"
             tooltip="List view"
-            icon={<ListIcon />}
+            icon={<ListIcon width={18} height={18} />}
           />
           <Button
             variant="ghost"
@@ -1226,7 +1228,7 @@ function InventoryCard({
             isIconOnly
             label="Grid view"
             tooltip="Grid view"
-            icon={<GridViewIcon />}
+            icon={<GridViewIcon width={18} height={18} />}
           />
         </HStack>
       </HStack>

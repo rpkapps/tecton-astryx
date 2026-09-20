@@ -19,11 +19,11 @@ import {AspectRatio} from '@tecton/react/AspectRatio';
 import {SelectableCard} from '@tecton/react/SelectableCard';
 import type {CSSProperties} from 'react';
 
-// Custom CSS here is limited to what Astryx components can't express today:
+// Custom CSS here is limited to what Tecton components can't express today:
 // - image fill + corner radius (no Image primitive — #2582)
-// - the sticky info column (no sticky prop on Astryx layout primitives — #2613)
+// - the sticky info column (no sticky prop on Tecton layout primitives — #2613)
 // Keeps the info column in view while the gallery scrolls. No sticky prop on
-// Astryx layout primitives.
+// Tecton layout primitives.
 const stickyInfo: CSSProperties = {
   position: 'sticky',
   top: 'var(--spacing-8)',

@@ -74,8 +74,8 @@ const styles: Record<string, CSSProperties> = {
 };
 
 const EDITOR_CODE = `import {useState, useCallback} from 'react';
-import {Button} from '@astryxdesign/core/Button';
-import {Text} from '@astryxdesign/core/Text';
+import {Button} from '@tecton/react/Button';
+import {Text} from '@tecton/react/Text';
 
 const containerStyle = {
   display: 'flex',

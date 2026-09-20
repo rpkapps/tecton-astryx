@@ -8,7 +8,7 @@ export function CodeShowcase() {
   return (
     <Stack direction="vertical" gap={3}>
       <Text type="body">
-        Run <Code>npm install @astryxdesign/core</Code> to add the package.
+        Run <Code>npm install @tecton/react</Code> to add the package.
       </Text>
       <Text type="body">
         Use the <Code>variant</Code> prop to switch between <Code>primary</Code>

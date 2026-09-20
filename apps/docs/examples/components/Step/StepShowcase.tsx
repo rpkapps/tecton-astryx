@@ -14,7 +14,7 @@ export function StepShowcase() {
         <Step
           step={1}
           label="Connect a repository"
-          description="Astryx reads your build settings from the default branch"
+          description="Tecton reads your build settings from the default branch"
           endContent={<Text type="supporting">2 min</Text>}
           isOptional
         />

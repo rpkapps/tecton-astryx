@@ -7,7 +7,7 @@ export function LinkInlineLink() {
   return (
     <Text type="body">
       Read the <Link href="#">documentation</Link> for more information about
-      using Astryx components.
+      using Tecton components.
     </Text>
   );
 }

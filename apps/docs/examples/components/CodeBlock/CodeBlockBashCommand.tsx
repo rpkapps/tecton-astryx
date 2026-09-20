@@ -7,13 +7,13 @@ export function CodeBlockBashCommand() {
   return (
     <VStack gap={4} style={{width: '100%', maxWidth: 400}}>
       <CodeBlock
-        code="npm install @astryxdesign/core"
+        code="npm install @tecton/react"
         language="bash"
         hasCopyButton
         style={{width: '100%'}}
       />
       <CodeBlock
-        code="yarn add @astryxdesign/theme-neutral"
+        code="yarn add @tecton/theme-neutral"
         language="bash"
         hasCopyButton
         style={{width: '100%'}}

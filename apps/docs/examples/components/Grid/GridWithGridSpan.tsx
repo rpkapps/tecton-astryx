@@ -15,7 +15,7 @@ export function GridWithGridSpan() {
               Featured Release
             </Text>
             <Text type="supporting" display="block">
-              Astryx 4.0 is now available with new layout primitives, refreshed
+              Tecton 4.0 is now available with new layout primitives, refreshed
               tokens, and improved theming support across the system.
             </Text>
           </VStack>
@@ -84,7 +84,7 @@ export function GridWithGridSpan() {
               Community Showcase
             </Text>
             <Text type="supporting" display="block">
-              See how teams are building with Astryx across the organization
+              See how teams are building with Tecton across the organization
             </Text>
           </VStack>
         </Card>

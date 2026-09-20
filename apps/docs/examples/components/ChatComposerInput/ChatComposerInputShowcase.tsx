@@ -9,7 +9,7 @@ export function ChatComposerInputShowcase() {
       <ChatComposer
         onSubmit={() => {}}
         input={
-          <ChatComposerInput placeholder="Ask me anything about Astryx..." />
+          <ChatComposerInput placeholder="Ask me anything about Tecton..." />
         }
       />
     </Stack>

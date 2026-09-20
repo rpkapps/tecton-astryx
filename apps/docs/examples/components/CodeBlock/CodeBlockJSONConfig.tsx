@@ -3,10 +3,10 @@
 import {CodeBlock} from '@tecton/react/CodeBlock';
 
 const code = `{
-  "name": "@astryxdesign/core",
+  "name": "@tecton/react",
   "version": "0.0.5",
   "dependencies": {
-    "@astryxdesign/theme-neutral": "^0.1.0",
+    "@tecton/theme-neutral": "^0.1.0",
     "react": "^19.0.0"
   },
   "scripts": {

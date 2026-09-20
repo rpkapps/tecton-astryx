@@ -160,7 +160,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const SLUG_PATTERN = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 
 // ── Styles ────────────────────────────────────────────────────────────────────
-// Plain inline styles over Astryx token CSS variables, so the template compiles
+// Plain inline styles over Tecton token CSS variables, so the template compiles
 // in a project with no StyleX pipeline.
 
 // The footer's two end zones divide the leftover space equally rather than

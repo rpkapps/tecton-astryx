@@ -183,19 +183,19 @@ const FILESYSTEM: FileSystemItem[] = [
     ],
   },
   {
-    id: 'astryx',
-    name: 'astryx',
+    id: 'tecton',
+    name: 'tecton',
     type: 'folder',
     children: [
-      {id: 'astryx-readme', name: 'README.md', type: 'file'},
-      {id: 'astryx-pkg', name: 'package.json', type: 'file'},
+      {id: 'tecton-readme', name: 'README.md', type: 'file'},
+      {id: 'tecton-pkg', name: 'package.json', type: 'file'},
       {
-        id: 'astryx-packages',
+        id: 'tecton-packages',
         name: 'packages',
         type: 'folder',
         children: [
           {
-            id: 'astryx-core',
+            id: 'tecton-core',
             name: 'core',
             type: 'folder',
             children: [
@@ -212,7 +212,7 @@ const FILESYSTEM: FileSystemItem[] = [
             ],
           },
           {
-            id: 'astryx-cli',
+            id: 'tecton-cli',
             name: 'cli',
             type: 'folder',
             children: [{id: 'cli-index', name: 'index.ts', type: 'file'}],
@@ -220,7 +220,7 @@ const FILESYSTEM: FileSystemItem[] = [
         ],
       },
       {
-        id: 'astryx-apps',
+        id: 'tecton-apps',
         name: 'apps',
         type: 'folder',
         children: [

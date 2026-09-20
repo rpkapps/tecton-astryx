@@ -6,7 +6,7 @@ import {VStack} from '@tecton/react/Layout';
 import {Text} from '@tecton/react/Text';
 
 const response =
-  'Astryx hooks keep behavior reusable while components keep visuals consistent.';
+  'Tecton hooks keep behavior reusable while components keep visuals consistent.';
 
 export function UseStreamingTextHookUsage() {
   const displayedText = useStreamingText(response, false, {

@@ -395,7 +395,7 @@ export function Page() {
 
   const workspaceRail = (
     <VStack gap={2} style={styles.rail}>
-      <Avatar name="Astryx HQ" size="md" />
+      <Avatar name="Tecton HQ" size="md" />
       {RAIL_ITEMS.map(item => (
         <IconButton
           key={item.id}
@@ -426,7 +426,7 @@ export function Page() {
     <Stack direction="vertical" style={styles.sidebar}>
       <HStack gap={2} style={styles.sidebarHeader}>
         <StackItem size="fill">
-          <Heading level={5}>Astryx HQ</Heading>
+          <Heading level={5}>Tecton HQ</Heading>
         </StackItem>
         <IconButton
           label="New message"

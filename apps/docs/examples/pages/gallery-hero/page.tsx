@@ -25,7 +25,7 @@ const IMAGES = [
 ];
 
 // NOTE: The only custom styling here is image fill + corner radius. It exists
-// because Astryx has no image primitive — AspectRatio exposes no objectFit or
+// because Tecton has no image primitive — AspectRatio exposes no objectFit or
 // radius props and there's no Image. Tracked in issue #2582; replace these
 // with component props once it lands.
 // Fills the AspectRatio box. No objectFit prop on AspectRatio (#2582).

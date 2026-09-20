@@ -10,7 +10,7 @@ const content = [
   '',
   '## Features',
   '',
-  '- Headings mapped to the Astryx type scale',
+  '- Headings mapped to the Tecton type scale',
   '- **Bold**, *italic*, and ~~strikethrough~~ text',
   '- [Links](https://example.com) with external detection',
   '',

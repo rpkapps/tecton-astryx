@@ -108,7 +108,7 @@ export function Page() {
                     icon={<Icon icon={CopyIcon} />}
                     onClick={() => {
                       void navigator.clipboard.writeText(
-                        'Help me get set up with Product Name. Based on my project, do the following: 1. Install @astryxdesign/core and the StyleX compiler. 2. Wrap my app in ThemeProvider. 3. Replace one existing component with an Astryx equivalent. After setup, suggest relevant next steps based on my project.',
+                        'Help me get set up with Product Name. Based on my project, do the following: 1. Install @tecton/react and the StyleX compiler. 2. Wrap my app in ThemeProvider. 3. Replace one existing component with an Tecton equivalent. After setup, suggest relevant next steps based on my project.',
                       );
                     }}
                   />
@@ -130,9 +130,9 @@ export function Page() {
                 </HStack>
                 <Text type="body" color="secondary">
                   Help me get set up with Product Name. Based on my project, do
-                  the following: 1. Install @astryxdesign/core and the StyleX
+                  the following: 1. Install @tecton/react and the StyleX
                   compiler. 2. Wrap my app in ThemeProvider. 3. Replace one
-                  existing component with an Astryx equivalent.
+                  existing component with an Tecton equivalent.
                 </Text>
               </VStack>
             </Card>
@@ -163,7 +163,7 @@ export function Page() {
                   Step 1: Install the core package
                 </Text>
                 <CodeBlock
-                  code="npm install @astryxdesign/core"
+                  code="npm install @tecton/react"
                   language="bash"
                   width="100%"
                 />
@@ -173,13 +173,12 @@ export function Page() {
                   Step 2: Import the precompiled styles
                 </Text>
                 <Text type="body" color="secondary">
-                  Astryx ships precompiled CSS, so there is no build plugin to
+                  Tecton ships precompiled CSS, so there is no build plugin to
                   configure. Import the reset and component stylesheets once at
                   your app entry point.
                 </Text>
                 <CodeBlock
-                  code={`import '@astryxdesign/core/reset.css';
-import '@astryxdesign/core/astryx.css';`}
+                  code={`import '@tecton/react/styles.css';`}
                   language="tsx"
                   width="100%"
                 />
@@ -189,10 +188,10 @@ import '@astryxdesign/core/astryx.css';`}
                   Step 3: Import your first component
                 </Text>
                 <CodeBlock
-                  code={`import { Button } from '@astryxdesign/core/Button';
+                  code={`import { Button } from '@tecton/react/Button';
 
 export default function App() {
-  return <Button label="Hello Astryx" variant="primary" />;
+  return <Button label="Hello Tecton" variant="primary" />;
 }`}
                   language="tsx"
                   width="100%"
@@ -207,12 +206,12 @@ export default function App() {
                 Configure theming
               </Heading>
               <Text type="body">
-                Astryx ships with a default theme that works out of the box. To
+                Tecton ships with a default theme that works out of the box. To
                 customize colors, typography, and spacing, wrap your app in a
                 theme provider.
               </Text>
               <CodeBlock
-                code={`import { ThemeProvider } from '@astryxdesign/core/Theme';
+                code={`import { ThemeProvider } from '@tecton/react/Theme';
 
 export default function App({ children }) {
   return (

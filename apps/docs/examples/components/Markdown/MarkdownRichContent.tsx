@@ -6,7 +6,7 @@ import {Markdown} from '@tecton/react/Markdown';
 const content = [
   '# Markdown Demo',
   '',
-  'Renders **markdown** with *Astryx* styling.',
+  'Renders **markdown** with *Tecton* styling.',
   '',
   '## Features',
   '',

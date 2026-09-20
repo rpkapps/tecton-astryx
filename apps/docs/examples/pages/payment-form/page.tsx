@@ -154,8 +154,8 @@ const TAX = 18.4;
 const fmt = (n: number) => `$${n.toFixed(2)}`;
 
 // ── Styles ────────────────────────────────────────────────────────────────────
-// Plain inline styles using Astryx design-token CSS variables (declared at
-// :root by `@astryxdesign/core/astryx.css`). No StyleX compiler required.
+// Plain inline styles using Tecton design-token CSS variables (declared at
+// :root by `@tecton/react/styles.css`). No StyleX compiler required.
 
 const fullWidth: CSSProperties = {width: '100%'};
 // Form column flex-basis so the two checkout columns share width evenly.

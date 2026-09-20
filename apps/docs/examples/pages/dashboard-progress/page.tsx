@@ -155,7 +155,7 @@ const RAG_FILL: Record<Rag, string> = {
 
 // ============= CHART CHROME (design tokens w/ hex fallbacks) =============
 
-// The same slots `getChartColors()` resolves in @astryxdesign/charts, as CSS
+// The same slots `getChartColors()` resolves in @tecton/charts, as CSS
 // vars rather than the hook because page templates depend only on core +
 // recharts. CHART_NEUTRAL is the reference-line / not-started tone.
 const CHART_GRID = 'var(--color-border, rgba(5, 54, 89, 0.1))';

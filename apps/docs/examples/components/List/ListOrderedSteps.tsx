@@ -7,11 +7,11 @@ export function ListOrderedSteps() {
     <List listStyle="decimal">
       <ListItem
         label="Install the package"
-        description="npm install @astryxdesign/core"
+        description="npm install @tecton/react"
       />
       <ListItem
         label="Import components"
-        description="import { List } from '@astryxdesign/core'"
+        description="import { List } from '@tecton/react'"
       />
       <ListItem
         label="Start building"

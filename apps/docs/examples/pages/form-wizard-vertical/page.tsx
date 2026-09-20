@@ -300,7 +300,7 @@ const MIN_DESCRIPTION = 120;
 const MAX_CATEGORIES = 3;
 
 // ── Styles ────────────────────────────────────────────────────────────────────
-// Plain inline styles over Astryx token CSS variables, so the template compiles
+// Plain inline styles over Tecton token CSS variables, so the template compiles
 // in a project with no StyleX pipeline.
 
 // The cover row's geometry, declared once because both columns are measured

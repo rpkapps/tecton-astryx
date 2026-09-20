@@ -32,7 +32,7 @@
  * browser's top layer, where no ancestor `transform` or `overflow: hidden` can
  * clip it, so an open one inside a scaled gallery tile paints over the whole
  * gallery rather than inside its tile. The docsite's own template preview is
- * itself a Dialog, and Astryx forbids nesting dialogs.
+ * itself a Dialog, and Tecton forbids nesting dialogs.
  *
  * Everything else here is the composition you want. To make it a modal: drop
  * `isInline`, drive `isOpen` from state, and update `handleOpenChange` to set

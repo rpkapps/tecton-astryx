@@ -219,7 +219,7 @@ const POSTAL_CODE_RULES: Record<
 };
 
 // ── Styles ────────────────────────────────────────────────────────────────────
-// Plain inline styles over Astryx token CSS variables, so the template compiles
+// Plain inline styles over Tecton token CSS variables, so the template compiles
 // in a project with no StyleX pipeline.
 
 // The summary column holds its width while the form column takes the rest, and

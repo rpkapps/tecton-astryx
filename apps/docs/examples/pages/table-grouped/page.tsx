@@ -57,8 +57,8 @@ import {
   ReportsAnalyticsIcon,
 } from '@tecton/react/icons';
 
-// Plain inline styles using Astryx design-token CSS variables (declared at
-// :root by `@astryxdesign/core/astryx.css`). No StyleX compiler required.
+// Plain inline styles using Tecton design-token CSS variables (declared at
+// :root by `@tecton/react/styles.css`). No StyleX compiler required.
 // The group-header background + cursor live on the colSpan TableCell (which
 // reliably forwards `style`) so they fill the full row width.
 const groupHeaderCell: React.CSSProperties = {

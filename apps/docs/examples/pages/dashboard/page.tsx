@@ -436,7 +436,7 @@ const topEventsColumns: TableColumn<EventRow>[] = [
 
 // ============= CHART COMPONENTS =============
 
-// Chart line colors via Astryx design tokens (CSS custom properties)
+// Chart line colors via Tecton design tokens (CSS custom properties)
 const chartColors = {
   allUsers: 'var(--color-data-categorical-blue, #0171E3)',
   desktop: 'var(--color-data-categorical-orange, #EB6E00)',

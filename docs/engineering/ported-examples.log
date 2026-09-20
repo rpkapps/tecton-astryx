@@ -13,7 +13,8 @@ Excluded:      0
 
 Glyph substitutions: 582 imports, 177 distinct upstream glyphs, 0 of them with no Tecton counterpart.
 Exports renamed:     66
-Props stripped:      25
+Icon props rewritten: 25
+Files with prose rewritten: 34
 Hand-written rules:  1
 
 Excluded
@@ -867,34 +868,80 @@ read as a component, the upstream name was kept instead.
   pages/theme-showcase/page.tsx: export default function ThemeShowcase -> export function Page - a named export has to match the file it is in
   pages/work-item-detail/page.tsx: export default function WorkItemDetailTemplate -> export function Page - a named export has to match the file it is in
 
-Props stripped
---------------
+Icon props translated and stripped
+----------------------------------
+A Tecton glyph takes the SVG props plus `variant`. Lucide's `size` sets the
+SVG width and height together, so it becomes both rather than being dropped
+and changing how big the icon draws.
 
-  pages/theme-showcase/page.tsx: <Search size={20}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <User size={20}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <ShoppingBag size={20}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <CreditCard size={20}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <Smartphone size={20}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <Wallet size={20}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <CreditCard size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <Lock size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <Download size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <X size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <Plus size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <Mic size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <ShoppingBag size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <Banknote size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <ShoppingBag size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <ShoppingBag size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <ShoppingBag size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <Plus size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <Search size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <Tag size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <Folder size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <MapPin size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <Tag size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <List size={18}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
-  pages/theme-showcase/page.tsx: <LayoutGrid size={18}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <Search size={20}> -> width={20} height={20} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <User size={20}> -> width={20} height={20} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <ShoppingBag size={20}> -> width={20} height={20} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <CreditCard size={20}> -> width={20} height={20} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <Smartphone size={20}> -> width={20} height={20} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <Wallet size={20}> -> width={20} height={20} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <CreditCard size={16}> -> width={16} height={16} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <Lock size={16}> -> width={16} height={16} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <Download size={16}> -> width={16} height={16} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <X size={16}> -> width={16} height={16} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <Plus size={16}> -> width={16} height={16} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <Mic size={16}> -> width={16} height={16} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <ShoppingBag size={16}> -> width={16} height={16} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <Banknote size={16}> -> width={16} height={16} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <ShoppingBag size={16}> -> width={16} height={16} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <ShoppingBag size={16}> -> width={16} height={16} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <ShoppingBag size={16}> -> width={16} height={16} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <Plus size={16}> -> width={16} height={16} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <Search size={16}> -> width={16} height={16} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <Tag size={16}> -> width={16} height={16} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <Folder size={16}> -> width={16} height={16} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <MapPin size={16}> -> width={16} height={16} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <Tag size={16}> -> width={16} height={16} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <List size={18}> -> width={18} height={18} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+  pages/theme-showcase/page.tsx: <LayoutGrid size={18}> -> width={18} height={18} - a Tecton glyph has no `size`; setting both keeps the icon the size the example drew it
+
+Prose rewritten
+---------------
+An example is documentation, so a comment, a caption, a label or a sample
+that named the library underneath Tecton now names Tecton. Only prose is
+rewritten — comments, strings, template literals and JSX text — never an
+identifier, a module specifier or a key.
+
+  blocks/components/ChatComposerInput/ChatComposerInputShowcase.tsx: 1 rewrite in comments, strings or JSX text
+  blocks/components/Code/CodeShowcase.tsx: 1 rewrite in comments, strings or JSX text
+  blocks/components/CodeBlock/CodeBlockBashCommand.tsx: 2 rewrites in comments, strings or JSX text
+  blocks/components/CodeBlock/CodeBlockJSONConfig.tsx: 1 rewrite in comments, strings or JSX text
+  blocks/components/CodeBlock/CodeBlockTerminal.tsx: 1 rewrite in comments, strings or JSX text
+  blocks/components/Grid/GridWithGridSpan.tsx: 2 rewrites in comments, strings or JSX text
+  blocks/components/Hooks/useStreamingTextHookUsage.tsx: 1 rewrite in comments, strings or JSX text
+  blocks/components/InternationalizationProvider/InternationalizationProvider02Overrides.tsx: kept '@astryx.selector.placeholder' - it is one of the library's own message ids, not prose; rewriting it would leave an override that matches nothing
+  blocks/components/Link/LinkInlineLink.tsx: 1 rewrite in comments, strings or JSX text
+  blocks/components/List/ListOrderedSteps.tsx: 2 rewrites in comments, strings or JSX text
+  blocks/components/Markdown/MarkdownRichContent.tsx: 1 rewrite in comments, strings or JSX text
+  blocks/components/Markdown/MarkdownShowcase.tsx: 1 rewrite in comments, strings or JSX text
+  blocks/components/Step/StepShowcase.tsx: 1 rewrite in comments, strings or JSX text
+  blocks/components/VisuallyHidden/VisuallyHiddenStructuralHeading.tsx: 3 rewrites in comments, strings or JSX text
+  pages/checkout-wizard/page.tsx: 1 rewrite in comments, strings or JSX text
+  pages/dashboard/page.tsx: 1 rewrite in comments, strings or JSX text
+  pages/dashboard-progress/page.tsx: 1 rewrite in comments, strings or JSX text
+  pages/detail-page/page.tsx: 1 rewrite in comments, strings or JSX text
+  pages/documentation-technical/page.tsx: 8 rewrites in comments, strings or JSX text
+  pages/editor/page.tsx: 1 rewrite in comments, strings or JSX text
+  pages/file-explorer/page.tsx: 8 rewrites in comments, strings or JSX text
+  pages/form-wizard/page.tsx: 1 rewrite in comments, strings or JSX text
+  pages/form-wizard-dialog/page.tsx: 1 rewrite in comments, strings or JSX text
+  pages/form-wizard-vertical/page.tsx: 1 rewrite in comments, strings or JSX text
+  pages/gallery-hero/page.tsx: 1 rewrite in comments, strings or JSX text
+  pages/ide/page.tsx: 1 rewrite in comments, strings or JSX text
+  pages/incident-console/page.tsx: 1 rewrite in comments, strings or JSX text
+  pages/messaging-shell/page.tsx: 2 rewrites in comments, strings or JSX text
+  pages/mixed-gallery/page.tsx: 3 rewrites in comments, strings or JSX text
+  pages/payment-form/page.tsx: 2 rewrites in comments, strings or JSX text
+  pages/product-detail/page.tsx: 3 rewrites in comments, strings or JSX text
+  pages/settings-dialog/page.tsx: 11 rewrites in comments, strings or JSX text
+  pages/shell-nav/page.tsx: 1 rewrite in comments, strings or JSX text
+  pages/table-grouped/page.tsx: 2 rewrites in comments, strings or JSX text
+  pages/theme-showcase/page.tsx: 2 rewrites in comments, strings or JSX text
 
 Hand-written rules
 ------------------
@@ -1020,10 +1067,29 @@ and the examples below need them at the same path upstream published them.
 Notes
 -----
 
-  The bodies of the ported files are upstream's own prose and sample data.
-  Where an example names Astryx in a comment, in UI copy or inside a code
-  sample it still says Astryx: the port rewrites imports, not content. Only
-  the doc objects beside the examples are rewritten (`@astryxdesign/core` ->
-  `@tecton/react`, `Astryx` -> `Tecton`, `astryx` -> `tecton`).
+  What the examples import beyond a component module — every entry here has
+  to be in the package's exports map by name, so this is the list the
+  package's generator can be checked against:
+
+    @tecton/react  (9 files)
+    @tecton/react/hooks  (24 files)
+    @tecton/react/i18n  (3 files)
+    @tecton/react/locales/fr-FR.json  (1 file)
+    @tecton/react/theme  (13 files)
+    @tecton/react/theme/syntax  (4 files)
+    @tecton/react/theme/tokens.stylex  (7 files)
+    @tecton/react/utils  (2 files)
+
+  Two prose rewrites are more than a name swap, because the plain swap
+  would have produced something untrue:
+    `@astryxdesign/core/reset.css` + `@astryxdesign/core/astryx.css` ->
+      `@tecton/react/styles.css`: Tecton ships the pair as one entry point,
+      so a sample that imported both now imports the one.
+    `@layer astryx-base` -> `the base layer`: Tecton's own stylesheet keeps
+      upstream's layer name, so naming it would put upstream on the page and
+      renaming it would be wrong. The comment says what the layer is.
+
+  The bodies of the ported files are otherwise upstream's own prose and
+  sample data, carried over as written.
   Examples reference images under `/template-assets/`, which upstream does
   not ship; the docs site has to provide or stub them.

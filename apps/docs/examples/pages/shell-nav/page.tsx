@@ -197,7 +197,7 @@ export function Page() {
         contentPadding={0}
         topNav={
           <TopNav
-            label="Astryx Studio menu bar"
+            label="Tecton Studio menu bar"
             startContent={
               <>
                 {MENUS.map(menu => (
