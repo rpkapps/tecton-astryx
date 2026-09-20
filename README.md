@@ -15,6 +15,14 @@ docs/engineering/            how the pipeline works
 design/, tokens/             design exploration (owned by the design phase)
 ```
 
+## Line endings
+
+The repository pins LF through `.gitattributes`. Generated-file drift checks and
+the docs example rewriter compare text byte for byte, so on Windows run
+`git config core.autocrlf false` (or re-checkout with
+`git add --renormalize . && git checkout -- .`) if a clone was made before the
+attributes file existed.
+
 ## Commands
 
 Run from the repository root:

@@ -1,0 +1,6 @@
+# Source is LF everywhere. Generated-file drift checks and the docs example
+# rewriter compare text byte for byte, so a CRLF checkout must not happen.
+* text=auto eol=lf
+*.png binary
+*.woff2 binary
+*.zip binary

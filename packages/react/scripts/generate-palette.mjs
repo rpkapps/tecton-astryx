@@ -231,8 +231,10 @@ const tokens = JSON.parse(await fsp.readFile(TOKENS, 'utf8'));
 const next = generate(tokens);
 
 if (process.argv.includes('--check')) {
+  // Compared after normalising line endings so a CRLF checkout does not
+  // read as drift.
   const current = fs.existsSync(OUTPUT)
-    ? await fsp.readFile(OUTPUT, 'utf8')
+    ? (await fsp.readFile(OUTPUT, 'utf8')).replace(/\r\n/g, '\n')
     : null;
   if (current !== next) {
     console.error(

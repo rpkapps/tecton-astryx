@@ -148,7 +148,7 @@ export const ${constName}: ${type ?? `readonly ${typeName}[]`} = ${JSON.stringif
 function barrelExports(entry) {
   const full = path.join(PACKAGE_SRC, entry);
   if (!fs.existsSync(full)) return new Set();
-  const source = fs.readFileSync(full, 'utf8');
+  const source = fs.readFileSync(full, 'utf8').replace(/\r\n/g, '\n');
   const names = new Set();
   for (const match of source.matchAll(/export\s+(?:type\s+)?\{([^}]*)\}/g)) {
     for (const name of match[1].split(',')) {
@@ -169,7 +169,10 @@ function barrelExports(entry) {
  * A name that no entry point publishes is a mistake worth failing the build
  * for: it would mean the code on the page is not code a reader can run.
  */
-function rewriteSource(source, {id, entryPoints}) {
+function rewriteSource(rawSource, {id, entryPoints}) {
+  // A Windows checkout with autocrlf hands us CRLF; every pattern below is
+  // written against LF, and the generated module should be LF regardless.
+  const source = rawSource.replace(/\r\n/g, '\n');
   /** specifier → the names imported from it, in the order first seen. */
   const grouped = new Map(entryPoints.map(entry => [entry.specifier, []]));
   let imported = 0;
@@ -476,7 +479,7 @@ function buildChangelog() {
   const releases = [];
   let release;
   let section;
-  for (const line of fs.readFileSync(full, 'utf8').split('\n')) {
+  for (const line of fs.readFileSync(full, 'utf8').split(/\r?\n/)) {
     const heading = /^##\s+(?:\[)?([^\]\s]+)(?:\])?(?:\s+[—-]\s+(.+))?$/.exec(
       line,
     );

@@ -533,7 +533,10 @@ if (CHECK) {
         .filter(file => !outputs.has(file))
     : [];
   for (const [file, contents] of outputs) {
-    if (!fs.existsSync(file) || fs.readFileSync(file, 'utf8') !== contents) {
+    if (
+      !fs.existsSync(file) ||
+      fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n') !== contents
+    ) {
       drifted.push(path.relative(REPO_ROOT, file));
     }
   }
