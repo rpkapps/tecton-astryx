@@ -31,6 +31,8 @@
     "icons:check": "pnpm --filter @tecton/react icons:check",
     "modules:check": "pnpm --filter @tecton/react modules:check",
     "readme:check": "pnpm --filter @tecton/react readme:check",
+    "examples:port": "node apps/docs/scripts/port-examples.mjs",
+    "examples:check": "node apps/docs/scripts/port-examples.mjs --check",
     "upgrade-astryx": "node scripts/upgrade-astryx.mjs",
     "snapshot:astryx": "node scripts/upgrade-astryx.mjs --snapshot",
     "docs:site:check": "node scripts/check-docs-site.mjs",

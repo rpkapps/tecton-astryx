@@ -1,0 +1,13 @@
+/* Ported by apps/docs/scripts/port-examples.mjs. Do not edit by hand. */
+export const doc = {
+  id: 'DividerFullBleed',
+  type: 'block',
+  exampleFor: 'Divider',
+  name: 'Divider — Full Bleed',
+  displayName: 'Divider — Full Bleed',
+  description:
+    'Divider that extends past container padding to span the full width. Use inside cards or panels when you want a clean edge-to-edge separation, like between an order summary and total.',
+  isReady: true,
+  aspectRatio: 16 / 9,
+  componentsUsed: ['Divider', 'Card', 'Section', 'Layout', 'Text'],
+};

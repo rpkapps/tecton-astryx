@@ -1,0 +1,13 @@
+/* Ported by apps/docs/scripts/port-examples.mjs. Do not edit by hand. */
+export const doc = {
+  id: 'DialogShowcase',
+  type: 'block',
+  exampleFor: 'Dialog',
+  name: 'Dialog',
+  displayName: 'Dialog',
+  description: 'Modal dialog with a header, body content, and close button.',
+  isReady: true,
+  isShowcase: true,
+  aspectRatio: 16 / 9,
+  componentsUsed: ['Dialog', 'Layout', 'Text'],
+};

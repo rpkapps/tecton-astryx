@@ -88,6 +88,62 @@ per example and per template, and the `exampleLoaders` / `templateLoaders` maps
 of dynamic imports. `apps/docs/src/types/docs.ts` is the hand-written contract
 they are typed against.
 
+## Examples
+
+Every example on the site is ported from upstream, not written here. Upstream
+ships 646 _blocks_ (one component doing one thing) and 53 _page templates_ (a
+whole screen) in
+`packages/react/node_modules/@astryxdesign/cli/assets/templates`, and
+`apps/docs/scripts/port-examples.mjs` rewrites them into the docs app:
+
+```
+apps/docs/examples/components/<Component>/<Name>.tsx   the example
+apps/docs/examples/components/<Component>/<Name>.doc.mjs   its doc object
+apps/docs/examples/pages/<slug>/page.tsx               the page template
+apps/docs/examples/pages/<slug>/template.doc.mjs       its doc object
+```
+
+The directory mirrors upstream's own, so a block stays where its author put it.
+A block's doc carries `exampleFor`, which is the component whose page shows it,
+plus the `id` the port adds (the file stem); a page template's doc carries its
+`slug`.
+
+**The port is import rewriting.** `@tecton/react` re-exports
+`@astryxdesign/core` one for one — same component names, same props — so an
+example needs no translation. `'@astryxdesign/core/X'` becomes
+`'@tecton/react/X'`, heroicons and lucide glyphs become Tecton glyph components
+from `'@tecton/react/icons'`, `export default function X` becomes
+`export function X` named for its file, and the upstream copyright line is
+dropped in favour of `THIRD-PARTY-NOTICES.md` at the repository root. `react`,
+`recharts` and `@stylexjs/stylex` are left alone; they are dependencies of this
+app. Lucide's `size={n}`, which a Tecton glyph does not take, becomes
+`width={n} height={n}`, so an icon still draws the size the example drew it.
+
+**Prose names Tecton.** An example is documentation, and a page that names the
+library underneath Tecton is a page about something else, so
+`@astryxdesign/core` → `@tecton/react`, `Astryx` → `Tecton` and `astryx` →
+`tecton` are applied to comments, strings, template literals and JSX text, and
+to the doc objects' strings — and to nothing else. Identifiers, module
+specifiers and keys are left alone: an override keyed on one of the library's
+own message ids has to keep that id, or it reads right and matches nothing.
+
+Everything the port changed — every glyph substitution, every renamed export,
+every icon prop rewritten, every file whose prose changed, and the one file
+that needed a hand-written rule — is in
+`docs/engineering/ported-examples.log`, with the file it happened to. Its Notes
+list the subpaths the examples import beyond a component module, which is the
+surface `@tecton/react` has to cover for them to compile.
+
+```
+pnpm examples:port    # rewrite apps/docs/examples from upstream
+pnpm examples:check   # re-run the port in memory and fail on drift
+```
+
+`apps/docs/examples` is generated and committed: hand-editing a file there is
+undone by the next port, and `pnpm examples:check` fails until it is. That is
+also what catches an upstream bump silently changing an example. ESLint skips
+the directory for the same reason it skips `apps/docs/src/generated`.
+
 ## How an example becomes a page
 
 Take `packages/react/src/components/Button/examples/ButtonBasic.tsx`:
