@@ -19,6 +19,10 @@
       "default": "./dist/index.js"
     },
     "./styles.css": "./dist/tecton.css",
+    "./styles-no-reset.css": "./dist/tecton-no-reset.css",
+    "./tokens.css": "./dist/tecton-tokens.css",
+    "./components.css": "./dist/tecton-components.css",
+    "./components-no-reset.css": "./dist/tecton-components-no-reset.css",
     "./theme": {
       "types": "./dist/theme/index.d.ts",
       "default": "./dist/theme/index.js"
