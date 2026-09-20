@@ -8,6 +8,7 @@ export {tectonTheme} from './tecton.js';
 export {tectonIcons} from './icons.js';
 export type {TectonIconRegistry} from './icons.js';
 export {
+  tecton,
   colorTokens,
   spacingTokens,
   radiusTokens,
@@ -20,4 +21,4 @@ export {
   typographyTokens,
   tectonToken,
 } from './tokens.js';
-export type {TectonTokenName} from './tokens.js';
+export type {TectonTokenName, TectonTokens} from './tokens.js';

@@ -18,12 +18,14 @@
     "lint": "eslint . --max-warnings=0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "palette:check": "pnpm --filter @tecton/react palette:check",
     "surface:check": "node scripts/check-consumer-surface.mjs",
-    "check": "pnpm format:check && pnpm lint && pnpm build && pnpm typecheck && pnpm test && pnpm surface:check",
+    "check": "pnpm format:check && pnpm lint && pnpm palette:check && pnpm build && pnpm typecheck && pnpm test && pnpm surface:check",
     "clean": "pnpm -r --if-present clean && rm -rf node_modules/.cache"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "1.56.1",
     "@types/node": "^24.10.1",
     "eslint": "^10.11.0",
     "eslint-plugin-react-hooks": "^7.1.1",

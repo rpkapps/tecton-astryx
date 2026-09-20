@@ -38,15 +38,27 @@ pnpm --filter @tecton/docs dev
 ```
 
 `pnpm check` also runs `scripts/check-consumer-surface.mjs`, which fails if the
-name of the upstream component library leaks into the consumer-facing surface.
+name of the upstream component library leaks into the consumer-facing surface,
+and `packages/react/scripts/generate-palette.mjs --check`, which fails if the
+generated colour palette has drifted from `tokens/tecton.tokens.json`.
+
+`node scripts/capture-fidelity.mjs` screenshots the theme gallery at
+`/preview/theme` in both colour modes into `docs/design/fidelity/`; the renders
+are read alongside the design captures in `docs/design/fidelity-report.md`.
 
 Requires Node >= 22 and pnpm 10.33.
 
 ## Status
 
-Phase 1: repository skeleton and a verified build pipeline. The theme, the
-component set and the documentation site are placeholders that later phases
-replace. See `docs/engineering/build-pipeline.md`.
+Phase 1: repository skeleton, a verified build pipeline, and the real Tecton
+palette, type scale and component theme. The component set and the documentation
+site are still placeholders that later phases replace.
+
+- `docs/engineering/build-pipeline.md` — how the package is built.
+- `docs/design/fidelity-report.md` — what survived the port from the design, what
+  was approximated, and what could not be expressed. Read its open questions.
+- `docs/design/light-mode.md` — Tecton is designed dark; this is how light mode
+  is derived and where the derivation is weak.
 
 ## Deviations
 
@@ -71,6 +83,15 @@ Choices that differ from the phase-1 brief, and why.
   (`packages/react/scripts/vite-stylex-plugin.mjs`) that reuses the production
   Babel configuration, because `stylex.create` throws if it is reached
   uncompiled at runtime.
+- **The icon registry is `src/theme/icons.ts`, not `.tsx`, and builds its SVG
+  with `createElement`.** The theme compiler loads the theme through a
+  synchronous loader that compiles JSX against the classic runtime and that
+  stops resolving `./icons.js` to a `.tsx` file once the theme has more than one
+  relative import. A plain `.ts` module avoids both.
+- **`apps/docs` depends on the upstream component library as a devDependency.**
+  The temporary `/preview/theme` gallery renders components Tecton does not wrap
+  yet, so it imports them directly. That one route is the only place in the
+  repository outside `packages/react/src` that does; Phase 4 removes it.
 - **`src/theme/tecton.ts` is a placeholder** that re-exports the source theme;
   in `dist/` the generated built theme module replaces it. Tests therefore
   exercise the runtime theme, while consumers always get the built one.

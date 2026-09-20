@@ -20,5 +20,9 @@ export type {
 export {Panel} from './components/Panel/index.js';
 export type {PanelProps} from './components/Panel/index.js';
 
-export {tectonTheme, tectonIcons, tectonToken} from './theme/index.js';
-export type {TectonIconRegistry, TectonTokenName} from './theme/index.js';
+export {tectonTheme, tectonIcons, tectonToken, tecton} from './theme/index.js';
+export type {
+  TectonIconRegistry,
+  TectonTokenName,
+  TectonTokens,
+} from './theme/index.js';

@@ -3,6 +3,7 @@
  * @tecton/react production build.
  *
  * Steps, in order:
+ *   0. check the generated palette is in sync with tokens/tecton.tokens.json
  *   1. clean dist/
  *   2. compile src/**\/*.{ts,tsx} with Babel (TypeScript + automatic JSX +
  *      StyleX), collecting the StyleX rules every file produces
@@ -71,6 +72,14 @@ function run(command, args, label) {
 function resolveFromPackage(specifier) {
   return fileURLToPath(import.meta.resolve(specifier));
 }
+
+// 0 — palette drift -----------------------------------------------------------
+step('Checking the generated palette against the design tokens');
+run(
+  process.execPath,
+  [path.join(PACKAGE_ROOT, 'scripts', 'generate-palette.mjs'), '--check'],
+  'generate-palette --check',
+);
 
 // 1 — clean -------------------------------------------------------------------
 step('Cleaning dist/');
