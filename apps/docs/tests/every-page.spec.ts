@@ -1,6 +1,6 @@
 import {expect, test, type Page} from '@playwright/test';
 import {sitePages} from '../src/generated/sitePages';
-import {componentRegistry} from '../src/generated/componentRegistry';
+import {componentIndex} from '../src/generated/componentIndex';
 
 /**
  * Every page, every example.
@@ -24,10 +24,10 @@ const IGNORED_ERRORS = [
 ];
 
 /** How many examples each component page is expected to have rendered. */
-const exampleCounts = new Map(
-  componentRegistry.map(entry => [
+const exampleCounts = new Map<string, number>(
+  componentIndex.map(entry => [
     `/docs/components/${entry.name}`,
-    entry.examples.length,
+    entry.exampleCount,
   ]),
 );
 

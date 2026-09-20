@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * One example: the name, the thing running, and its source.
  *

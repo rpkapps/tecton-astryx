@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * Code the page builds at runtime.
  *

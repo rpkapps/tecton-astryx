@@ -1,4 +1,3 @@
-'use client';
 import {useMemo, useState, type ReactNode} from 'react';
 import {Table, proportional} from '@tecton/react/Table';
 import {Heading, Text} from '@tecton/react/Text';

@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * The landing page.
  *
@@ -9,14 +7,11 @@
  * the component itself running.
  */
 
-import Link from 'next/link';
+import {Link} from 'fumadocs-core/framework';
 import {Card} from '@tecton/react/Card';
 import {HStack, VStack} from '@tecton/react/Layout';
 import {Heading, Text} from '@tecton/react/Text';
-import {componentRegistry} from '@/generated/componentRegistry';
-import {exampleRegistry} from '@/generated/exampleRegistry';
-import {templateRegistry} from '@/generated/templateRegistry';
-import {foundationData} from '@/generated/foundationData';
+import {siteCounts} from '@/generated/siteCounts';
 import {ComponentGallery} from './gallery';
 
 const INSTALL = 'pnpm add @tecton/react react react-dom';
@@ -57,8 +52,8 @@ function Stat({value, label}: {value: string | number; label: string}) {
   );
 }
 
-const componentCount = componentRegistry.filter(entry => !entry.isHook).length;
-const hookCount = componentRegistry.length - componentCount;
+const componentCount = siteCounts.components;
+const hookCount = siteCounts.hooks;
 
 export function Landing() {
   return (
@@ -78,7 +73,7 @@ export function Landing() {
 
         <HStack gap={3} wrap="wrap">
           <Link
-            href="/docs/getting-started"
+            href="/docs/getting-started/"
             className="rounded-md px-4 py-2 text-sm font-semibold no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fd-ring"
             style={{
               background: 'var(--color-text-accent)',
@@ -88,7 +83,7 @@ export function Landing() {
             Get started
           </Link>
           <Link
-            href="/docs/components"
+            href="/docs/components/"
             className="rounded-md border border-fd-border px-4 py-2 text-sm font-semibold text-fd-foreground no-underline transition-colors hover:bg-fd-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fd-ring"
           >
             Browse components
@@ -98,9 +93,9 @@ export function Landing() {
         <div className="grid max-w-4xl grid-cols-2 gap-3 sm:grid-cols-5">
           <Stat value={componentCount} label="Component modules" />
           <Stat value={hookCount} label="Hooks" />
-          <Stat value={exampleRegistry.length} label="Live examples" />
-          <Stat value={templateRegistry.length} label="Page templates" />
-          <Stat value={foundationData.iconNames.length} label="Icons" />
+          <Stat value={siteCounts.examples} label="Live examples" />
+          <Stat value={siteCounts.templates} label="Page templates" />
+          <Stat value={siteCounts.icons} label="Icons" />
         </div>
       </section>
 

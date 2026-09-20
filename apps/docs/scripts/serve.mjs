@@ -2,10 +2,11 @@
 /**
  * Serve the static export the way a static host would.
  *
- * `next build` writes `out/`, in which every route is a directory holding an
- * `index.html`. This is what the end-to-end tests run against, so it has to
- * resolve a path the same way a host does — directory index, then `.html`, then
- * the 404 page — or a test would pass against a server no one deploys.
+ * `vite build` prerenders every route into `dist/client`, in which every page
+ * is a directory holding an `index.html`. This is what the end-to-end tests run
+ * against, so it has to resolve a path the same way a host does — directory
+ * index, then `.html`, then the 404 page — or a test would pass against a
+ * server no one deploys.
  */
 import {createServer} from 'node:http';
 import fs from 'node:fs';
@@ -15,7 +16,7 @@ import {fileURLToPath} from 'node:url';
 
 const ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
-  '../out',
+  '../dist/client',
 );
 const PORT = Number(process.env.PORT ?? 4173);
 
@@ -47,7 +48,8 @@ function resolveFile(pathname) {
     base,
     `${base}.html`,
     path.join(base, 'index.html'),
-    // A Route Handler exported statically lands beside its directory.
+    // A route prerendered to a plain document — the search index — lands
+    // beside its directory rather than inside one.
     `${base}.txt`,
     `${base}.json`,
   ]) {
@@ -76,7 +78,13 @@ createServer(async (request, response) => {
     return;
   }
   response.writeHead(200, {
-    'Content-Type': TYPES.get(path.extname(file)) ?? 'application/octet-stream',
+    'Content-Type':
+      TYPES.get(path.extname(file)) ??
+      // The search index is written without an extension, where the dialog
+      // fetches it.
+      (pathname.startsWith('/api/')
+        ? 'application/json; charset=utf-8'
+        : 'application/octet-stream'),
     'Cache-Control': 'no-store',
   });
   response.end(await fsp.readFile(file));

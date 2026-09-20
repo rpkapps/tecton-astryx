@@ -8,10 +8,8 @@ playwright-report/
 test-results/
 apps/docs/src/generated/
 apps/docs/content/docs/
-apps/docs/.next/
 apps/docs/.source/
-apps/docs/out/
-apps/docs/next-env.d.ts
+apps/docs/.tanstack/
 .DS_Store
 *.log
 # ...except the port's record, which is documentation: what the example port

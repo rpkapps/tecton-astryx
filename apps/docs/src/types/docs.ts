@@ -159,10 +159,43 @@ export interface ComponentEntry {
   showcase: string | null;
 }
 
+/**
+ * One row of the component index: what a listing page needs to draw a tile or
+ * a link, and nothing else.
+ *
+ * The index is imported by the gallery and the landing page, so it holds no
+ * props, no theming targets and no accessibility requirements — those are in
+ * the page's own `generated/components/<Name>.ts`, which only that page loads.
+ */
+export interface ComponentSummary {
+  name: string;
+  displayName: string;
+  module: string;
+  moduleName: string;
+  importPath: string;
+  group: string | null;
+  category: string | null;
+  summary: string;
+  isHook: boolean;
+  isHiddenFromOverview: boolean;
+  showcase: string | null;
+  /** How many examples the page renders, which the e2e sweep asserts on. */
+  exampleCount: number;
+}
+
 /* -------------------------------------------------------------------------- */
 /* Examples and templates                                                     */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * One ported example, minus its source.
+ *
+ * The source is in the MDX of the page that renders it, as a fenced block —
+ * which is what makes the Code tab a real fumadocs code block with
+ * highlighting and a copy button. Carrying it here as well would put the text
+ * of all 646 examples into a module, and a page that wants one of them would
+ * pay for all of them.
+ */
 export interface ExampleEntry {
   id: string;
   /** The directory upstream filed it under. */
@@ -178,10 +211,9 @@ export interface ExampleEntry {
   aspectRatio: number | null;
   scale: number | null;
   isShowcase: boolean;
-  /** The file, verbatim — the same text the module is compiled from. */
-  source: string;
 }
 
+/** One page template, minus its source, for the same reason. */
 export interface TemplateEntry {
   slug: string;
   name: string;
@@ -189,7 +221,17 @@ export interface TemplateEntry {
   description: string;
   category: string;
   isHiddenFromOverview: boolean;
-  source: string;
+}
+
+/** The figures the landing page and the docs index print. */
+export interface SiteCounts {
+  components: number;
+  hooks: number;
+  examples: number;
+  templates: number;
+  guides: number;
+  foundations: number;
+  icons: number;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -266,6 +308,16 @@ export interface DocTopic {
   /** The sidebar section a guide belongs to. */
   category?: string;
   sections: DocSection[];
+}
+
+/**
+ * A guide as the index tiles know it. The sections themselves are in the
+ * guide's own MDX, which is the only thing that renders them.
+ */
+export interface GuideSummary {
+  name: string;
+  title: string;
+  description: string;
 }
 
 /* -------------------------------------------------------------------------- */

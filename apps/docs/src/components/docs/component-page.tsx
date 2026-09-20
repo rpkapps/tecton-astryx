@@ -1,22 +1,21 @@
-'use client';
-
 /**
  * What a generated component page reaches for.
  *
- * Each of these takes a component name, finds that page's entry in the
- * generated registry and hands it to the ported section component. The MDX
- * carries the prose — the description, the dos and don'ts, the headings — so
- * that search indexes it; the data that belongs in a table stays data.
+ * Each of these takes a component name, takes that page's doc entry — the one
+ * the route's loader fetched for this page, and no other — and hands it to the
+ * ported section component. The MDX carries the prose — the description, the
+ * dos and don'ts, the headings — so that search indexes it; the data that
+ * belongs in a table stays data.
  */
 
 import {useMemo} from 'react';
-import Link from 'next/link';
+import {Link} from 'fumadocs-core/framework';
 import {HStack, VStack} from '@tecton/react/Layout';
 import {Divider} from '@tecton/react/Divider';
 import {Badge} from '@tecton/react/Badge';
 import {Card} from '@tecton/react/Card';
-import {componentRegistry} from '@/generated/componentRegistry';
-import type {ComponentEntry} from '@/types/docs';
+import {componentIndex} from '@/generated/componentIndex';
+import {useComponentEntry} from '@/lib/component-entry';
 import {Accessibility} from '../component-detail/Accessibility';
 import {Anatomy} from '../component-detail/Anatomy';
 import {HookSignature} from '../component-detail/HookSignature';
@@ -28,13 +27,19 @@ import {PlaygroundPropsTable} from '../component-detail/PlaygroundPropsTable';
 import {PropsTable as PropsTableView} from '../component-detail/PropsTable';
 import {Theming as ThemingView} from '../component-detail/Theming';
 
-const byName = new Map<string, ComponentEntry>(
-  componentRegistry.map(entry => [entry.name, entry]),
+/** Display names, for the Related links — the index, not the entries. */
+const displayNames = new Map<string, string>(
+  componentIndex.map(entry => [entry.name, entry.displayName]),
 );
 
-function useEntry(name: string): ComponentEntry | undefined {
-  return byName.get(name);
-}
+/**
+ * The entry for the page being read.
+ *
+ * It is not a lookup in a registry any more: the route's loader fetched this
+ * one page's module and put it in context, so a component page costs one
+ * component's documentation rather than all 144.
+ */
+const useEntry = useComponentEntry;
 
 function Unknown({name}: {name: string}) {
   return (
@@ -141,17 +146,17 @@ export function Playground({name}: {name: string}) {
 
 /** Where a reader is likely to go next. */
 export function Related({names}: {names: readonly string[]}) {
-  const known = names.filter(name => byName.has(name));
+  const known = names.filter(name => displayNames.has(name));
   if (known.length === 0) return null;
   return (
     <div className="not-prose my-4 flex flex-wrap gap-2">
       {known.map(name => (
         <Link
           key={name}
-          href={`/docs/components/${name}`}
+          href={`/docs/components/${name}/`}
           className="rounded-md border border-fd-border px-3 py-1.5 text-sm text-fd-foreground no-underline transition-colors hover:bg-fd-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fd-ring"
         >
-          {byName.get(name)?.displayName ?? name}
+          {displayNames.get(name) ?? name}
         </Link>
       ))}
     </div>

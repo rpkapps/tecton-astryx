@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * The parts a component is drawn from.
  *

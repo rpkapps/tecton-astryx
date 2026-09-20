@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * What a component has to meet, and where to read the rule.
  *

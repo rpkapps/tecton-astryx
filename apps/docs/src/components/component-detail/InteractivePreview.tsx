@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * The stage a playground draws on.
  *

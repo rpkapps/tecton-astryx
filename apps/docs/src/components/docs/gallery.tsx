@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * The component gallery.
  *
@@ -18,7 +16,7 @@ import {Divider} from '@tecton/react/Divider';
 import {Grid} from '@tecton/react/Grid';
 import {VStack} from '@tecton/react/Layout';
 import {Heading, Text} from '@tecton/react/Text';
-import {componentRegistry} from '@/generated/componentRegistry';
+import {componentIndex} from '@/generated/componentIndex';
 import {ShowcaseThumbnail} from './showcase-thumbnail';
 
 /** Upstream's category order; anything empty is skipped. */
@@ -46,7 +44,7 @@ interface Tile {
 
 export function ComponentGallery() {
   const grouped = useMemo(() => {
-    const tiles: Tile[] = componentRegistry
+    const tiles: Tile[] = componentIndex
       .filter(entry => !entry.isHiddenFromOverview)
       .filter(entry => !entry.isHook)
       .filter(entry => entry.group !== 'Utilities')
@@ -54,7 +52,7 @@ export function ComponentGallery() {
       .map(entry => ({
         name: entry.name,
         displayName: entry.displayName,
-        href: `/docs/components/${entry.name}`,
+        href: `/docs/components/${entry.name}/`,
         category: entry.category as string,
       }));
 
