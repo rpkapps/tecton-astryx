@@ -1,183 +1,287 @@
-/** Shapes of the documentation data the site renders. */
+/**
+ * The shape of everything the generator writes.
+ *
+ * `scripts/generate-data.mjs` prints JSON into `src/generated/**`; this file is
+ * the hand-written contract it is typed against, so a change to the doc objects
+ * upstream shows up as a type error here rather than as an empty table on a
+ * page. The component shapes mirror the upstream `.doc.mjs` authoring types
+ * one for one — only the strings have been rewritten to say Tecton.
+ */
 
-export interface DocGuidance {
-  /** True for "do this", false for "avoid this". */
-  guidance: boolean;
-  description: string;
-}
+/* -------------------------------------------------------------------------- */
+/* Component docs                                                             */
+/* -------------------------------------------------------------------------- */
 
-export interface DocAnatomyPart {
-  name: string;
-  required?: boolean;
-  description: string;
+/** A React element a doc describes as data, so a preview can build it. */
+export interface ElementDescriptor {
+  __element: string;
+  props?: Record<string, unknown>;
+  children?: unknown;
 }
 
 export interface DocProp {
   name: string;
   type: string;
+  description?: string;
+  default?: string;
+  required?: boolean;
+  /** Elements this prop accepts, for the playground's slot controls. */
+  slotElements?: ElementDescriptor[];
+}
+
+/** A hook parameter is documented exactly as a prop is. */
+export type HookParamDoc = DocProp;
+
+export interface HookReturnDoc {
+  name: string;
+  type: string;
+  description?: string;
+}
+
+export interface BestPractice {
+  guidance: boolean;
+  description: string;
+}
+
+export interface AccessibilityRequirement {
+  name: string;
+  description: string;
+  category?: string;
+  criterion?: string;
+  requirement?: string;
+  states?: string[];
+}
+
+export interface AnatomyElement {
+  name: string;
   description: string;
   required?: boolean;
+}
+
+export interface UsageDoc {
+  description?: string;
+  bestPractices?: BestPractice[];
+  accessibility?: AccessibilityRequirement[];
+  anatomy?: AnatomyElement[];
+}
+
+export interface ThemingTarget {
+  /** The stable class name the component carries, e.g. `astryx-button`. */
+  className: string;
+  visualProps?: string[];
+  states?: string[];
+  deprecatedFor?: string;
+}
+
+export interface ComponentVar {
+  name: string;
+  description?: string;
   default?: string;
+  private?: boolean;
+  derived?: boolean;
+  formula?: string;
 }
 
-/** One row of a component's accessibility table. */
-export interface DocAccessibilityRow {
-  /** What the row is about — "Keyboard", "Screen reader", "Focus". */
-  topic: string;
-  /** What Tecton does about it. */
-  description: string;
+export interface ThemingDoc {
+  /** Whether the component is a container other components are themed inside. */
+  container?: boolean;
+  targets: ThemingTarget[];
+  vars?: ComponentVar[];
+  /**
+   * Properties the component computes from its own variables. A row may also
+   * say how (`expand`, `replaces`), which the tables do not print but which is
+   * carried through so the data stays the doc's.
+   */
+  derived?: Array<{
+    property: string;
+    vars?: string[];
+    expand?: unknown;
+    replaces?: unknown;
+  }>;
 }
 
-export interface ComponentDoc {
+export interface PlaygroundConfig {
+  defaults?: Record<string, unknown>;
+  /** A parent the previewed component needs around it to render at all. */
+  wrapper?: {
+    component: string;
+    props?: Record<string, unknown>;
+    slotProp?: string;
+  };
+  /** The component renders nothing inline until it is opened. */
+  overlay?: boolean;
+  overlayControl?: {stateProp: string; openValue: unknown};
+}
+
+/** A component a module is made of, documented on the module's page. */
+export interface SubComponentEntry {
   name: string;
   displayName: string;
-  group?: string;
-  category?: string;
-  keywords?: readonly string[];
-  usage: {
-    description: string;
-    bestPractices?: readonly DocGuidance[];
-    /**
-     * How the component behaves for assistive technology: a paragraph, or the
-     * rows of an accessibility table.
-     */
-    accessibility?: string | readonly DocAccessibilityRow[];
-    anatomy?: readonly DocAnatomyPart[];
-  };
-  props?: readonly DocProp[];
-  /** Ids of the examples that belong to this component. */
-  examples?: readonly string[];
-  /**
-   * The exported type the props table describes, when it is not
-   * `<name>Props` — a hook documents its payload instead.
-   */
-  propsType?: string;
-  /** Where Tecton's design and what the component can express disagree. */
-  notes?: readonly string[];
-  /** Custom properties a consumer may set to restyle the component. */
-  theming?: readonly DocThemingTarget[];
-  /** Components worth reading next. */
-  related?: readonly string[];
-}
-
-/** One custom property a consumer can set to restyle a component. */
-export interface DocThemingTarget {
-  token: string;
   description: string;
+  props: DocProp[];
+  params?: HookParamDoc[] | null;
+  returns?: HookReturnDoc[] | null;
+  isHook: boolean;
 }
 
-/** One runnable example, authored beside the component it demonstrates. */
-export interface ExampleDoc {
-  /** Matches the file name, and the ids a component doc lists. */
-  id: string;
-  /** What the example is called in the documentation. */
+/** One page: one upstream module doc. */
+export interface ComponentEntry {
   name: string;
-  /** The component the example belongs to. */
-  component: string;
+  displayName: string;
+  /** The directory the doc lives in, which is also the export subpath. */
+  module: string;
+  /** The name a consumer imports. */
+  moduleName: string;
+  /** The entry point they import it from. */
+  importPath: string;
+  group: string | null;
+  category: string | null;
+  keywords: string[];
+  /** The long description, from `usage.description`. */
   description: string;
-  /**
-   * Where the example lives, relative to `packages/react/src`. Filled in by
-   * `scripts/generate-data.mjs`; the authored file does not carry it.
-   */
-  path?: string;
-  /**
-   * The source, with its imports rewritten to what a consumer would write.
-   * Filled in by the generator from the example's own file.
-   */
-  code?: string;
-}
-
-/** One page template, published from `@tecton/react/templates`. */
-export interface TemplateDoc {
-  /** The exported component's name, and the id the loader map is keyed by. */
-  id: string;
-  /** A ported page template's URL-safe identifier (also its directory). */
-  slug?: string;
-  name: string;
-  displayName?: string;
-  description: string;
-  category?: string;
-  /** Where it lives, relative to `packages/react/src`. */
-  path?: string;
-  /** The source, with its imports rewritten the way a consumer writes them. */
-  code?: string;
+  /** The one-line summary, from `description`. */
+  summary: string;
+  usage: UsageDoc | null;
+  props: DocProp[];
+  playground: PlaygroundConfig | null;
+  theming: ThemingDoc | null;
+  params: HookParamDoc[] | null;
+  returns: HookReturnDoc[] | null;
+  relatedComponents: string[] | null;
+  relatedHooks: string[] | null;
+  isHook: boolean;
+  isHiddenFromOverview: boolean;
+  parentDoc: string | null;
+  subcomponents: SubComponentEntry[];
+  /** The ids of the examples this page renders, in file order. */
+  examples: string[];
+  /** The example that leads the page, if one is marked as the showcase. */
+  showcase: string | null;
 }
 
 /* -------------------------------------------------------------------------- */
-/* Written topics                                                             */
+/* Examples and templates                                                     */
 /* -------------------------------------------------------------------------- */
 
-/**
- * A paragraph. `text` may carry inline code in backticks and a link written as
- * `[label](/path)`; nothing else is markup.
- */
-export interface DocProseBlock {
+export interface ExampleEntry {
+  id: string;
+  /** The directory upstream filed it under. */
+  dir: string;
+  /** The page that renders it. */
+  page: string;
+  /** The component it is an example of, which may be a part of that page. */
+  exampleFor: string;
+  name: string;
+  displayName: string;
+  description: string;
+  componentsUsed: string[];
+  aspectRatio: number | null;
+  scale: number | null;
+  isShowcase: boolean;
+  /** The file, verbatim — the same text the module is compiled from. */
+  source: string;
+}
+
+export interface TemplateEntry {
+  slug: string;
+  name: string;
+  displayName: string;
+  description: string;
+  category: string;
+  isHiddenFromOverview: boolean;
+  source: string;
+}
+
+/* -------------------------------------------------------------------------- */
+/* The sidebar                                                                */
+/* -------------------------------------------------------------------------- */
+
+export interface SidebarEntry {
+  type: 'entry';
+  name: string;
+  displayName: string;
+  href: string;
+  description?: string;
+}
+
+export interface SidebarGroup {
+  type: 'group';
+  /** The raw group label from the docs, which is also its identity. */
+  label: string;
+  displayName: string;
+  description: string;
+  entries: Array<{name: string; displayName: string; href: string}>;
+}
+
+export type SidebarItem = SidebarEntry | SidebarGroup;
+
+export interface SidebarData {
+  items: SidebarItem[];
+  utilities: Array<{
+    name: string;
+    displayName: string;
+    href: string;
+    description?: string;
+  }>;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Guides                                                                     */
+/* -------------------------------------------------------------------------- */
+
+export interface ProseBlock {
   type: 'prose';
   text: string;
 }
-
-export interface DocCodeBlock {
+export interface CodeBlock {
   type: 'code';
-  /** For the tokenizer: `tsx`, `ts`, `css`, `html`, `bash` or `text`. */
-  language?: 'tsx' | 'ts' | 'css' | 'html' | 'bash' | 'text';
   code: string;
-  /** A line above the block saying what it is. */
+  language?: string;
   caption?: string;
 }
-
-export interface DocTableBlock {
-  type: 'table';
-  columns: readonly string[];
-  rows: readonly (readonly string[])[];
-  caption?: string;
-}
-
-export interface DocListBlock {
+export interface ListBlock {
   type: 'list';
+  items: string[];
   ordered?: boolean;
-  items: readonly string[];
 }
-
-export type DocBlock =
-  DocProseBlock | DocCodeBlock | DocTableBlock | DocListBlock;
+export interface TableBlock {
+  type: 'table';
+  columns: string[];
+  rows: string[][];
+  caption?: string;
+}
+export type DocBlock = ProseBlock | CodeBlock | ListBlock | TableBlock;
 
 export interface DocSection {
   title: string;
-  content: readonly DocBlock[];
+  content: DocBlock[];
 }
 
 export interface DocTopic {
-  type: 'generic';
+  /** What kind of doc file this is; the guides all declare `'generic'`. */
+  type?: string;
   name: string;
   title: string;
   description: string;
-  /** Which side-nav group the topic belongs to. */
+  /** The sidebar section a guide belongs to. */
   category?: string;
-  sections: readonly DocSection[];
+  sections: DocSection[];
 }
 
 /* -------------------------------------------------------------------------- */
-/* Foundations, printed from the package's own tokens                         */
+/* Foundations, changelog, routes                                             */
 /* -------------------------------------------------------------------------- */
 
-/** One token of the `tecton` map: where it lives and what it resolves to. */
 export interface TokenRow {
-  /** Its path in the `tecton` map, without the group — `text.primary`. */
   path: string;
-  /** The CSS custom property the map points at. */
   token: string;
-  /** What the built stylesheet declares the property to be. */
   value?: string;
-  /** The light and dark halves of a `light-dark()` value. */
   light?: string;
   dark?: string;
-  /** What the design foundation says the role is for. */
-  description?: string;
-  /** The design's own name for the same step, when there is one. */
   designToken?: string;
+  description?: string;
 }
 
-/** One colour role, with the value it takes in each mode. */
 export interface PaletteRow {
   path: string;
   light: string;
@@ -188,14 +292,14 @@ export interface PaletteRow {
 export interface PaletteGroup {
   name: string;
   title: string;
-  rows: readonly PaletteRow[];
+  rows: PaletteRow[];
 }
 
 export interface TypeRow {
   name: string;
   size: string;
   sizePx: string;
-  weight: string;
+  weight: string | number;
   leading: string;
   isData: boolean;
   section: string;
@@ -204,50 +308,40 @@ export interface TypeRow {
 }
 
 export interface FoundationData {
-  paletteGroups: readonly PaletteGroup[];
+  paletteGroups: PaletteGroup[];
   paletteDescribed: number;
   paletteTotal: number;
-  colourTokens: readonly TokenRow[];
-  typeRows: readonly TypeRow[];
-  fontFamilies: readonly TokenRow[];
-  spacingRows: readonly TokenRow[];
-  radiusRows: readonly TokenRow[];
-  sizeRows: readonly TokenRow[];
-  borderRows: readonly TokenRow[];
-  shadowRows: readonly TokenRow[];
-  motionRows: readonly TokenRow[];
-  iconNames: readonly string[];
+  colourTokens: TokenRow[];
+  typeRows: TypeRow[];
+  fontFamilies: TokenRow[];
+  spacingRows: TokenRow[];
+  radiusRows: TokenRow[];
+  sizeRows: TokenRow[];
+  borderRows: TokenRow[];
+  shadowRows: TokenRow[];
+  motionRows: TokenRow[];
+  iconNames: string[];
 }
 
-/* -------------------------------------------------------------------------- */
-/* The changelog                                                              */
-/* -------------------------------------------------------------------------- */
+export interface FoundationPage {
+  name: string;
+  title: string;
+  sources: string[];
+}
 
 export interface ChangelogSection {
   title: string;
-  items: readonly string[];
+  items: string[];
 }
 
 export interface ChangelogRelease {
   version: string;
   date: string;
-  sections: readonly ChangelogSection[];
+  sections: ChangelogSection[];
 }
 
-/** One foundations page, and the files it is printed from. */
-export interface FoundationPage {
-  name: string;
-  title: string;
-  sources: readonly string[];
-}
-
-/** Every route the generator wrote a page for. */
 export interface SitePage {
-  /** The site path, e.g. `/docs/components/Button`. */
   url: string;
-  /** What the page is called. */
   title: string;
-  /** Which part of the site it belongs to. */
-  kind:
-    'guide' | 'foundation' | 'component' | 'template' | 'index' | 'changelog';
+  kind: string;
 }

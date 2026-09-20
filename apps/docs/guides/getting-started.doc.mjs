@@ -22,6 +22,19 @@ export const docs = {
       ],
     },
     {
+      title: 'What you are installing',
+      content: [
+        {
+          type: 'prose',
+          text: "Tecton is a **theme**, not a component library of its own. The package re-exports a complete React component system — every component, hook, type and module, under its own names and with its own props — and applies the Tecton palette, type scale, radii and icon set to it. So the API you write is that system's API, documented [component by component](/docs/components), and what Tecton decides is how it looks.",
+        },
+        {
+          type: 'prose',
+          text: 'That is why nothing here teaches you a Tecton-specific prop: there are none. A `Button` takes `label`, `variant` and `icon` because that is what a `Button` takes.',
+        },
+      ],
+    },
+    {
       title: 'Load the stylesheet',
       content: [
         {
@@ -41,7 +54,7 @@ export const docs = {
       content: [
         {
           type: 'prose',
-          text: 'Mount `TectonProvider` at the root of the tree. It applies the Tecton theme and hosts the overlay layer that popovers, tooltips, menus and toasts render into. It renders dark by default; pass `mode="light"` or `mode="system"` to change that.',
+          text: '`TectonProvider` is the one component Tecton adds. It installs the theme and hosts the layer that popovers, tooltips, menus and toasts render into. It renders dark by default; pass `mode="light"` or `mode="system"` to change that.',
         },
         {
           type: 'code',
@@ -65,25 +78,33 @@ createRoot(document.getElementById('root')).render(
       content: [
         {
           type: 'prose',
-          text: 'Everything is exported from the package root. Each component is also published as its own subpath — `@tecton/react/Button` — for an application that would rather not pull the whole surface through one module.',
+          text: 'Everything is exported from the package root, and every module is also published at its own subpath — `@tecton/react/Button`, `@tecton/react/Layout`, `@tecton/react/Table` — which is how the examples on this site import.',
         },
         {
           type: 'code',
           language: 'tsx',
           caption: 'src/App.tsx',
-          code: `import {Button, Panel, Text} from '@tecton/react';
+          code: `import {Button} from '@tecton/react/Button';
+import {Card} from '@tecton/react/Card';
+import {HStack, VStack} from '@tecton/react/Layout';
+import {Heading, Text} from '@tecton/react/Text';
 
 export function App() {
   return (
-    <Panel
-      title="Deployments"
-      description="Everything shipped in the last hour."
-      actions={<Button label="Run" variant="primary" />}
-    >
-      <Text variant="small" color="secondary">
-        Nothing to report.
-      </Text>
-    </Panel>
+    <Card>
+      <VStack gap={3}>
+        <HStack hAlign="between" vAlign="center" gap={3}>
+          <VStack gap={1}>
+            <Heading level={2}>Deployments</Heading>
+            <Text type="supporting" color="secondary">
+              Everything shipped in the last hour.
+            </Text>
+          </VStack>
+          <Button label="Run" variant="primary" />
+        </HStack>
+        <Text color="secondary">Nothing to report.</Text>
+      </VStack>
+    </Card>
   );
 }`,
         },
@@ -118,19 +139,23 @@ export function App() {
           rows: [
             [
               '`@tecton/react`',
-              'Every component, the hooks and the token map.',
+              'Every component and hook the system publishes, plus `TectonProvider`, `configureTectonRoot` and the token map.',
             ],
             [
               '`@tecton/react/Button`',
-              'One component, for an application that imports narrowly.',
+              'One module, at the same path the system publishes it at. There is one of these for every module.',
+            ],
+            [
+              '`@tecton/react/hooks`',
+              'The hooks the components are built from — `useHotkeys`, `useMediaQuery`, `useTypeahead` and the rest.',
             ],
             [
               '`@tecton/react/icons`',
-              'The 131 Tecton glyphs, by name and as components.',
+              'The 131 Tecton glyphs as components, plus `tectonIconNames` and `tectonIconRegistry`.',
             ],
             [
               '`@tecton/react/theme`',
-              'The `tecton` token map and `tectonToken()`.',
+              'The theme runtime (`Theme`, `defineTheme`, `useTheme`) and Tecton’s own `tectonTheme`, `tecton` and `tectonToken()`.',
             ],
             [
               '`@tecton/react/styles.css`',
@@ -140,7 +165,7 @@ export function App() {
         },
         {
           type: 'prose',
-          text: 'Next: [Theming](/docs/theming) for colour modes and tokens, [Styling](/docs/styling) for laying out your own screens, and the [component index](/components) for the API of everything Tecton ships.',
+          text: 'Next: [Theming](/docs/theming) for colour modes and tokens, [Styling](/docs/styling) for laying out your own screens, and the [component index](/docs/components) for the API of everything the package publishes.',
         },
       ],
     },

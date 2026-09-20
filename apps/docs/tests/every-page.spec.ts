@@ -1,5 +1,6 @@
 import {expect, test, type Page} from '@playwright/test';
 import {sitePages} from '../src/generated/sitePages';
+import {componentRegistry} from '../src/generated/componentRegistry';
 
 /**
  * Every page, every example.
@@ -7,11 +8,13 @@ import {sitePages} from '../src/generated/sitePages';
  * The suite in `site.spec.ts` checks the things a reader most depends on, in
  * detail, on a few pages. This one is the opposite shape: one cheap pass over
  * every page the generator wrote, asserting only what must never be untrue
- * anywhere — the page renders, each of its examples actually drew something,
- * nothing errored, and nothing on it names the upstream library.
+ * anywhere — the page is served, its title is its own, every example frame on
+ * it drew something, a component page with examples rendered at least one of
+ * them, nothing logged a console error, and nothing a reader sees names the
+ * upstream library.
  *
- * It is driven by the generated page list, so it grows with the package. A
- * component added to `@tecton/react` is tested here the moment it has a page.
+ * It is driven by the generated page list, so it grows with the package: a
+ * module added to `@tecton/react` is covered here the moment it has a page.
  */
 
 const IGNORED_ERRORS = [
@@ -19,6 +22,14 @@ const IGNORED_ERRORS = [
   'fonts.gstatic.com',
   'Failed to load resource',
 ];
+
+/** How many examples each component page is expected to have rendered. */
+const exampleCounts = new Map(
+  componentRegistry.map(entry => [
+    `/docs/components/${entry.name}`,
+    entry.examples.length,
+  ]),
+);
 
 function watch(page: Page) {
   const errors: string[] = [];
@@ -63,14 +74,31 @@ test.describe('every generated page', () => {
       expect(response?.status(), `${entry.url} was not served`).toBe(200);
 
       // The first level-1 heading is the page's title; an example may render
-      // more of them, which on the Heading page is rather the point.
+      // more of them, which on the Text page is rather the point.
       await expect(page.locator('h1').first()).toHaveText(entry.title);
       // The examples mount after hydration; give the modules a moment.
       await page.waitForTimeout(400);
 
       expect(await blankPreviews(page)).toEqual([]);
+
+      const expectedExamples = exampleCounts.get(entry.url) ?? 0;
+      if (expectedExamples > 0) {
+        expect(
+          await page.locator('figure[id]').count(),
+          `${entry.url} documents ${expectedExamples} example(s) but rendered no frame`,
+        ).toBeGreaterThan(0);
+      }
+
+      const visible = (await page.evaluate(() => document.body.innerText))
+        // The upstream name survives in three places a reader meets verbatim:
+        // the i18n message ids, the theme attribute, and the class names the
+        // components carry, which the theming tables print on purpose.
+        .replace(
+          /@astryx\.[A-Za-z0-9_.]+|data-astryx[a-z0-9-]*|astryx-[a-z0-9-]+/g,
+          '',
+        );
       expect(
-        await page.evaluate(() => document.body.innerText),
+        visible,
         `${entry.url} names the upstream library in its visible text`,
       ).not.toMatch(/astryx/i);
       expect(errors, `${entry.url} logged console errors`).toEqual([]);

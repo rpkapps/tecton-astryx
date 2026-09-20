@@ -4,7 +4,7 @@ export const docs = {
   name: 'theming',
   title: 'Theming',
   description:
-    'Colour modes, the tecton token map, tokens as CSS variables, and what a consumer may and may not restyle.',
+    'Colour modes, the tecton token map, tokens as CSS variables, and how a theme decides what a component looks like.',
   category: 'Guides',
   sections: [
     {
@@ -27,6 +27,10 @@ export const docs = {
         },
         {
           type: 'prose',
+          text: 'A provider can also be nested — `scope="nested"` — which themes its own subtree without claiming the document. That is how every preview on this site can be looked at in the other mode while the page stays as it was.',
+        },
+        {
+          type: 'prose',
           text: 'Tecton is designed dark — see [Principles](/docs/principles). The light values are derived from the dark ones rather than separately designed, so review light mode before you ship it as your default.',
         },
       ],
@@ -41,7 +45,7 @@ export const docs = {
         {
           type: 'code',
           language: 'tsx',
-          code: `import {tecton} from '@tecton/react';
+          code: `import {tecton} from '@tecton/react/theme';
 
 <div
   style={{
@@ -60,15 +64,15 @@ export const docs = {
           rows: [
             [
               '`tecton.color`',
-              'Ink, glyphs, surfaces, actions, dividers, the five severities, the seven accents, and the table, top-nav and input colours.',
+              'Ink, glyphs, surfaces, actions, dividers, the five statuses, the accents, and the table, top-nav and input colours.',
             ],
             ['`tecton.space`', 'The 4px grid, from `none` to `xxl`.'],
             [
               '`tecton.radius`',
-              'Corner radii: `element` (4px) is the default Tecton corner.',
+              'Corner radii: `element` is the default Tecton corner, `container` the one a card takes.',
             ],
             ['`tecton.size`', 'Control heights: `sm`, `md`, `lg`.'],
-            ['`tecton.font`', 'The two families and the two weights.'],
+            ['`tecton.font`', 'The two families and the weights.'],
             [
               '`tecton.shadow`',
               'Elevation, for the rare genuinely floating surface.',
@@ -78,7 +82,7 @@ export const docs = {
         },
         {
           type: 'prose',
-          text: 'Every branch is printed, with its value in both modes, under [Foundations](/foundations/colour).',
+          text: 'Every branch is printed, with its value in both modes, under [Foundations](/docs/foundations/colour).',
         },
       ],
     },
@@ -104,9 +108,41 @@ export const docs = {
         {
           type: 'code',
           language: 'tsx',
-          code: `import {tectonToken} from '@tecton/react';
+          code: `import {tectonToken} from '@tecton/react/theme';
 
 const ring = {outlineColor: tectonToken('--focus-outline-color')};`,
+        },
+        {
+          type: 'prose',
+          text: 'For an application that compiles StyleX, `@tecton/react/theme/tokens.stylex` publishes the same variables as StyleX variable maps — `spacingVars`, `colorVars` and the rest — so a `stylex.create` block can name a token without writing `var()` by hand.',
+        },
+      ],
+    },
+    {
+      title: 'What a theme decides',
+      content: [
+        {
+          type: 'prose',
+          text: 'Tecton is a `defineTheme` config: the palette, the type scale, the radii, an icon registry, and a block of per-component decisions. That last part is why a Tecton button does not look like a default one, and it is how a look is changed here — not at the call site.',
+        },
+        {
+          type: 'prose',
+          text: 'Every component page has a **Theming** section printed from the component’s own doc: the keys it exposes to a `defineTheme` `components` map, the `data-*` attributes each key reflects, and the custom properties the component reads. That is the surface a theme may decide, and it is the whole of it.',
+        },
+        {
+          type: 'code',
+          language: 'ts',
+          caption: 'The shape of a per-component decision.',
+          code: `components: {
+  button: {
+    base: {/* CSS properties */},
+    'variant:primary': {/* prop-specific */},
+  },
+}`,
+        },
+        {
+          type: 'prose',
+          text: 'A theme may also add values to a prop’s vocabulary. Tecton does: `variant="outlined"` and `variant="text-only"` on `Button`, `status="neutral"` on `Banner`, `variant="lime"` on `Badge`, and eight text types. Those are declared, so they type-check in your editor — they are extensions of the component’s API, not new components.',
         },
       ],
     },
@@ -117,8 +153,8 @@ const ring = {outlineColor: tectonToken('--focus-outline-color')};`,
           type: 'list',
           items: [
             'Your own surfaces, built from the token map — that is what it is for.',
-            'Layout around a component: margins, widths, grid placement.',
-            'Anything a component exposes as a prop: variant, size, density, tone.',
+            'Layout around a component: margins, widths, grid placement, through `style`, `className` or `xstyle`.',
+            'Anything a component exposes as a prop: variant, size, density, status.',
           ],
         },
       ],
@@ -129,14 +165,14 @@ const ring = {outlineColor: tectonToken('--focus-outline-color')};`,
         {
           type: 'list',
           items: [
-            'Component internals. The class names are generated and hashed; they are not an API and they change between releases without notice.',
-            'Token values, redefined on your own elements to re-skin Tecton. A token redefined halfway down the tree makes two versions of the design system on one page.',
-            'The theme attribute Tecton sets on the document root, or the overlay container it mounts.',
+            'Component internals. The generated class names are hashes of their own declarations; they are not an API and they change between releases without notice.',
+            'Token values, redefined on your own elements to re-skin the components. A token redefined halfway down the tree makes two versions of the design system on one page.',
+            'The theme attribute Tecton sets on the document root, or the layer container it mounts.',
           ],
         },
         {
           type: 'prose',
-          text: 'If a component cannot express something your screen needs, that is a gap in Tecton and worth reporting: a local override will be silently undone by the next release. Where Tecton itself could not express the design, the component page says so under "Notes".',
+          text: 'One consequence worth knowing: every rule Tecton ships now sits in one cascade layer under one attribute scope, per-component decisions included. On a page carrying two versions of Tecton that makes a component decision a cross-version contract in exactly the way a token value is — see [Micro-frontends](/docs/micro-frontends).',
         },
       ],
     },

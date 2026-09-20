@@ -15,9 +15,9 @@ import {templateLoaders} from '@/generated/templateLoaders';
  *
  * The site is a static export, so nothing here renders during the build: the
  * page ships a dynamic import per example, and the browser fetches the
- * example's own module and mounts it after hydration. The module is the same
- * source the Code tab shows, generated from the file that lives beside the
- * component in `packages/react`, which is what stops the two drifting apart.
+ * example's own module and mounts it after hydration. The module is the file
+ * under `apps/docs/examples`, which is also the source the Code tab shows —
+ * they cannot drift, because they are the same file.
  *
  * The lazy wrappers are built once, when this module is first evaluated.
  * `lazy()` does not call its loader, so this costs one small object per example

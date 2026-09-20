@@ -6,8 +6,8 @@
   "description": "Documentation site for the Tecton design system.",
   "scripts": {
     "generate": "node scripts/generate-data.mjs",
-    "dev": "pnpm generate && next dev",
-    "build": "pnpm generate && next build",
+    "dev": "pnpm generate && next dev --webpack",
+    "build": "pnpm generate && next build --webpack",
     "serve": "node scripts/serve.mjs",
     "typecheck": "pnpm generate && next typegen && tsc -p tsconfig.json --noEmit",
     "test:e2e": "playwright test",
@@ -24,7 +24,10 @@
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.7",
     "@playwright/test": "1.56.1",
+    "@stylexjs/babel-plugin": "0.19.1",
+    "@stylexjs/postcss-plugin": "0.19.1",
     "@stylexjs/stylex": "0.19.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/mdx": "^2.0.14",
@@ -35,5 +38,11 @@
     "recharts": "^3.9.2",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3"
-  }
+  },
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "last 2 Edge versions"
+  ]
 }

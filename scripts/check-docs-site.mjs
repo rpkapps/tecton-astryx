@@ -3,24 +3,29 @@
  * Does the documentation site still describe the package?
  *
  * The site is generated: every page under `apps/docs/content/docs` and every
- * module under `apps/docs/src/generated` is printed from the package, from the
- * built theme or from an authored guide. That is what keeps it honest, and it
- * is also what makes a silent gap possible — a component whose doc file never
- * landed, an example nothing renders, a guide missing from the sidebar, a page
- * the search index never heard of. Nothing in the site would break; it would
- * simply stop being complete.
+ * module under `apps/docs/src/generated` is printed from the component system's
+ * own doc objects, from the ported examples, from the built theme or from an
+ * authored guide. That is what keeps it honest, and it is also what makes a
+ * silent gap possible — a module whose page never got written, an example
+ * nothing renders, a guide missing from the sidebar, a page the search index
+ * never heard of. Nothing would break; the site would simply stop being
+ * complete.
  *
  * This script is the check for that. It runs against the generated trees and
  * the built export, so it fails on the artefact rather than on the intention:
  *
- *   1. every component the package's barrel exports has a page,
- *   2. every page the generator claims exists on disk and in the export,
- *   3. every example in the registry is rendered by exactly one page,
- *   4. every example's generated module imports the public entry point,
- *   5. every written guide is in the sidebar's `meta.json`,
- *   6. every foundations page's sources are still where it reads them from,
- *   7. the exported search index carries every page,
- *   8. no page names the upstream library the package is built on.
+ *   1. every exported module with a main doc has a page, and every page
+ *      documents a module the package exports;
+ *   2. every page the generator claims exists on disk;
+ *   3. every ported example is rendered by exactly one page, and no page
+ *      renders an example that is not in the registry;
+ *   4. every example's module resolves to a file under apps/docs/examples;
+ *   5. every written guide, and every section, is in the sidebar — and every
+ *      component page is in the grouped component sidebar exactly once;
+ *   6. every source a foundations page reads is still where it reads it from;
+ *   7. the exported search index carries every page;
+ *   8. nothing a reader sees names the upstream library, beyond the literal
+ *      names they meet in DevTools.
  *
  * Run it after `pnpm --filter @tecton/docs build`; `pnpm check` does.
  */
@@ -35,17 +40,20 @@ const REPO_ROOT = path.resolve(
 const APP_ROOT = path.join(REPO_ROOT, 'apps/docs');
 const CONTENT = path.join(APP_ROOT, 'content/docs');
 const GENERATED = path.join(APP_ROOT, 'src/generated');
+const EXAMPLES = path.join(APP_ROOT, 'examples');
 const EXPORT = path.join(APP_ROOT, 'out');
-const PACKAGE_SRC = path.join(REPO_ROOT, 'packages/react/src');
+const PACKAGE_ROOT = path.join(REPO_ROOT, 'packages/react');
+const UPSTREAM_SRC = path.join(
+  PACKAGE_ROOT,
+  'node_modules/@astryxdesign/core/src',
+);
 
 const problems = [];
 const notes = [];
 const fail = message => problems.push(message);
 const ok = message => notes.push(message);
 
-function read(file) {
-  return fs.readFileSync(file, 'utf8');
-}
+const read = file => fs.readFileSync(file, 'utf8');
 
 /** Read a generated TypeScript module's single exported literal. */
 function readGenerated(name) {
@@ -73,76 +81,79 @@ const examples = readGenerated('exampleRegistry');
 const templates = readGenerated('templateRegistry');
 const guides = readGenerated('guideRegistry');
 const foundations = readGenerated('foundationPages');
+const sidebar = readGenerated('componentSidebar');
 const pages = readGenerated('sitePages');
 
 /* -------------------------------------------------------------------------- */
-/* 1. Every exported component is documented                                  */
+/* 1. Every module with a doc has a page, and every page has a module          */
 /* -------------------------------------------------------------------------- */
 
 /**
- * What the package's barrel publishes out of `components/`, as values.
- *
- * Type-only exports are a separate statement and are skipped: a page documents
- * something a consumer can render or call, not a type. Not every one is a
- * component — `useToast` is a hook — so the check below matches a page by
- * either the name it is filed under or the name it is published as.
+ * Every main doc the component system ships, found the way the generator finds
+ * them: a `.doc.mjs` under `<Module>/` whose doc object is not a
+ * sub-component's. They are imported rather than parsed, because a doc object
+ * is a module and its `name` is a value, not a line of text — but nothing of
+ * the generator's own logic is used, which is the point: this catches the
+ * generator dropping one.
  */
-function barrelComponents(entry = 'index.ts', seen = new Set()) {
-  const file = path.join(PACKAGE_SRC, entry);
-  if (seen.has(file) || !fs.existsSync(file)) return new Set();
-  seen.add(file);
-  const source = read(file);
-  const names = new Set();
-  for (const match of source.matchAll(
-    /export\s+\{([^}]*)\}\s+from\s+'(?:\.\.\/)*\.?\/?components\/[A-Za-z0-9]+\//g,
-  )) {
-    for (const name of match[1].split(',')) {
-      const trimmed = name.trim();
-      if (!trimmed || trimmed.startsWith('type ')) continue;
-      names.add(trimmed.replace(/^.*\s+as\s+/, ''));
+async function upstreamMainDocs(dir = UPSTREAM_SRC, out = new Map()) {
+  for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      await upstreamMainDocs(full, out);
+      continue;
     }
+    if (!entry.name.endsWith('.doc.mjs')) continue;
+    const module = await import(pathToFileURL(full).href);
+    const doc = module.docs;
+    if (!doc || doc.subComponentOf) continue;
+    const name =
+      doc.name ?? entry.name.replace(/\.doc\.mjs$/, '').replace(/^XDS/, '');
+    out.set(name, path.relative(UPSTREAM_SRC, full).replaceAll(path.sep, '/'));
   }
-  // The barrel keeps its generated pass-through components in a second
-  // module it re-exports wholesale (`export * from './generated/…'`); follow it.
-  for (const match of source.matchAll(/export\s+\*\s+from\s+'(\.[^']*)'/g)) {
-    const target = path
-      .join(path.dirname(entry), match[1])
-      .replace(/\.js$/, '.ts');
-    for (const name of barrelComponents(target, seen)) names.add(name);
-  }
-  return names;
+  return out;
 }
 
-/** Every name a page answers to: what it is filed under, and what it is called. */
-const documented = new Map();
-for (const entry of components) {
-  documented.set(entry.name, entry.name);
-  if (entry.displayName) documented.set(entry.displayName, entry.name);
-}
-const exported = barrelComponents();
-for (const name of [...exported].sort()) {
+const exportSubpaths = new Set(
+  Object.keys(
+    JSON.parse(read(path.join(PACKAGE_ROOT, 'package.json'))).exports ?? {},
+  ).map(entry => entry.replace(/^\.\/?/, '')),
+);
+
+const documented = new Map(components.map(entry => [entry.name, entry]));
+const mainDocs = await upstreamMainDocs();
+
+for (const [name, file] of [...mainDocs].sort()) {
   if (!documented.has(name)) {
     fail(
-      `@tecton/react exports "${name}", but no page documents it. Add packages/react/src/components/${name}/${name}.doc.mjs.`,
+      `@tecton/react re-exports the module documented by ${file}, but no page documents "${name}".`,
     );
   }
 }
 for (const entry of components) {
-  if (!exported.has(entry.name) && !exported.has(entry.displayName ?? '')) {
+  if (!mainDocs.has(entry.name)) {
     fail(
-      `The site documents "${entry.name}", which the package's barrel does not export.`,
+      `The site documents "${entry.name}", which has no main doc under @astryxdesign/core/src.`,
+    );
+  }
+  if (!exportSubpaths.has(entry.module)) {
+    fail(
+      `The page for "${entry.name}" imports from "${entry.importPath}", which @tecton/react does not export.`,
     );
   }
 }
 if (problems.length === 0) {
-  ok(`${exported.size} exported components and hooks, all documented.`);
+  ok(
+    `${mainDocs.size} exported modules with a doc, all documented (${
+      components.filter(entry => entry.isHook).length
+    } of them hooks).`,
+  );
 }
 
 /* -------------------------------------------------------------------------- */
-/* 2. Every page the generator claims exists                                  */
+/* 2. Every page the generator claims exists                                   */
 /* -------------------------------------------------------------------------- */
 
-/** Where a site path's MDX file lives. */
 function mdxFor(url) {
   const slug = url.replace(/^\/docs\/?/, '');
   const candidates = slug
@@ -161,24 +172,23 @@ for (const page of pages) {
   }
 }
 
-const expectedPages = new Set(pages.map(page => page.url));
-for (const component of components) {
-  const url = `/docs/components/${component.name}`;
-  if (!expectedPages.has(url)) fail(`${component.name} has no page at ${url}.`);
+const expected = new Set(pages.map(page => page.url));
+for (const entry of components) {
+  const url = `/docs/components/${entry.name}`;
+  if (!expected.has(url)) fail(`${entry.name} has no page at ${url}.`);
 }
 for (const template of templates) {
-  const url = `/docs/templates/${template.id}`;
-  if (!expectedPages.has(url))
-    fail(`The template ${template.id} has no page at ${url}.`);
+  const url = `/docs/templates/${template.slug}`;
+  if (!expected.has(url)) {
+    fail(`The template ${template.slug} has no page at ${url}.`);
+  }
 }
 ok(`${pages.length} generated pages, all backed by an MDX file.`);
 
 /* -------------------------------------------------------------------------- */
-/* 3 & 4. Every example is rendered once, from the public entry point         */
+/* 3 & 4. Every example rendered once, from a file that exists                 */
 /* -------------------------------------------------------------------------- */
 
-/** Which page renders which example, read out of the generated MDX. */
-const renderedBy = new Map();
 function walk(dir, out = []) {
   for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
     const full = path.join(dir, entry.name);
@@ -187,15 +197,18 @@ function walk(dir, out = []) {
   }
   return out;
 }
+
+const renderedBy = new Map();
 for (const file of walk(CONTENT)) {
   for (const match of read(file).matchAll(
-    /<ExampleFrame\s+id=\{"([^"]+)"\}/g,
+    /<ExampleBlock\s+id=\{"([^"]+)"\}/g,
   )) {
     const where = path.relative(CONTENT, file);
     renderedBy.set(match[1], [...(renderedBy.get(match[1]) ?? []), where]);
   }
 }
 
+const loaders = read(path.join(GENERATED, 'exampleLoaders.ts'));
 for (const example of examples) {
   const where = renderedBy.get(example.id) ?? [];
   if (where.length === 0) {
@@ -204,62 +217,106 @@ for (const example of examples) {
     );
   } else if (where.length > 1) {
     fail(
-      `The example "${example.id}" is rendered by ${where.length} pages (${where.join(', ')}); it should belong to exactly one.`,
+      `The example "${example.id}" is rendered by ${where.length} pages (${where.join(', ')}); it belongs to exactly one.`,
     );
   }
 
-  const module = path.join(GENERATED, 'examples', `${example.id}.tsx`);
-  if (!fs.existsSync(module)) {
+  const source = path.join(
+    EXAMPLES,
+    'components',
+    example.dir,
+    `${example.id}.tsx`,
+  );
+  if (!fs.existsSync(source)) {
     fail(
-      `The example "${example.id}" has no runnable module in src/generated/examples.`,
+      `The example "${example.id}" has no source at ${path.relative(REPO_ROOT, source)}.`,
     );
     continue;
   }
-  const source = read(module);
-  if (!source.includes("from '@tecton/react'")) {
-    fail(`The example "${example.id}" does not import from '@tecton/react'.`);
+  if (!loaders.includes(`"${example.id}":`)) {
+    fail(`The example "${example.id}" has no entry in exampleLoaders.ts.`);
   }
-  if (/from\s+'\.\.?\//.test(source)) {
-    fail(`The example "${example.id}" still carries a relative import.`);
+  if (!read(source).includes('@tecton/react')) {
+    fail(`The example "${example.id}" imports nothing from '@tecton/react'.`);
   }
 }
 const known = new Set(examples.map(example => example.id));
 for (const id of renderedBy.keys()) {
-  if (!known.has(id))
+  if (!known.has(id)) {
     fail(`A page renders "${id}", which is not in the example registry.`);
+  }
 }
 ok(`${examples.length} examples, each rendered by exactly one page.`);
 
+const templateLoaders = read(path.join(GENERATED, 'templateLoaders.ts'));
+for (const template of templates) {
+  const source = path.join(EXAMPLES, 'pages', template.slug, 'page.tsx');
+  if (!fs.existsSync(source)) {
+    fail(
+      `The template "${template.slug}" has no source at ${path.relative(REPO_ROOT, source)}.`,
+    );
+  }
+  if (!templateLoaders.includes(`"${template.slug}":`)) {
+    fail(`The template "${template.slug}" has no entry in templateLoaders.ts.`);
+  }
+}
+ok(`${templates.length} page templates, each with a source and a loader.`);
+
 /* -------------------------------------------------------------------------- */
-/* 5. Every guide is in the sidebar                                           */
+/* 5. The sidebar                                                              */
 /* -------------------------------------------------------------------------- */
 
 const rootMeta = JSON.parse(read(path.join(CONTENT, 'meta.json')));
-const sidebar = new Set(rootMeta.pages);
+const rootPages = new Set(rootMeta.pages);
 for (const guide of guides) {
-  if (!sidebar.has(guide.name)) {
+  if (!rootPages.has(guide.name)) {
     fail(`The guide "${guide.name}" is not listed in content/docs/meta.json.`);
   }
 }
 for (const section of ['foundations', 'components', 'templates', 'changelog']) {
-  if (!sidebar.has(section)) {
+  if (!rootPages.has(section)) {
     fail(`The sidebar does not list the "${section}" section.`);
   }
 }
-const componentMeta = JSON.parse(
-  read(path.join(CONTENT, 'components/meta.json')),
-);
-for (const component of components) {
-  if (!componentMeta.pages.includes(component.name)) {
-    fail(`${component.name} is missing from the components sidebar.`);
+
+/**
+ * The component sidebar is grouped, so a page has to appear in exactly one
+ * group (or as a flattened entry, or under Utilities). A page in none is a page
+ * only search can find; a page in two is a page that looks like two things.
+ */
+const placed = new Map();
+const place = (name, where) =>
+  placed.set(name, [...(placed.get(name) ?? []), where]);
+for (const item of sidebar.items) {
+  if (item.type === 'entry') place(item.name, 'top level');
+  else
+    for (const entry of item.entries) place(entry.name, `group ${item.label}`);
+}
+for (const entry of sidebar.utilities) place(entry.name, 'Utilities');
+
+for (const entry of components) {
+  const where = placed.get(entry.name) ?? [];
+  if (where.length === 0) {
+    fail(`${entry.name} is missing from the component sidebar.`);
+  } else if (where.length > 1) {
+    fail(`${entry.name} is in the sidebar twice (${where.join(', ')}).`);
+  }
+}
+for (const name of placed.keys()) {
+  if (!documented.has(name)) {
+    fail(`The sidebar lists "${name}", which has no page.`);
   }
 }
 ok(
-  `${guides.length} guides and ${components.length} components in the sidebar.`,
+  `${guides.length} guides in the sidebar, and ${components.length} component pages across ${
+    sidebar.items.filter(item => item.type === 'group').length
+  } groups, ${sidebar.items.filter(item => item.type === 'entry').length} single entries and ${
+    sidebar.utilities.length
+  } utilities.`,
 );
 
 /* -------------------------------------------------------------------------- */
-/* 6. Every foundations page's sources are still there                        */
+/* 6. Every foundations page's sources are still there                         */
 /* -------------------------------------------------------------------------- */
 
 const {foundationPages: declared} = await import(
@@ -280,8 +337,35 @@ for (const page of declared) {
 ok(`${declared.length} foundations pages, every source present.`);
 
 /* -------------------------------------------------------------------------- */
-/* 7 & 8. The export: search index and the upstream name                      */
+/* 7 & 8. The export: search index, and the upstream name                      */
 /* -------------------------------------------------------------------------- */
+
+/**
+ * What a reader is allowed to meet of the library's own name.
+ *
+ * Three things keep it: the `@astryx.` message ids an i18n override has to be
+ * keyed on exactly, the `data-astryx-*` attributes the theme is scoped to, and
+ * the `astryx-*` class and layer names the components carry. All three are
+ * things a consumer reads in DevTools or writes in a selector, so a renamed one
+ * would be a lie. Anything else naming the library is a leak.
+ */
+const ALLOWED_UPSTREAM =
+  /@astryx\.[A-Za-z0-9_.]+|data-astryx[a-z0-9-]*|astryx-[a-z0-9-]+/g;
+
+function leaks(text) {
+  const remaining = text.replace(ALLOWED_UPSTREAM, '');
+  return /astryx/i.test(remaining);
+}
+
+const named = [];
+for (const file of walk(CONTENT)) {
+  if (leaks(read(file))) named.push(path.relative(REPO_ROOT, file));
+}
+if (named.length > 0) {
+  fail(`These generated pages name the upstream library: ${named.join(', ')}.`);
+} else {
+  ok('No generated page names the upstream library.');
+}
 
 if (!fs.existsSync(EXPORT)) {
   ok(
@@ -306,17 +390,29 @@ if (!fs.existsSync(EXPORT)) {
     ok(`${pages.length} pages in the exported search index.`);
   }
 
-  // The package is built on an upstream library whose name is not Tecton's to
-  // show. It may appear in class names, which readers never see; it may not
-  // appear in anything a page says.
-  const named = [];
-  for (const file of walk(CONTENT)) {
-    if (/astryx/i.test(read(file))) named.push(path.relative(REPO_ROOT, file));
+  // The rendered HTML is the artefact a reader actually gets, so the name check
+  // runs against it too — the class names the components carry are allowed, the
+  // package name is not.
+  const htmlLeaks = [];
+  const walkHtml = (dir, out = []) => {
+    for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walkHtml(full, out);
+      else if (entry.name.endsWith('.html')) out.push(full);
+    }
+    return out;
+  };
+  for (const file of walkHtml(EXPORT)) {
+    if (leaks(read(file))) htmlLeaks.push(path.relative(REPO_ROOT, file));
   }
-  if (named.length > 0) {
-    fail(`These pages name the upstream library: ${named.join(', ')}.`);
+  if (htmlLeaks.length > 0) {
+    fail(
+      `${htmlLeaks.length} exported page(s) name the upstream library, e.g. ${htmlLeaks
+        .slice(0, 5)
+        .join(', ')}.`,
+    );
   } else {
-    ok('No page names the upstream library.');
+    ok('No exported page names the upstream library.');
   }
 }
 

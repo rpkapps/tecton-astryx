@@ -3,6 +3,7 @@ import type {ReactNode} from 'react';
 import {Provider} from '@/components/provider';
 import {siteDescription, siteName} from '@/lib/layout.shared';
 import './global.css';
+import './stylex.css';
 
 export const metadata: Metadata = {
   title: {default: siteName, template: `%s — ${siteName}`},

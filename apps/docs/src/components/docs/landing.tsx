@@ -1,15 +1,28 @@
 'use client';
+
+/**
+ * The landing page.
+ *
+ * It says what Tecton is in one sentence — the component system's surface, one
+ * for one, under Tecton's theme — shows the two snippets that get a consumer to
+ * a rendered button, and then hands over to the gallery, where every tile is
+ * the component itself running.
+ */
+
 import Link from 'next/link';
-import {Heading, Text} from '@tecton/react';
+import {Card} from '@tecton/react/Card';
+import {HStack, VStack} from '@tecton/react/Layout';
+import {Heading, Text} from '@tecton/react/Text';
 import {componentRegistry} from '@/generated/componentRegistry';
 import {exampleRegistry} from '@/generated/exampleRegistry';
+import {templateRegistry} from '@/generated/templateRegistry';
 import {foundationData} from '@/generated/foundationData';
-import {guideRegistry} from '@/generated/guideRegistry';
 import {ComponentGallery} from './gallery';
 
-const INSTALL = `pnpm add @tecton/react react react-dom`;
+const INSTALL = 'pnpm add @tecton/react react react-dom';
 
-const MOUNT = `import {TectonProvider, Button} from '@tecton/react';
+const MOUNT = `import {TectonProvider} from '@tecton/react';
+import {Button} from '@tecton/react/Button';
 import '@tecton/react/styles.css';
 
 export function App() {
@@ -33,31 +46,40 @@ function Snippet({code, label}: {code: string; label: string}) {
 
 function Stat({value, label}: {value: string | number; label: string}) {
   return (
-    <div className="rounded-lg border border-fd-border px-4 py-3">
-      <p className="text-2xl font-semibold text-fd-foreground">{value}</p>
-      <p className="text-xs text-fd-muted-foreground">{label}</p>
-    </div>
+    <Card variant="muted">
+      <VStack gap={0}>
+        <Text type="display-3">{String(value)}</Text>
+        <Text type="supporting" color="secondary">
+          {label}
+        </Text>
+      </VStack>
+    </Card>
   );
 }
+
+const componentCount = componentRegistry.filter(entry => !entry.isHook).length;
+const hookCount = componentRegistry.length - componentCount;
 
 export function Landing() {
   return (
     <main className="mx-auto grid w-full max-w-6xl gap-16 px-6 py-16">
       <section className="grid gap-6">
-        <Heading level={1}>Tecton</Heading>
+        <Heading level={1} type="display-1">
+          Tecton
+        </Heading>
         <div className="max-w-2xl">
-          <Text variant="large" color="secondary" display="block">
-            A React design system published as one package: {}
-            {componentRegistry.length} components, a dark-first theme, one
-            stylesheet and no build step. Everything on this site is printed
+          <Text type="large" color="secondary" display="block">
+            One React package, {componentCount} component modules and{' '}
+            {hookCount} hooks, published with the names and props their authors
+            gave them and themed by Tecton. Everything on this site is printed
             from that package — every example below is the running code.
           </Text>
         </div>
 
-        <div className="flex flex-wrap gap-3">
+        <HStack gap={3} wrap="wrap">
           <Link
             href="/docs/getting-started"
-            className="rounded-md px-4 py-2 text-sm font-semibold no-underline"
+            className="rounded-md px-4 py-2 text-sm font-semibold no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fd-ring"
             style={{
               background: 'var(--color-text-accent)',
               color: 'var(--color-background-body)',
@@ -67,17 +89,18 @@ export function Landing() {
           </Link>
           <Link
             href="/docs/components"
-            className="rounded-md border border-fd-border px-4 py-2 text-sm font-semibold text-fd-foreground no-underline transition-colors hover:bg-fd-accent"
+            className="rounded-md border border-fd-border px-4 py-2 text-sm font-semibold text-fd-foreground no-underline transition-colors hover:bg-fd-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fd-ring"
           >
             Browse components
           </Link>
-        </div>
+        </HStack>
 
-        <div className="grid max-w-3xl grid-cols-2 gap-3 sm:grid-cols-4">
-          <Stat value={componentRegistry.length} label="Components" />
+        <div className="grid max-w-4xl grid-cols-2 gap-3 sm:grid-cols-5">
+          <Stat value={componentCount} label="Component modules" />
+          <Stat value={hookCount} label="Hooks" />
           <Stat value={exampleRegistry.length} label="Live examples" />
+          <Stat value={templateRegistry.length} label="Page templates" />
           <Stat value={foundationData.iconNames.length} label="Icons" />
-          <Stat value={guideRegistry.length} label="Guides" />
         </div>
       </section>
 
