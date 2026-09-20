@@ -668,18 +668,36 @@ for (const component of components) {
     }
   }
 }
-// An example that no component lists would render on no page at all.
+
+/**
+ * An example that no page renders is an example nobody can see.
+ *
+ * A component doc's `examples` list is the order they appear in, so it stays
+ * authoritative. But an example whose doc file landed before the list was
+ * updated is far more likely to be an oversight than a decision, and hiding it
+ * would be the worse failure — so it is appended to its component and said out
+ * loud. An example naming a component that does not exist is a real mistake and
+ * stops the build.
+ */
+const adopted = [];
 for (const example of examples) {
   const owner = components.find(
-    component =>
-      component.name === example.component &&
-      (component.examples ?? []).includes(example.id),
+    component => component.name === example.component,
   );
   if (!owner) {
     throw new Error(
-      `The example "${example.id}" names the component "${example.component}", which does not list it.`,
+      `The example "${example.id}" names the component "${example.component}", which has no doc file.`,
     );
   }
+  if (!(owner.examples ?? []).includes(example.id)) {
+    owner.examples = [...(owner.examples ?? []), example.id];
+    adopted.push(`${example.id} → ${owner.name}`);
+  }
+}
+if (adopted.length > 0) {
+  console.warn(
+    `Note: ${adopted.length} example(s) are not listed by the component they name, and were added at the end of its Examples section: ${adopted.join(', ')}.`,
+  );
 }
 
 /* -------------------------------------------------------------------------- */

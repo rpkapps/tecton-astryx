@@ -205,12 +205,22 @@ runs against the generated trees and the built export:
 8. no page names the upstream library Tecton is built on.
 
 `pnpm --filter @tecton/docs test:e2e` (or `pnpm docs:site:e2e`) drives the
-static export in Chromium: the landing page's live tiles, a component page whose
-first example renders a real Tecton button and whose Code tab shows
-`@tecton/react`, the icon gallery's filter and cut switch, the colour page's
-values in both modes, search reaching the Button page, no console errors, and no
-occurrence of the upstream library's name in anything a reader can see. It is
-outside `pnpm check` because it launches a browser.
+static export in Chromium, in two suites of different shapes.
+
+`tests/site.spec.ts` checks in detail the things a reader most depends on: the
+landing page's live tiles, a component page whose first example renders a real
+Tecton button and whose Code tab shows `@tecton/react`, the per-example mode
+switch, the icon gallery's filter and cut switch, the colour page's values in
+both modes, and search reaching `/docs/components/Button`.
+
+`tests/every-page.spec.ts` is the opposite: one cheap pass over every page in
+the generated page list, asserting only what must never be untrue anywhere —
+the page is served, its title is its own, every example frame on it actually
+drew something, nothing logged a console error, and nothing a reader can see
+names the upstream library. It is driven by `sitePages`, so a component added to
+the package is covered here the moment it has a page.
+
+Both are outside `pnpm check` because they launch a browser.
 
 ## Working on it
 
