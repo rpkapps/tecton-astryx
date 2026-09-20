@@ -1,0 +1,22 @@
+'use client';
+
+import {List, ListItem} from '@tecton/react/List';
+
+export function ListOrderedSteps() {
+  return (
+    <List listStyle="decimal">
+      <ListItem
+        label="Install the package"
+        description="npm install @astryxdesign/core"
+      />
+      <ListItem
+        label="Import components"
+        description="import { List } from '@astryxdesign/core'"
+      />
+      <ListItem
+        label="Start building"
+        description="Use components in your app"
+      />
+    </List>
+  );
+}

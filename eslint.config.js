@@ -16,6 +16,14 @@ export default tseslint.config(
       // to do with this tree.
       '.claude/**',
       'apps/docs/src/generated/**',
+      // Upstream's example blocks and page templates, rewritten onto
+      // `@tecton/react` by apps/docs/scripts/port-examples.mjs. The port is
+      // import rewriting and nothing else, on purpose, so what is in these
+      // files is upstream's code as upstream wrote it; `pnpm examples:check`
+      // fails if anything here is edited by hand. Sixteen of them trip the
+      // React lint rules (mostly `react-hooks/refs`), and the fix belongs
+      // upstream, not in a file this repository regenerates.
+      'apps/docs/examples/**',
       'apps/docs/content/**',
       'apps/docs/.next/**',
       'apps/docs/.source/**',

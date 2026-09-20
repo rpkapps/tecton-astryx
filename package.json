@@ -32,6 +32,8 @@
     "wrappers:check": "pnpm --filter @tecton/react wrappers:check",
     "readme:check": "pnpm --filter @tecton/react readme:check",
     "docs:check": "node scripts/check-docs-drift.mjs",
+    "examples:port": "node apps/docs/scripts/port-examples.mjs",
+    "examples:check": "node apps/docs/scripts/port-examples.mjs --check",
     "upgrade-astryx": "node scripts/upgrade-astryx.mjs",
     "snapshot:astryx": "node scripts/upgrade-astryx.mjs --snapshot",
     "docs:site:check": "node scripts/check-docs-site.mjs",

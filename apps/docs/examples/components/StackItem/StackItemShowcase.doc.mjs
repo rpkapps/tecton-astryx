@@ -1,0 +1,14 @@
+/* Ported by apps/docs/scripts/port-examples.mjs. Do not edit by hand. */
+export const doc = {
+  id: 'StackItemShowcase',
+  type: 'block',
+  exampleFor: 'StackItem',
+  name: 'StackItem',
+  displayName: 'Stack Item',
+  description:
+    'StackItem can be used within HStack or VStack for more granular control over individual item sizing and alignment, but is optional; stack children work without it.',
+  isReady: true,
+  isShowcase: true,
+  aspectRatio: 16 / 9,
+  componentsUsed: ['Stack', 'StackItem'],
+};

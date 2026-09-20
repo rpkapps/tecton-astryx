@@ -1,0 +1,11 @@
+/* Ported by apps/docs/scripts/port-examples.mjs. Do not edit by hand. */
+export const doc = {
+  slug: 'dashboard-cohort-funnel',
+  type: 'page',
+  name: 'Funnel & Cohort Dashboard',
+  displayName: 'Funnel & Cohort Dashboard',
+  description:
+    'Analytics for sequence and retention questions, pairing two shapes a plain dashboard cannot hold: a staged funnel where each step reads as drop-off against the one before, and a two-axis cohort matrix rendered as a heatmap. Conversion, drop-off, activation, churn, or retention reporting.',
+  isReady: true,
+  category: 'Dashboard - Funnel & Cohort',
+};

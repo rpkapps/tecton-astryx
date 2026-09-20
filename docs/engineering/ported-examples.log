@@ -1,1161 +1,1029 @@
-Ported examples and templates
-=============================
+Ported examples and page templates
+==================================
 
-Run of scripts/port-examples.mjs: 504 files ported (12 of them page templates), 59 refused before translation and 134 removed after it.
+What apps/docs/scripts/port-examples.mjs did the last time it ran. Every
+line below names the file it happened to and why it happened. `@tecton/react`
+re-exports `@astryxdesign/core` one for one, so an example needs no
+translation: the import lines change, the icons change, and nothing else
+does.
 
-Substituted glyphs
-------------------
-Tecton has one icon set; every glyph an upstream example used was replaced
-by the closest Tecton glyph. Left is what the example asked for, right is
-what it draws now.
+Blocks ported: 646/646
+Pages ported:  53/53
+Excluded:      0
 
-  MagnifyingGlassIcon → search  (17×)
-  CubeIcon → cube  (15×)
-  Cog6ToothIcon → settings  (14×)
-  StarIcon → crown  (13×)
-  HomeIcon → home  (11×)
-  ChartBarIcon → reports-analytics  (10×)
-  SparklesIcon → robot-2  (10×)
-  FolderIcon → folder  (9×)
-  PlusIcon → add  (9×)
-  ShieldCheckIcon → lock  (9×)
-  BellIcon → notifications  (8×)
-  LockClosedIcon → lock  (8×)
-  BookmarkIcon → add-pin  (7×)
-  calendar → diamond-mark  (7×)
-  DocumentTextIcon → reports-analytics  (7×)
-  ShareIcon → link  (7×)
-  TrashIcon → delete  (7×)
-  UserIcon → person  (7×)
-  UsersIcon → person  (7×)
-  wrench → diamond-mark  (7×)
-  TagIcon → numeric  (6×)
-  BoltIcon → electricity  (5×)
-  ClipboardDocumentIcon → copy  (5×)
-  DocumentDuplicateIcon → copy  (5×)
-  FunnelIcon → filter  (5×)
-  GlobeAltIcon → map  (5×)
-  PencilIcon → edit-square  (5×)
-  PencilSquareIcon → edit-square  (5×)
-  viewColumns → diamond-mark  (5×)
-  ArrowLeftIcon → arrow-left  (4×)
-  ArrowRightIcon → arrow-right  (4×)
-  AtSymbolIcon → link  (4×)
-  BoldIcon → annotate  (4×)
-  CalendarIcon → history  (4×)
-  CheckCircleIcon → check-circle  (4×)
-  ChevronRightIcon → chevron-right  (4×)
-  CodeBracketIcon → code  (4×)
-  InboxIcon → folder-open  (4×)
-  ItalicIcon → annotate  (4×)
-  PaperClipIcon → link  (4×)
-  UnderlineIcon → annotate  (4×)
-  UserCircleIcon → person  (4×)
-  AdjustmentsHorizontalIcon → controls  (3×)
-  ArrowPathIcon → rotate  (3×)
-  BookOpenIcon → reports-analytics  (3×)
-  ChevronDownIcon → chevron-down  (3×)
-  DocumentIcon → reports-analytics  (3×)
-  EllipsisHorizontalIcon → more-vert  (3×)
-  HandThumbUpIcon → check-circle-open  (3×)
-  HeartIcon → crown  (3×)
-  LinkIcon → link  (3×)
-  MapPinIcon → map  (3×)
-  MicrophoneIcon → microphone  (3×)
-  RocketLaunchIcon → play  (3×)
-  ShoppingCartIcon → money  (3×)
-  Squares2X2Icon → view-module  (3×)
-  ViewColumnsIcon → view-column  (3×)
-  XMarkIcon → close  (3×)
-  ArchiveBoxIcon → folder  (2×)
-  arrowsUpDown → diamond-mark  (2×)
-  ArrowUpIcon → arrow-up  (2×)
-  BellSlashIcon → notifications  (2×)
-  CheckIcon → check  (2×)
-  ComputerDesktopIcon → window  (2×)
-  CreditCardIcon → money  (2×)
-  EyeIcon → visibility  (2×)
-  FlagIcon → add-pin  (2×)
-  HandThumbDownIcon → cancel-circle  (2×)
-  ListBulletIcon → list  (2×)
-  moreHorizontal → diamond-mark  (2×)
-  PhotoIcon → image  (2×)
-  ShoppingBagIcon → money  (2×)
-  StrikethroughIcon → annotate  (2×)
-  TableCellsIcon → view-column  (2×)
-  TruckIcon → oil-rig-offshore  (2×)
-  UserPlusIcon → person  (2×)
-  ArrowDownIcon → arrow-down  (1×)
-  ArrowDownTrayIcon → export-upload  (1×)
-  ArrowsPointingOutIcon → expand-content  (1×)
-  ArrowsUpDownIcon → caret-up-down  (1×)
-  ArrowTopRightOnSquareIcon → open-in-new  (1×)
-  ArrowUturnLeftIcon → undo  (1×)
-  Banknote → money  (1×)
-  BanknotesIcon → money  (1×)
-  Bars4Icon → list  (1×)
-  BeakerIcon → discovery  (1×)
-  BellAlertIcon → notifications  (1×)
-  BriefcaseIcon → project  (1×)
-  BuildingLibraryIcon → facility  (1×)
-  ChatBubbleLeftIcon → annotate  (1×)
-  ChatBubbleLeftRightIcon → annotate  (1×)
-  CheckBadgeIcon → check-circle  (1×)
-  ChevronLeftIcon → chevron-left  (1×)
-  ChevronUpIcon → chevron-up  (1×)
-  CircleStackIcon → database  (1×)
-  ClipboardDocumentCheckIcon → copy  (1×)
-  ClipboardIcon → copy  (1×)
-  clock → diamond-mark  (1×)
-  ClockIcon → history  (1×)
-  CloudIcon → layers  (1×)
-  CpuChipIcon → node  (1×)
-  CreditCard → money  (1×)
-  CurrencyDollarIcon → money  (1×)
-  CursorArrowRaysIcon → select-cursor  (1×)
-  DevicePhoneMobileIcon → window  (1×)
-  DeviceTabletIcon → window  (1×)
-  Download → export-upload  (1×)
-  EnvelopeIcon → reports-analytics  (1×)
-  ExclamationTriangleIcon → warning  (1×)
-  eyeSlash → diamond-mark  (1×)
-  EyeSlashIcon → visibility-off  (1×)
-  FaceSmileIcon → person  (1×)
-  FireIcon → electricity  (1×)
-  Folder → folder  (1×)
-  FolderPlusIcon → folder-new  (1×)
-  GiftIcon → christmas-tree  (1×)
-  HandRaisedIcon → pan-tool  (1×)
-  HashtagIcon → numeric  (1×)
-  HomeModernIcon → home  (1×)
-  InformationCircleIcon → info  (1×)
-  LanguageIcon → apps  (1×)
-  LayoutGrid → grid-view  (1×)
-  LightBulbIcon → discovery  (1×)
-  List → list  (1×)
-  Lock → lock  (1×)
-  MapPin → map  (1×)
-  MegaphoneIcon → notifications  (1×)
-  Mic → microphone  (1×)
-  MinusIcon → remove  (1×)
-  MoonIcon → visibility-off  (1×)
-  PaperAirplaneIcon → arrow-right  (1×)
-  pencil → diamond-mark  (1×)
-  PlayCircleIcon → play  (1×)
-  PlayIcon → play  (1×)
-  Plus → add  (1×)
-  PlusCircleIcon → add-circle  (1×)
-  ReceiptPercentIcon → money  (1×)
-  RectangleStackIcon → layers  (1×)
-  ScissorsIcon → design  (1×)
-  Search → search  (1×)
-  ShoppingBag → money  (1×)
-  Smartphone → window  (1×)
-  SpeakerWaveIcon → microphone  (1×)
-  SquaresPlusIcon → view-module  (1×)
-  success → diamond-mark  (1×)
-  SunIcon → visibility  (1×)
-  SwatchIcon → design  (1×)
-  Tag → numeric  (1×)
-  trash → diamond-mark  (1×)
-  User → person  (1×)
-  UserGroupIcon → person  (1×)
-  UserMinusIcon → person  (1×)
-  Wallet → money  (1×)
-  WrenchScrewdriverIcon → engineering  (1×)
-  X → close  (1×)
-  XCircleIcon → cancel-circle  (1×)
+Glyph substitutions: 582 imports, 177 distinct upstream glyphs, 0 of them with no Tecton counterpart.
+Exports renamed:     66
+Props stripped:      25
+Hand-written rules:  1
 
-Props dropped in translation
+Excluded
+--------
+A file here is one the port could not carry over. There should be none.
+
+  (none)
+
+Glyph substitutions, by upstream glyph
+--------------------------------------
+Tecton has one icon set — the 131 glyphs the design delivered — so every
+icon an upstream example imported is drawn by the nearest Tecton glyph.
+A glyph marked FALLBACK had no counterpart at all and is drawn by
+`diamond-mark`; improving one of those means adding a row to
+apps/docs/scripts/port-examples.icons.mjs.
+
+  MagnifyingGlassIcon -> SearchIcon ('search')  (21 files)
+  Cog6ToothIcon -> SettingsIcon ('settings')  (16 files)
+  CubeIcon -> CubeIcon ('cube')  (16 files)
+  StarIcon -> CrownIcon ('crown')  (13 files)
+  TrashIcon -> DeleteIcon ('delete')  (13 files)
+  SparklesIcon -> Robot2Icon ('robot-2')  (12 files)
+  ChartBarIcon -> ReportsAnalyticsIcon ('reports-analytics')  (11 files)
+  HomeIcon -> HomeIcon ('home')  (11 files)
+  PlusIcon -> AddIcon ('add')  (11 files)
+  BellIcon -> NotificationsIcon ('notifications')  (10 files)
+  FolderIcon -> FolderIcon ('folder')  (10 files)
+  ShieldCheckIcon -> LockIcon ('lock')  (10 files)
+  UserIcon -> PersonIcon ('person')  (10 files)
+  UsersIcon -> PersonIcon ('person')  (10 files)
+  DocumentTextIcon -> ReportsAnalyticsIcon ('reports-analytics')  (9 files)
+  LockClosedIcon -> LockIcon ('lock')  (9 files)
+  ArrowDownTrayIcon -> ExportUploadIcon ('export-upload')  (8 files)
+  ArrowUpIcon -> ArrowUpIcon ('arrow-up')  (8 files)
+  PencilIcon -> EditSquareIcon ('edit-square')  (8 files)
+  PencilSquareIcon -> EditSquareIcon ('edit-square')  (8 files)
+  ShareIcon -> LinkIcon ('link')  (8 files)
+  TagIcon -> NumericIcon ('numeric')  (8 files)
+  ArrowDownIcon -> ArrowDownIcon ('arrow-down')  (7 files)
+  BookmarkIcon -> AddPinIcon ('add-pin')  (7 files)
+  ArrowLeftIcon -> ArrowLeftIcon ('arrow-left')  (6 files)
+  ArrowRightIcon -> ArrowRightIcon ('arrow-right')  (6 files)
+  CheckCircleIcon -> CheckCircleIcon ('check-circle')  (6 files)
+  ChevronRightIcon -> ChevronRightIcon ('chevron-right')  (6 files)
+  CodeBracketIcon -> CodeIcon ('code')  (6 files)
+  DocumentDuplicateIcon -> CopyIcon ('copy')  (6 files)
+  GlobeAltIcon -> MapIcon ('map')  (6 files)
+  LinkIcon -> LinkIcon ('link')  (6 files)
+  StopIcon -> DiamondMarkIcon ('diamond-mark')  (6 files)
+  UserCircleIcon -> PersonIcon ('person')  (6 files)
+  ArrowPathIcon -> RotateIcon ('rotate')  (5 files)
+  AtSymbolIcon -> LinkIcon ('link')  (5 files)
+  BoldIcon -> AnnotateIcon ('annotate')  (5 files)
+  BoltIcon -> ElectricityIcon ('electricity')  (5 files)
+  ClipboardDocumentIcon -> CopyIcon ('copy')  (5 files)
+  FunnelIcon -> FilterIcon ('filter')  (5 files)
+  InboxIcon -> FolderOpenIcon ('folder-open')  (5 files)
+  ItalicIcon -> AnnotateIcon ('annotate')  (5 files)
+  PaperClipIcon -> LinkIcon ('link')  (5 files)
+  UnderlineIcon -> AnnotateIcon ('annotate')  (5 files)
+  XMarkIcon -> CloseIcon ('close')  (5 files)
+  BookOpenIcon -> ReportsAnalyticsIcon ('reports-analytics')  (4 files)
+  CalendarIcon -> HistoryIcon ('history')  (4 files)
+  ChevronDownIcon -> ChevronDownIcon ('chevron-down')  (4 files)
+  EllipsisHorizontalIcon -> MoreVertIcon ('more-vert')  (4 files)
+  EyeIcon -> VisibilityIcon ('visibility')  (4 files)
+  MapPinIcon -> MapIcon ('map')  (4 files)
+  PhotoIcon -> ImageIcon ('image')  (4 files)
+  ViewColumnsIcon -> ViewColumnIcon ('view-column')  (4 files)
+  AdjustmentsHorizontalIcon -> ControlsIcon ('controls')  (3 files)
+  ArchiveBoxIcon -> FolderIcon ('folder')  (3 files)
+  ArrowUturnLeftIcon -> UndoIcon ('undo')  (3 files)
+  ComputerDesktopIcon -> WindowIcon ('window')  (3 files)
+  CreditCardIcon -> MoneyIcon ('money')  (3 files)
+  DocumentIcon -> ReportsAnalyticsIcon ('reports-analytics')  (3 files)
+  FlagIcon -> AddPinIcon ('add-pin')  (3 files)
+  HandThumbUpIcon -> CheckCircleOpenIcon ('check-circle-open')  (3 files)
+  HeartIcon -> CrownIcon ('crown')  (3 files)
+  MicrophoneIcon -> MicrophoneIcon ('microphone')  (3 files)
+  RocketLaunchIcon -> PlayIcon ('play')  (3 files)
+  ShoppingCartIcon -> MoneyIcon ('money')  (3 files)
+  Squares2X2Icon -> ViewModuleIcon ('view-module')  (3 files)
+  BeakerIcon -> DiscoveryIcon ('discovery')  (2 files)
+  BellAlertIcon -> NotificationsIcon ('notifications')  (2 files)
+  BellSlashIcon -> NotificationsIcon ('notifications')  (2 files)
+  BriefcaseIcon -> ProjectIcon ('project')  (2 files)
+  ChatBubbleLeftRightIcon -> AnnotateIcon ('annotate')  (2 files)
+  CheckIcon -> CheckIcon ('check')  (2 files)
+  ClockIcon -> HistoryIcon ('history')  (2 files)
+  CursorArrowRaysIcon -> SelectCursorIcon ('select-cursor')  (2 files)
+  DevicePhoneMobileIcon -> WindowIcon ('window')  (2 files)
+  EnvelopeIcon -> ReportsAnalyticsIcon ('reports-analytics')  (2 files)
+  ExclamationTriangleIcon -> WarningIcon ('warning')  (2 files)
+  FaceSmileIcon -> PersonIcon ('person')  (2 files)
+  HandRaisedIcon -> PanToolIcon ('pan-tool')  (2 files)
+  HandThumbDownIcon -> CancelCircleIcon ('cancel-circle')  (2 files)
+  InformationCircleIcon -> InfoIcon ('info')  (2 files)
+  LanguageIcon -> AppsIcon ('apps')  (2 files)
+  ListBulletIcon -> ListIcon ('list')  (2 files)
+  MoonIcon -> VisibilityOffIcon ('visibility-off')  (2 files)
+  PaperAirplaneIcon -> ArrowRightIcon ('arrow-right')  (2 files)
+  Plus -> AddIcon ('add')  (2 files)
+  ReceiptPercentIcon -> MoneyIcon ('money')  (2 files)
+  Search -> SearchIcon ('search')  (2 files)
+  ShoppingBagIcon -> MoneyIcon ('money')  (2 files)
+  SpeakerWaveIcon -> MicrophoneIcon ('microphone')  (2 files)
+  StrikethroughIcon -> AnnotateIcon ('annotate')  (2 files)
+  SunIcon -> VisibilityIcon ('visibility')  (2 files)
+  SwatchIcon -> DesignIcon ('design')  (2 files)
+  TableCellsIcon -> ViewColumnIcon ('view-column')  (2 files)
+  TruckIcon -> OilRigOffshoreIcon ('oil-rig-offshore')  (2 files)
+  UserPlusIcon -> PersonIcon ('person')  (2 files)
+  X -> CloseIcon ('close')  (2 files)
+  ArrowDownOnSquareIcon -> ExportUploadIcon ('export-upload')  (1 file)
+  ArrowsPointingOutIcon -> ExpandContentIcon ('expand-content')  (1 file)
+  ArrowsUpDownIcon -> CaretUpDownIcon ('caret-up-down')  (1 file)
+  ArrowTopRightOnSquareIcon -> OpenInNewIcon ('open-in-new')  (1 file)
+  ArrowTrendingDownIcon -> TrendIcon ('trend')  (1 file)
+  Banknote -> MoneyIcon ('money')  (1 file)
+  BanknotesIcon -> MoneyIcon ('money')  (1 file)
+  Bars3BottomLeftIcon -> MenuIcon ('menu')  (1 file)
+  Bars3Icon -> MenuIcon ('menu')  (1 file)
+  Bars4Icon -> ListIcon ('list')  (1 file)
+  Bookmark -> AddPinIcon ('add-pin')  (1 file)
+  BookmarkPlus -> AddPinIcon ('add-pin')  (1 file)
+  BuildingLibraryIcon -> FacilityIcon ('facility')  (1 file)
+  BuildingOffice2Icon -> FacilityIcon ('facility')  (1 file)
+  Calendar -> HistoryIcon ('history')  (1 file)
+  CalendarDaysIcon -> HistoryIcon ('history')  (1 file)
+  ChatBubbleLeftIcon -> AnnotateIcon ('annotate')  (1 file)
+  CheckBadgeIcon -> CheckCircleIcon ('check-circle')  (1 file)
+  ChevronDown -> ChevronDownIcon ('chevron-down')  (1 file)
+  ChevronLeftIcon -> ChevronLeftIcon ('chevron-left')  (1 file)
+  ChevronUpIcon -> ChevronUpIcon ('chevron-up')  (1 file)
+  CircleStackIcon -> DatabaseIcon ('database')  (1 file)
+  CircleX -> CancelCircleIcon ('cancel-circle')  (1 file)
+  ClipboardDocumentCheckIcon -> CopyIcon ('copy')  (1 file)
+  ClipboardIcon -> CopyIcon ('copy')  (1 file)
+  CloudIcon -> LayersIcon ('layers')  (1 file)
+  Columns3 -> ViewColumnIcon ('view-column')  (1 file)
+  CommandLineIcon -> CodeIcon ('code')  (1 file)
+  CpuChipIcon -> NodeIcon ('node')  (1 file)
+  CreditCard -> MoneyIcon ('money')  (1 file)
+  CurrencyDollarIcon -> MoneyIcon ('money')  (1 file)
+  DeviceTabletIcon -> WindowIcon ('window')  (1 file)
+  DocumentMagnifyingGlassIcon -> SearchIcon ('search')  (1 file)
+  Download -> ExportUploadIcon ('export-upload')  (1 file)
+  EyeSlashIcon -> VisibilityOffIcon ('visibility-off')  (1 file)
+  FingerPrintIcon -> LockIcon ('lock')  (1 file)
+  FireIcon -> ElectricityIcon ('electricity')  (1 file)
+  Folder -> FolderIcon ('folder')  (1 file)
+  FolderArrowDownIcon -> ExportUploadIcon ('export-upload')  (1 file)
+  FolderPlusIcon -> FolderNewIcon ('folder-new')  (1 file)
+  GiftIcon -> ChristmasTreeIcon ('christmas-tree')  (1 file)
+  GripVertical -> DragIndicatorIcon ('drag-indicator')  (1 file)
+  HashtagIcon -> NumericIcon ('numeric')  (1 file)
+  HomeModernIcon -> HomeIcon ('home')  (1 file)
+  Image -> ImageIcon ('image')  (1 file)
+  KeyIcon -> LockIcon ('lock')  (1 file)
+  LayoutGrid -> GridViewIcon ('grid-view')  (1 file)
+  LightBulbIcon -> DiscoveryIcon ('discovery')  (1 file)
+  List -> ListIcon ('list')  (1 file)
+  Lock -> LockIcon ('lock')  (1 file)
+  MapPin -> MapIcon ('map')  (1 file)
+  MegaphoneIcon -> NotificationsIcon ('notifications')  (1 file)
+  Mic -> MicrophoneIcon ('microphone')  (1 file)
+  MinusIcon -> RemoveIcon ('remove')  (1 file)
+  PaintBrushIcon -> DesignIcon ('design')  (1 file)
+  Pencil -> EditSquareIcon ('edit-square')  (1 file)
+  Pin -> AddPinIcon ('add-pin')  (1 file)
+  PlayCircleIcon -> PlayIcon ('play')  (1 file)
+  PlayIcon -> PlayIcon ('play')  (1 file)
+  PlusCircleIcon -> AddCircleIcon ('add-circle')  (1 file)
+  PuzzlePieceIcon -> FrameworksIcon ('frameworks')  (1 file)
+  QuestionMarkCircleIcon -> InfoIcon ('info')  (1 file)
+  RectangleStackIcon -> LayersIcon ('layers')  (1 file)
+  ScissorsIcon -> DesignIcon ('design')  (1 file)
+  ServerStackIcon -> DatabaseIcon ('database')  (1 file)
+  ShoppingBag -> MoneyIcon ('money')  (1 file)
+  SignalIcon -> PulseIcon ('pulse')  (1 file)
+  SlidersHorizontal -> ControlsIcon ('controls')  (1 file)
+  Smartphone -> WindowIcon ('window')  (1 file)
+  SquaresPlusIcon -> ViewModuleIcon ('view-module')  (1 file)
+  Table -> ViewColumnIcon ('view-column')  (1 file)
+  Table2 -> ViewColumnIcon ('view-column')  (1 file)
+  Tag -> NumericIcon ('numeric')  (1 file)
+  User -> PersonIcon ('person')  (1 file)
+  UserGroupIcon -> PersonIcon ('person')  (1 file)
+  UserMinusIcon -> PersonIcon ('person')  (1 file)
+  UserPlus -> PersonIcon ('person')  (1 file)
+  Wallet -> MoneyIcon ('money')  (1 file)
+  WrenchScrewdriverIcon -> EngineeringIcon ('engineering')  (1 file)
+  XCircleIcon -> CancelCircleIcon ('cancel-circle')  (1 file)
+
+Glyph substitutions, by file
 ----------------------------
-A Tecton component is narrower than the one underneath it on purpose. These
-props had no Tecton equivalent and were removed from the ported example.
 
-  Dialog/examples/DialogDeleteConfirmation.tsx
-    - <Dialog> dropped `isInline`, which Tecton has no prop for
-    - <Dialog> dropped `onAction`, which Tecton has no prop for
-  AppShell/examples/AppShellWithBanner.tsx
-    - <Alert> dropped `container`, which Tecton has no prop for
-  AspectRatio/examples/AspectRatioShowcase.tsx
-    - <HStack> dropped `vAlign`
-    - <VStack> dropped `hAlign`
-  Avatar/examples/AvatarFallbackChain.tsx
-    - <HStack> dropped `vAlign`
-    - <HStack> dropped `vAlign`
-    - <HStack> dropped `vAlign`
-    - <HStack> dropped `vAlign`
-  Avatar/examples/AvatarInitialsFallback.tsx
-    - <Stack> dropped `vAlign`
-    - <Stack> dropped `hAlign`
-  Avatar/examples/AvatarInteractive.tsx
-    - <Stack> dropped `vAlign`
-    - <Stack> dropped `hAlign`
-    - <Stack> dropped `hAlign`
-  Avatar/examples/AvatarShowcase.tsx
-    - <Stack> dropped `vAlign`
-    - <Avatar> dropped `status`
-    - <Avatar> dropped `status`
-  Avatar/examples/AvatarTooltip.tsx
-    - <Stack> dropped `vAlign`
-  Avatar/examples/AvatarUserCard.tsx
-    - <Stack> dropped `vAlign`
-    - <Avatar> dropped `status`
-  Avatar/examples/AvatarWithImage.tsx
-    - <Stack> dropped `vAlign`
-  Avatar/examples/AvatarWithStatus.tsx
-    - <Stack> dropped `vAlign`
-    - <Avatar> dropped `status`
-    - <Avatar> dropped `status`
-    - <Avatar> dropped `status`
-  AvatarStatusDot/examples/AvatarStatusDotShowcase.tsx
-    - <HStack> dropped `vAlign`
-    - <Avatar> dropped `status`
-    - <Avatar> dropped `status`
-    - <Avatar> dropped `status`
-  AvatarStatusDot/examples/AvatarStatusDotVariants.tsx
-    - <HStack> dropped `vAlign`
-    - <Avatar> dropped `status`
-    - <Avatar> dropped `status`
-    - <Avatar> dropped `status`
-  Badge/examples/BadgeCategoryTags.tsx
-    - <Stack> dropped `style`
-    - <Badge> dropped `variant`
-    - <Badge> dropped `variant`
-    - <Badge> dropped `variant`
-    - <Badge> dropped `variant`
-    - <Badge> dropped `variant`
-    - <Badge> dropped `variant`
-    - <Badge> dropped `variant`
-    - <Badge> dropped `variant`
-    - <Badge> dropped `variant`
-  Badge/examples/BadgeCountBadges.tsx
-    - <Stack> dropped `hAlign`
-    - <Stack> dropped `vAlign`
-    - <Stack> dropped `hAlign`
-  Badge/examples/BadgeShowcase.tsx
-    - <Stack> dropped `hAlign`
-    - <Badge> dropped `variant`
-    - <Badge> dropped `variant`
-    - <Badge> dropped `variant`
-    - <Badge> dropped `variant`
-    - <Badge> dropped `variant`
-  Badge/examples/BadgeStatusLabels.tsx
-    - <Stack> dropped `vAlign`
-    - <Stack> dropped `vAlign`
-  Alert/examples/AlertFloating.tsx
-    - <Alert> dropped `elevation`, which Tecton has no prop for
-  Alert/examples/AlertSectionVariant.tsx
-    - <Alert> dropped `container`, which Tecton has no prop for
-    - <Alert> dropped `container`, which Tecton has no prop for
-    - <Alert> dropped `endContent`, which Tecton has no prop for
-  Alert/examples/AlertShowcase.tsx
-    - <Stack> dropped `style`
-  Alert/examples/AlertWithActionButton.tsx
-    - <Alert> dropped `endContent`, which Tecton has no prop for
-    - <Alert> dropped `endContent`, which Tecton has no prop for
-    - <Alert> dropped `endContent`, which Tecton has no prop for
-  Blockquote/examples/BlockquoteShowcase.tsx
-    - <Stack> dropped `style`
-  Blockquote/examples/BlockquoteTestimonials.tsx
-    - <Grid> dropped `style`
-  Blockquote/examples/BlockquoteWithCite.tsx
-    - <VStack> dropped `style`
-  BottomSheet/examples/BottomSheetHeights.tsx
-    - <VStack> dropped `style`
-  BottomSheet/examples/BottomSheetMobileKeyboard.tsx
-    - <VStack> dropped `style`
-  BottomSheet/examples/BottomSheetNoScrim.tsx
-    - <VStack> dropped `style`
-  BottomSheetSwitcher/examples/BottomSheetSwitcherReviewFlow.tsx
-    - <HStack> dropped `hAlign`
-    - <HStack> dropped `hAlign`
-  BottomSheetSwitcher/examples/BottomSheetSwitcherShowcase.tsx
-    - <HStack> dropped `hAlign`
-    - <HStack> dropped `hAlign`
-    - <HStack> dropped `hAlign`
-  BreadcrumbItem/examples/BreadcrumbItemShowcase.tsx
-    - <BreadcrumbItem> dropped `startIcon`
-  Breadcrumbs/examples/BreadcrumbsDeepHierarchy.tsx
-    - <BreadcrumbItem> dropped `startIcon`
-  Breadcrumbs/examples/BreadcrumbsWithIcons.tsx
-    - <BreadcrumbItem> dropped `startIcon`
-    - <BreadcrumbItem> dropped `startIcon`
-  Button/examples/ButtonShowcase.tsx
-    - <Stack> dropped `vAlign`
-  Button/examples/ButtonWithEndSlot.tsx
-    - <Stack> dropped `vAlign`
-    - <Button> dropped `endContent`
-    - <Button> dropped `endContent`
-    - <Button> dropped `endContent`
-  ButtonGroup/examples/ButtonGroupFloating.tsx
-    - <Stack> dropped `hAlign`
-    - <ButtonGroup> dropped `elevation`, which Tecton has no prop for
-  ButtonGroup/examples/ButtonGroupShowcase.tsx
-    - <Stack> dropped `vAlign`
-  Calendar/examples/CalendarConstraints.tsx
-    - <Stack> dropped `hAlign`
-  Calendar/examples/CalendarRangeWithValue.tsx
-    - <Stack> dropped `hAlign`
-  Calendar/examples/CalendarSingle.tsx
-    - <Stack> dropped `hAlign`
-  Calendar/examples/CalendarTwoMonths.tsx
-    - <Stack> dropped `hAlign`
-  Card/examples/CardElevations.tsx
-    - <Card> dropped `elevation`
-  Card/examples/CardWithInnerLayout.tsx
-    - <HStack> dropped `hAlign`
-  Carousel/examples/CarouselCards.tsx
-    - <Stack> dropped `style`
-  Carousel/examples/CarouselShowcase.tsx
-    - <Card> dropped `style`
-  Carousel/examples/CarouselSnap.tsx
-    - <Stack> dropped `style`
-    - <Stack> dropped `hAlign`
-    - <Stack> dropped `hAlign`
-  Center/examples/CenterHorizontal.tsx
-    - <Stack> dropped `vAlign`
-  Center/examples/CenterInsideACard.tsx
-    - <Stack> dropped `hAlign`
-    - <Icon> dropped `color`
-  Center/examples/CenterShowcase.tsx
-    - <Stack> dropped `hAlign`
-  ChatComposerDrawer/examples/ChatComposerDrawerShowcase.tsx
-    - <Button> dropped `isIconOnly`
-  ChatComposerDrawer/examples/ChatComposerDrawerWithProgress.tsx
-    - <Button> dropped `isIconOnly`
-    - <Button> dropped `isIconOnly`
-    - <Stack> dropped `vAlign`
-  ChatDictationButton/examples/ChatDictationButtonDictationInComposer.tsx
-    - <Stack> dropped `style`
-  ChatDictationButton/examples/ChatDictationButtonDictationStates.tsx
-    - <Stack> dropped `hAlign`
-    - <Stack> dropped `hAlign`
-    - <Stack> dropped `hAlign`
-    - <Stack> dropped `hAlign`
-  ChatDictationButton/examples/ChatDictationButtonSizes.tsx
-    - <Stack> dropped `vAlign`
-    - <Stack> dropped `vAlign`
-  ChatDictationButton/examples/ChatDictationButtonShowcase.tsx
-    - <HStack> dropped `vAlign`
-  ChatMessageBubble/examples/ChatMessageBubbleDensity.tsx
-    - <VStack> dropped `style`
-  ChatMessageBubble/examples/ChatMessageBubbleMetadata.tsx
-    - <Button> dropped `isIconOnly`
-  ChatMessageBubble/examples/ChatMessageBubbleVariants.tsx
-    - <Stack> dropped `style`
-  ChatMessageList/examples/ChatMessageListFullFeatured.tsx
-    - <VStack> dropped `style`
-  ChatMessageList/examples/ChatMessageListShowcase.tsx
-    - <VStack> dropped `style`
-  ChatMessageMetadata/examples/ChatMessageMetadataFooter.tsx
-    - <Button> dropped `isIconOnly`
-    - <Button> dropped `isIconOnly`
-    - <Button> dropped `isIconOnly`
-    - <Button> dropped `isIconOnly`
-  ChatMessageMetadata/examples/ChatMessageMetadataShowcase.tsx
-    - <VStack> dropped `style`
-    - <Button> dropped `isIconOnly`
-    - <Button> dropped `isIconOnly`
-    - <Button> dropped `isIconOnly`
-    - <Button> dropped `isIconOnly`
-    - <Button> dropped `isIconOnly`
-  ChatSendButton/examples/ChatSendButtonCustomIcon.tsx
-    - <Stack> dropped `vAlign`
-  ChatSendButton/examples/ChatSendButtonShowcase.tsx
-    - <Stack> dropped `vAlign`
-  ChatSendButton/examples/ChatSendButtonStates.tsx
-    - <Stack> dropped `vAlign`
-  Citation/examples/CitationInlineText.tsx
-    - <Stack> dropped `style`
-  Citation/examples/CitationShowcase.tsx
-    - <Stack> dropped `style`
-  Citation/examples/CitationSourceList.tsx
-    - <Stack> dropped `style`
-  Code/examples/CodeInlineInParagraph.tsx
-    - <Text> dropped `style`
-  CodeBlock/examples/CodeBlockBashCommand.tsx
-    - <VStack> dropped `style`
-  Accordion/examples/AccordionControlledAccordion.tsx
-    - <Stack> dropped `vAlign`
-  Accordion/examples/AccordionDividedAccordion.tsx
-    - <Link> dropped `isStandalone`
-    - <Link> dropped `hasUnderline`
-  CommandPalette/examples/CommandPalettePickerMode.tsx
-    - <Text> dropped `style`
-  DateInput/examples/DateInputClearable.tsx
-    - <Stack> dropped `style`
-  DateInput/examples/DateInputDateRange.tsx
-    - <Stack> dropped `style`
-  DateInput/examples/DateInputFormats.tsx
-    - <Stack> dropped `style`
-  DateInput/examples/DateInputShowcase.tsx
-    - <Stack> dropped `style`
-  DateInput/examples/DateInputWithDescription.tsx
-    - <Stack> dropped `style`
-  DateInput/examples/DateInputWithValidation.tsx
-    - <Stack> dropped `style`
-  DateRangeInput/examples/DateRangeInputShowcase.tsx
-    - <Stack> dropped `style`
-  DateRangeInput/examples/DateRangeInputWithPresets.tsx
-    - <Stack> dropped `style`
-  DateRangeInput/examples/DateRangeInputWithValidation.tsx
-    - <Stack> dropped `style`
-  DateTimeInput/examples/DateTimeInputShowcase.tsx
-    - <Stack> dropped `style`
-  DateTimeInput/examples/DateTimeInputWithValidation.tsx
-    - <Stack> dropped `xstyle`
-    - dropped the now-unreferenced constant `styles`
-  Divider/examples/DividerFullBleed.tsx
-    - <HStack> dropped `hAlign`
-    - <HStack> dropped `hAlign`
-    - <HStack> dropped `hAlign`
-    - <HStack> dropped `hAlign`
-  Divider/examples/DividerShowcase.tsx
-    - <Stack> dropped `style`
-  Divider/examples/DividerVertical.tsx
-    - <Divider> dropped `style`
-    - <Divider> dropped `style`
-    - dropped the now-unreferenced constant `dividerFill`
-  Field/examples/FieldShowcase.tsx
-    - <Stack> dropped `style`
-  Grid/examples/GridDashboardLayout.tsx
-    - <Grid> dropped `style`
-  Grid/examples/GridGalleryExample.tsx
-    - <Grid> dropped `style`
-  Grid/examples/GridResponsiveAutoFit.tsx
-    - <Card> dropped `height`
-    - <Card> dropped `style`
-  Grid/examples/GridWithGridSpan.tsx
-    - <Grid> dropped `style`
-    - <Card> dropped `variant`
-    - <Card> dropped `variant`
-  GridSpan/examples/GridSpanColumns.tsx
-    - <Card> dropped `height`
-    - <Card> dropped `height`
-    - <Card> dropped `height`
-    - <Card> dropped `height`
-  GridSpan/examples/GridSpanShowcase.tsx
-    - <Card> dropped `height`
-    - <Card> dropped `height`
-    - <Card> dropped `height`
-    - <Card> dropped `height`
-    - <Card> dropped `height`
-  HStack/examples/HStackShowcase.tsx
-    - <VStack> dropped `style`
-    - <HStack> dropped `hAlign`
-    - <HStack> dropped `hAlign`
-  Heading/examples/HeadingPageLayout.tsx
-    - <VStack> dropped `style`
-  Heading/examples/HeadingShowcase.tsx
-    - <VStack> dropped `hAlign`
-  HoverCard/examples/HoverCardInteractiveContent.tsx
-    - <VStack> dropped `style`
-    - <HStack> dropped `vAlign`
-    - <Icon> dropped `color`
-    - <Link> dropped `hasUnderline`
-  HoverCard/examples/HoverCardShowcase.tsx
-    - <Stack> dropped `style`
-    - <Stack> dropped `vAlign`
-  Icon/examples/IconNonSemanticColors.tsx
-    - <VStack> dropped `hAlign`
-    - <Icon> dropped `color`
-  Icon/examples/IconSemanticColors.tsx
-    - <VStack> dropped `hAlign`
-    - <Icon> dropped `color`
-    - <VStack> dropped `hAlign`
-    - <Icon> dropped `color`
-    - <VStack> dropped `hAlign`
-    - <Icon> dropped `color`
-    - <VStack> dropped `hAlign`
-    - glyph `clock` → `diamond-mark`
-    - <Icon> dropped `color`
-    - <VStack> dropped `hAlign`
-    - glyph `calendar` → `diamond-mark`
-    - <Icon> dropped `color`
-    - <VStack> dropped `hAlign`
-    - glyph `success` → `diamond-mark`
-    - <Icon> dropped `color`
-    - <VStack> dropped `hAlign`
-    - <Icon> dropped `color`
-    - <VStack> dropped `hAlign`
-    - <Icon> dropped `color`
-  Icon/examples/IconShowcase.tsx
-    - <Icon> dropped `color`
-  IconButton/examples/IconButtonActionBar.tsx
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-  IconButton/examples/IconButtonLoadingToggle.tsx
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-  IconButton/examples/IconButtonShowcase.tsx
-    - glyph `wrench` → `diamond-mark`
-    - <Icon> dropped `color`
-  IconButton/examples/IconButtonTooltipIconButton.tsx
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - glyph `moreHorizontal` → `diamond-mark`
-    - <Icon> dropped `color`
-  InputGroup/examples/InputGroupShowcase.tsx
-    - <Stack> dropped `style`
-  ItemRow/examples/ItemRowWithMedia.tsx
-    - <Badge> dropped `variant`
-    - <Icon> dropped `color`
-    - <Badge> dropped `variant`
-  ItemRow/examples/ItemRowWithMetadata.tsx
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-  Layout/examples/LayoutBasicCardLayout.tsx
-    - <Card> dropped `height`
-    - <Card> dropped `style`
-    - <HStack> dropped `hAlign`
-  Layout/examples/LayoutContentOnlyLayout.tsx
-    - <Card> dropped `style`
-  Layout/examples/LayoutContentWidth.tsx
-    - <HStack> dropped `hAlign`
-  Layout/examples/LayoutDualPanelLayout.tsx
-    - <Card> dropped `style`
-  Layout/examples/LayoutFullBleedContent.tsx
-    - <Card> dropped `style`
-    - <HStack> dropped `hAlign`
-  Layout/examples/LayoutShowcase.tsx
-    - <HStack> dropped `vAlign`
-    - <HStack> dropped `hAlign`
-  Layout/examples/LayoutSidebarLayout.tsx
-    - <Card> dropped `style`
-    - <HStack> dropped `hAlign`
-  LayoutFooter/examples/LayoutFooterActions.tsx
-    - <HStack> dropped `hAlign`
-  LayoutFooter/examples/LayoutFooterShowcase.tsx
-    - <HStack> dropped `hAlign`
-  LayoutHeader/examples/LayoutHeaderShowcase.tsx
-    - <HStack> dropped `vAlign`
-    - <HStack> dropped `hAlign`
-  LayoutHeader/examples/LayoutHeaderWithActions.tsx
-    - <HStack> dropped `vAlign`
-    - <HStack> dropped `hAlign`
-  Lightbox/examples/LightboxGallery.tsx
-    - <Grid> dropped `style`
-  Link/examples/LinkExternalLinks.tsx
-    - <Link> dropped `isExternalLink`, which Tecton has no prop for
-    - <Link> dropped `isStandalone`
-    - <Link> dropped `isExternalLink`, which Tecton has no prop for
-    - <Link> dropped `isStandalone`
-    - <Link> dropped `isExternalLink`, which Tecton has no prop for
-    - <Link> dropped `hasUnderline`
-    - <Link> dropped `isStandalone`
-  Link/examples/LinkShowcase.tsx
-    - <Link> dropped `isStandalone`
-  Link/examples/LinksWithTooltips.tsx
-    - <HStack> dropped `vAlign`
-    - <Link> dropped `isStandalone`
-    - <Link> dropped `isStandalone`
-    - <Link> dropped `isStandalone`
-  LinkProvider/examples/LinkProviderCustomLink.tsx
-    - <Link> dropped `isStandalone`
-  List/examples/ListBulletedFeatures.tsx
-    - <List> dropped `listStyle`, which Tecton has no prop for
-  List/examples/ListOrderedSteps.tsx
-    - <List> dropped `listStyle`, which Tecton has no prop for
-  ListItem/examples/ListItemShowcase.tsx
-    - <Badge> dropped `variant`
-    - glyph `eyeSlash` → `diamond-mark`
-    - glyph `wrench` → `diamond-mark`
-    - <Badge> dropped `variant`
-  ListItem/examples/ListItemWithMedia.tsx
-    - <Badge> dropped `variant`
-    - <Badge> dropped `variant`
-    - <Icon> dropped `color`
-  ListItem/examples/ListItemWithMetadata.tsx
-    - <Icon> dropped `color`
-    - <Badge> dropped `variant`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-  SurfaceTheme/examples/SurfaceThemeShowcase.tsx
-    - <Stack> dropped `vAlign`
-  MetadataListItem/examples/MetadataListItemBasic.tsx
-    - <Badge> dropped `variant`
-  MetadataListItem/examples/MetadataListItemShowcase.tsx
-    - <Badge> dropped `variant`
-    - <Badge> dropped `variant`
-  MobileNav/examples/MobileNavBasicMobileNav.tsx
-    - <Button> dropped `isIconOnly`
-    - <Icon> dropped `color`
-  MobileNav/examples/MobileNavShowcase.tsx
-    - <Button> dropped `isIconOnly`
-    - <Icon> dropped `color`
-  MobileNav/examples/MobileNavWithoutTitleMobileNav.tsx
-    - <Button> dropped `isIconOnly`
-    - <Icon> dropped `color`
-  MobileNavToggle/examples/MobileNavToggleBasic.tsx
-    - <HStack> dropped `vAlign`
-    - glyph `viewColumns` → `diamond-mark`
-  MobileNavToggle/examples/MobileNavToggleShowcase.tsx
-    - <HStack> dropped `vAlign`
-  NavIcon/examples/NavIconBasic.tsx
-    - <HStack> dropped `vAlign`
-    - glyph `calendar` → `diamond-mark`
-  NavIcon/examples/NavIconShowcase.tsx
-    - <HStack> dropped `vAlign`
-    - glyph `calendar` → `diamond-mark`
-    - glyph `wrench` → `diamond-mark`
-  Outline/examples/OutlineControlled.tsx
-    - <VStack> dropped `style`
-  Outline/examples/OutlineDensity.tsx
-    - <HStack> dropped `vAlign`
-    - <VStack> dropped `style`
-    - <VStack> dropped `style`
-  OverflowList/examples/OverflowListMultiRowTags.tsx
-    - <Card> dropped `style`
-  OverflowList/examples/OverflowListOverflowBadges.tsx
-    - <Card> dropped `style`
-  Overlay/examples/OverlayBottomStrip.tsx
-    - <Badge> dropped `variant`
-  Overlay/examples/OverlayShowcase.tsx
-    - <VStack> dropped `style`
-  Pagination/examples/PaginationDotsCarousel.tsx
-    - <Icon> dropped `color`
-    - <Stack> dropped `style`
-    - <Stack> dropped `vAlign`
-    - <Stack> dropped `hAlign`
-  Pagination/examples/PaginationPageSize.tsx
-    - <Stack> dropped `style`
-    - dropped the now-unreferenced constant `root`
-  Pagination/examples/PaginationVariants.tsx
-    - <Stack> dropped `hAlign`
-    - <Stack> dropped `style`
-  Pagination/examples/PaginationWithTable.tsx
-    - <Stack> dropped `style`
-  Popover/examples/PopoverConfirmAction.tsx
-    - <HStack> dropped `hAlign`
-  Popover/examples/PopoverFilterPanel.tsx
-    - <HStack> dropped `hAlign`
-  Popover/examples/PopoverShowcase.tsx
-    - <Heading> dropped `tabIndex`, which Tecton has no prop for
-  PowerSearch/examples/PowerSearchSearchWithTable.tsx
-    - <VStack> dropped `style`
-  Progress/examples/ProgressCustomFormat.tsx
-    - <Progress> dropped `formatValueLabel`, which Tecton has no prop for
-  Progress/examples/ProgressIndeterminate.tsx
-    - <Progress> dropped `style`
-  Progress/examples/ProgressWithValueLabel.tsx
-    - <Progress> dropped `style`
-  ResizeHandle/examples/ResizableSidebar.tsx
-    - <Card> dropped `height`
-  Section/examples/SectionWashHighlight.tsx
-    - <Stack> dropped `hAlign`
-    - <Stack> dropped `hAlign`
-    - <Stack> dropped `vAlign`
-    - <Stack> dropped `hAlign`
-    - <Stack> dropped `vAlign`
-  Select/examples/SelectBottomSheet.tsx
-    - <Select> dropped `presentation`, which Tecton has no prop for
-  Select/examples/SelectGhostToolbar.tsx
-    - <Select> dropped `variant`, which Tecton has no prop for
-    - <Select> dropped `variant`, which Tecton has no prop for
-    - <Select> dropped `statusVariant`, which Tecton has no prop for
-  SelectChoice/examples/SelectChoiceBasic.tsx
-    - <Select> dropped `style`
-    - <Select> dropped `renderOption`, which Tecton has no prop for
-    - dropped the now-unreferenced constant `descriptions`
-  SelectChoice/examples/SelectChoiceShowcase.tsx
-    - <Select> dropped `style`
-    - <Select> dropped `renderOption`, which Tecton has no prop for
-    - dropped the now-unreferenced constant `descriptions`
-  Skeleton/examples/SkeletonCardSkeleton.tsx
-    - <HStack> dropped `vAlign`
-  Skeleton/examples/SkeletonShowcase.tsx
-    - <HStack> dropped `vAlign`
-  Skeleton/examples/SkeletonTableRowSkeleton.tsx
-    - <HStack> dropped `vAlign`
-  Stack/examples/StackAlignment.tsx
-    - <Stack> dropped `style`
-    - <Stack> dropped `hAlign`
-    - <Stack> dropped `hAlign`
-    - <Stack> dropped `hAlign`
-  Stack/examples/StackDirections.tsx
-    - <HStack> dropped `hAlign`
-    - <HStack> dropped `vAlign`
-  Stack/examples/StackFillItem.tsx
-    - <Stack> dropped `style`
-    - <Stack> dropped `vAlign`
-  StackItem/examples/StackItemFill.tsx
-    - <HStack> dropped `vAlign`
-    - <HStack> dropped `style`
-  StackItem/examples/StackItemShowcase.tsx
-    - <HStack> dropped `vAlign`
-    - <HStack> dropped `style`
-  StatusDot/examples/StatusDotPulsing.tsx
-    - <HStack> dropped `vAlign`
-  StatusDot/examples/StatusDotShowcase.tsx
-    - <HStack> dropped `vAlign`
-  StatusDot/examples/StatusDotStatusIndicators.tsx
-    - <HStack> dropped `vAlign`
-  StatusDot/examples/StatusDotVariants.tsx
-    - <HStack> dropped `vAlign`
-  Stepper/examples/StepperIndicatorModes.tsx
-    - glyph `wrench` → `diamond-mark`
-  Switch/examples/SwitchSettingsPanel.tsx
-    - <Card> dropped `style`
-    - <Switch> dropped `labelSpacing`, which Tecton has no prop for
-    - <Switch> dropped `labelSpacing`, which Tecton has no prop for
-    - <Switch> dropped `labelSpacing`, which Tecton has no prop for
-  Switch/examples/SwitchWithStatus.tsx
-    - <VStack> dropped `style`
-    - <Switch> dropped `isRequired`, which Tecton has no prop for
-  CodeTheme/examples/CodeThemeShowcase.tsx
-    - <Stack> dropped `style`
-  Text/examples/TextWordBreak.tsx
-    - <Text> dropped `wordBreak`
-    - <Text> dropped `wordBreak`
-  Text/examples/TextWrap.tsx
-    - <Text> dropped `textWrap`
-    - <Text> dropped `textWrap`
-    - <Text> dropped `textWrap`
-    - <Text> dropped `textWrap`
-  TextArea/examples/TextAreaStates.tsx
-    - <Stack> dropped `style`
-    - <TextArea> dropped `isLoading`, which Tecton has no prop for
-  TextArea/examples/TextAreaValidation.tsx
-    - <Stack> dropped `style`
-  TextField/examples/TextFieldStates.tsx
-    - <TextField> dropped `isLoading`, which Tecton has no prop for
-  TextField/examples/TextFieldStatusVariant.tsx
-    - <TextField> dropped `statusVariant`, which Tecton has no prop for
-    - <TextField> dropped `statusVariant`, which Tecton has no prop for
-  TextField/examples/TextFieldTypes.tsx
-    - <TextField> dropped `labelTooltip`, which Tecton has no prop for
-  Thumbnail/examples/ThumbnailDisabled.tsx
-    - <Stack> dropped `vAlign`
-    - <Stack> dropped `vAlign`
-  Thumbnail/examples/ThumbnailGallery.tsx
-    - <Stack> dropped `vAlign`
-  Thumbnail/examples/ThumbnailRemovable.tsx
-    - <Stack> dropped `vAlign`
-  Thumbnail/examples/ThumbnailStates.tsx
-    - <Stack> dropped `vAlign`
-    - <Stack> dropped `hAlign`
-    - <Stack> dropped `hAlign`
-    - <Stack> dropped `hAlign`
-    - <Stack> dropped `hAlign`
-  TimeInput/examples/TimeInputShowcase.tsx
-    - <Stack> dropped `style`
-  Timestamp/examples/TimestampFormats.tsx
-    - <Stack> dropped `vAlign`
-    - <Stack> dropped `vAlign`
-  Timestamp/examples/TimestampTimezone.tsx
-    - <Stack> dropped `vAlign`
-    - <Stack> dropped `vAlign`
-  ToggleButton/examples/ToggleButtonColor.tsx
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-  ToggleButton/examples/ToggleButtonIconSwap.tsx
-    - <Stack> dropped `vAlign`
-  ToggleButton/examples/ToggleButtonStates.tsx
-    - <Stack> dropped `vAlign`
-    - <Stack> dropped `vAlign`
-    - <Stack> dropped `vAlign`
-    - <Stack> dropped `vAlign`
-    - <ToggleButton> dropped `isLoading`, which Tecton has no prop for
-    - <ToggleButton> dropped `isLoading`, which Tecton has no prop for
-  Chip/examples/ChipEndContent.tsx
-    - <Chip> dropped `endContent`, which Tecton has no prop for
-    - <Chip> dropped `endContent`, which Tecton has no prop for
-    - <Badge> dropped `variant`
-    - <Chip> dropped `endContent`, which Tecton has no prop for
-  Chip/examples/ChipIcon.tsx
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-    - <Icon> dropped `color`
-  Chip/examples/ChipShowcase.tsx
-    - <Stack> dropped `vAlign`
-    - <Icon> dropped `color`
-  Toolbar/examples/ToolbarCardHeader.tsx
-    - <Card> dropped `style`
-    - <Button> dropped `isIconOnly`
-    - <Button> dropped `isIconOnly`
-  Toolbar/examples/ToolbarSizes.tsx
-    - <Stack> dropped `style`
-    - <Button> dropped `isIconOnly`
-  Toolbar/examples/ToolbarThreeSlot.tsx
-    - <Card> dropped `style`
-    - <Button> dropped `isIconOnly`
-  Toolbar/examples/ToolbarWithTabs.tsx
-    - <Card> dropped `style`
-    - <Button> dropped `isIconOnly`
-    - dropped the now-unreferenced constant `card`
-  TopNav/examples/TopNavCenteredNavigation.tsx
-    - <Button> dropped `isIconOnly`
-    - <Icon> dropped `color`
-    - <Button> dropped `isIconOnly`
-  TopNav/examples/TopNavEnterpriseDashboard.tsx
-    - <Button> dropped `isIconOnly`
-    - <Icon> dropped `color`
-    - <Button> dropped `isIconOnly`
-  TopNav/examples/TopNavHoverMenu.tsx
-    - <Button> dropped `isIconOnly`
-  TopNav/examples/TopNavShowcase.tsx
-    - <Button> dropped `isIconOnly`
-    - <Icon> dropped `color`
-    - <Button> dropped `isIconOnly`
-    - <Button> dropped `isIconOnly`
-  TopNav/examples/TopNavWithLogo.tsx
-    - <Button> dropped `isIconOnly`
-  TopNavHeading/examples/TopNavHeadingBasic.tsx
-    - glyph `viewColumns` → `diamond-mark`
-  TopNavMenu/examples/TopNavMenuShowcase.tsx
-    - <Button> dropped `isIconOnly`
-  Autocomplete/examples/AutocompleteLimitedResults.tsx
-    - <Autocomplete> dropped `searchSource`, which Tecton has no prop for
-    - <Autocomplete> dropped `hasEntriesOnFocus`, which Tecton has no prop for
-    - <Autocomplete> dropped `maxMenuItems`, which Tecton has no prop for
-    - dropped the now-unreferenced constant `searchSource`
-    - dropped the now-unreferenced constant `items`
-  Autocomplete/examples/AutocompleteSearchField.tsx
-    - <Autocomplete> dropped `searchSource`, which Tecton has no prop for
-    - <Autocomplete> dropped `hasEntriesOnFocus`, which Tecton has no prop for
-    - dropped the now-unreferenced constant `searchSource`
-    - dropped the now-unreferenced constant `items`
-  Autocomplete/examples/AutocompleteShowcase.tsx
-    - <Autocomplete> dropped `searchSource`, which Tecton has no prop for
-    - dropped the now-unreferenced constant `fruitSource`
-    - dropped the now-unreferenced constant `fruits`
-  Autocomplete/examples/AutocompleteWithHelperText.tsx
-    - <Autocomplete> dropped `searchSource`, which Tecton has no prop for
-    - dropped the now-unreferenced constant `searchSource`
-    - dropped the now-unreferenced constant `items`
-  Autocomplete/examples/AutocompleteWithValidation.tsx
-    - <Autocomplete> dropped `searchSource`, which Tecton has no prop for
-    - dropped the now-unreferenced constant `searchSource`
-    - dropped the now-unreferenced constant `items`
-  VStack/examples/VStackShowcase.tsx
-    - <HStack> dropped `hAlign`
-  VisuallyHidden/examples/VisuallyHiddenLiveRegion.tsx
-    - <VStack> dropped `hAlign`
-    - <HStack> dropped `vAlign`
-  VisuallyHidden/examples/VisuallyHiddenStructuralHeading.tsx
-    - <VStack> dropped `hAlign`
-    - <HStack> dropped `vAlign`
-  templates/centered-hero/Template.tsx
-    - <VStack> dropped `hAlign`
-    - <VStack> dropped `hAlign`
-    - <Heading> dropped `textWrap`
-    - <Text> dropped `textWrap`
-    - <Button> dropped `endContent`
-    - <Icon> dropped `color`
-  templates/classic-gallery/Template.tsx
-    - <VStack> dropped `style`
-    - <VStack> dropped `hAlign`
-    - <VStack> dropped `style`
-    - <VStack> dropped `hAlign`
-    - dropped the now-unreferenced constant `textCenter`
-    - dropped the now-unreferenced constant `outer`
-  templates/documentation/Template.tsx
-    - <Card> dropped `variant`
-    - <HStack> dropped `vAlign`
-    - <Grid> dropped `style`
-    - <Card> dropped `style`
-    - dropped the now-unreferenced constant `cardGrid`
-    - dropped the now-unreferenced constant `previewCard`
-  templates/gallery-hero/Template.tsx
-    - <VStack> dropped `hAlign`
-    - <VStack> dropped `hAlign`
-    - <Heading> dropped `textWrap`
-    - <Text> dropped `textWrap`
-    - <Button> dropped `endContent`
-    - <Icon> dropped `color`
-  templates/login/Template.tsx
-    - <VStack> dropped `hAlign`
-    - <VStack> dropped `style`
-    - <VStack> dropped `hAlign`
-    - <Text> dropped `size`
-    - <VStack> dropped `hAlign`
-    - <VStack> dropped `hAlign`
-    - <Text> dropped `size`
-    - <Alert> dropped `container`, which Tecton has no prop for
-    - dropped the now-unreferenced constant `contentStyle`
-  templates/login-card/Template.tsx
-    - <VStack> dropped `hAlign`
-    - <VStack> dropped `style`
-    - <VStack> dropped `hAlign`
-    - <Text> dropped `size`
-    - <VStack> dropped `hAlign`
-    - <VStack> dropped `hAlign`
-    - <Text> dropped `size`
-    - <VStack> dropped `hAlign`
-    - <Link> dropped `size`
-    - <Link> dropped `type`
-    - <VStack> dropped `hAlign`
-    - <Button> dropped `icon`, which Tecton takes as a glyph name
-    - <Button> dropped `icon`, which Tecton takes as a glyph name
-    - <VStack> dropped `hAlign`
-    - <Link> dropped `type`
-    - <VStack> dropped `hAlign`
-    - <Link> dropped `type`
-    - <Link> dropped `type`
-    - dropped the now-unreferenced constant `contentStyle`
-    - dropped the now-unreferenced constant `GoogleIcon`
-    - dropped the now-unreferenced constant `AppleIcon`
-  templates/login-split/Template.tsx
-    - <Grid> dropped `className`
-    - <HStack> dropped `vAlign`
-    - <VStack> dropped `hAlign`
-    - <Text> dropped `as`
-    - <Text> dropped `size`
-    - <VStack> dropped `hAlign`
-    - <Link> dropped `size`
-    - <Link> dropped `type`
-    - <Button> dropped `icon`, which Tecton takes as a glyph name
-    - <Button> dropped `icon`, which Tecton takes as a glyph name
-    - <Link> dropped `type`
-    - <Card> dropped `height`
-    - <VStack> dropped `hAlign`
-    - <Link> dropped `type`
-    - <Link> dropped `type`
-    - dropped the now-unreferenced constant `GOOGLE_LOGO_URL`
-    - dropped the now-unreferenced constant `APPLE_LOGO_URL`
-  templates/mixed-gallery/Template.tsx
-    - <VStack> dropped `style`
-    - <VStack> dropped `hAlign`
-    - dropped the now-unreferenced constant `containerStyle`
-  templates/product-gallery/Template.tsx
-    - <VStack> dropped `hAlign`
-    - <Button> dropped `endContent`
-    - <Icon> dropped `color`
-  templates/settings/Template.tsx
-    - <HStack> dropped `vAlign`
-    - <Autocomplete> dropped `searchSource`, which Tecton has no prop for
-    - <Autocomplete> dropped `hasEntriesOnFocus`, which Tecton has no prop for
-    - <VStack> dropped `hAlign`
-    - dropped the now-unreferenced constant `settingsSearchSource`
-    - dropped the now-unreferenced constant `SETTINGS_ITEMS`
-  templates/side-gallery/Template.tsx
-    - <VStack> dropped `vAlign`
-    - <HStack> dropped `vAlign`
+  blocks/components/AppShell/AppShellShowcase.tsx: ChartBarIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  blocks/components/AppShell/AppShellShowcase.tsx: DocumentTextIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  blocks/components/AppShell/AppShellShowcase.tsx: UsersIcon -> PersonIcon ('person')
+  blocks/components/AppShell/AppShellShowcase.tsx: HomeIcon -> HomeIcon ('home')
+  blocks/components/AppShell/AppShellShowcase.tsx: CubeIcon -> CubeIcon ('cube')
+  blocks/components/AppShell/AppShellSideNavOnly.tsx: ChartBarIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  blocks/components/AppShell/AppShellSideNavOnly.tsx: FolderIcon -> FolderIcon ('folder')
+  blocks/components/AppShell/AppShellSideNavOnly.tsx: UsersIcon -> PersonIcon ('person')
+  blocks/components/AppShell/AppShellSideNavOnly.tsx: Cog6ToothIcon -> SettingsIcon ('settings')
+  blocks/components/AppShell/AppShellSideNavOnly.tsx: HomeIcon -> HomeIcon ('home')
+  blocks/components/AppShell/AppShellSideNavOnly.tsx: CubeIcon -> CubeIcon ('cube')
+  blocks/components/AppShell/AppShellTopNavOnly.tsx: CubeIcon -> CubeIcon ('cube')
+  blocks/components/AppShell/AppShellTopNavWithSideNav.tsx: ChartBarIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  blocks/components/AppShell/AppShellTopNavWithSideNav.tsx: FolderIcon -> FolderIcon ('folder')
+  blocks/components/AppShell/AppShellTopNavWithSideNav.tsx: UsersIcon -> PersonIcon ('person')
+  blocks/components/AppShell/AppShellTopNavWithSideNav.tsx: Cog6ToothIcon -> SettingsIcon ('settings')
+  blocks/components/AppShell/AppShellTopNavWithSideNav.tsx: HomeIcon -> HomeIcon ('home')
+  blocks/components/AppShell/AppShellTopNavWithSideNav.tsx: CubeIcon -> CubeIcon ('cube')
+  blocks/components/AppShell/AppShellWithBanner.tsx: ChartBarIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  blocks/components/AppShell/AppShellWithBanner.tsx: FolderIcon -> FolderIcon ('folder')
+  blocks/components/AppShell/AppShellWithBanner.tsx: UsersIcon -> PersonIcon ('person')
+  blocks/components/AppShell/AppShellWithBanner.tsx: Cog6ToothIcon -> SettingsIcon ('settings')
+  blocks/components/AppShell/AppShellWithBanner.tsx: HomeIcon -> HomeIcon ('home')
+  blocks/components/AppShell/AppShellWithBanner.tsx: CubeIcon -> CubeIcon ('cube')
+  blocks/components/BaseTypeahead/BaseTypeaheadCustomSearch.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  blocks/components/BottomSheet/BottomSheetSnapPoints.tsx: ArrowLeftIcon -> ArrowLeftIcon ('arrow-left')
+  blocks/components/BottomSheet/BottomSheetSnapPoints.tsx: ArrowRightIcon -> ArrowRightIcon ('arrow-right')
+  blocks/components/BottomSheet/BottomSheetSnapPoints.tsx: ArrowUpIcon -> ArrowUpIcon ('arrow-up')
+  blocks/components/BottomSheet/BottomSheetSnapPoints.tsx: ArrowUturnLeftIcon -> UndoIcon ('undo')
+  blocks/components/BottomSheet/BottomSheetSnapPoints.tsx: FlagIcon -> AddPinIcon ('add-pin')
+  blocks/components/BottomSheet/BottomSheetSnapPoints.tsx: MapPinIcon -> MapIcon ('map')
+  blocks/components/BreadcrumbItem/BreadcrumbItemShowcase.tsx: HomeIcon -> HomeIcon ('home')
+  blocks/components/Breadcrumbs/BreadcrumbsDeepHierarchy.tsx: HomeIcon -> HomeIcon ('home')
+  blocks/components/Breadcrumbs/BreadcrumbsWithIcons.tsx: HomeIcon -> HomeIcon ('home')
+  blocks/components/Breadcrumbs/BreadcrumbsWithIcons.tsx: Cog6ToothIcon -> SettingsIcon ('settings')
+  blocks/components/Button/ButtonFloating.tsx: PlusIcon -> AddIcon ('add')
+  blocks/components/Button/ButtonWithIcon.tsx: ArrowDownTrayIcon -> ExportUploadIcon ('export-upload')
+  blocks/components/Button/ButtonWithIcon.tsx: PencilSquareIcon -> EditSquareIcon ('edit-square')
+  blocks/components/Button/ButtonWithIcon.tsx: PlusIcon -> AddIcon ('add')
+  blocks/components/Button/ButtonWithIcon.tsx: TrashIcon -> DeleteIcon ('delete')
+  blocks/components/ButtonGroup/ButtonGroupShowcase.tsx: ClipboardDocumentIcon -> CopyIcon ('copy')
+  blocks/components/ButtonGroup/ButtonGroupShowcase.tsx: ScissorsIcon -> DesignIcon ('design')
+  blocks/components/ButtonGroup/ButtonGroupShowcase.tsx: ClipboardIcon -> CopyIcon ('copy')
+  blocks/components/ButtonGroup/ButtonGroupShowcase.tsx: ChevronDownIcon -> ChevronDownIcon ('chevron-down')
+  blocks/components/Center/CenterHorizontal.tsx: BoldIcon -> AnnotateIcon ('annotate')
+  blocks/components/Center/CenterHorizontal.tsx: ItalicIcon -> AnnotateIcon ('annotate')
+  blocks/components/Center/CenterHorizontal.tsx: UnderlineIcon -> AnnotateIcon ('annotate')
+  blocks/components/Center/CenterHorizontal.tsx: ListBulletIcon -> ListIcon ('list')
+  blocks/components/Center/CenterHorizontal.tsx: LinkIcon -> LinkIcon ('link')
+  blocks/components/Center/CenterHorizontal.tsx: PhotoIcon -> ImageIcon ('image')
+  blocks/components/Center/CenterInsideACard.tsx: InboxIcon -> FolderOpenIcon ('folder-open')
+  blocks/components/ChatComposer/ChatComposerFlat.tsx: Cog6ToothIcon -> SettingsIcon ('settings')
+  blocks/components/ChatComposer/ChatComposerFlat.tsx: MicrophoneIcon -> MicrophoneIcon ('microphone')
+  blocks/components/ChatComposer/ChatComposerFlat.tsx: SparklesIcon -> Robot2Icon ('robot-2')
+  blocks/components/ChatComposer/ChatComposerFooterActions.tsx: Cog6ToothIcon -> SettingsIcon ('settings')
+  blocks/components/ChatComposer/ChatComposerFooterActions.tsx: MicrophoneIcon -> MicrophoneIcon ('microphone')
+  blocks/components/ChatComposer/ChatComposerFooterActions.tsx: SparklesIcon -> Robot2Icon ('robot-2')
+  blocks/components/ChatComposer/ChatComposerFullFeatured.tsx: AtSymbolIcon -> LinkIcon ('link')
+  blocks/components/ChatComposer/ChatComposerFullFeatured.tsx: Cog6ToothIcon -> SettingsIcon ('settings')
+  blocks/components/ChatComposer/ChatComposerFullFeatured.tsx: MicrophoneIcon -> MicrophoneIcon ('microphone')
+  blocks/components/ChatComposer/ChatComposerFullFeatured.tsx: PaperClipIcon -> LinkIcon ('link')
+  blocks/components/ChatComposer/ChatComposerFullFeatured.tsx: SparklesIcon -> Robot2Icon ('robot-2')
+  blocks/components/ChatComposerDrawer/ChatComposerDrawerShowcase.tsx: PaperClipIcon -> LinkIcon ('link')
+  blocks/components/ChatComposerDrawer/ChatComposerDrawerWithProgress.tsx: PaperClipIcon -> LinkIcon ('link')
+  blocks/components/ChatComposerDrawer/ChatComposerDrawerWithProgress.tsx: AtSymbolIcon -> LinkIcon ('link')
+  blocks/components/ChatMessageMetadata/ChatMessageMetadataFooter.tsx: ClipboardDocumentIcon -> CopyIcon ('copy')
+  blocks/components/ChatMessageMetadata/ChatMessageMetadataFooter.tsx: ArrowPathIcon -> RotateIcon ('rotate')
+  blocks/components/ChatMessageMetadata/ChatMessageMetadataFooter.tsx: HandThumbUpIcon -> CheckCircleOpenIcon ('check-circle-open')
+  blocks/components/ChatMessageMetadata/ChatMessageMetadataFooter.tsx: HandThumbDownIcon -> CancelCircleIcon ('cancel-circle')
+  blocks/components/ChatMessageMetadata/ChatMessageMetadataShowcase.tsx: ClipboardDocumentIcon -> CopyIcon ('copy')
+  blocks/components/ChatMessageMetadata/ChatMessageMetadataShowcase.tsx: ArrowPathIcon -> RotateIcon ('rotate')
+  blocks/components/ChatMessageMetadata/ChatMessageMetadataShowcase.tsx: HandThumbUpIcon -> CheckCircleOpenIcon ('check-circle-open')
+  blocks/components/ChatMessageMetadata/ChatMessageMetadataShowcase.tsx: HandThumbDownIcon -> CancelCircleIcon ('cancel-circle')
+  blocks/components/ChatSendButton/ChatSendButtonCustomIcon.tsx: CheckIcon -> CheckIcon ('check')
+  blocks/components/ChatSendButton/ChatSendButtonCustomIcon.tsx: PaperAirplaneIcon -> ArrowRightIcon ('arrow-right')
+  blocks/components/ChatSendButton/ChatSendButtonCustomIcon.tsx: SparklesIcon -> Robot2Icon ('robot-2')
+  blocks/components/ChatSendButton/ChatSendButtonCustomIcon.tsx: XCircleIcon -> CancelCircleIcon ('cancel-circle')
+  blocks/components/ChatSendButton/ChatSendButtonShowcase.tsx: SparklesIcon -> Robot2Icon ('robot-2')
+  blocks/components/ChatSystemMessage/ChatSystemMessageStatusUpdates.tsx: CheckCircleIcon -> CheckCircleIcon ('check-circle')
+  blocks/components/ChatSystemMessage/ChatSystemMessageStatusUpdates.tsx: UserMinusIcon -> PersonIcon ('person')
+  blocks/components/ChatSystemMessage/ChatSystemMessageStatusUpdates.tsx: UserPlusIcon -> PersonIcon ('person')
+  blocks/components/ChatSystemMessage/ChatSystemMessageWithIcon.tsx: LockClosedIcon -> LockIcon ('lock')
+  blocks/components/ChatSystemMessage/ChatSystemMessageWithIcon.tsx: ShieldCheckIcon -> LockIcon ('lock')
+  blocks/components/ChatSystemMessage/ChatSystemMessageWithIcon.tsx: SparklesIcon -> Robot2Icon ('robot-2')
+  blocks/components/ChatSystemMessage/ChatSystemMessageWithIcon.tsx: UserPlusIcon -> PersonIcon ('person')
+  blocks/components/ContextMenu/ContextMenuBottomSheet.tsx: DocumentDuplicateIcon -> CopyIcon ('copy')
+  blocks/components/ContextMenu/ContextMenuBottomSheet.tsx: PencilIcon -> EditSquareIcon ('edit-square')
+  blocks/components/ContextMenu/ContextMenuBottomSheet.tsx: ShareIcon -> LinkIcon ('link')
+  blocks/components/ContextMenu/ContextMenuBottomSheet.tsx: TrashIcon -> DeleteIcon ('delete')
+  blocks/components/DropdownMenu/DropdownMenuBottomSheet.tsx: ArchiveBoxIcon -> FolderIcon ('folder')
+  blocks/components/DropdownMenu/DropdownMenuBottomSheet.tsx: DocumentDuplicateIcon -> CopyIcon ('copy')
+  blocks/components/DropdownMenu/DropdownMenuBottomSheet.tsx: PencilIcon -> EditSquareIcon ('edit-square')
+  blocks/components/DropdownMenu/DropdownMenuBottomSheet.tsx: ShareIcon -> LinkIcon ('link')
+  blocks/components/DropdownMenu/DropdownMenuNoChevron.tsx: EllipsisHorizontalIcon -> MoreVertIcon ('more-vert')
+  blocks/components/EmptyState/EmptyStateActions.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  blocks/components/EmptyState/EmptyStateCompact.tsx: InboxIcon -> FolderOpenIcon ('folder-open')
+  blocks/components/EmptyState/EmptyStateContainer.tsx: FolderPlusIcon -> FolderNewIcon ('folder-new')
+  blocks/components/EmptyState/EmptyStateShowcase.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  blocks/components/Hooks/useContainerRevealHookUsage.tsx: PencilIcon -> EditSquareIcon ('edit-square')
+  blocks/components/Hooks/useContainerRevealHookUsage.tsx: TrashIcon -> DeleteIcon ('delete')
+  blocks/components/Hooks/useKeyboardHintHookUsage.tsx: BoldIcon -> AnnotateIcon ('annotate')
+  blocks/components/Hooks/useKeyboardHintHookUsage.tsx: ItalicIcon -> AnnotateIcon ('annotate')
+  blocks/components/Hooks/useKeyboardHintHookUsage.tsx: UnderlineIcon -> AnnotateIcon ('annotate')
+  blocks/components/HoverCard/HoverCardInteractiveContent.tsx: LinkIcon -> LinkIcon ('link')
+  blocks/components/HoverCard/HoverCardProfileHoverCard.tsx: CalendarIcon -> HistoryIcon ('history')
+  blocks/components/IconButton/IconButtonFloating.tsx: PlusIcon -> AddIcon ('add')
+  blocks/components/Item/ItemShowcase.tsx: UserIcon -> PersonIcon ('person')
+  blocks/components/Item/ItemShowcase.tsx: DocumentIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  blocks/components/Item/ItemShowcase.tsx: BellIcon -> NotificationsIcon ('notifications')
+  blocks/components/MobileNav/MobileNavBasicMobileNav.tsx: HomeIcon -> HomeIcon ('home')
+  blocks/components/MobileNav/MobileNavBasicMobileNav.tsx: FolderIcon -> FolderIcon ('folder')
+  blocks/components/MobileNav/MobileNavBasicMobileNav.tsx: ChartBarIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  blocks/components/MobileNav/MobileNavBasicMobileNav.tsx: Cog6ToothIcon -> SettingsIcon ('settings')
+  blocks/components/MobileNav/MobileNavBasicMobileNav.tsx: UsersIcon -> PersonIcon ('person')
+  blocks/components/MobileNav/MobileNavEndSideMobileNav.tsx: Cog6ToothIcon -> SettingsIcon ('settings')
+  blocks/components/MobileNav/MobileNavEndSideMobileNav.tsx: UsersIcon -> PersonIcon ('person')
+  blocks/components/MobileNav/MobileNavWithoutTitleMobileNav.tsx: HomeIcon -> HomeIcon ('home')
+  blocks/components/MobileNav/MobileNavWithoutTitleMobileNav.tsx: FolderIcon -> FolderIcon ('folder')
+  blocks/components/MoreMenu/MoreMenuBottomSheet.tsx: DocumentDuplicateIcon -> CopyIcon ('copy')
+  blocks/components/MoreMenu/MoreMenuBottomSheet.tsx: PencilIcon -> EditSquareIcon ('edit-square')
+  blocks/components/MoreMenu/MoreMenuBottomSheet.tsx: ShareIcon -> LinkIcon ('link')
+  blocks/components/MoreMenu/MoreMenuBottomSheet.tsx: TrashIcon -> DeleteIcon ('delete')
+  blocks/components/MoreMenu/MoreMenuWithDividers.tsx: PencilIcon -> EditSquareIcon ('edit-square')
+  blocks/components/MoreMenu/MoreMenuWithDividers.tsx: DocumentDuplicateIcon -> CopyIcon ('copy')
+  blocks/components/MoreMenu/MoreMenuWithDividers.tsx: TrashIcon -> DeleteIcon ('delete')
+  blocks/components/MoreMenu/MoreMenuWithSections.tsx: PencilIcon -> EditSquareIcon ('edit-square')
+  blocks/components/MoreMenu/MoreMenuWithSections.tsx: DocumentDuplicateIcon -> CopyIcon ('copy')
+  blocks/components/MoreMenu/MoreMenuWithSections.tsx: TrashIcon -> DeleteIcon ('delete')
+  blocks/components/Pagination/PaginationDotsCarousel.tsx: StarIcon -> CrownIcon ('crown')
+  blocks/components/Popover/PopoverBottomSheetAlternative.tsx: CalendarIcon -> HistoryIcon ('history')
+  blocks/components/Popover/PopoverBottomSheetAlternative.tsx: TagIcon -> NumericIcon ('numeric')
+  blocks/components/Popover/PopoverBottomSheetAlternative.tsx: UserIcon -> PersonIcon ('person')
+  blocks/components/Section/SectionWashHighlight.tsx: CheckIcon -> CheckIcon ('check')
+  blocks/components/Selector/SelectorOptionDescriptions.tsx: LockClosedIcon -> LockIcon ('lock')
+  blocks/components/Selector/SelectorOptionDescriptions.tsx: GlobeAltIcon -> MapIcon ('map')
+  blocks/components/SelectorOption/SelectorOptionShowcase.tsx: UserIcon -> PersonIcon ('person')
+  blocks/components/TextArea/TextAreaWithIcon.tsx: PencilSquareIcon -> EditSquareIcon ('edit-square')
+  blocks/components/TextInput/TextInputIcon.tsx: EnvelopeIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  blocks/components/TextInput/TextInputIcon.tsx: LockClosedIcon -> LockIcon ('lock')
+  blocks/components/TextInput/TextInputIcon.tsx: UserIcon -> PersonIcon ('person')
+  blocks/components/TextInput/TextInputSearch.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  blocks/components/ToggleButton/ToggleButtonColor.tsx: BoldIcon -> AnnotateIcon ('annotate')
+  blocks/components/ToggleButton/ToggleButtonColor.tsx: ItalicIcon -> AnnotateIcon ('annotate')
+  blocks/components/ToggleButton/ToggleButtonColor.tsx: UnderlineIcon -> AnnotateIcon ('annotate')
+  blocks/components/ToggleButton/ToggleButtonColor.tsx: StrikethroughIcon -> AnnotateIcon ('annotate')
+  blocks/components/ToggleButton/ToggleButtonColor.tsx: LinkIcon -> LinkIcon ('link')
+  blocks/components/ToggleButton/ToggleButtonColor.tsx: StarIcon -> CrownIcon ('crown')
+  blocks/components/ToggleButton/ToggleButtonColor.tsx: BookmarkIcon -> AddPinIcon ('add-pin')
+  blocks/components/ToggleButton/ToggleButtonColor.tsx: HeartIcon -> CrownIcon ('crown')
+  blocks/components/ToggleButton/ToggleButtonColor.tsx: BellIcon -> NotificationsIcon ('notifications')
+  blocks/components/ToggleButton/ToggleButtonColor.tsx: BoldIcon -> AnnotateIcon ('annotate')
+  blocks/components/ToggleButton/ToggleButtonColor.tsx: ItalicIcon -> AnnotateIcon ('annotate')
+  blocks/components/ToggleButton/ToggleButtonColor.tsx: UnderlineIcon -> AnnotateIcon ('annotate')
+  blocks/components/ToggleButton/ToggleButtonColor.tsx: StarIcon -> CrownIcon ('crown')
+  blocks/components/ToggleButton/ToggleButtonColor.tsx: BookmarkIcon -> AddPinIcon ('add-pin')
+  blocks/components/ToggleButton/ToggleButtonColor.tsx: HeartIcon -> CrownIcon ('crown')
+  blocks/components/ToggleButton/ToggleButtonGroup.tsx: ListBulletIcon -> ListIcon ('list')
+  blocks/components/ToggleButton/ToggleButtonGroup.tsx: Squares2X2Icon -> ViewModuleIcon ('view-module')
+  blocks/components/ToggleButton/ToggleButtonGroup.tsx: TableCellsIcon -> ViewColumnIcon ('view-column')
+  blocks/components/ToggleButton/ToggleButtonGroup.tsx: BoldIcon -> AnnotateIcon ('annotate')
+  blocks/components/ToggleButton/ToggleButtonGroup.tsx: ItalicIcon -> AnnotateIcon ('annotate')
+  blocks/components/ToggleButton/ToggleButtonGroup.tsx: UnderlineIcon -> AnnotateIcon ('annotate')
+  blocks/components/ToggleButton/ToggleButtonGroup.tsx: StrikethroughIcon -> AnnotateIcon ('annotate')
+  blocks/components/ToggleButton/ToggleButtonIconSwap.tsx: StarIcon -> CrownIcon ('crown')
+  blocks/components/ToggleButton/ToggleButtonIconSwap.tsx: BookmarkIcon -> AddPinIcon ('add-pin')
+  blocks/components/ToggleButton/ToggleButtonIconSwap.tsx: BellIcon -> NotificationsIcon ('notifications')
+  blocks/components/ToggleButton/ToggleButtonIconSwap.tsx: BellSlashIcon -> NotificationsIcon ('notifications')
+  blocks/components/ToggleButton/ToggleButtonIconSwap.tsx: StarIcon -> CrownIcon ('crown')
+  blocks/components/ToggleButton/ToggleButtonIconSwap.tsx: BookmarkIcon -> AddPinIcon ('add-pin')
+  blocks/components/ToggleButton/ToggleButtonLabel.tsx: EyeIcon -> VisibilityIcon ('visibility')
+  blocks/components/ToggleButton/ToggleButtonLabel.tsx: EyeSlashIcon -> VisibilityOffIcon ('visibility-off')
+  blocks/components/ToggleButton/ToggleButtonLabel.tsx: FunnelIcon -> FilterIcon ('filter')
+  blocks/components/ToggleButton/ToggleButtonLabel.tsx: MapPinIcon -> MapIcon ('map')
+  blocks/components/ToggleButton/ToggleButtonShowcase.tsx: StarIcon -> CrownIcon ('crown')
+  blocks/components/ToggleButton/ToggleButtonShowcase.tsx: BookmarkIcon -> AddPinIcon ('add-pin')
+  blocks/components/ToggleButton/ToggleButtonShowcase.tsx: BellIcon -> NotificationsIcon ('notifications')
+  blocks/components/ToggleButton/ToggleButtonShowcase.tsx: BellSlashIcon -> NotificationsIcon ('notifications')
+  blocks/components/ToggleButton/ToggleButtonShowcase.tsx: StarIcon -> CrownIcon ('crown')
+  blocks/components/ToggleButton/ToggleButtonShowcase.tsx: BookmarkIcon -> AddPinIcon ('add-pin')
+  blocks/components/ToggleButton/ToggleButtonStates.tsx: StarIcon -> CrownIcon ('crown')
+  blocks/components/ToggleButton/ToggleButtonStates.tsx: StarIcon -> CrownIcon ('crown')
+  blocks/components/Token/TokenIcon.tsx: StarIcon -> CrownIcon ('crown')
+  blocks/components/Token/TokenIcon.tsx: TagIcon -> NumericIcon ('numeric')
+  blocks/components/Token/TokenIcon.tsx: UserIcon -> PersonIcon ('person')
+  blocks/components/Token/TokenIcon.tsx: ShieldCheckIcon -> LockIcon ('lock')
+  blocks/components/Token/TokenShowcase.tsx: TagIcon -> NumericIcon ('numeric')
+  blocks/components/Tokenizer/TokenizerIcon.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  blocks/components/Toolbar/ToolbarBulkActions.tsx: TrashIcon -> DeleteIcon ('delete')
+  blocks/components/Toolbar/ToolbarBulkActions.tsx: ArchiveBoxIcon -> FolderIcon ('folder')
+  blocks/components/Toolbar/ToolbarCardHeader.tsx: FunnelIcon -> FilterIcon ('filter')
+  blocks/components/Toolbar/ToolbarCardHeader.tsx: PlusIcon -> AddIcon ('add')
+  blocks/components/Toolbar/ToolbarSizes.tsx: FunnelIcon -> FilterIcon ('filter')
+  blocks/components/Toolbar/ToolbarSizes.tsx: PlusIcon -> AddIcon ('add')
+  blocks/components/Toolbar/ToolbarTableFilter.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  blocks/components/Toolbar/ToolbarThreeSlot.tsx: ArrowLeftIcon -> ArrowLeftIcon ('arrow-left')
+  blocks/components/Toolbar/ToolbarWithTabs.tsx: PlusIcon -> AddIcon ('add')
+  blocks/components/TopNav/TopNavCenteredNavigation.tsx: CubeIcon -> CubeIcon ('cube')
+  blocks/components/TopNav/TopNavCenteredNavigation.tsx: UserCircleIcon -> PersonIcon ('person')
+  blocks/components/TopNav/TopNavEnterpriseDashboard.tsx: CubeIcon -> CubeIcon ('cube')
+  blocks/components/TopNav/TopNavEnterpriseDashboard.tsx: HomeIcon -> HomeIcon ('home')
+  blocks/components/TopNav/TopNavEnterpriseDashboard.tsx: DocumentTextIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  blocks/components/TopNav/TopNavEnterpriseDashboard.tsx: BellIcon -> NotificationsIcon ('notifications')
+  blocks/components/TopNav/TopNavHoverMenu.tsx: CubeIcon -> CubeIcon ('cube')
+  blocks/components/TopNav/TopNavHoverMenu.tsx: ChartBarIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  blocks/components/TopNav/TopNavHoverMenu.tsx: ShieldCheckIcon -> LockIcon ('lock')
+  blocks/components/TopNav/TopNavHoverMenu.tsx: BoltIcon -> ElectricityIcon ('electricity')
+  blocks/components/TopNav/TopNavHoverMenu.tsx: CodeBracketIcon -> CodeIcon ('code')
+  blocks/components/TopNav/TopNavHoverMenu.tsx: UserCircleIcon -> PersonIcon ('person')
+  blocks/components/TopNav/TopNavMegaMenu.tsx: CubeIcon -> CubeIcon ('cube')
+  blocks/components/TopNav/TopNavMegaMenu.tsx: ChartBarIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  blocks/components/TopNav/TopNavMegaMenu.tsx: ShieldCheckIcon -> LockIcon ('lock')
+  blocks/components/TopNav/TopNavMegaMenu.tsx: BoltIcon -> ElectricityIcon ('electricity')
+  blocks/components/TopNav/TopNavMegaMenu.tsx: CodeBracketIcon -> CodeIcon ('code')
+  blocks/components/TopNav/TopNavMegaMenu.tsx: GlobeAltIcon -> MapIcon ('map')
+  blocks/components/TopNav/TopNavMultipleDropdowns.tsx: CubeIcon -> CubeIcon ('cube')
+  blocks/components/TopNav/TopNavMultipleDropdowns.tsx: ChartBarIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  blocks/components/TopNav/TopNavMultipleDropdowns.tsx: ShieldCheckIcon -> LockIcon ('lock')
+  blocks/components/TopNav/TopNavShowcase.tsx: BellIcon -> NotificationsIcon ('notifications')
+  blocks/components/TopNav/TopNavShowcase.tsx: CubeIcon -> CubeIcon ('cube')
+  blocks/components/TopNav/TopNavShowcase.tsx: UserCircleIcon -> PersonIcon ('person')
+  blocks/components/TopNav/TopNavWithLogo.tsx: CubeIcon -> CubeIcon ('cube')
+  blocks/components/TopNav/TopNavWithLogo.tsx: UserCircleIcon -> PersonIcon ('person')
+  blocks/components/TopNavMegaMenu/TopNavMegaMenuBasic.tsx: RocketLaunchIcon -> PlayIcon ('play')
+  blocks/components/TopNavMegaMenu/TopNavMegaMenuBasic.tsx: BookOpenIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  blocks/components/TopNavMegaMenu/TopNavMegaMenuShowcase.tsx: RocketLaunchIcon -> PlayIcon ('play')
+  blocks/components/TopNavMegaMenu/TopNavMegaMenuShowcase.tsx: BookOpenIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  blocks/components/TopNavMegaMenu/TopNavMegaMenuShowcase.tsx: CodeBracketIcon -> CodeIcon ('code')
+  blocks/components/TopNavMegaMenu/TopNavMegaMenuShowcase.tsx: ShieldCheckIcon -> LockIcon ('lock')
+  blocks/components/TopNavMegaMenu/TopNavMegaMenuShowcase.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  blocks/components/TopNavMegaMenuItem/TopNavMegaMenuItemBasic.tsx: BoltIcon -> ElectricityIcon ('electricity')
+  blocks/components/TopNavMegaMenuItem/TopNavMegaMenuItemBasic.tsx: CircleStackIcon -> DatabaseIcon ('database')
+  blocks/components/TopNavMenu/TopNavMenuBasic.tsx: ChartBarIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  blocks/components/TopNavMenu/TopNavMenuBasic.tsx: Cog6ToothIcon -> SettingsIcon ('settings')
+  blocks/components/TopNavMenu/TopNavMenuShowcase.tsx: ChartBarIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  blocks/components/TopNavMenu/TopNavMenuShowcase.tsx: Cog6ToothIcon -> SettingsIcon ('settings')
+  blocks/components/TopNavMenu/TopNavMenuShowcase.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  blocks/components/TopNavMenu/TopNavMenuShowcase.tsx: UsersIcon -> PersonIcon ('person')
+  blocks/components/TreeList/TreeListFileTreeWithIcons.tsx: FolderIcon -> FolderIcon ('folder')
+  blocks/components/TreeList/TreeListFileTreeWithIcons.tsx: DocumentIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  blocks/components/TreeList/TreeListInteractiveSettings.tsx: Cog6ToothIcon -> SettingsIcon ('settings')
+  blocks/components/TreeList/TreeListInteractiveSettings.tsx: ChevronRightIcon -> ChevronRightIcon ('chevron-right')
+  blocks/components/Typeahead/TypeaheadSearchField.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  blocks/components/VisuallyHidden/VisuallyHiddenShowcase.tsx: ArrowDownTrayIcon -> ExportUploadIcon ('export-upload')
+  blocks/components/VisuallyHidden/VisuallyHiddenShowcase.tsx: ShareIcon -> LinkIcon ('link')
+  blocks/components/VisuallyHidden/VisuallyHiddenShowcase.tsx: TrashIcon -> DeleteIcon ('delete')
+  blocks/components/VisuallyHidden/VisuallyHiddenShowcase.tsx: SpeakerWaveIcon -> MicrophoneIcon ('microphone')
+  blocks/components/VisuallyHidden/VisuallyHiddenSupplementaryContext.tsx: ArrowUpIcon -> ArrowUpIcon ('arrow-up')
+  blocks/components/VisuallyHidden/VisuallyHiddenSupplementaryContext.tsx: ArrowDownIcon -> ArrowDownIcon ('arrow-down')
+  pages/ai-chat/page.tsx: DocumentTextIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  pages/ai-chat/page.tsx: ClipboardDocumentIcon -> CopyIcon ('copy')
+  pages/ai-chat/page.tsx: ShareIcon -> LinkIcon ('link')
+  pages/ai-chat/page.tsx: AtSymbolIcon -> LinkIcon ('link')
+  pages/ai-chat/page.tsx: PaperClipIcon -> LinkIcon ('link')
+  pages/ai-chat/page.tsx: XMarkIcon -> CloseIcon ('close')
+  pages/ai-chat/page.tsx: ChevronRightIcon -> ChevronRightIcon ('chevron-right')
+  pages/ai-chat-landing/page.tsx: Cog6ToothIcon -> SettingsIcon ('settings')
+  pages/ai-chat-landing/page.tsx: AtSymbolIcon -> LinkIcon ('link')
+  pages/ai-chat-landing/page.tsx: SparklesIcon -> Robot2Icon ('robot-2')
+  pages/ai-chat-landing/page.tsx: PencilSquareIcon -> EditSquareIcon ('edit-square')
+  pages/ai-chat-landing/page.tsx: CodeBracketIcon -> CodeIcon ('code')
+  pages/ai-chat-landing/page.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  pages/ai-chat-landing/page.tsx: LockClosedIcon -> LockIcon ('lock')
+  pages/ai-chat-landing/page.tsx: ClockIcon -> HistoryIcon ('history')
+  pages/ai-chat-landing/page.tsx: LightBulbIcon -> DiscoveryIcon ('discovery')
+  pages/centered-hero/page.tsx: ArrowRightIcon -> ArrowRightIcon ('arrow-right')
+  pages/checkout-wizard/page.tsx: CreditCardIcon -> MoneyIcon ('money')
+  pages/checkout-wizard/page.tsx: LockClosedIcon -> LockIcon ('lock')
+  pages/checkout-wizard/page.tsx: MapPinIcon -> MapIcon ('map')
+  pages/checkout-wizard/page.tsx: ShoppingCartIcon -> MoneyIcon ('money')
+  pages/checkout-wizard/page.tsx: TruckIcon -> OilRigOffshoreIcon ('oil-rig-offshore')
+  pages/contact-form/page.tsx: RocketLaunchIcon -> PlayIcon ('play')
+  pages/contact-form/page.tsx: AdjustmentsHorizontalIcon -> ControlsIcon ('controls')
+  pages/contact-form/page.tsx: HandRaisedIcon -> PanToolIcon ('pan-tool')
+  pages/dashboard/page.tsx: ArrowPathIcon -> RotateIcon ('rotate')
+  pages/dashboard/page.tsx: ArrowUpIcon -> ArrowUpIcon ('arrow-up')
+  pages/dashboard/page.tsx: ArrowDownIcon -> ArrowDownIcon ('arrow-down')
+  pages/dashboard/page.tsx: StopIcon -> DiamondMarkIcon ('diamond-mark')
+  pages/dashboard-alert-rail/page.tsx: ArrowUpIcon -> ArrowUpIcon ('arrow-up')
+  pages/dashboard-alert-rail/page.tsx: ArrowDownIcon -> ArrowDownIcon ('arrow-down')
+  pages/dashboard-alert-rail/page.tsx: BellAlertIcon -> NotificationsIcon ('notifications')
+  pages/dashboard-alert-rail/page.tsx: CheckCircleIcon -> CheckCircleIcon ('check-circle')
+  pages/dashboard-alert-rail/page.tsx: ServerStackIcon -> DatabaseIcon ('database')
+  pages/dashboard-alert-rail/page.tsx: StopIcon -> DiamondMarkIcon ('diamond-mark')
+  pages/dashboard-cohort-funnel/page.tsx: ArrowUpIcon -> ArrowUpIcon ('arrow-up')
+  pages/dashboard-cohort-funnel/page.tsx: ArrowDownIcon -> ArrowDownIcon ('arrow-down')
+  pages/dashboard-cohort-funnel/page.tsx: ArrowDownTrayIcon -> ExportUploadIcon ('export-upload')
+  pages/dashboard-cohort-funnel/page.tsx: ArrowTrendingDownIcon -> TrendIcon ('trend')
+  pages/dashboard-cohort-funnel/page.tsx: StopIcon -> DiamondMarkIcon ('diamond-mark')
+  pages/dashboard-comparison/page.tsx: ArrowUpIcon -> ArrowUpIcon ('arrow-up')
+  pages/dashboard-comparison/page.tsx: ArrowDownIcon -> ArrowDownIcon ('arrow-down')
+  pages/dashboard-comparison/page.tsx: ArrowDownTrayIcon -> ExportUploadIcon ('export-upload')
+  pages/dashboard-comparison/page.tsx: UsersIcon -> PersonIcon ('person')
+  pages/dashboard-comparison/page.tsx: CursorArrowRaysIcon -> SelectCursorIcon ('select-cursor')
+  pages/dashboard-comparison/page.tsx: StopIcon -> DiamondMarkIcon ('diamond-mark')
+  pages/dashboard-composition/page.tsx: ArrowUpIcon -> ArrowUpIcon ('arrow-up')
+  pages/dashboard-composition/page.tsx: ArrowDownIcon -> ArrowDownIcon ('arrow-down')
+  pages/dashboard-progress/page.tsx: CheckCircleIcon -> CheckCircleIcon ('check-circle')
+  pages/dashboard-progress/page.tsx: ExclamationTriangleIcon -> WarningIcon ('warning')
+  pages/dashboard-progress/page.tsx: ArrowDownTrayIcon -> ExportUploadIcon ('export-upload')
+  pages/dashboard-progress/page.tsx: FlagIcon -> AddPinIcon ('add-pin')
+  pages/dashboard-progress/page.tsx: StopIcon -> DiamondMarkIcon ('diamond-mark')
+  pages/dashboard-scorecard/page.tsx: ArrowDownTrayIcon -> ExportUploadIcon ('export-upload')
+  pages/dashboard-scorecard/page.tsx: ArrowUpIcon -> ArrowUpIcon ('arrow-up')
+  pages/dashboard-scorecard/page.tsx: ArrowDownIcon -> ArrowDownIcon ('arrow-down')
+  pages/dashboard-scorecard/page.tsx: ArrowRightIcon -> ArrowRightIcon ('arrow-right')
+  pages/dashboard-scorecard/page.tsx: StopIcon -> DiamondMarkIcon ('diamond-mark')
+  pages/detail-page/page.tsx: CalendarIcon -> HistoryIcon ('history')
+  pages/detail-page/page.tsx: FlagIcon -> AddPinIcon ('add-pin')
+  pages/detail-page/page.tsx: FunnelIcon -> FilterIcon ('filter')
+  pages/detail-page/page.tsx: HandThumbUpIcon -> CheckCircleOpenIcon ('check-circle-open')
+  pages/detail-page/page.tsx: HeartIcon -> CrownIcon ('crown')
+  pages/detail-page/page.tsx: PencilSquareIcon -> EditSquareIcon ('edit-square')
+  pages/detail-page/page.tsx: ArrowLeftIcon -> ArrowLeftIcon ('arrow-left')
+  pages/detail-page/page.tsx: ViewColumnsIcon -> ViewColumnIcon ('view-column')
+  pages/documentation-design/page.tsx: ArrowTopRightOnSquareIcon -> OpenInNewIcon ('open-in-new')
+  pages/documentation-design/page.tsx: ArrowsPointingOutIcon -> ExpandContentIcon ('expand-content')
+  pages/documentation-design/page.tsx: PlusIcon -> AddIcon ('add')
+  pages/documentation-technical/page.tsx: SparklesIcon -> Robot2Icon ('robot-2')
+  pages/documentation-technical/page.tsx: ClipboardDocumentIcon -> CopyIcon ('copy')
+  pages/documentation-technical/page.tsx: ChevronDownIcon -> ChevronDownIcon ('chevron-down')
+  pages/editor/page.tsx: Squares2X2Icon -> ViewModuleIcon ('view-module')
+  pages/editor/page.tsx: DocumentTextIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  pages/editor/page.tsx: PhotoIcon -> ImageIcon ('image')
+  pages/editor/page.tsx: CursorArrowRaysIcon -> SelectCursorIcon ('select-cursor')
+  pages/editor/page.tsx: ViewColumnsIcon -> ViewColumnIcon ('view-column')
+  pages/editor/page.tsx: SparklesIcon -> Robot2Icon ('robot-2')
+  pages/editor/page.tsx: MegaphoneIcon -> NotificationsIcon ('notifications')
+  pages/editor/page.tsx: TrashIcon -> DeleteIcon ('delete')
+  pages/editor/page.tsx: ChevronUpIcon -> ChevronUpIcon ('chevron-up')
+  pages/editor/page.tsx: ChevronDownIcon -> ChevronDownIcon ('chevron-down')
+  pages/editor/page.tsx: ComputerDesktopIcon -> WindowIcon ('window')
+  pages/editor/page.tsx: DeviceTabletIcon -> WindowIcon ('window')
+  pages/editor/page.tsx: DevicePhoneMobileIcon -> WindowIcon ('window')
+  pages/editor/page.tsx: EyeIcon -> VisibilityIcon ('visibility')
+  pages/editor/page.tsx: AdjustmentsHorizontalIcon -> ControlsIcon ('controls')
+  pages/editor/page.tsx: XMarkIcon -> CloseIcon ('close')
+  pages/editor/page.tsx: PlusCircleIcon -> AddCircleIcon ('add-circle')
+  pages/editor/page.tsx: ShoppingBagIcon -> MoneyIcon ('money')
+  pages/editor/page.tsx: ShoppingCartIcon -> MoneyIcon ('money')
+  pages/editor/page.tsx: BanknotesIcon -> MoneyIcon ('money')
+  pages/editor/page.tsx: ChatBubbleLeftIcon -> AnnotateIcon ('annotate')
+  pages/editor/page.tsx: PlayCircleIcon -> PlayIcon ('play')
+  pages/editor/page.tsx: EllipsisHorizontalIcon -> MoreVertIcon ('more-vert')
+  pages/editor/page.tsx: LockClosedIcon -> LockIcon ('lock')
+  pages/file-explorer/page.tsx: ChevronLeftIcon -> ChevronLeftIcon ('chevron-left')
+  pages/file-explorer/page.tsx: ChevronRightIcon -> ChevronRightIcon ('chevron-right')
+  pages/file-explorer/page.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  pages/file-explorer/page.tsx: ShareIcon -> LinkIcon ('link')
+  pages/file-explorer/page.tsx: TagIcon -> NumericIcon ('numeric')
+  pages/file-explorer/page.tsx: EllipsisHorizontalIcon -> MoreVertIcon ('more-vert')
+  pages/file-explorer/page.tsx: ViewColumnsIcon -> ViewColumnIcon ('view-column')
+  pages/file-explorer/page.tsx: Squares2X2Icon -> ViewModuleIcon ('view-module')
+  pages/file-explorer/page.tsx: Bars4Icon -> ListIcon ('list')
+  pages/file-explorer/page.tsx: TableCellsIcon -> ViewColumnIcon ('view-column')
+  pages/file-explorer/page.tsx: AdjustmentsHorizontalIcon -> ControlsIcon ('controls')
+  pages/file-explorer/page.tsx: DocumentIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  pages/file-explorer/page.tsx: FolderIcon -> FolderIcon ('folder')
+  pages/form-wizard-inline/page.tsx: BeakerIcon -> DiscoveryIcon ('discovery')
+  pages/form-wizard-inline/page.tsx: BoltIcon -> ElectricityIcon ('electricity')
+  pages/form-wizard-inline/page.tsx: CpuChipIcon -> NodeIcon ('node')
+  pages/form-wizard-inline/page.tsx: CubeIcon -> CubeIcon ('cube')
+  pages/form-wizard-vertical/page.tsx: BookOpenIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  pages/form-wizard-vertical/page.tsx: BuildingLibraryIcon -> FacilityIcon ('facility')
+  pages/form-wizard-vertical/page.tsx: CalendarIcon -> HistoryIcon ('history')
+  pages/form-wizard-vertical/page.tsx: CheckBadgeIcon -> CheckCircleIcon ('check-circle')
+  pages/form-wizard-vertical/page.tsx: CurrencyDollarIcon -> MoneyIcon ('money')
+  pages/form-wizard-vertical/page.tsx: ExclamationTriangleIcon -> WarningIcon ('warning')
+  pages/form-wizard-vertical/page.tsx: GlobeAltIcon -> MapIcon ('map')
+  pages/form-wizard-vertical/page.tsx: LanguageIcon -> AppsIcon ('apps')
+  pages/form-wizard-vertical/page.tsx: RectangleStackIcon -> LayersIcon ('layers')
+  pages/form-wizard-vertical/page.tsx: TagIcon -> NumericIcon ('numeric')
+  pages/form-wizard-vertical/page.tsx: UserIcon -> PersonIcon ('person')
+  pages/gallery-hero/page.tsx: ArrowRightIcon -> ArrowRightIcon ('arrow-right')
+  pages/ide/page.tsx: FolderIcon -> FolderIcon ('folder')
+  pages/ide/page.tsx: DocumentTextIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  pages/ide/page.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  pages/incident-console/page.tsx: BellAlertIcon -> NotificationsIcon ('notifications')
+  pages/incident-console/page.tsx: PlusIcon -> AddIcon ('add')
+  pages/kanban-board/page.tsx: PlusIcon -> AddIcon ('add')
+  pages/kanban-board/page.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  pages/kanban-board/page.tsx: ArrowsUpDownIcon -> CaretUpDownIcon ('caret-up-down')
+  pages/kanban-board/page.tsx: FunnelIcon -> FilterIcon ('filter')
+  pages/kanban-board/page.tsx: ArrowPathIcon -> RotateIcon ('rotate')
+  pages/kanban-board/page.tsx: CheckCircleIcon -> CheckCircleIcon ('check-circle')
+  pages/kanban-board/page.tsx: InboxIcon -> FolderOpenIcon ('folder-open')
+  pages/kanban-board/page.tsx: InformationCircleIcon -> InfoIcon ('info')
+  pages/kanban-board/page.tsx: ClipboardDocumentCheckIcon -> CopyIcon ('copy')
+  pages/library/page.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  pages/login/page.tsx: CubeIcon -> CubeIcon ('cube')
+  pages/login-card/page.tsx: CubeIcon -> CubeIcon ('cube')
+  pages/login-split/page.tsx: SquaresPlusIcon -> ViewModuleIcon ('view-module')
+  pages/login-split/page.tsx: CheckCircleIcon -> CheckCircleIcon ('check-circle')
+  pages/login-sso/page.tsx: ShieldCheckIcon -> LockIcon ('lock')
+  pages/messaging-shell/page.tsx: BellIcon -> NotificationsIcon ('notifications')
+  pages/messaging-shell/page.tsx: BookmarkIcon -> AddPinIcon ('add-pin')
+  pages/messaging-shell/page.tsx: ChatBubbleLeftRightIcon -> AnnotateIcon ('annotate')
+  pages/messaging-shell/page.tsx: Cog6ToothIcon -> SettingsIcon ('settings')
+  pages/messaging-shell/page.tsx: HashtagIcon -> NumericIcon ('numeric')
+  pages/messaging-shell/page.tsx: HomeIcon -> HomeIcon ('home')
+  pages/messaging-shell/page.tsx: InboxIcon -> FolderOpenIcon ('folder-open')
+  pages/messaging-shell/page.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  pages/messaging-shell/page.tsx: PencilSquareIcon -> EditSquareIcon ('edit-square')
+  pages/messaging-shell/page.tsx: UserGroupIcon -> PersonIcon ('person')
+  pages/messaging-shell/page.tsx: XMarkIcon -> CloseIcon ('close')
+  pages/payment-form/page.tsx: ShieldCheckIcon -> LockIcon ('lock')
+  pages/payment-form/page.tsx: LockClosedIcon -> LockIcon ('lock')
+  pages/payment-form/page.tsx: CheckCircleIcon -> CheckCircleIcon ('check-circle')
+  pages/payment-form/page.tsx: TruckIcon -> OilRigOffshoreIcon ('oil-rig-offshore')
+  pages/product-detail/page.tsx: MinusIcon -> RemoveIcon ('remove')
+  pages/product-detail/page.tsx: PlusIcon -> AddIcon ('add')
+  pages/product-detail/page.tsx: StarIcon -> CrownIcon ('crown')
+  pages/product-detail/page.tsx: StarIcon -> CrownIcon ('crown')
+  pages/product-gallery/page.tsx: ArrowRightIcon -> ArrowRightIcon ('arrow-right')
+  pages/settings/page.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  pages/settings-dialog/page.tsx: ArrowDownOnSquareIcon -> ExportUploadIcon ('export-upload')
+  pages/settings-dialog/page.tsx: ArrowDownTrayIcon -> ExportUploadIcon ('export-upload')
+  pages/settings-dialog/page.tsx: ArrowUturnLeftIcon -> UndoIcon ('undo')
+  pages/settings-dialog/page.tsx: AtSymbolIcon -> LinkIcon ('link')
+  pages/settings-dialog/page.tsx: Bars3BottomLeftIcon -> MenuIcon ('menu')
+  pages/settings-dialog/page.tsx: Bars3Icon -> MenuIcon ('menu')
+  pages/settings-dialog/page.tsx: BeakerIcon -> DiscoveryIcon ('discovery')
+  pages/settings-dialog/page.tsx: BellIcon -> NotificationsIcon ('notifications')
+  pages/settings-dialog/page.tsx: BriefcaseIcon -> ProjectIcon ('project')
+  pages/settings-dialog/page.tsx: CalendarDaysIcon -> HistoryIcon ('history')
+  pages/settings-dialog/page.tsx: ChatBubbleLeftRightIcon -> AnnotateIcon ('annotate')
+  pages/settings-dialog/page.tsx: ChevronRightIcon -> ChevronRightIcon ('chevron-right')
+  pages/settings-dialog/page.tsx: ClockIcon -> HistoryIcon ('history')
+  pages/settings-dialog/page.tsx: CodeBracketIcon -> CodeIcon ('code')
+  pages/settings-dialog/page.tsx: Cog6ToothIcon -> SettingsIcon ('settings')
+  pages/settings-dialog/page.tsx: CommandLineIcon -> CodeIcon ('code')
+  pages/settings-dialog/page.tsx: ComputerDesktopIcon -> WindowIcon ('window')
+  pages/settings-dialog/page.tsx: CreditCardIcon -> MoneyIcon ('money')
+  pages/settings-dialog/page.tsx: CubeIcon -> CubeIcon ('cube')
+  pages/settings-dialog/page.tsx: DevicePhoneMobileIcon -> WindowIcon ('window')
+  pages/settings-dialog/page.tsx: DocumentMagnifyingGlassIcon -> SearchIcon ('search')
+  pages/settings-dialog/page.tsx: DocumentTextIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  pages/settings-dialog/page.tsx: EnvelopeIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  pages/settings-dialog/page.tsx: EyeIcon -> VisibilityIcon ('visibility')
+  pages/settings-dialog/page.tsx: FingerPrintIcon -> LockIcon ('lock')
+  pages/settings-dialog/page.tsx: FolderIcon -> FolderIcon ('folder')
+  pages/settings-dialog/page.tsx: GlobeAltIcon -> MapIcon ('map')
+  pages/settings-dialog/page.tsx: HandRaisedIcon -> PanToolIcon ('pan-tool')
+  pages/settings-dialog/page.tsx: KeyIcon -> LockIcon ('lock')
+  pages/settings-dialog/page.tsx: LanguageIcon -> AppsIcon ('apps')
+  pages/settings-dialog/page.tsx: LinkIcon -> LinkIcon ('link')
+  pages/settings-dialog/page.tsx: LockClosedIcon -> LockIcon ('lock')
+  pages/settings-dialog/page.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  pages/settings-dialog/page.tsx: MapPinIcon -> MapIcon ('map')
+  pages/settings-dialog/page.tsx: MoonIcon -> VisibilityOffIcon ('visibility-off')
+  pages/settings-dialog/page.tsx: PaintBrushIcon -> DesignIcon ('design')
+  pages/settings-dialog/page.tsx: PencilSquareIcon -> EditSquareIcon ('edit-square')
+  pages/settings-dialog/page.tsx: PuzzlePieceIcon -> FrameworksIcon ('frameworks')
+  pages/settings-dialog/page.tsx: QuestionMarkCircleIcon -> InfoIcon ('info')
+  pages/settings-dialog/page.tsx: ReceiptPercentIcon -> MoneyIcon ('money')
+  pages/settings-dialog/page.tsx: ShieldCheckIcon -> LockIcon ('lock')
+  pages/settings-dialog/page.tsx: SignalIcon -> PulseIcon ('pulse')
+  pages/settings-dialog/page.tsx: SparklesIcon -> Robot2Icon ('robot-2')
+  pages/settings-dialog/page.tsx: SpeakerWaveIcon -> MicrophoneIcon ('microphone')
+  pages/settings-dialog/page.tsx: SunIcon -> VisibilityIcon ('visibility')
+  pages/settings-dialog/page.tsx: SwatchIcon -> DesignIcon ('design')
+  pages/settings-dialog/page.tsx: TagIcon -> NumericIcon ('numeric')
+  pages/settings-dialog/page.tsx: TrashIcon -> DeleteIcon ('delete')
+  pages/settings-dialog/page.tsx: UserCircleIcon -> PersonIcon ('person')
+  pages/settings-dialog/page.tsx: UserIcon -> PersonIcon ('person')
+  pages/settings-dialog/page.tsx: UsersIcon -> PersonIcon ('person')
+  pages/settings-sidebar/page.tsx: UserIcon -> PersonIcon ('person')
+  pages/settings-sidebar/page.tsx: LockClosedIcon -> LockIcon ('lock')
+  pages/settings-sidebar/page.tsx: ShieldCheckIcon -> LockIcon ('lock')
+  pages/settings-sidebar/page.tsx: BellIcon -> NotificationsIcon ('notifications')
+  pages/settings-sidebar/page.tsx: DocumentTextIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  pages/settings-sidebar/page.tsx: CreditCardIcon -> MoneyIcon ('money')
+  pages/settings-sidebar/page.tsx: GlobeAltIcon -> MapIcon ('map')
+  pages/settings-sidebar/page.tsx: BriefcaseIcon -> ProjectIcon ('project')
+  pages/settings-sidebar/page.tsx: WrenchScrewdriverIcon -> EngineeringIcon ('engineering')
+  pages/settings-sidebar/page.tsx: ComputerDesktopIcon -> WindowIcon ('window')
+  pages/settings-sidebar/page.tsx: PencilSquareIcon -> EditSquareIcon ('edit-square')
+  pages/settings-sidebar/page.tsx: ShareIcon -> LinkIcon ('link')
+  pages/settings-sidebar/page.tsx: ArrowLeftIcon -> ArrowLeftIcon ('arrow-left')
+  pages/settings-sidebar/page.tsx: ChevronRightIcon -> ChevronRightIcon ('chevron-right')
+  pages/shell-nav/page.tsx: PlayIcon -> PlayIcon ('play')
+  pages/shell-nav/page.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  pages/shell-nav/page.tsx: FolderIcon -> FolderIcon ('folder')
+  pages/shell-nav/page.tsx: DocumentTextIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  pages/shell-side-nav/page.tsx: SparklesIcon -> Robot2Icon ('robot-2')
+  pages/shell-side-nav/page.tsx: PlusIcon -> AddIcon ('add')
+  pages/shell-side-nav/page.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  pages/shell-side-nav/page.tsx: BookOpenIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  pages/shell-side-nav/page.tsx: Cog6ToothIcon -> SettingsIcon ('settings')
+  pages/shell-side-nav/page.tsx: UserCircleIcon -> PersonIcon ('person')
+  pages/shell-side-nav/page.tsx: UserIcon -> PersonIcon ('person')
+  pages/shell-side-nav/page.tsx: BuildingOffice2Icon -> FacilityIcon ('facility')
+  pages/shell-side-nav/page.tsx: CodeBracketIcon -> CodeIcon ('code')
+  pages/shell-top-nav/page.tsx: ShoppingBagIcon -> MoneyIcon ('money')
+  pages/shell-top-nav/page.tsx: ShoppingCartIcon -> MoneyIcon ('money')
+  pages/shell-top-nav/page.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  pages/shell-top-nav/page.tsx: SparklesIcon -> Robot2Icon ('robot-2')
+  pages/shell-top-nav/page.tsx: SwatchIcon -> DesignIcon ('design')
+  pages/shell-top-nav/page.tsx: TagIcon -> NumericIcon ('numeric')
+  pages/shell-top-nav/page.tsx: HomeModernIcon -> HomeIcon ('home')
+  pages/shell-top-nav/page.tsx: FaceSmileIcon -> PersonIcon ('person')
+  pages/shell-top-nav/page.tsx: ReceiptPercentIcon -> MoneyIcon ('money')
+  pages/shell-top-nav/page.tsx: GiftIcon -> ChristmasTreeIcon ('christmas-tree')
+  pages/shell-top-nav/page.tsx: CloudIcon -> LayersIcon ('layers')
+  pages/shell-top-nav/page.tsx: BoltIcon -> ElectricityIcon ('electricity')
+  pages/shell-top-nav/page.tsx: SunIcon -> VisibilityIcon ('visibility')
+  pages/shell-top-nav/page.tsx: StarIcon -> CrownIcon ('crown')
+  pages/shell-top-nav/page.tsx: FireIcon -> ElectricityIcon ('electricity')
+  pages/shell-top-nav/page.tsx: GlobeAltIcon -> MapIcon ('map')
+  pages/shell-top-nav/page.tsx: MoonIcon -> VisibilityOffIcon ('visibility-off')
+  pages/table-filter/page.tsx: Bookmark -> AddPinIcon ('add-pin')
+  pages/table-filter/page.tsx: BookmarkPlus -> AddPinIcon ('add-pin')
+  pages/table-filter/page.tsx: Calendar -> HistoryIcon ('history')
+  pages/table-filter/page.tsx: ChevronDown -> ChevronDownIcon ('chevron-down')
+  pages/table-filter/page.tsx: CircleX -> CancelCircleIcon ('cancel-circle')
+  pages/table-filter/page.tsx: Columns3 -> ViewColumnIcon ('view-column')
+  pages/table-filter/page.tsx: GripVertical -> DragIndicatorIcon ('drag-indicator')
+  pages/table-filter/page.tsx: Image -> ImageIcon ('image')
+  pages/table-filter/page.tsx: Pencil -> EditSquareIcon ('edit-square')
+  pages/table-filter/page.tsx: Pin -> AddPinIcon ('add-pin')
+  pages/table-filter/page.tsx: Plus -> AddIcon ('add')
+  pages/table-filter/page.tsx: Search -> SearchIcon ('search')
+  pages/table-filter/page.tsx: SlidersHorizontal -> ControlsIcon ('controls')
+  pages/table-filter/page.tsx: Table -> ViewColumnIcon ('view-column')
+  pages/table-filter/page.tsx: Table2 -> ViewColumnIcon ('view-column')
+  pages/table-filter/page.tsx: UserPlus -> PersonIcon ('person')
+  pages/table-filter/page.tsx: X -> CloseIcon ('close')
+  pages/table-grouped/page.tsx: ChevronRightIcon -> ChevronRightIcon ('chevron-right')
+  pages/table-grouped/page.tsx: ChevronDownIcon -> ChevronDownIcon ('chevron-down')
+  pages/table-grouped/page.tsx: PencilIcon -> EditSquareIcon ('edit-square')
+  pages/table-grouped/page.tsx: DocumentDuplicateIcon -> CopyIcon ('copy')
+  pages/table-grouped/page.tsx: ArrowRightIcon -> ArrowRightIcon ('arrow-right')
+  pages/table-grouped/page.tsx: TagIcon -> NumericIcon ('numeric')
+  pages/table-grouped/page.tsx: UserIcon -> PersonIcon ('person')
+  pages/table-grouped/page.tsx: TrashIcon -> DeleteIcon ('delete')
+  pages/table-grouped/page.tsx: EllipsisHorizontalIcon -> MoreVertIcon ('more-vert')
+  pages/table-grouped/page.tsx: XMarkIcon -> CloseIcon ('close')
+  pages/table-grouped/page.tsx: ChartBarIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  pages/table-inbox/page.tsx: ArchiveBoxIcon -> FolderIcon ('folder')
+  pages/table-inbox/page.tsx: ArrowLeftIcon -> ArrowLeftIcon ('arrow-left')
+  pages/table-inbox/page.tsx: ArrowPathIcon -> RotateIcon ('rotate')
+  pages/table-inbox/page.tsx: ArrowUturnLeftIcon -> UndoIcon ('undo')
+  pages/table-inbox/page.tsx: FaceSmileIcon -> PersonIcon ('person')
+  pages/table-inbox/page.tsx: FolderArrowDownIcon -> ExportUploadIcon ('export-upload')
+  pages/table-inbox/page.tsx: InboxIcon -> FolderOpenIcon ('folder-open')
+  pages/table-inbox/page.tsx: LinkIcon -> LinkIcon ('link')
+  pages/table-inbox/page.tsx: PaperAirplaneIcon -> ArrowRightIcon ('arrow-right')
+  pages/table-inbox/page.tsx: PaperClipIcon -> LinkIcon ('link')
+  pages/table-inbox/page.tsx: PencilSquareIcon -> EditSquareIcon ('edit-square')
+  pages/table-inbox/page.tsx: PhotoIcon -> ImageIcon ('image')
+  pages/table-inbox/page.tsx: TrashIcon -> DeleteIcon ('delete')
+  pages/table-inbox/page.tsx: UsersIcon -> PersonIcon ('person')
+  pages/table-inbox/page.tsx: XMarkIcon -> CloseIcon ('close')
+  pages/table-page/page.tsx: ArrowDownTrayIcon -> ExportUploadIcon ('export-upload')
+  pages/table-page/page.tsx: MagnifyingGlassIcon -> SearchIcon ('search')
+  pages/theme-showcase/page.tsx: Plus -> AddIcon ('add')
+  pages/theme-showcase/page.tsx: Search -> SearchIcon ('search')
+  pages/theme-showcase/page.tsx: Tag -> NumericIcon ('numeric')
+  pages/theme-showcase/page.tsx: Folder -> FolderIcon ('folder')
+  pages/theme-showcase/page.tsx: MapPin -> MapIcon ('map')
+  pages/theme-showcase/page.tsx: List -> ListIcon ('list')
+  pages/theme-showcase/page.tsx: LayoutGrid -> GridViewIcon ('grid-view')
+  pages/theme-showcase/page.tsx: ShoppingBag -> MoneyIcon ('money')
+  pages/theme-showcase/page.tsx: Banknote -> MoneyIcon ('money')
+  pages/theme-showcase/page.tsx: Mic -> MicrophoneIcon ('microphone')
+  pages/theme-showcase/page.tsx: CreditCard -> MoneyIcon ('money')
+  pages/theme-showcase/page.tsx: Lock -> LockIcon ('lock')
+  pages/theme-showcase/page.tsx: X -> CloseIcon ('close')
+  pages/theme-showcase/page.tsx: Download -> ExportUploadIcon ('export-upload')
+  pages/theme-showcase/page.tsx: Smartphone -> WindowIcon ('window')
+  pages/theme-showcase/page.tsx: Wallet -> MoneyIcon ('money')
+  pages/theme-showcase/page.tsx: User -> PersonIcon ('person')
+  pages/work-item-detail/page.tsx: ArrowLeftIcon -> ArrowLeftIcon ('arrow-left')
+  pages/work-item-detail/page.tsx: LinkIcon -> LinkIcon ('link')
+  pages/work-item-detail/page.tsx: DocumentTextIcon -> ReportsAnalyticsIcon ('reports-analytics')
+  pages/work-item-detail/page.tsx: PencilIcon -> EditSquareIcon ('edit-square')
+  pages/work-item-detail/page.tsx: TrashIcon -> DeleteIcon ('delete')
+  pages/work-item-detail/page.tsx: PhotoIcon -> ImageIcon ('image')
+  pages/work-item-detail/page.tsx: ViewColumnsIcon -> ViewColumnIcon ('view-column')
+  pages/work-item-detail/page.tsx: InformationCircleIcon -> InfoIcon ('info')
+  pages/work-item-detail/page.tsx: BellIcon -> NotificationsIcon ('notifications')
+  pages/work-item-detail/page.tsx: ShareIcon -> LinkIcon ('link')
+  pages/work-item-detail/page.tsx: EyeIcon -> VisibilityIcon ('visibility')
 
-Refused before translation
---------------------------
-These reach for something Tecton does not publish at all. Each reason is a
-real gap, not a shortcut.
+Renamed exports
+---------------
+A docs page imports an example by name, so the export is named for the file
+it lives in. Where that name was already taken inside the file, or would not
+read as a component, the upstream name was kept instead.
 
-  blocks/AppShell/AppShellMobileHookUsage.tsx: is an example for `useAppShellMobile`, which is not a Tecton component
-  blocks/Banner/BannerStatuses.tsx: would overwrite the hand-written example Alert/AlertStatuses.tsx
-  blocks/BaseTypeahead/BaseTypeaheadCustomSearch.tsx: needs `borderVars`, which Tecton does not publish
-  blocks/BaseTypeahead/BaseTypeaheadShowcase.tsx: needs `borderVars`, which Tecton does not publish
-  blocks/BreadcrumbItem/BreadcrumbItemBasic.tsx: would overwrite the hand-written example BreadcrumbItem/BreadcrumbItemBasic.tsx
-  blocks/Breadcrumbs/BreadcrumbsCustomSeparator.tsx: needs `rtlStyles`, which Tecton does not publish
-  blocks/Breadcrumbs/BreadcrumbsMenuItem.tsx: needs `BreadcrumbMenuOption`, which Tecton does not publish
-  blocks/Button/ButtonVariants.tsx: would overwrite the hand-written example Button/ButtonVariants.tsx
-  blocks/Button/ButtonWithIcon.tsx: would overwrite the hand-written example Button/ButtonWithIcon.tsx
-  blocks/ButtonGroup/ButtonGroupBasic.tsx: would overwrite the hand-written example ButtonGroup/ButtonGroupBasic.tsx
-  blocks/CheckboxInput/CheckboxInputBasic.tsx: would overwrite the hand-written example Checkbox/CheckboxBasic.tsx
-  blocks/CheckboxListItem/CheckboxListItemBasic.tsx: would overwrite the hand-written example Checkbox/CheckboxBasic.tsx
-  blocks/Collapsible/CollapsibleHookUsage.tsx: is an example for `useCollapsible`, which is not a Tecton component
-  blocks/ComplexSelector/ComplexSelectorShowcase.tsx: needs `borderVars`, which Tecton does not publish
-  blocks/Hooks/useContainerRevealHookUsage.tsx: is an example for `useContainerReveal`, which is not a Tecton component
-  blocks/Hooks/useKeyboardHintHookUsage.tsx: is an example for `useKeyboardHint`, which is not a Tecton component
-  blocks/Hooks/useStreamingTextHookUsage.tsx: is an example for `useStreamingText`, which is not a Tecton component
-  blocks/HoverCard/HoverCardHookUsage.tsx: is an example for `useHoverCard`, which is not a Tecton component
-  blocks/HStack/HStackBasic.tsx: would overwrite the hand-written example HStack/HStackBasic.tsx
-  blocks/Icon/IconSizes.tsx: would overwrite the hand-written example Icon/IconSizes.tsx
-  blocks/InternationalizationProvider/InternationalizationProvider01ShippedLocale.tsx: imports all of `@astryxdesign/core/locales/fr-FR.json`, which Tecton cannot map
-  blocks/Layer/LayerHookUsage.tsx: is an example for `useLayer`, which is not a Tecton component
-  blocks/Popover/PopoverBottomSheetAlternative.tsx: needs `spacingVars`, which Tecton does not publish
-  blocks/Popover/PopoverHookUsage.tsx: is an example for `usePopover`, which is not a Tecton component
-  blocks/RadioListItem/RadioListItemBasic.tsx: would overwrite the hand-written example Radio/RadioBasic.tsx
-  blocks/Resizable/ResizableShowcase.tsx: is an example for `Resizable`, which is not a Tecton component
-  blocks/Selector/SelectorWithSections.tsx: would overwrite the hand-written example Select/SelectWithSections.tsx
-  blocks/Table/ColumnResizeHookUsage.tsx: is an example for `useTableColumnResize`, which is not a Tecton component
-  blocks/Table/StickyColumnsHookUsage.tsx: is an example for `useTableStickyColumns`, which is not a Tecton component
-  blocks/Table/TableGroupedRowsTable.tsx: is an example for `useTableGroupedRows`, which is not a Tecton component
-  blocks/Table/TableRowExpansionTable.tsx: is an example for `useTableRowExpansion`, which is not a Tecton component
-  blocks/Table/TableRowIndexTable.tsx: is an example for `useTableRowIndex`, which is not a Tecton component
-  blocks/Table/TableRowStatusTable.tsx: is an example for `useTableRowStatus`, which is not a Tecton component
-  blocks/Table/TableTreeTable.tsx: is an example for `useTableTreeData`, which is not a Tecton component
-  blocks/Theme/ThemeApply.tsx: is an example for `Theme`, which is not a Tecton component
-  blocks/Theme/ThemeNested.tsx: is an example for `Theme`, which is not a Tecton component
-  blocks/Theme/ThemeShowcase.tsx: is an example for `Theme`, which is not a Tecton component
-  blocks/Theme/ThemeSwitcher.tsx: is an example for `Theme`, which is not a Tecton component
-  blocks/Theme/useThemeHookUsage.tsx: is an example for `useTheme`, which is not a Tecton component
-  blocks/Timestamp/TimestampAutoFormat.tsx: reads the clock during render, which the React rules this repository lints with forbid
-  blocks/Timestamp/TimestampRelativeFormat.tsx: reads the clock during render, which the React rules this repository lints with forbid
-  blocks/Token/TokenRemovable.tsx: would overwrite the hand-written example Chip/ChipRemovable.tsx
-  blocks/Tooltip/TooltipHookUsage.tsx: reads a ref during render, which the React rules this repository lints with forbid
-  blocks/VStack/VStackBasic.tsx: would overwrite the hand-written example VStack/VStackBasic.tsx
-  pages/dashboard-alert-rail/page.tsx: needs `StatusDotVariant`, which Tecton does not publish
-  pages/dashboard-cohort-funnel/page.tsx: depends on `recharts`, which Tecton does not ship
-  pages/dashboard-comparison/page.tsx: depends on `recharts`, which Tecton does not ship
-  pages/dashboard-composition/page.tsx: depends on `recharts`, which Tecton does not ship
-  pages/dashboard-progress/page.tsx: depends on `recharts`, which Tecton does not ship
-  pages/dashboard-scorecard/page.tsx: depends on `recharts`, which Tecton does not ship
-  pages/dashboard/page.tsx: depends on `recharts`, which Tecton does not ship
-  pages/kanban-board/page.tsx: the port produced code that does not parse: Identifier expected. (54:21)
-  pages/settings-dialog/page.tsx: needs `Theme`, which Tecton does not publish
-  pages/shell-side-nav/page.tsx: needs `StatusDotVariant`, which Tecton does not publish
-  pages/table-filter/page.tsx: needs `borderVars`, which Tecton does not publish
-  pages/table-grouped/page.tsx: needs `ResizableProps`, which Tecton does not publish
-  pages/table-inbox/page.tsx: needs `durationVars`, which Tecton does not publish
-  pages/table-page/page.tsx: needs `TablePlugin`, which Tecton does not publish
-  pages/work-item-detail/page.tsx: needs `colorVars`, which Tecton does not publish
+  blocks/components/Avatar/AvatarGroup.tsx: kept `export function AvatarGroupBlock` rather than `AvatarGroup` - `AvatarGroup` already names something else in this file
+  blocks/components/BaseTypeahead/BaseTypeaheadShowcase.tsx: export default function BaseTypeaheadCustomResults -> export function BaseTypeaheadShowcase - a named export has to match the file it is in
+  blocks/components/ChatToolCalls/ChatToolCallsToolCallsWithNodes.tsx: export default function ChatToolCallsSimple -> export function ChatToolCallsToolCallsWithNodes - a named export has to match the file it is in
+  blocks/components/Hooks/useContainerRevealHookUsage.tsx: kept `export function UseContainerRevealHookUsage` rather than `useContainerRevealHookUsage` - the file stem does not start with a capital
+  blocks/components/Hooks/useKeyboardHintHookUsage.tsx: kept `export function UseKeyboardHintHookUsage` rather than `useKeyboardHintHookUsage` - the file stem does not start with a capital
+  blocks/components/Hooks/useStreamingTextHookUsage.tsx: kept `export function UseStreamingTextHookUsage` rather than `useStreamingTextHookUsage` - the file stem does not start with a capital
+  blocks/components/IconButton/IconButtonActionBar.tsx: export default function IconButtactionBar -> export function IconButtonActionBar - a named export has to match the file it is in
+  blocks/components/InternationalizationProvider/InternationalizationProvider01ShippedLocale.tsx: export default function InternationalizationProviderShippedLocale -> export function InternationalizationProvider01ShippedLocale - a named export has to match the file it is in
+  blocks/components/InternationalizationProvider/InternationalizationProvider02Overrides.tsx: export default function InternationalizationProviderOverrides -> export function InternationalizationProvider02Overrides - a named export has to match the file it is in
+  blocks/components/InternationalizationProvider/InternationalizationProvider03RtlDirection.tsx: export default function InternationalizationProviderRtlDirection -> export function InternationalizationProvider03RtlDirection - a named export has to match the file it is in
+  blocks/components/Section/SectionWashHighlight.tsx: export default function SectionDefaultWithWash -> export function SectionWashHighlight - a named export has to match the file it is in
+  blocks/components/Theme/useThemeHookUsage.tsx: kept `export function UseThemeHookUsage` rather than `useThemeHookUsage` - the file stem does not start with a capital
+  blocks/components/ToggleButton/ToggleButtonGroup.tsx: kept `export function ToggleButtonGroupBlock` rather than `ToggleButtonGroup` - `ToggleButtonGroup` already names something else in this file
+  blocks/components/TopNav/TopNavMegaMenu.tsx: kept `export function TopNavMegaMenuBlock` rather than `TopNavMegaMenu` - `TopNavMegaMenu` already names something else in this file
+  pages/ai-chat/page.tsx: export default function AIChatConversationTemplate -> export function Page - a named export has to match the file it is in
+  pages/ai-chat-landing/page.tsx: export default function AIChatTemplate -> export function Page - a named export has to match the file it is in
+  pages/centered-hero/page.tsx: export default function CenteredHero -> export function Page - a named export has to match the file it is in
+  pages/checkout-wizard/page.tsx: export default function CheckoutWizardPage -> export function Page - a named export has to match the file it is in
+  pages/classic-gallery/page.tsx: export default function ClassicGalleryTemplate -> export function Page - a named export has to match the file it is in
+  pages/contact-form/page.tsx: export default function FormSimplePage -> export function Page - a named export has to match the file it is in
+  pages/dashboard/page.tsx: export default function DashboardTemplate -> export function Page - a named export has to match the file it is in
+  pages/dashboard-alert-rail/page.tsx: export default function ServiceHealthMonitorPage -> export function Page - a named export has to match the file it is in
+  pages/dashboard-cohort-funnel/page.tsx: export default function FunnelCohortAnalyticsPage -> export function Page - a named export has to match the file it is in
+  pages/dashboard-comparison/page.tsx: export default function DataDashboardPage -> export function Page - a named export has to match the file it is in
+  pages/dashboard-composition/page.tsx: export default function DashboardPortfolioTemplate -> export function Page - a named export has to match the file it is in
+  pages/dashboard-progress/page.tsx: export default function ProjectStatusPage -> export function Page - a named export has to match the file it is in
+  pages/dashboard-scorecard/page.tsx: export default function ExecutiveReviewPage -> export function Page - a named export has to match the file it is in
+  pages/detail-page/page.tsx: export default function DetailPage2Template -> export function Page - a named export has to match the file it is in
+  pages/documentation/page.tsx: export default function DocumentationOverviewPage -> export function Page - a named export has to match the file it is in
+  pages/documentation-design/page.tsx: export default function DesignDocumentationPage -> export function Page - a named export has to match the file it is in
+  pages/documentation-technical/page.tsx: export default function TechnicalDocumentationPage -> export function Page - a named export has to match the file it is in
+  pages/editor/page.tsx: export default function EditorPage -> export function Page - a named export has to match the file it is in
+  pages/file-explorer/page.tsx: export default function FileExplorerPage -> export function Page - a named export has to match the file it is in
+  pages/form-two-column/page.tsx: export default function FormTwoColumnPage -> export function Page - a named export has to match the file it is in
+  pages/form-wizard/page.tsx: export default function FormWizardPage -> export function Page - a named export has to match the file it is in
+  pages/form-wizard-dialog/page.tsx: export default function FormWizardDialogPage -> export function Page - a named export has to match the file it is in
+  pages/form-wizard-inline/page.tsx: export default function FormWizardInlinePage -> export function Page - a named export has to match the file it is in
+  pages/form-wizard-vertical/page.tsx: export default function FormWizardVerticalPage -> export function Page - a named export has to match the file it is in
+  pages/gallery-hero/page.tsx: export default function GalleryHero -> export function Page - a named export has to match the file it is in
+  pages/ide/page.tsx: export default function ResizableWorkspacePage -> export function Page - a named export has to match the file it is in
+  pages/incident-console/page.tsx: export default function IncidentConsolePage -> export function Page - a named export has to match the file it is in
+  pages/kanban-board/page.tsx: export default function KanbanBoardTemplate -> export function Page - a named export has to match the file it is in
+  pages/library/page.tsx: export default function LibraryPage -> export function Page - a named export has to match the file it is in
+  pages/login/page.tsx: export default function LoginPage -> export function Page - a named export has to match the file it is in
+  pages/login-card/page.tsx: export default function LoginSimple -> export function Page - a named export has to match the file it is in
+  pages/login-split/page.tsx: export default function LoginTwoColumn -> export function Page - a named export has to match the file it is in
+  pages/login-sso/page.tsx: export default function LoginSSO -> export function Page - a named export has to match the file it is in
+  pages/messaging-shell/page.tsx: export default function MessagingShellPage -> export function Page - a named export has to match the file it is in
+  pages/mixed-gallery/page.tsx: export default function MixedGalleryTemplate -> export function Page - a named export has to match the file it is in
+  pages/payment-form/page.tsx: export default function PaymentFormPage -> export function Page - a named export has to match the file it is in
+  pages/product-detail/page.tsx: export default function ProductDetailTemplate -> export function Page - a named export has to match the file it is in
+  pages/product-gallery/page.tsx: export default function ProductGalleryTemplate -> export function Page - a named export has to match the file it is in
+  pages/settings/page.tsx: export default function SettingsTemplate -> export function Page - a named export has to match the file it is in
+  pages/settings-dialog/page.tsx: export default function SettingsDialogTemplate -> export function Page - a named export has to match the file it is in
+  pages/settings-sidebar/page.tsx: export default function SettingsSecurityTemplate -> export function Page - a named export has to match the file it is in
+  pages/shell-nav/page.tsx: export default function ShellNav -> export function Page - a named export has to match the file it is in
+  pages/shell-side-nav/page.tsx: export default function ShellSideNav -> export function Page - a named export has to match the file it is in
+  pages/shell-top-nav/page.tsx: export default function ShellTopNav -> export function Page - a named export has to match the file it is in
+  pages/side-gallery/page.tsx: export default function SideGalleryTemplate -> export function Page - a named export has to match the file it is in
+  pages/table/page.tsx: export default function TablePage -> export function Page - a named export has to match the file it is in
+  pages/table-filter/page.tsx: export default function TableFilterTemplate -> export function Page - a named export has to match the file it is in
+  pages/table-grouped/page.tsx: export default function DataTableTemplate -> export function Page - a named export has to match the file it is in
+  pages/table-inbox/page.tsx: export default function SupportInboxTemplate -> export function Page - a named export has to match the file it is in
+  pages/table-page/page.tsx: export default function InvoiceLineItemsTemplate -> export function Page - a named export has to match the file it is in
+  pages/theme-showcase/page.tsx: export default function ThemeShowcase -> export function Page - a named export has to match the file it is in
+  pages/work-item-detail/page.tsx: export default function WorkItemDetailTemplate -> export function Page - a named export has to match the file it is in
 
-Removed after translation
--------------------------
-These translated cleanly but do not compile against the Tecton API: almost
-always a component Tecton redesigned to take data where upstream took
-children. The line is the compiler's own first complaint.
+Props stripped
+--------------
 
-  blocks/AlertDialog/AlertDialogAsyncAction.tsx: line 5: 'isLoading' is declared but its value is never read.
-  blocks/Avatar/AvatarGroup.tsx: line 37: Type 'string' is not assignable to type 'AvatarSize | undefined'.
-  blocks/AvatarGroup/AvatarGroupInteractive.tsx: line 22: Type 'string' is not assignable to type 'AvatarSize | undefined'.
-  blocks/AvatarGroup/AvatarGroupShowcase.tsx: line 37: Type 'string' is not assignable to type 'AvatarSize | undefined'.
-  blocks/AvatarGroupOverflow/AvatarGroupOverflowCustomText.tsx: line 25: Type 'string' is not assignable to type 'AvatarSize | undefined'.
-  blocks/AvatarGroupOverflow/AvatarGroupOverflowDefault.tsx: line 25: Type 'string' is not assignable to type 'AvatarSize | undefined'.
-  blocks/AvatarGroupOverflow/AvatarGroupOverflowShowcase.tsx: line 26: Type 'string' is not assignable to type 'AvatarSize | undefined'.
-  blocks/Banner/BannerCollapsibleContent.tsx: line 9: Type '{ children: Element; status: "warning"; title: string; description: string; isDismissable: true; }' is not assignable to type 'IntrinsicAttributes & AlertProps'.   Property 'children' does not e
-  blocks/BottomSheet/BottomSheetSnapPoints.tsx: line 126: Property 'name' is missing in type '{ size: 16; }' but required in type 'IconProps'.
-  blocks/Button/ButtonFloating.tsx: line 20: Type '"secondary" | "primary" | "destructive" | "ghost"' is not assignable to type 'ButtonVariant | undefined'.   Type '"ghost"' is not assignable to type 'ButtonVariant | undefined'.
-  blocks/Button/ButtonSizeVariants.tsx: line 20: Type '"lg" | "sm" | "md"' is not assignable to type 'ControlSize | undefined'.   Type '"lg"' is not assignable to type 'ControlSize | undefined'.
-  blocks/Card/CardVariants.tsx: line 22: Type '"blue" | "green" | "orange" | "purple" | "default" | "muted"' is not assignable to type 'CardVariant | undefined'.   Type '"blue"' is not assignable to type 'CardVariant | undefined'.
-  blocks/ChatComposer/ChatComposerFlat.tsx: line 24: Object literal may only specify known properties, and 'onClick' does not exist in type 'MenuEntry'.
-  blocks/ChatComposer/ChatComposerFooterActions.tsx: line 23: Object literal may only specify known properties, and 'onClick' does not exist in type 'MenuEntry'.
-  blocks/ChatComposer/ChatComposerFullFeatured.tsx: line 58: Object literal may only specify known properties, and 'onClick' does not exist in type 'MenuEntry'.
-  blocks/ChatComposerDrawer/ChatComposerDrawerFeedback.tsx: line 30: Type 'Element' is not assignable to type 'string'.
-  blocks/ChatMessageList/ChatMessageListDensity.tsx: line 35: Type '"sm" | "md"' is not assignable to type 'AvatarSize | undefined'.   Type '"sm"' is not assignable to type 'AvatarSize | undefined'.
-  blocks/CheckboxList/CheckboxListSelectAllPattern.tsx: line 16: 'setSelected' is declared but its value is never read.
-  blocks/CheckboxList/CheckboxListShowcase.tsx: line 8: Type '{ children: Element[]; label: string; description: string; value: string[]; onChange: Dispatch<SetStateAction<string[]>>; hasDividers: true; }' is not assignable to type 'IntrinsicAttributes & C
-  blocks/CheckboxList/CheckboxListWithEndContent.tsx: line 8: Type '{ children: Element[]; label: string; value: string[]; onChange: Dispatch<SetStateAction<string[]>>; hasDividers: true; }' is not assignable to type 'IntrinsicAttributes & CheckboxGroupProps'.  
-  blocks/CheckboxListItem/CheckboxListItemShowcase.tsx: line 9: Type '{ children: Element[]; label: string; value: string[]; onChange: Dispatch<SetStateAction<string[]>>; hasDividers: true; }' is not assignable to type 'IntrinsicAttributes & CheckboxGroupProps'.  
-  blocks/CollapsibleGroup/CollapsibleGroupAccordion.tsx: line 55: Property 'title' is missing in type '{ children: Element; key: string; value: string; }' but required in type 'AccordionProps'.
-  blocks/CommandPalette/CommandPaletteRichItems.tsx: line 45: Type '(item: RichCommand) => React.JSX.Element' is not assignable to type '(item: SearchableItem<unknown>, isSelected: boolean) => ReactNode'.   Types of parameters 'item' and 'item' are incompatible.
-  blocks/CommandPaletteItem/CommandPaletteItemShowcase.tsx: line 39: Type '(item: CommandItem) => React.JSX.Element' is not assignable to type '(item: SearchableItem<unknown>, isSelected: boolean) => ReactNode'.   Types of parameters 'item' and 'item' are incompatible.
-  blocks/ComplexSelector/ComplexSelectorDeadlinePicker.tsx: line 40: Cannot find name 'ComplexSelector'.
-  blocks/ComplexSelector/ComplexSelectorTreeSearch.tsx: line 150: Type 'TreeListItemData[]' is not assignable to type 'readonly TreeItem[]'.   Type 'TreeListItemData' is not assignable to type 'TreeItem'.     Types of property 'label' are incompatible.       Type 'R
-  blocks/Dialog/DialogAdaptivePresentation.tsx: line 45: 'maxHeight' is declared but its value is never read.
-  blocks/Dialog/DialogConfirmationDialog.tsx: line 43: Property 'title' is missing in type '{ children: Element; isOpen: true; onOpenChange: () => void; width: number; }' but required in type 'DialogProps'.
-  blocks/Dialog/DialogFormDialog.tsx: line 63: Property 'title' is missing in type '{ children: Element; isOpen: true; onOpenChange: () => void; width: number; }' but required in type 'DialogProps'.
-  blocks/Dialog/DialogFullscreenDialog.tsx: line 56: Property 'title' is missing in type '{ children: Element; isOpen: boolean; onOpenChange: Dispatch<SetStateAction<boolean>>; }' but required in type 'DialogProps'.
-  blocks/Dialog/DialogScrollingContent.tsx: line 68: Property 'title' is missing in type '{ children: Element; isOpen: true; onOpenChange: () => void; }' but required in type 'DialogProps'.
-  blocks/Dialog/DialogShowcase.tsx: line 10: Property 'title' is missing in type '{ children: Element; isOpen: true; onOpenChange: () => void; }' but required in type 'DialogProps'.
-  blocks/Dialog/DialogWithSubtitle.tsx: line 46: Property 'title' is missing in type '{ children: Element; isOpen: true; onOpenChange: () => void; }' but required in type 'DialogProps'.
-  blocks/DialogHeader/DialogHeaderBasic.tsx: line 9: Property 'title' is missing in type '{ children: Element; isOpen: true; onOpenChange: () => void; }' but required in type 'DialogProps'.
-  blocks/DialogHeader/DialogHeaderShowcase.tsx: line 10: Property 'title' is missing in type '{ children: Element; isOpen: true; onOpenChange: () => void; }' but required in type 'DialogProps'.
-  blocks/DropdownMenu/DropdownMenuActions.tsx: line 13: Object literal may only specify known properties, and 'onClick' does not exist in type 'MenuEntry'.
-  blocks/DropdownMenu/DropdownMenuBottomSheet.tsx: line 19: 'isCompactTouchSurface' is declared but its value is never read.
-  blocks/DropdownMenu/DropdownMenuNoChevron.tsx: line 13: Object literal may only specify known properties, and 'onClick' does not exist in type 'MenuEntry'.
-  blocks/DropdownMenu/DropdownMenuShowcase.tsx: line 7: Object literal may only specify known properties, and 'onClick' does not exist in type 'MenuEntry'.
-  blocks/DropdownMenu/DropdownMenuWithDisabledItems.tsx: line 13: Object literal may only specify known properties, and 'onClick' does not exist in type 'MenuEntry'.
-  blocks/DropdownMenu/DropdownMenuWithSections.tsx: line 19: Type '{ type: "section"; title: string; items: { label: string; onClick: () => void; }[]; }' is not assignable to type 'MenuEntry'.   Types of property 'items' are incompatible.     Type '{ label: str
-  blocks/DropdownMenu/DropdownMenuWithSubmenu.tsx: line 13: Type '{ children: Element[]; }' is missing the following properties from type 'MenuProps': label, items
-  blocks/DropdownMenuItem/DropdownMenuItemBasic.tsx: line 6: Type '{ children: Element[]; }' is missing the following properties from type 'MenuProps': label, items
-  blocks/DropdownMenuItem/DropdownMenuItemShowcase.tsx: line 69: Type '{ children: Element[]; }' is missing the following properties from type 'MenuProps': label, items
-  blocks/FormLayout/FormLayoutMixedControls.tsx: line 26: Type '{ children: Element[]; label: string; value: string[]; onChange: Dispatch<SetStateAction<string[]>>; }' is not assignable to type 'IntrinsicAttributes & CheckboxGroupProps'.   Property 'children
-  blocks/HoverCard/HoverCardInlineTextHoverCard.tsx: line 6: 'content' is declared but its value is never read.
-  blocks/HoverCard/HoverCardProfileHoverCard.tsx: line 16: Type '48' is not assignable to type 'AvatarSize | undefined'.
-  blocks/Icon/IconStatusIcons.tsx: line 30: Property 'name' is missing in type '{ size: 16; }' but required in type 'IconProps'.
-  blocks/IconButton/IconButtonFloating.tsx: line 23: Type '"secondary" | "primary" | "destructive" | "ghost"' is not assignable to type 'IconButtonVariant | undefined'.   Type '"destructive"' is not assignable to type 'IconButtonVariant | undefined'.
-  blocks/InternationalizationProvider/InternationalizationProvider02Overrides.tsx: line 23: Type 'string | null' is not assignable to type 'string | undefined'.   Type 'null' is not assignable to type 'string | undefined'.
-  blocks/InternationalizationProvider/InternationalizationProvider03RtlDirection.tsx: line 23: Type '"sm"' is not assignable to type 'ToggleButtonSize | undefined'.
-  blocks/OverflowList/OverflowListCappedToolbar.tsx: line 17: Property 'label' is missing in type '{ items: { label: string; }[]; }' but required in type 'MenuProps'.
-  blocks/OverflowList/OverflowListOverflowDropdownActions.tsx: line 14: Property 'label' is missing in type '{ items: { label: string; onClick: () => void; }[]; }' but required in type 'MenuProps'.
-  blocks/ProgressBar/ProgressBarSemanticVariants.tsx: line 7: Type '"accent"' is not assignable to type 'ProgressVariant | undefined'.
-  blocks/SegmentedControl/SegmentedControlDisabledItem.tsx: line 8: Type '{ children: Element[]; value: string; onChange: Dispatch<SetStateAction<string>>; label: string; }' is not assignable to type 'IntrinsicAttributes & ToggleButtonGroupProps'.   Property 'children
-  blocks/SegmentedControl/SegmentedControlFillLayout.tsx: line 9: Type '{ children: Element[]; value: string; onChange: Dispatch<SetStateAction<string>>; label: string; layout: "fill"; }' is not assignable to type 'IntrinsicAttributes & ToggleButtonGroupProps'.   Pr
-  blocks/SegmentedControl/SegmentedControlIconOnly.tsx: line 50: Type '"sm"' is not assignable to type 'ToggleButtonSize | undefined'.
-  blocks/SegmentedControl/SegmentedControlShowcase.tsx: line 8: Type '{ children: Element[]; value: string; onChange: Dispatch<SetStateAction<string>>; label: string; }' is not assignable to type 'IntrinsicAttributes & ToggleButtonGroupProps'.   Property 'children
-  blocks/SegmentedControl/SegmentedControlWithIcons.tsx: line 64: Type '{ children: Element[]; value: string; onChange: Dispatch<SetStateAction<string>>; label: string; }' is not assignable to type 'IntrinsicAttributes & ToggleButtonGroupProps'.   Property 'children
-  blocks/SegmentedControlItem/SegmentedControlItemBasic.tsx: line 9: Type '{ children: Element[]; value: string; onChange: Dispatch<SetStateAction<string>>; label: string; }' is not assignable to type 'IntrinsicAttributes & ToggleButtonGroupProps'.   Property 'children
-  blocks/SegmentedControlItem/SegmentedControlItemShowcase.tsx: line 11: Type '{ children: Element[]; value: string; onChange: Dispatch<SetStateAction<string>>; label: string; }' is not assignable to type 'IntrinsicAttributes & ToggleButtonGroupProps'.   Property 'children
-  blocks/Selector/SelectorClearable.tsx: line 15: Type 'string | null' is not assignable to type 'string | undefined'.   Type 'null' is not assignable to type 'string | undefined'.
-  blocks/Selector/SelectorOptionDescriptions.tsx: line 32: Type '{ value: string; label: string; icon: string; description: string; }[]' is not assignable to type 'readonly SelectItem[]'.   Type '{ value: string; label: string; icon: string; description: stri
-  blocks/Selector/SelectorShowcase.tsx: line 9: Type 'string' is not assignable to type 'SelectItem'.
-  blocks/Slider/SliderFormattedValue.tsx: line 10: Type 'Dispatch<SetStateAction<number>>' is not assignable to type '(value: SliderValue) => void'.   Types of parameters 'value' and 'value' are incompatible.     Type 'SliderValue' is not assignable t
-  blocks/Slider/SliderRangeSlider.tsx: line 6: Type 'Dispatch<SetStateAction<[number, number]>>' is not assignable to type '(value: SliderValue) => void'.   Types of parameters 'value' and 'value' are incompatible.     Type 'SliderValue' is not as
-  blocks/Slider/SliderShowcase.tsx: line 6: Type 'Dispatch<SetStateAction<number>>' is not assignable to type '(value: SliderValue) => void'.   Types of parameters 'value' and 'value' are incompatible.     Type 'SliderValue' is not assignable t
-  blocks/Slider/SliderWithMarks.tsx: line 10: Type 'Dispatch<SetStateAction<number>>' is not assignable to type '(value: SliderValue) => void'.   Types of parameters 'value' and 'value' are incompatible.     Type 'SliderValue' is not assignable t
-  blocks/Slider/SliderWithStatus.tsx: line 15: Type 'Dispatch<SetStateAction<number>>' is not assignable to type '(value: SliderValue) => void'.   Types of parameters 'value' and 'value' are incompatible.     Type 'SliderValue' is not assignable t
-  blocks/Spinner/SpinnerOnMedia.tsx: line 7: Property 'label' is missing in type '{}' but required in type 'ProgressProps'.
-  blocks/Spinner/SpinnerShowcase.tsx: line 4: Property 'label' is missing in type '{ size: 32; }' but required in type 'ProgressProps'.
-  blocks/Spinner/SpinnerSizes.tsx: line 7: Property 'label' is missing in type '{ size: 16; }' but required in type 'ProgressProps'.
-  blocks/Spinner/SpinnerWithLabel.tsx: line 12: Type 'Element' is not assignable to type 'string'.
-  blocks/Step/StepIndicator.tsx: line 51: Property 'label' is missing in type '{ size: 32; }' but required in type 'ProgressProps'.
-  blocks/Tab/TabWithSelectedIcon.tsx: line 5: 'StarIcon' is declared but its value is never read.
-  blocks/Table/TableColumnSettingsTable.tsx: line 92: 'plugin' is declared but its value is never read.
-  blocks/Table/TableFilterableTable.tsx: line 74: Object literal may only specify known properties, and 'filter' does not exist in type 'TableColumn<Employee>'.
-  blocks/Table/TableGridDividersTable.tsx: line 50: Type '"compact"' is not assignable to type 'ControlSize | undefined'.
-  blocks/Table/TableInlineFilterTable.tsx: line 74: Object literal may only specify known properties, and 'filter' does not exist in type 'TableColumn<Employee>'.
-  blocks/Table/TablePaginatedTable.tsx: line 59: 'plugin' is declared but its value is never read.
-  blocks/Table/TableResizableTable.tsx: line 34: 'resizePlugin' is declared but its value is never read.
-  blocks/Table/TableSelectableTable.tsx: line 39: 'selectionPlugin' is declared but its value is never read.
-  blocks/Table/TableSortableTable.tsx: line 43: Object literal may only specify known properties, and 'sortable' does not exist in type 'TableColumn<Employee>'.
-  blocks/TabList/TabListTabsWithActions.tsx: line 6: 'FilterIcon' is declared but its value is never read.
-  blocks/TabList/TabListTabsWithIcons.tsx: line 5: 'HomeIcon' is declared but its value is never read.
-  blocks/Text/TextTypes.tsx: line 54: Type '"large" | "code" | "label" | "supporting" | "body"' is not assignable to type 'TextVariant | undefined'.   Type '"code"' is not assignable to type 'TextVariant | undefined'.
-  blocks/Text/TextWeight.tsx: line 15: Type '"bold" | "medium" | "semibold" | "normal"' is not assignable to type 'TextWeight | undefined'.   Type '"normal"' is not assignable to type 'TextWeight | undefined'.
-  blocks/Toast/ToastAction.tsx: line 1: Cannot find module '../Toast.js' or its corresponding type declarations.
-  blocks/Toast/ToastDeduplication.tsx: line 3: Cannot find module '../Toast.js' or its corresponding type declarations.
-  blocks/Toast/ToastDismiss.tsx: line 4: Cannot find module '../Toast.js' or its corresponding type declarations.
-  blocks/Toast/ToastShowcase.tsx: line 1: Cannot find module '../Toast.js' or its corresponding type declarations.
-  blocks/Toast/ToastStacking.tsx: line 3: Cannot find module '../Toast.js' or its corresponding type declarations.
-  blocks/Toast/ToastTypes.tsx: line 1: Cannot find module '../Toast.js' or its corresponding type declarations.
-  blocks/ToggleButton/ToggleButtonLabel.tsx: line 18: Type '{ children: string; label: string; icon: "visibility"; pressedIcon: "visibility-off"; isPressed: boolean; onPressedChange: Dispatch<SetStateAction<boolean>>; }' is not assignable to type 'Intrin
-  blocks/ToggleButton/ToggleButtonShowcase.tsx: line 28: Type '{ children: string; label: string; icon: "notifications"; pressedIcon: "notifications"; isPressed: boolean; onPressedChange: Dispatch<SetStateAction<boolean>>; }' is not assignable to type 'Intr
-  blocks/Token/TokenColors.tsx: line 28: Type '"blue" | "cyan" | "green" | "orange" | "pink" | "purple" | "red" | "teal" | "yellow" | "default" | "gray"' is not assignable to type 'ChipColor | undefined'.   Type '"blue"' is not assignable to
-  blocks/Toolbar/ToolbarBulkActions.tsx: line 32: 'selectionPlugin' is declared but its value is never read.
-  blocks/Toolbar/ToolbarTableFilter.tsx: line 35: Type 'string | null' is not assignable to type 'string | undefined'.   Type 'null' is not assignable to type 'string | undefined'.
-  blocks/TreeList/TreeListFileTreeWithIcons.tsx: line 12: Object literal may only specify known properties, and 'startContent' does not exist in type 'TreeItem'.
-  blocks/TreeList/TreeListInteractiveSettings.tsx: line 12: Object literal may only specify known properties, and 'startContent' does not exist in type 'TreeItem'.
-  blocks/TreeList/TreeListMailboxTree.tsx: line 14: Object literal may only specify known properties, and 'endContent' does not exist in type 'TreeItem'.
-  blocks/TreeList/TreeListNavigationTree.tsx: line 13: Object literal may only specify known properties, and 'children' does not exist in type 'TreeItem'.
-  blocks/TreeList/TreeListShowcase.tsx: line 13: Object literal may only specify known properties, and 'children' does not exist in type 'TreeItem'.
-  blocks/TreeList/TreeListVariants.tsx: line 36: Type 'TreeListItemData[]' is not assignable to type 'readonly TreeItem[]'.   Type 'TreeListItemData' is not assignable to type 'TreeItem'.     Types of property 'label' are incompatible.       Type 'R
-  blocks/TypeaheadItem/TypeaheadItemBasic.tsx: line 19: Type 'Dispatch<SetStateAction<PersonItem | null>>' is not assignable to type '(option: AutocompleteOption | null) => void'.   Types of parameters 'value' and 'option' are incompatible.     Type 'Autoc
-  blocks/TypeaheadItem/TypeaheadItemShowcase.tsx: line 19: Type 'Dispatch<SetStateAction<PersonItem | null>>' is not assignable to type '(option: AutocompleteOption | null) => void'.   Types of parameters 'value' and 'option' are incompatible.     Type 'Autoc
-  blocks/VisuallyHidden/VisuallyHiddenShowcase.tsx: line 32: 'icon' is declared but its value is never read.
-  blocks/VisuallyHidden/VisuallyHiddenSupplementaryContext.tsx: line 24: Property 'name' is missing in type '{ size: 16; }' but required in type 'IconProps'.
-  pages/ai-chat-landing/page.tsx: line 233: 'isModeMenuOpen' is declared but its value is never read.
-  pages/ai-chat/page.tsx: line 129: Property 'label' is missing in type '{ items: { label: string; }[]; }' but required in type 'MenuProps'.
-  pages/checkout-wizard/page.tsx: line 510: Property 'title' is missing in type '{ children: Element; defaultIsOpen: false; }' but required in type 'AccordionProps'.
-  pages/contact-form/page.tsx: line 123: Property 'name' is missing in type '{ size: 24; }' but required in type 'IconProps'.
-  pages/detail-page/page.tsx: line 502: Type '"success"' is not assignable to type 'ProgressVariant | undefined'.
-  pages/documentation-design/page.tsx: line 63: Property 'title' is missing in type '{ children: Element[]; isOpen: boolean; onOpenChange: Dispatch<SetStateAction<boolean>>; }' but required in type 'DialogProps'.
-  pages/documentation-technical/page.tsx: line 121: Object literal may only specify known properties, and 'onClick' does not exist in type 'MenuEntry'.
-  pages/editor/page.tsx: line 48: Type 'string' is not assignable to type 'IconComponent'.
-  pages/file-explorer/page.tsx: line 366: Type '{ children: Element[]; value: string; onChange: () => void; label: string; }' is not assignable to type 'IntrinsicAttributes & ToggleButtonGroupProps'.   Property 'children' does not exist on ty
-  pages/form-two-column/page.tsx: line 174: Type '"blue" | "default"' is not assignable to type 'ChipColor | undefined'.   Type '"blue"' is not assignable to type 'ChipColor | undefined'.
-  pages/form-wizard-dialog/page.tsx: line 210: Object literal may only specify known properties, and 'uniqueID' does not exist in type 'ToastPayload'.
-  pages/form-wizard-inline/page.tsx: line 391: Object literal may only specify known properties, and 'uniqueID' does not exist in type 'ToastPayload'.
-  pages/form-wizard-vertical/page.tsx: line 474: 'setHelpKey' is declared but its value is never read.
-  pages/form-wizard/page.tsx: line 591: Type '{ children: Element[]; label: string; description: string; value: string[]; onChange: Dispatch<SetStateAction<string[]>>; }' is not assignable to type 'IntrinsicAttributes & CheckboxGroupProps'.
-  pages/ide/page.tsx: line 250: Type 'TreeListItemData[]' is not assignable to type 'readonly TreeItem[]'.   Type 'TreeListItemData' is not assignable to type 'TreeItem'.     Types of property 'label' are incompatible.       Type 'R
-  pages/incident-console/page.tsx: line 343: Type '"green" | "red" | "yellow"' is not assignable to type 'ChipColor | undefined'.   Type '"green"' is not assignable to type 'ChipColor | undefined'.
-  pages/library/page.tsx: line 426: Property 'label' is missing in type '{ items: { label: string; onClick: () => void; }[]; }' but required in type 'MenuProps'.
-  pages/login-sso/page.tsx: line 165: Type '48' is not assignable to type 'AvatarSize | undefined'.
-  pages/messaging-shell/page.tsx: line 353: Type 'Element' is not assignable to type 'TectonIconRef'.
-  pages/payment-form/page.tsx: line 390: Type 'string[]' is not assignable to type 'readonly SelectItem[]'.   Type 'string' is not assignable to type 'SelectItem'.
-  pages/product-detail/page.tsx: line 167: Type '{ children: Element[]; value: string; onChange: Dispatch<SetStateAction<string>>; label: string; }' is not assignable to type 'IntrinsicAttributes & ToggleButtonGroupProps'.   Property 'children
-  pages/settings-sidebar/page.tsx: line 237: Property 'name' is missing in type '{}' but required in type 'IconProps'.
-  pages/shell-nav/page.tsx: line 201: Type '{ children: Element[]; key: string; menuWidth: number; }' is not assignable to type 'IntrinsicAttributes & MenuProps'.   Property 'children' does not exist on type 'IntrinsicAttributes & MenuPro
-  pages/shell-top-nav/page.tsx: line 72: Property 'name' is missing in type '{ size: 20; }' but required in type 'IconProps'.
-  pages/table/page.tsx: line 54: Type '"actions"' is not assignable to type 'keyof Item'.
-  pages/theme-showcase/page.tsx: line 1103: Type 'string' is not assignable to type 'SelectItem'.
+  pages/theme-showcase/page.tsx: <Search size={20}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <User size={20}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <ShoppingBag size={20}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <CreditCard size={20}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <Smartphone size={20}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <Wallet size={20}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <CreditCard size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <Lock size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <Download size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <X size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <Plus size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <Mic size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <ShoppingBag size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <Banknote size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <ShoppingBag size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <ShoppingBag size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <ShoppingBag size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <Plus size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <Search size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <Tag size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <Folder size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <MapPin size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <Tag size={16}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <List size={18}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+  pages/theme-showcase/page.tsx: <LayoutGrid size={18}> - a Tecton glyph takes SVG props and `variant`, so this prop does not exist on it
+
+Hand-written rules
+------------------
+One file needed more than an import rewrite. Each is spelled out here.
+
+  pages/settings-dialog/page.tsx: `@astryxdesign/theme-neutral/built` has no Tecton equivalent: Tecton's theme is applied by `TectonProvider`, and `@tecton/react/theme` exposes only an opaque handle on it. The nested `<Theme theme={neutralTheme} mode>` becomes a nested `<TectonProvider scope="nested" mode>`, which is how Tecton renders a subtree in its own colour mode.
+
+Subpaths the ported examples import
+-----------------------------------
+Every one of these has to exist under `@tecton/react` for the examples to
+compile. Two of them are entries the package surface calls build-time or
+skipped — `@tecton/react/theme/tokens.stylex` and `@tecton/react/locales/*` —
+and the examples below need them at the same path upstream published them.
+
+  @tecton/react  (9 files)
+  @tecton/react/AlertDialog  (2 files)
+  @tecton/react/AppShell  (13 files)
+  @tecton/react/AspectRatio  (24 files)
+  @tecton/react/Avatar  (45 files)
+  @tecton/react/AvatarGroup  (7 files)
+  @tecton/react/Badge  (56 files)
+  @tecton/react/Banner  (20 files)
+  @tecton/react/Blockquote  (3 files)
+  @tecton/react/BottomSheet  (11 files)
+  @tecton/react/Breadcrumbs  (8 files)
+  @tecton/react/Button  (160 files)
+  @tecton/react/ButtonGroup  (3 files)
+  @tecton/react/Calendar  (10 files)
+  @tecton/react/Card  (100 files)
+  @tecton/react/Carousel  (4 files)
+  @tecton/react/Center  (57 files)
+  @tecton/react/Chat  (69 files)
+  @tecton/react/CheckboxInput  (14 files)
+  @tecton/react/CheckboxList  (11 files)
+  @tecton/react/Citation  (3 files)
+  @tecton/react/ClickableCard  (8 files)
+  @tecton/react/CodeBlock  (19 files)
+  @tecton/react/Collapsible  (14 files)
+  @tecton/react/CommandPalette  (19 files)
+  @tecton/react/ComplexSelector  (4 files)
+  @tecton/react/ContextMenu  (5 files)
+  @tecton/react/DateInput  (9 files)
+  @tecton/react/DateRangeInput  (6 files)
+  @tecton/react/DateTimeInput  (4 files)
+  @tecton/react/Dialog  (18 files)
+  @tecton/react/Divider  (54 files)
+  @tecton/react/DropdownMenu  (22 files)
+  @tecton/react/EmptyState  (14 files)
+  @tecton/react/Field  (6 files)
+  @tecton/react/FieldStatus  (6 files)
+  @tecton/react/FileInput  (3 files)
+  @tecton/react/FormLayout  (10 files)
+  @tecton/react/Grid  (40 files)
+  @tecton/react/Heading  (8 files)
+  @tecton/react/hooks  (24 files)
+  @tecton/react/HoverCard  (7 files)
+  @tecton/react/HStack  (1 file)
+  @tecton/react/i18n  (3 files)
+  @tecton/react/Icon  (132 files)
+  @tecton/react/IconButton  (18 files)
+  @tecton/react/InputGroup  (3 files)
+  @tecton/react/Item  (8 files)
+  @tecton/react/Kbd  (10 files)
+  @tecton/react/Layer  (1 file)
+  @tecton/react/Layout  (374 files)
+  @tecton/react/Lightbox  (5 files)
+  @tecton/react/Link  (23 files)
+  @tecton/react/List  (35 files)
+  @tecton/react/locales/fr-FR.json  (1 file)
+  @tecton/react/Markdown  (8 files)
+  @tecton/react/MetadataList  (19 files)
+  @tecton/react/MobileNav  (6 files)
+  @tecton/react/MoreMenu  (12 files)
+  @tecton/react/MultiSelector  (11 files)
+  @tecton/react/NavIcon  (19 files)
+  @tecton/react/NavMenu  (1 file)
+  @tecton/react/NumberInput  (11 files)
+  @tecton/react/Outline  (10 files)
+  @tecton/react/OverflowList  (11 files)
+  @tecton/react/Overlay  (3 files)
+  @tecton/react/Pagination  (5 files)
+  @tecton/react/Popover  (8 files)
+  @tecton/react/PowerSearch  (22 files)
+  @tecton/react/ProgressBar  (15 files)
+  @tecton/react/RadioList  (19 files)
+  @tecton/react/Resizable  (10 files)
+  @tecton/react/Section  (43 files)
+  @tecton/react/SegmentedControl  (22 files)
+  @tecton/react/SelectableCard  (7 files)
+  @tecton/react/Selector  (36 files)
+  @tecton/react/SideNav  (26 files)
+  @tecton/react/Skeleton  (6 files)
+  @tecton/react/Slider  (6 files)
+  @tecton/react/Spinner  (7 files)
+  @tecton/react/Stack  (55 files)
+  @tecton/react/StatusDot  (16 files)
+  @tecton/react/Stepper  (16 files)
+  @tecton/react/Switch  (12 files)
+  @tecton/react/Table  (62 files)
+  @tecton/react/TabList  (21 files)
+  @tecton/react/Text  (328 files)
+  @tecton/react/TextArea  (19 files)
+  @tecton/react/TextInput  (49 files)
+  @tecton/react/theme  (13 files)
+  @tecton/react/theme/syntax  (4 files)
+  @tecton/react/theme/tokens.stylex  (7 files)
+  @tecton/react/Thumbnail  (12 files)
+  @tecton/react/TimeInput  (8 files)
+  @tecton/react/Timestamp  (28 files)
+  @tecton/react/Toast  (14 files)
+  @tecton/react/ToggleButton  (11 files)
+  @tecton/react/Token  (27 files)
+  @tecton/react/Tokenizer  (10 files)
+  @tecton/react/Toolbar  (14 files)
+  @tecton/react/Tooltip  (7 files)
+  @tecton/react/TopNav  (25 files)
+  @tecton/react/TreeList  (12 files)
+  @tecton/react/Typeahead  (57 files)
+  @tecton/react/utils  (2 files)
+  @tecton/react/VisuallyHidden  (7 files)
+  @tecton/react/VStack  (1 file)
+
+Notes
+-----
+
+  The bodies of the ported files are upstream's own prose and sample data.
+  Where an example names Astryx in a comment, in UI copy or inside a code
+  sample it still says Astryx: the port rewrites imports, not content. Only
+  the doc objects beside the examples are rewritten (`@astryxdesign/core` ->
+  `@tecton/react`, `Astryx` -> `Tecton`, `astryx` -> `tecton`).
+  Examples reference images under `/template-assets/`, which upstream does
+  not ship; the docs site has to provide or stub them.

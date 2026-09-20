@@ -1,0 +1,76 @@
+'use client';
+
+import {VisuallyHidden} from '@tecton/react/VisuallyHidden';
+import {IconButton} from '@tecton/react/IconButton';
+import {Card} from '@tecton/react/Card';
+import {HStack, VStack} from '@tecton/react/Layout';
+import {Text} from '@tecton/react/Text';
+import {Icon} from '@tecton/react/Icon';
+import {
+  DeleteIcon,
+  ExportUploadIcon,
+  LinkIcon,
+  MicrophoneIcon,
+} from '@tecton/react/icons';
+
+const actions = [
+  {label: 'Download', icon: ExportUploadIcon},
+  {label: 'Share', icon: LinkIcon},
+  {label: 'Delete', icon: DeleteIcon},
+] as const;
+
+/**
+ * VisuallyHidden is invisible by design, so this hero teaches the concept by
+ * contrast: the icon-only buttons are all a sighted user sees, while the
+ * caption spells out the accessible name each one exposes. A live
+ * <VisuallyHidden> region below announces the same names to assistive tech,
+ * so the demo genuinely exercises the component it documents.
+ */
+export function VisuallyHiddenShowcase() {
+  return (
+    <VStack gap={5} hAlign="center">
+      <HStack gap={6} vAlign="stretch" wrap="wrap" hAlign="center">
+        <Card variant="muted">
+          <VStack gap={4} hAlign="center">
+            <Text type="supporting" color="secondary">
+              What you see
+            </Text>
+            <HStack gap={2}>
+              {actions.map(({label, icon}) => (
+                <IconButton
+                  key={label}
+                  label={label}
+                  icon={<Icon icon={icon} />}
+                  variant="ghost"
+                />
+              ))}
+            </HStack>
+          </VStack>
+        </Card>
+
+        <Card variant="muted">
+          <VStack gap={4} hAlign="start">
+            <HStack gap={2} vAlign="center">
+              <Icon icon={MicrophoneIcon} size="sm" />
+              <Text type="supporting" color="secondary">
+                What a screen reader hears
+              </Text>
+            </HStack>
+            <VStack gap={2}>
+              {actions.map(({label}) => (
+                <Text key={label} type="body">
+                  {label}, button
+                </Text>
+              ))}
+            </VStack>
+          </VStack>
+        </Card>
+      </HStack>
+
+      {/* A real live region: silent to sighted users, announced by AT. */}
+      <VisuallyHidden as="div" aria-live="polite">
+        Actions available: Download, Share, Delete.
+      </VisuallyHidden>
+    </VStack>
+  );
+}
