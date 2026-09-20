@@ -60,7 +60,14 @@ export default tseslint.config(
     // This one drives a browser from Node: the function bodies it hands to
     // `page.evaluate()` are serialised and run in the page, so `document`,
     // `window` and friends are in scope for half the file.
-    files: ['scripts/verify-registry.mjs'],
+    files: [
+      'scripts/verify-registry.mjs',
+      // Same story: the theme-audit harness drives Chromium from Node, and
+      // `fixtures/theme-audit/scripts/probe.js` is injected into the page
+      // wholesale rather than run here at all.
+      'fixtures/theme-audit/scripts/*.{js,mjs}',
+      'fixtures/theme-audit/*.mjs',
+    ],
     languageOptions: {
       globals: {...globals.node, ...globals.browser},
     },

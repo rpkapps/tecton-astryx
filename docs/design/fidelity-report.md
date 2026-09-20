@@ -14,9 +14,14 @@ compiled by `astryx theme build`.
 
 **Scale.** 193 token overrides across every colour, typography, radius, focus,
 shadow, size and border family; 33 theme-local tokens for Tecton roles the
-token layer has no name for; 65 component targets overridden; 4 custom prop
+token layer has no name for; 69 component targets overridden; 4 custom prop
 values added (2 button variants, 1 badge variant, 1 banner status) plus 8
-custom `Text` types; 192 unit tests.
+custom `Text` types; 233 unit tests on the theme.
+
+The component-target list changed shape in §0.1: the overrides that were
+restating something a component already said are gone, and a dozen more
+components now get their keyboard focus stated explicitly. What the theme says
+about colour, type, radius and icons is unchanged.
 
 **How to read the renders.** `docs/design/fidelity/` holds a capture of
 `/preview/theme` in both colour modes at 1600 CSS px and 2× device pixels — the
@@ -75,6 +80,49 @@ Tecton's own `useToast` carried plain data, which could cross from one copy of
 the package to another and be rendered once. The component system's `useToast`
 carries a `ReactNode`, which cannot. Each copy now shows its own toasts in its
 own viewport.
+
+## 0.1 Audit
+
+Everything from §1 down is a report on **fidelity** — how close the theme gets
+to the transcribed design. It is not a report on **correctness**, and the two
+are not the same question. A theme can carry every colour of the design and
+still take a component apart, because the rules it writes land in a later
+cascade layer than the component's own and can override geometry the component
+depends on.
+
+That second question is answered separately, by measurement, in
+**`docs/design/theme-audit.md`**. All 646 ported examples are rendered twice —
+once under Tecton and once, from the same example files, under
+`@astryxdesign/theme-neutral`, the theme the upstream documentation site renders
+them with — and the two renders are diffed element by element, with a keyboard
+focus audit on top.
+
+The first run of that audit found **186 of the 646 examples** carrying a
+difference the theme could not justify: 538 structural findings and 138 focus
+findings, from twelve root causes. Among them a `border-radius` that flattened
+every `ButtonGroup` into a row of separate pills, a `background-color` that
+painted over `Card`'s `variant` prop, a `box-shadow: none` that erased
+`SelectableCard`'s selection ring, `:nth-child(even)` and `:hover` rules that
+striped and highlighted tables with those props switched off, a border that
+squeezed `Switch`'s thumb off-centre, and — the ones that matter most — a field
+family that had stopped showing keyboard focus at all, and a focus ring that was
+invisible against every one of a `Banner`'s severity fills.
+
+All twelve are fixed in `packages/react/src/theme/**`. The same audit now reports
+**4 examples** with a finding, **0 structural**, and 5 focus findings that are
+all one recorded deviation: the design's focus pink does not reach 3:1 on a
+light surface, and there is no second focus hue in the transcription to reach it
+with. Every rule the fixes restored is pinned by a test in
+`packages/react/src/theme/__tests__/tectonTheme.test.ts`, so none of them can
+come back quietly.
+
+Nothing in §1–§7 changed as a result: **no token colour moved**, and the theme
+still says everything about palette, type, radius and icons that it said before.
+What changed is that it no longer says anything about layout. Two consequences
+are worth naming here because they read as gaps elsewhere in this report:
+`card` and `section` are no longer component targets at all (their 16px is the
+components' own default), and `tooltip` is not one either (the transcription has
+no tooltip page, so there was no Tecton shape to reach for).
 
 ## 1. Summary
 

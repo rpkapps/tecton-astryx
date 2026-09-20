@@ -264,8 +264,15 @@ export const tectonTheme = defineTheme({
     '--shadow-med': drop('2px', '6px', '15', '50'),
     '--shadow-high': drop('8px', '24px', '20', '60'),
     '--shadow-inset-hover': insetRing(tint('mauve', '25')),
-    '--shadow-inset-selected':
-      'inset 0px 0px 0px 2px var(--focus-outline-color)',
+    /*
+     * A selection ring, not a focus ring. The hot pink is the *focus* ink —
+     * `design/components/button.md` and `…/textfield.md` both name it as the
+     * thing that appears when a control takes keyboard focus — so wearing it
+     * for selection as well makes a selected control indistinguishable from a
+     * focused one. Selection is the accent violet, at the same 50 % weight the
+     * layer underneath uses.
+     */
+    '--shadow-inset-selected': insetRing(tint('violet', '50')),
     '--shadow-inset-success': insetRing(tint('green', '30')),
     '--shadow-inset-warning': insetRing(tint('yellow', '30')),
     '--shadow-inset-error': insetRing(tint('red', '30')),
