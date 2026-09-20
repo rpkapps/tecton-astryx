@@ -6,81 +6,106 @@ version behind it apart from the one in `package.json`.
 
 ## Unreleased
 
-### The whole component surface
+### Tecton is a theme
 
-Tecton went from 48 components to **180** — one for every component the library
-underneath it publishes, and then some.
+The package no longer publishes components of its own. It publishes the
+component system it is built on — every name, every prop, every type, every
+module, unchanged — and applies the Tecton theme to it.
 
-- **132 new components**, in every family the system has: `AppShell`,
-  `Calendar`, `Carousel`, `CommandPalette` and its six parts, `ContextMenu` and
-  its five, the fifteen `Chat*` components the AI panel needs, `DateInput`,
-  `DateRangeInput`, `DateTimeInput`, `FileInput`, `FormLayout`, `HoverCard`,
-  `Layout` and its four regions, `Lightbox`, `Markdown`, `MetadataList`,
-  `MobileNav`, `MultiSelector`, `NumberInput`, `Outline`, `OverflowList`,
-  `Overlay`, `Pagination`, `Popover`, `PowerSearch`, `ScrollableArea`,
-  `SideNav` and its four parts, `Skeleton`, `Stepper`, `Table`'s six
-  subcomponents, `TimeInput`, `Timestamp`, `Tokenizer`, `Toolbar`, `TopNav` and
-  its six, `VisuallyHidden` and the rest.
-- They are **pass-throughs**: published under Tecton names, typed with
-  Tecton-named types, refs forwarded, `displayName` set, and every icon-shaped
-  prop widened to take a Tecton glyph name as well as whatever it already took.
-  Nothing else about them changed, so a team can use one today and get the
-  designed version later without touching the import.
-- They are **generated** from `wrappers.manifest.json` by
-  `scripts/generate-wrappers.mjs`, which emits the wrapper, its documentation,
-  a smoke test, the export block and the package's `exports` map. `--check`
-  runs in the build and in `pnpm check`, so an upstream upgrade that moves a
-  prop is a build failure with a diff rather than a stale doc.
+**This replaces everything the previous entry described.** The 48 hand-written
+components with Tecton-invented APIs and the 132 renamed pass-through wrappers
+are gone. So is `@tecton/react/support`, `@tecton/react/templates`, the
+name-based `<Icon name>` component and the `wrappers.manifest.json` that
+generated half of it.
 
-### Four providers
+What you write instead is the component system's own API:
 
-`LinkProvider`, `LocaleProvider`, `SurfaceTheme` and `CodeTheme` join
-`TectonProvider` under a new **Providers** category.
+```tsx
+// before
+<Button label="Save" variant="primary" icon="add" />
+<TextField label="Name" value={name} onChange={setName} startIcon="search" />
+<Panel title="Horizons" actions={<Badge label="2" variant="info" />}>…</Panel>
 
-### Helpers, hooks and data types
+// now
+<Button label="Save" variant="primary" icon={<Icon icon={AddIcon} />} />
+<TextInput label="Name" value={name} onChange={setName} startIcon={SearchIcon} />
+<Card><VStack gap={3}><Heading level={2}>Horizons</Heading>…</VStack></Card>
+```
 
-New: `@tecton/react/support`, also re-exported from the package root. It
-publishes the half of the surface that is not a component — a table's sorting,
-filtering, grouping and pagination hooks, ISO date types, an autocomplete
-source, a power-search configuration, the code-theme presets — under Tecton
-names. Every line of it is an alias rather than a re-export, so no upstream
-declaration file reaches a consumer's editor.
+There is no migration table, because there is no mapping: look the component up
+in its own documentation and use it as documented.
 
-### Examples and page templates
+### What the package publishes
 
-- **504 examples and page templates ported** (492 examples and 12 page templates) from upstream's example blocks,
-  translated rather than copied: imports, component names, props and glyphs all
-  go through the same tables the wrappers are generated from.
-- New: `@tecton/react/templates`, which publishes the page templates so a
-  documentation site can render the gallery from the same code a consumer would
-  paste.
-- Every example and every template is rendered under `TectonProvider` in the
-  test suite. `docs/engineering/ported-examples.log` records every substituted
-  glyph, every prop dropped in translation and every file that could not be
-  ported, with the reason.
+- **The root** re-exports every one of the component system's 496 named
+  exports, by the same reference, plus `TectonProvider`,
+  `configureTectonRoot`, `tectonTheme`, `tectonIcons`, `tectonToken` and
+  `tecton`. Nothing is renamed and nothing is shadowed.
+- **118 subpaths**, one per module the component system publishes, at the same
+  path: `@tecton/react/Button`, `@tecton/react/Layout`,
+  `@tecton/react/hooks`, `@tecton/react/Table/utils`, `@tecton/react/i18n`.
+  They are generated from its own `exports` map and drift-checked in the build.
+- **`@tecton/react/theme`** now carries the theme runtime (`Theme`,
+  `defineTheme`, `useTheme`, the token variable maps) as well as Tecton's own
+  theme API, so nothing about theming is unreachable.
+- **`@tecton/react/theme/tokens.stylex`** and **`@tecton/react/locales/*.json`**
+  are published for applications that write StyleX against the token variables
+  or load a message catalogue.
+- **`@tecton/react/icons`** is the 131 Tecton glyph components,
+  `tectonIconNames` and `tectonIconRegistry`. The `<Icon name="…">` wrapper is
+  gone; the component system's own `Icon` is at `@tecton/react/Icon`.
+- The five stylesheet entry points are unchanged.
 
-### Button gains `destructive`
+### What Tecton still is
 
-`variant="destructive"` is an **addition** to the design's five-step emphasis
-ladder. The design draws no such button, but the theme already colours one, and
-a delete that reads the same as a save is a defect rather than a restraint. It
-is the one variant that carries meaning rather than weight: use it for an
-action that cannot be undone, and only once in a view.
+The theme, and nothing else: the palette, the type scale, the radii, the
+per-component overrides and the icon registry, plus `TectonProvider`, which
+installs them. Token values did not change.
 
-### Renames forced by the existing surface
+The theme's **custom variants** are now published as declarations, so
+`variant="outlined"`, `variant="text-only"`, `Banner` `status="neutral"`,
+`Badge` `variant="lime"` and the eight Tecton text types (`mediumStrong`,
+`smallStrong`, `tiny`, `largeData`, `mediumData`, `smallData`, `actionMedium`,
+`actionSmall`) type-check in your editor. They are extra values for props the
+components already have — theme extensions, not new components.
 
-Nothing that shipped was renamed. Where a new component's obvious name was
-already taken by a designed component's data type, the new one bent:
-`MenuActionItem`, `MenuSeparator`, `SelectChoice`,
-`ToggleButtonGroupSegment`, `FieldMessage`, `ItemRow`, `ToggleButtonBar`.
-`docs/engineering/component-mapping.md` lists each one and why.
+### Toasts
+
+`useToast` is the component system's own hook, with its own `ToastOptions`.
+Tecton's data-only `useToast` and the document-keyed bus that routed its
+payloads across copies of the package are gone with the rest of the invented
+surface: the upstream toast body is a `ReactNode`, and an element built by one
+copy's React cannot be rendered by another's. On a page running several copies
+of `@tecton/react`, each copy now shows its own toasts in its own viewport.
+
+Everything the **root registry** owns is unchanged: the page's colour mode and
+theme name, the first-owning-claim rule, and the guarantee that a container
+unmounting does not blank the page for the ones still on it.
+
+### Micro-frontends: one thing to know
+
+Every rule Tecton ships is now in `@layer astryx-theme` under
+`[data-astryx-theme="tecton"]`, including its per-component overrides. Tecton
+used to have a second layer of its own component CSS, where a StyleX class name
+hashed the declaration so each version kept its own. It does not any more. So a
+per-component decision is a **cross-version contract** in exactly the way a
+token is: two versions on one page resolve it by source order, for every
+container. `docs/engineering/micro-frontends/README.md` has the consumer rules;
+the recommended shape — one `tokens.css` from the host, `components.css` per
+container, `scope="nested"` — is unchanged and still the answer.
 
 ### Guards
 
-- `pnpm check` gained `wrappers:check` and `readme:check`; the package build
-  gained both as steps 0c and 0d.
-- The documentation drift guard now reads both halves of the barrel and fails
-  on a component directory the barrel does not export. It got stricter, not
-  looser.
-- The README's component table is generated from the components' own
-  documentation by `scripts/generate-readme.mjs`.
+- `wrappers:check` and `docs:check` are gone. `modules:check` replaces the
+  first: it regenerates the subpath modules and the `exports` map in memory and
+  fails on any difference.
+- `readme:check` now generates the README's module list from the package's own
+  `exports` map.
+- The build **scrubs the vendored declarations** of the upstream name, in
+  comments and import specifiers only — never a string-literal type, never an
+  identifier, never a `.js` file. Five exported string constants survive it
+  because the stylesheet and the runtime are built on their values; they are
+  listed in `scripts/check-consumer-surface.mjs` with a reason each, and an
+  exception that stops matching fails the check.
+- The build now verifies that **every** `exports` target resolves, not only the
+  stylesheets.

@@ -56,8 +56,8 @@ function Report() {
         {/* A theme custom variant: another value for `variant`, not a component. */}
         <Button label="Cancel" variant="text-only" />
         <Text type="supporting">
-          <InfoIcon width={16} height={16} aria-hidden="true" /> Tokens are plain
-          custom properties: {tecton.color.text.primary}
+          <InfoIcon width={16} height={16} aria-hidden="true" /> Tokens are
+          plain custom properties: {tecton.color.text.primary}
         </Text>
       </VStack>
     </Card>

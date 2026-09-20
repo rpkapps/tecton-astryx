@@ -31,7 +31,10 @@ export * from '@astryxdesign/core';
 
 /* The provider that installs the Tecton theme ----------------------------- */
 
-export {TectonProvider, configureTectonRoot} from './provider/TectonProvider.js';
+export {
+  TectonProvider,
+  configureTectonRoot,
+} from './provider/TectonProvider.js';
 export type {
   TectonProviderProps,
   TectonColorMode,

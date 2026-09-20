@@ -3,6 +3,13 @@
 The monorepo for **Tecton**, a React design system: one package for consumers,
 one stylesheet, one provider.
 
+Tecton is a **theme**, not a second component library. `@tecton/react`
+publishes the component system it is built on exactly as it is — its component
+names, its props, its types, its 118 modules at the same subpaths — and Tecton
+supplies the palette, the type scale, the radii, the per-component overrides
+and the 131 icons. There is no Tecton wrapper in front of anything, so there is
+nothing to learn twice and nothing that can fall behind an upstream release.
+
 ## Run it locally
 
 Three commands, from a fresh clone (Node 22+, `corepack enable` gives you the
@@ -16,9 +23,9 @@ pnpm check      # everything CI runs
 
 `pnpm doctor` tells you which of those you still need to run and why. Nothing
 else is required: the docs site generates its own content when it starts, and
-every generated file inside `packages/react` (palette, icons, wrappers) is
-committed, so you never run a generator by hand — the build only checks that
-they are current.
+every generated file inside `packages/react` (palette, icons, subpath modules,
+README module list) is committed, so you never run a generator by hand — the
+build only checks that they are current.
 
 After editing anything under `packages/react/src`, run `pnpm build:package`
 (or `pnpm dev` again): the docs site and the fixtures consume the built
@@ -80,9 +87,10 @@ Upgrading the library Tecton is built on is one command:
 | `pnpm snapshot:astryx`                   | Re-pin `scripts/astryx-snapshot/` — the inventories a report diffs against |
 
 It bumps every pin and the `pnpm patch` key, installs, runs the upstream
-codemods, rebuilds the theme and the token manifest, writes
-`docs/engineering/upgrades/<old>-to-<new>.md`, and runs both checks. It never
-commits. A failed patch stops it, loudly, with the recovery procedure printed:
+codemods, regenerates the subpath modules and the README from the new release's
+exports map, rebuilds the theme and the token manifest, re-ports the
+documentation examples, writes `docs/engineering/upgrades/<old>-to-<new>.md`,
+and runs both checks. It never commits. A failed patch stops it, loudly, with the recovery procedure printed:
 read `docs/engineering/upgrading-astryx.md` before running it.
 
 Per workspace, for example:
@@ -93,15 +101,16 @@ pnpm --filter @tecton/react test
 pnpm --filter @tecton/docs dev
 ```
 
-`pnpm check` also runs five guards:
+`pnpm check` also runs six guards:
 
 | Guard                                                 | Fails when                                                                                                                                                                                       |
 | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `scripts/check-consumer-surface.mjs`                  | the upstream library's name reaches any published subpath's declarations — an exported name, a type alias's right-hand side, or a doc comment                                                    |
-| `scripts/check-docs-drift.mjs`                        | a component has no doc, a documented prop does not exist, a declared prop is undocumented, or an example is missing or does not compile                                                          |
 | `scripts/check-docs-site.mjs`                         | a component has no page on the docs site, an example is rendered by no page or by two, a guide is missing from the sidebar, a foundations source has moved, or a page is not in the search index |
 | `packages/react/scripts/generate-palette.mjs --check` | the generated colour palette has drifted from `tokens/tecton.tokens.json`                                                                                                                        |
 | `packages/react/scripts/generate-icons.mjs --check`   | the generated icon components have drifted from `design/icons/tecton/`                                                                                                                           |
+| `packages/react/scripts/generate-modules.mjs --check` | the subpath modules or `package.json#exports` have drifted from the upstream exports map                                                                                                         |
+| `packages/react/scripts/generate-readme.mjs --check`  | the package README's module list has drifted from `package.json#exports`                                                                                                                         |
 
 `pnpm check:mfe` builds `fixtures/consumers/mfe-harness` — two independently
 built versions of `@tecton/react` on one page — and asserts the multi-version
@@ -139,9 +148,9 @@ gallery, the page templates and the changelog — built on fumadocs and Next.js,
 exported as static HTML, and generated from the package itself. See
 `docs/engineering/docs-site.md`.
 
-- `docs/engineering/component-mapping.md` — every component, what it is built
-  on, how its props map, and where Tecton's design and the upstream model
-  disagree.
+- `docs/engineering/surface.md` — what `@tecton/react` publishes, how the
+  subpaths are generated, how the vendored declarations are scrubbed, and the
+  five mentions the surface guard allows with the reason for each.
 - `docs/engineering/build-pipeline.md` — how the package is built.
 - `docs/engineering/upgrading-astryx.md` — how the repository moves to a new
   upstream release, what the report says, and what to do when the patch stops
@@ -182,15 +191,15 @@ Choices that differ from the briefs, and why.
 - **The pins are bumped as a text edit, not a JSON round-trip**, so an
   upgrade's diff is the versions it changed and nothing else (a round-trip
   re-prints escapes and would show up as unrelated noise).
-- **A nested provider can publish a toast viewport after all.** The Phase 3
-  design gave the page one viewport, owned by the first `scope="root"`
-  provider — but the recommended host shape has no root provider anywhere, so
-  toasts queued for ever in exactly the shape the documentation recommends. The
-  toast bus now lets the first `scope="nested"` provider stand in, and hand
-  over to a `scope="root"` provider if one mounts. The record gained one
-  optional method (`requestStandIn`) and its version went to 2; version 1
-  readers are unaffected, and a version 2 reader that finds a version 1 record
-  simply never stands in.
+- **The toast bus is gone, and with it cross-copy toast merging.** It existed
+  to route Tecton's own data-only toast payloads to one viewport on a page
+  running several copies of the package. v2 publishes the component system's
+  `useToast`, whose toast body is a `ReactNode` — an element built by one
+  copy's React, which another copy cannot render — so there is nothing left to
+  route. Each copy shows its own toasts in its own viewport, which is what the
+  component system does. The root registry, which owns the page's colour mode
+  and theme name, is unchanged and still the larger half of the
+  multi-version story.
 
 ### Phase 4
 
@@ -205,6 +214,35 @@ Choices that differ from the briefs, and why.
   hydration — which is why an example on the site is the running component
   rather than a picture of one.
 
+### v2 — Tecton is a theme
+
+- **No Tecton component exists.** The 48 hand-written components and the 132
+  generated wrappers were removed: the owner's brief was to pull in the
+  component system as it is and map the tokens, and a wrapper is neither. A
+  consumer writes the component's own API and reads its own documentation.
+- **Upstream names win every conflict.** `useToast`, `Icon`, `Badge`,
+  `Selector` and everything else keep the names and props the component system
+  gives them. The only names Tecton adds at the root are `TectonProvider`,
+  `configureTectonRoot` and four theme values, all prefixed `tecton`.
+- **The theme's custom variants stayed.** `Button` `outlined` and `text-only`,
+  `Banner` `neutral`, `Badge` `lime` and eight Tecton text types are declared
+  through `defineTheme`: extra values for props the components already have,
+  which is a sanctioned theme extension rather than a new component.
+- **Two subpaths point straight into the vendored directory.**
+  `@tecton/react/theme/tokens.stylex` has to be the real `defineVars()` module
+  or StyleX cannot resolve a token to a `var(--…)`, and `./locales/*.json` has
+  no module to wrap it in.
+- **The vendored declarations are scrubbed in comments and import specifiers
+  only.** A string-literal type, an exported constant and an identifier all
+  carry meaning the runtime and the stylesheet depend on, so they are left
+  alone and the five that remain are listed in the surface guard with a reason
+  each.
+- **Tecton's per-component styling is now a cross-version contract.** Every
+  Tecton rule is in the theme layer under one theme name, so two versions on a
+  page resolve a card's padding by source order exactly as they resolve a
+  token. The old second layer of Tecton StyleX, where each version kept its own
+  hashed class, does not exist because Tecton has no components.
+
 ### Phase 2
 
 - **`tectonTheme` is exported as an opaque handle, not as the theme object.**
@@ -213,24 +251,14 @@ Choices that differ from the briefs, and why.
   is now `src/theme/public.ts`, which exports `tectonTheme: TectonTheme` — a
   Tecton interface with one member, `name`. `src/theme/index.ts` stays as the
   package-internal barrel `TectonProvider` reads the real object through.
-- **Tecton's Badge is the standalone pill, not the overlay.** The design has
-  both; the overlay (anchored to a child, count capped at "99+") is a different
-  component and is not built. `Chip` is the interactive sibling.
-- **Text fields ship the outlined appearance only.** The design's filled and
-  text-only field appearances have no variant axis upstream. `Select` is the
-  exception: its `appearance` prop offers `textOnly`, because the upstream
-  selector has a borderless variant and the panel designs use it inline.
-- **`Accordion` has no header action row.** The design puts icon buttons in the
-  header; the trigger upstream is one button, and nesting buttons inside it is
-  not something assistive technology handles. Recorded in the component's docs.
-- **Four font weights are exposed, two exist.** `Text`, `Heading` and `Link`
-  take `regular | medium | semibold | bold`. The Tecton foundation defines 400
-  and 500, so `semibold` and `bold` resolve to the heaviest weights the theme
-  carries — 500 and 600 today.
-- **`src/theme/augmentations.d.ts` declares the theme's type augmentations.**
-  The theme compiler emits four of them into `dist/`, but not the custom `Text`
-  types, and `src/` has to type-check before a build has run. The file is
-  internal and is not emitted.
+- **Four font weights are exposed, two exist.** The Tecton foundation defines
+  400 and 500, so `semibold` and `bold` resolve to the heaviest weights the
+  theme carries — 500 and 600 today.
+- **`src/theme/variants.ts` declares the theme's type augmentations, and is
+  published.** The theme compiler emits declarations for the component variants
+  but not for the custom `Text` types, and a consumer writing
+  `type="mediumData"` needs them, so one module carries all of them and
+  `src/theme/public.ts` imports it for the side effect.
 - **Generated files are formatted with Prettier by their generator**, so
   `pnpm format` and `--check` never disagree about one.
 - **`packages/react` type-checks with `vite/client` types.** The test that

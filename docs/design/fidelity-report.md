@@ -3,9 +3,10 @@
 What survived the port, what was approximated, and what could not be expressed
 at all.
 
-Phase 1 takes the transcribed Tecton design (`design/`, `tokens/`,
+This takes the transcribed Tecton design (`design/`, `tokens/`,
 `screenshots/`) and expresses it as a theme for the third-party component
-library `@tecton/react` is built on. Nothing was swizzled, no upstream source
+library `@tecton/react` is built on. Since v2 it is the whole of Tecton: read
+§0 first. Nothing was swizzled, no upstream source
 was edited, no CSS file targets an upstream class and no rule uses
 `!important`. Everything below is the result of `defineTheme` — tokens,
 theme-local tokens, typography, radius, focus, shadow and component overrides —
@@ -28,6 +29,52 @@ against `design/foundations/typography.json` instead (see
 `packages/react/src/theme/__tests__/tectonTheme.test.ts`).
 
 ---
+
+## 0. What changed in v2
+
+**Everything below describes the theme, and the theme is now the only thing
+Tecton has.**
+
+The report was written when Tecton also shipped 48 hand-written components and
+132 renamed wrappers in front of the component system. Those are gone: the
+package publishes the component system as it is — its names, its props, its
+types — and Tecton is the theme applied to it. Read §2–§6 as a report on that
+theme, because that is all they ever measured; the verdicts, the token
+counts and the component-target list are unchanged, because no token value
+moved.
+
+What *is* different is what happens to the gaps.
+
+- **Fidelity that lived in wrapper code no longer exists.** Where a wrapper
+  composed two components to reach a Tecton shape, narrowed a prop so a
+  consumer could not choose something off-design, defaulted a value, or
+  resolved a Tecton glyph name on an icon prop, none of that is there any
+  more. A consumer writes the component's own API, with the component's own
+  defaults, and Tecton reaches it through the theme or not at all.
+- **The gaps in §5 are therefore honest rather than papered over.** A shape the
+  theme cannot express is a shape the system does not have. The previous
+  version hid some of them behind a wrapper's prop surface, which made the
+  design look more faithfully reproduced than the system actually was.
+- **Icons still arrive.** The theme's icon registry is unchanged, so a
+  component that asks the theme for a glyph by role still gets a Tecton one.
+  What is gone is the name-based `icon="drill-bit"` prop the wrappers widened;
+  an application that draws its own icon imports the glyph component from
+  `@tecton/react/icons`.
+- **Custom variants stayed, and they are the right mechanism.** `Button`
+  `outlined` and `text-only`, `Banner` `neutral`, `Badge` `lime` and the eight
+  Tecton text types are declared through `defineTheme` and ship with the theme.
+  They are extra values for props the components already have — sanctioned
+  extensions of the component's API, not components.
+- **One new consequence, for pages running several versions.** Every Tecton
+  rule is now in the theme layer, so a per-component decision is a
+  cross-version contract in exactly the way a token is. §7 of
+  `docs/engineering/surface.md` and the micro-frontend README have the detail.
+
+One thing was lost outright and is worth naming: cross-copy **toast** merging.
+Tecton's own `useToast` carried plain data, which could cross from one copy of
+the package to another and be rendered once. The component system's `useToast`
+carries a `ReactNode`, which cannot. Each copy now shows its own toasts in its
+own viewport.
 
 ## 1. Summary
 

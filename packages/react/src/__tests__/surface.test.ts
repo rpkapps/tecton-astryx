@@ -129,9 +129,11 @@ describe('the directly published entries', () => {
   });
 
   it('serves the same token variables the theme is built against', async () => {
-    const published = (await import(
-      '@astryxdesign/core/theme/tokens.stylex'
-    )) as Record<string, unknown>;
+    const published =
+      (await import('@astryxdesign/core/theme/tokens.stylex')) as Record<
+        string,
+        unknown
+      >;
     // The defineVars call sites StyleX has to resolve through.
     expect(published.colorVars).toBeDefined();
     expect(published.spacingVars).toBeDefined();

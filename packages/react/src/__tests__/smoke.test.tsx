@@ -67,7 +67,11 @@ describe('a representative set of components', () => {
   it('renders a text input', () => {
     render(
       <TectonProvider>
-        <TextInput label="Well name" value="Ekofisk 2/4-A" onChange={() => {}} />
+        <TextInput
+          label="Well name"
+          value="Ekofisk 2/4-A"
+          onChange={() => {}}
+        />
       </TectonProvider>,
     );
     expect(screen.getByLabelText('Well name')).toHaveValue('Ekofisk 2/4-A');

@@ -545,7 +545,6 @@ test('a container that leaves takes its own viewport with it', async ({
   expect(shown.viewports).toBe(1);
 });
 
-
 // ---------------------------------------------------------------------------
 // The cascade: recorded, not fixed
 // ---------------------------------------------------------------------------

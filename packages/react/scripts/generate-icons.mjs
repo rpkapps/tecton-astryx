@@ -57,7 +57,7 @@ const CHECK = process.argv.includes('--check');
 /**
  * Astryx asks the active theme for a glyph by semantic name. These are the
  * names a Tecton glyph answers; everything else falls through to the default
- * set. `docs/engineering/component-mapping.md` lists the fall-throughs.
+ * set (`src/theme/icons.ts` names them at the top of the file).
  */
 const SEMANTIC_ICONS = {
   close: 'close',

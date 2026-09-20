@@ -74,10 +74,22 @@ const SKIPPED = new Map([
   ['./astryx.css', 'assembled into Tecton’s own stylesheet entry points'],
   ['./tailwind-theme.css', 'a Tailwind bridge Tecton does not publish'],
   ['./docs.mjs', 'documentation data, consumed by the documentation site'],
-  ['./groups.doc.mjs', 'documentation data, consumed by the documentation site'],
-  ['./theme', 'hand-written: src/theme/public.ts, Tecton’s theme plus this one'],
-  ['./theme/tokens.stylex', 'published straight from the vendored file: see DIRECT'],
-  ['./locales/*.json', 'published straight from the vendored files: see DIRECT'],
+  [
+    './groups.doc.mjs',
+    'documentation data, consumed by the documentation site',
+  ],
+  [
+    './theme',
+    'hand-written: src/theme/public.ts, Tecton’s theme plus this one',
+  ],
+  [
+    './theme/tokens.stylex',
+    'published straight from the vendored file: see DIRECT',
+  ],
+  [
+    './locales/*.json',
+    'published straight from the vendored files: see DIRECT',
+  ],
 ]);
 
 /**
@@ -104,7 +116,8 @@ export function upstreamModulePaths() {
 function fixedExports(current) {
   const fixed = {};
   for (const [subpath, target] of Object.entries(current)) {
-    if (subpath === '.' || subpath === './package.json') fixed[subpath] = target;
+    if (subpath === '.' || subpath === './package.json')
+      fixed[subpath] = target;
     else if (subpath.endsWith('.css')) fixed[subpath] = target;
     else if (subpath === './theme' || subpath === './icons')
       fixed[subpath] = target;
@@ -166,9 +179,12 @@ for (const subpath of paths) {
   };
 }
 manifest.exports = nextExports;
+// `filepath` rather than `parser`, so Prettier picks the same parser it picks
+// for this file on its own (`json-stringify` for a package.json) and
+// `pnpm format:check` cannot disagree with the generator about it.
 const nextManifest = await prettier.format(
   `${JSON.stringify(manifest, null, 2)}\n`,
-  {...config, parser: 'json'},
+  {...config, filepath: MANIFEST},
 );
 const manifestDrifted = nextManifest !== manifestText;
 
