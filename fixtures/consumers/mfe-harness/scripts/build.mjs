@@ -5,7 +5,7 @@
  *
  *   version A = @tecton/react exactly as it is built in packages/react (0.1.0)
  *   version B = the same build with three retuned theme tokens and the card
- *               padding moved one step up the scale                    (0.2.0)
+ *               banner's corner moved to the page radius               (0.2.0)
  *
  * B is what a second release train plausibly ships: a few design decisions
  * that moved. Both keep the theme NAME `tecton`, which is the strategy under
@@ -95,7 +95,7 @@ fs.mkdirSync(VERSIONS, {recursive: true});
 fs.cpSync(PACKAGE_DIST, path.join(VERSIONS, 'tecton-a'), {recursive: true});
 
 // --- 2. version B = the same build, retuned ----------------------------------
-log('▸ Deriving version B (0.2.0): retuned tokens + card padding');
+log('▸ Deriving version B (0.2.0): retuned tokens + banner radius');
 const B = path.join(VERSIONS, 'tecton-b');
 fs.cpSync(PACKAGE_DIST, B, {recursive: true});
 
@@ -118,25 +118,36 @@ if (tokenEdits === 0) {
   throw new Error('No theme token was retuned — did the token names change?');
 }
 
-// The card's padding: a per-component decision the theme makes, retuned one
-// step up the spacing scale. It is a custom property the theme sets inside its
-// own @scope, so it travels with the tokens — which is the point.
-const CARD_PADDING = '--astryx-card-padding';
-let paddingEdits = 0;
+// The banner's corner on a card: a per-component decision the theme makes,
+// read out of the built CSS rather than hard-coded, and retuned from the
+// control radius to the page radius. It is a custom property the theme sets
+// inside its own @scope, so it travels with the tokens — which is the point.
+const BANNER_RADIUS = '--_banner-radius';
+const B_BANNER_RADIUS = '--radius-page';
+const declared = fs
+  .readFileSync(path.join(B, 'tecton.css'), 'utf8')
+  .match(new RegExp(`${BANNER_RADIUS}:\\s*var\\((--radius-[\\w-]+)\\)`));
+if (!declared) {
+  throw new Error(
+    `No stylesheet set ${BANNER_RADIUS} from the radius scale — has the theme's banner override changed?`,
+  );
+}
+const fromVar = declared[1];
+let radiusEdits = 0;
 for (const sheet of STYLESHEETS) {
-  paddingEdits += rewrite(path.join(B, sheet), css =>
+  radiusEdits += rewrite(path.join(B, sheet), css =>
     css.replaceAll(
-      `${CARD_PADDING}: var(--spacing-4)`,
-      `${CARD_PADDING}: var(--spacing-8)`,
+      new RegExp(`(${BANNER_RADIUS}:\\s*)var\\(${fromVar}\\)`, 'g'),
+      `$1var(${B_BANNER_RADIUS})`,
     ),
   );
 }
-if (paddingEdits === 0) {
-  throw new Error(
-    `No stylesheet set ${CARD_PADDING} to var(--spacing-4) — has the theme's card override changed?`,
-  );
+if (radiusEdits === 0) {
+  throw new Error(`No stylesheet carried ${BANNER_RADIUS}: var(${fromVar})`);
 }
-log(`  ${CARD_PADDING} 16px → 32px in ${paddingEdits} stylesheets`);
+log(
+  `  ${BANNER_RADIUS} var(${fromVar}) → var(${B_BANNER_RADIUS}) in ${radiusEdits} stylesheets`,
+);
 
 for (const [dir, version] of [
   [path.join(VERSIONS, 'tecton-a'), '0.1.0'],

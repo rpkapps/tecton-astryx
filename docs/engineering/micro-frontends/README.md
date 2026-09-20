@@ -47,7 +47,15 @@ Why this shape:
   under the same `@scope`, so source order decides — for _every_ container, not
   just the one that shipped last. With one `tokens.css` there is nothing to
   contest: every container renders in the host's token values, on purpose.
-- **Component styles stay version-correct.** Tecton's own component CSS is
+- **Tecton's per-component decisions travel with its tokens.** Tecton is a
+  theme, not a second component library: an override it makes for one
+  component — the corner it gives a `Banner` with `container="card"`, say — is
+  a declaration in the same `@layer astryx-theme` under the same `@scope` as a
+  token, and ships in the same `tokens.css`. So the host's single `tokens.css`
+  decides it for every container, exactly as it decides the accent. That is
+  deliberate, and the harness measures it (_the split entry points give both
+  containers the host's tokens_).
+- **Component styles stay version-correct.** The component system's own CSS is
   StyleX, and an atomic class name is a hash of its declaration, so two
   versions' component rules coexist and each element carries only its own. A
   container's `components.css` matches the code in its bundle.

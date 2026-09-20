@@ -18,8 +18,9 @@
  *      npmjs uplink (so the consumers' own dependencies resolve normally);
  *   2. builds the package, publishes it as version A = whatever
  *      `packages/react/package.json` says, then derives version B — the patch
- *      version bumped, `--color-accent` retuned and the card's padding moved
- *      one step up the spacing scale — and publishes that too;
+ *      version bumped, `--color-accent` retuned and the card banner's corner
+ *      moved from the control radius to the page radius — and publishes that
+ *      too;
  *   3. installs and builds `fixtures/consumers/registry-vite-app` with plain
  *      `npm` (not pnpm), and asserts in Chromium that the built page is
  *      themed and that the vendored upstream patches travelled with it;
@@ -482,39 +483,35 @@ function deriveVersionB(dir) {
     throw new Error('No stylesheet carried a --color-accent declaration.');
   }
 
-  // The card's padding: a per-component decision the theme makes, read out of
-  // the built CSS rather than hard-coded, and moved one step up the scale.
-  const CARD_PADDING = '--astryx-card-padding';
+  // The card banner's corner: a per-component decision the theme makes, read
+  // out of the built CSS rather than hard-coded, and moved from the control
+  // radius to the page radius.
+  const BANNER_RADIUS = '--_banner-radius';
+  const toVar = '--radius-page';
   const bundle = fs.readFileSync(sheet('tecton.css'), 'utf8');
   const declared = bundle.match(
-    new RegExp(`${CARD_PADDING}:\\s*var\\(--spacing-(\\d+)\\)`),
+    new RegExp(`${BANNER_RADIUS}:\\s*var\\((--radius-[\\w-]+)\\)`),
   );
   if (!declared) {
     throw new Error(
-      `No stylesheet set ${CARD_PADDING} from the spacing scale — has the theme's card override changed?`,
+      `No stylesheet set ${BANNER_RADIUS} from the radius scale — has the theme's banner override changed?`,
     );
   }
-  const fromStep = Number(declared[1]);
-  const toStep = fromStep * 2;
-  let paddingEdits = 0;
+  const fromVar = declared[1];
+  let radiusEdits = 0;
   for (const file of STYLESHEETS) {
-    paddingEdits += rewrite(sheet(file), css =>
+    radiusEdits += rewrite(sheet(file), css =>
       css.replaceAll(
-        new RegExp(`(${CARD_PADDING}:\\s*)var\\(--spacing-${fromStep}\\)`, 'g'),
-        `$1var(--spacing-${toStep})`,
+        new RegExp(`(${BANNER_RADIUS}:\\s*)var\\(${fromVar}\\)`, 'g'),
+        `$1var(${toVar})`,
       ),
     );
   }
-  if (paddingEdits === 0) {
-    throw new Error(`No stylesheet carried ${CARD_PADDING}`);
+  if (radiusEdits === 0) {
+    throw new Error(`No stylesheet carried ${BANNER_RADIUS}: var(${fromVar})`);
   }
 
-  return {
-    tokenEdits,
-    paddingEdits,
-    fromVar: `--spacing-${fromStep}`,
-    toVar: `--spacing-${toStep}`,
-  };
+  return {tokenEdits, radiusEdits, fromVar, toVar};
 }
 
 function publish(dir, registryUrl) {
@@ -562,7 +559,7 @@ async function publishVersions(registry) {
     'publish',
     'version B was derived in a copy, not in the workspace',
     workspaceStill === a,
-    `--color-accent in ${derived.tokenEdits} sheets, card padding ${derived.fromVar} → ${derived.toVar}`,
+    `--color-accent in ${derived.tokenEdits} sheets, banner radius ${derived.fromVar} → ${derived.toVar} in ${derived.radiusEdits}`,
   );
 
   publish(stageA, registry.url);
@@ -811,15 +808,21 @@ async function verifyMfe(registry, versions, browser) {
           const panel = document.querySelector(`[data-testid="${id}-panel"]`);
           if (!panel) return null;
           const styles = getComputedStyle(panel);
+          // The theme sets `--_banner-radius` on
+          // `.astryx-banner[data-container="card"]` — the banner's header, not
+          // its frame — so that is the element whose corner to read.
+          const banner = document
+            .querySelector(`[data-testid="${id}-banner"]`)
+            ?.querySelector('.astryx-banner[data-container="card"]');
           return {
             rendered: panel.textContent.includes(
               `Container ${id.toUpperCase()}`,
             ),
-            padding: styles.paddingTop,
+            bannerRadius: banner ? getComputedStyle(banner).borderRadius : null,
             classes: panel.className,
             accent: styles.getPropertyValue('--color-accent').trim(),
-            spacingFrom: styles.getPropertyValue(fromVar).trim(),
-            spacingTo: styles.getPropertyValue(toVar).trim(),
+            radiusFrom: styles.getPropertyValue(fromVar).trim(),
+            radiusTo: styles.getPropertyValue(toVar).trim(),
             wrapperMode: document
               .querySelector(`[data-container="${id}"]`)
               ?.closest('[data-astryx-theme]')
@@ -847,13 +850,14 @@ async function verifyMfe(registry, versions, browser) {
     );
     check(
       'consumer-2',
-      "both containers take the host's card padding",
-      containers.a.padding === containers.b.padding,
+      "both containers take the host's banner radius",
+      containers.a.bannerRadius != null &&
+        containers.a.bannerRadius === containers.b.bannerRadius,
       // Tecton is a theme: its per-component decisions live in the theme layer
       // beside its tokens, under one theme name, so the host's single
       // tokens.css decides them for every container — exactly as it decides
       // the accent above. One theme layer on the page, nothing contested.
-      `${containers.a.padding} in both (${versions.fromVar} → ${versions.toVar} between versions)`,
+      `${containers.a.bannerRadius} in both (${versions.fromVar} ${containers.a.radiusFrom} → ${versions.toVar} ${containers.a.radiusTo} between versions)`,
     );
     check(
       'consumer-2',

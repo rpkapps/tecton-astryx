@@ -24,7 +24,7 @@ points at it. **Never run `playwright install`.**
 ```
 scripts/build.mjs        builds @tecton/react, then derives two versions
   dist/versions/tecton-a/   @tecton/react 0.1.0 — the build as it is
-  dist/versions/tecton-b/   @tecton/react 0.2.0 — retuned tokens + Panel padding
+  dist/versions/tecton-b/   @tecton/react 0.2.0 — retuned tokens + banner radius
   dist/host/container-a.js  own React + own @tecton/react 0.1.0 (IIFE)
   dist/host/container-b.js  own React + own @tecton/react 0.2.0 (IIFE)
   dist/host/host-shell.js   the shell's own copy of Tecton (version B)
@@ -38,35 +38,37 @@ tests/mfe.spec.ts        the assertions
 Everything generated lands in `dist/`, which is git-ignored. Nothing outside
 this fixture is written.
 
-Each container renders a panel (what the styling assertions read) plus the three
-things that used to fight across containers: a modal `Dialog`, a `Menu` (a
-dismissible layer) and a button that raises a toast. The dialog and the menu are
-controlled and driven through the container's imperative handle —
-`window.__mfe.a.openDialog()`, `.openMenu()`, `.closeDialog()` — because a modal
-belonging to one container covers the other container's buttons, which is a real
-page's problem but not one a test should click its way through.
+Each container renders a panel and a card `Banner` (what the styling assertions
+read) plus the three things that used to fight across containers: a modal
+`Dialog`, a `Menu` (a dismissible layer) and a button that raises a toast. The
+dialog and the menu are controlled and driven through the container's
+imperative handle — `window.__mfe.a.openDialog()`, `.openMenu()`,
+`.closeDialog()` — because a modal belonging to one container covers the other
+container's buttons, which is a real page's problem but not one a test should
+click its way through.
 
 The two versions differ in exactly four places, so every difference is
 attributable:
 
-|                           | A (0.1.0)            | B (0.2.0)             |
-| ------------------------- | -------------------- | --------------------- |
-| `--color-accent`          | the Tecton theme's   | `#b8336a` / `#ff5fa2` |
-| `--color-background-body` | the Tecton theme's   | `#fdf3f8` / `#2a0d1c` |
-| `--color-background-surf` | the Tecton theme's   | `#ffe9f2` / `#3d1329` |
-| `Panel` padding           | `--spacing-4` (16px) | `--spacing-8` (32px)  |
+|                           | A (0.1.0)                | B (0.2.0)              |
+| ------------------------- | ------------------------ | ---------------------- |
+| `--color-accent`          | the Tecton theme's       | `#b8336a` / `#ff5fa2`  |
+| `--color-background-body` | the Tecton theme's       | `#fdf3f8` / `#2a0d1c`  |
+| `--color-background-surf` | the Tecton theme's       | `#ffe9f2` / `#3d1329`  |
+| card `Banner` corner      | `--radius-element` (4px) | `--radius-page` (16px) |
 
 Both keep the theme **name** `tecton`, which is the strategy under test.
 
 **Version B is derived from A's `dist/`, not rebuilt from patched source.** The
 investigation harness patched `packages/react/src` in place and restored it
 afterwards; a fixture should not need that much trust in a `finally` block. The
-result is the same page: theme tokens are plain declarations in the built CSS,
-and a component whose StyleX declaration changed gets a **new atomic class**,
-which the build script reproduces (`.tecton1shk3sm{padding:var(--spacing-4)}` →
-`.tectonb2pad8{padding:var(--spacing-8)}`, plus the class name in `Panel.js`).
-That is what makes the two versions' component rules coexist the way two real
-releases' do.
+result is the same page: since Tecton is a theme, everything it decides —
+tokens and per-component overrides alike — is a plain declaration in the built
+theme CSS, inside `@layer astryx-theme` under the theme's own `@scope`. The
+build script reads the banner's declared corner out of `tecton.css` rather than
+hard-coding it (`--_banner-radius: var(--radius-element)` →
+`var(--radius-page)`) and fails loudly if the declaration is gone, so a theme
+change that retires the knob breaks the build rather than the assertions.
 
 ## Driving the page
 
