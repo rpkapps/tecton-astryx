@@ -133,7 +133,11 @@ test('the component sidebar is grouped and opens', async ({page}) => {
     0,
   );
 
+  // Utilities is the last row of a long list, so it has to be brought into the
+  // sidebar's own scroll viewport before it can be pressed.
+  await utilities.scrollIntoViewIfNeeded();
   await utilities.click();
+  await expect(utilities).toHaveAttribute('aria-expanded', 'true');
   await expect(sidebar.getByRole('link', {name: 'useClipboard'})).toBeVisible();
 
   // The group holding the page being read is already open.
