@@ -965,19 +965,29 @@ function targetName(blockName, upstreamComponent, tectonComponent) {
   return `${tectonComponent}${blockName}`;
 }
 
+/**
+ * The line that says an example was ported.
+ *
+ * It is a comment rather than a field on the doc, because the documentation
+ * site reads these files into a typed registry and provenance is not part of
+ * what an example *is*. A re-run of the port looks for this line to know which
+ * examples are its own to replace.
+ */
+const PORTED_MARK =
+  '/* Ported from the upstream example blocks by scripts/port-examples.mjs. */';
+
 function exampleDocSource(id, component, doc) {
   const name = String(doc?.name ?? id)
     .replace(/^[^—]*—\s*/, '')
     .trim();
-  return `/** @type {import('@tecton/docs').ExampleDoc} */
+  return `${PORTED_MARK}
+/** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = ${JSON.stringify(
     {
       id,
       name: name || id,
       component,
       description: String(doc?.description ?? `${component} example.`),
-      // Provenance, and the marker a re-run uses to clear its own output.
-      origin: 'ported',
     },
     null,
     2,
@@ -1031,7 +1041,7 @@ for (const dir of fs.readdirSync(COMPONENTS)) {
     const id = file.replace(/\.doc\.mjs$/, '');
     const wasPorted = fs
       .readFileSync(path.join(examples, file), 'utf8')
-      .includes("origin: 'ported'");
+      .includes(PORTED_MARK);
     if (wasPorted) {
       fs.rmSync(path.join(examples, file), {force: true});
       fs.rmSync(path.join(examples, `${id}.tsx`), {force: true});

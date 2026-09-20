@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'SurfaceThemeImageOverlay',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'SurfaceTheme',
   description:
     'A common image card pattern: place text and actions over a dark gradient and wrap the overlay content in MediaTheme mode="dark".',
-  origin: 'ported',
 };

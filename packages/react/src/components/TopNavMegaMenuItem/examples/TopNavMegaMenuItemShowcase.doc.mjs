@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'TopNavMegaMenuItemShowcase',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'TopNavMegaMenuItem',
   description:
     'Demonstrates TopNavMegaMenuItem with icons, titles, and descriptions inside a mega menu.',
-  origin: 'ported',
 };

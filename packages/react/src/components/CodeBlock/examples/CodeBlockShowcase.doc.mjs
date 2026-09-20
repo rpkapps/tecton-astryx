@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'CodeBlockShowcase',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'CodeBlock',
   description:
     'A syntax-highlighted TypeScript code block with line numbers, a title bar, and a copy button.',
-  origin: 'ported',
 };

@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'FieldShowcase',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'Field',
   description:
     'A form field wrapping a text input with a label, description, and validation status.',
-  origin: 'ported',
 };

@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'SelectBottomSheet',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'Select',
   description:
     'Presents a single-selection list in a bottom sheet for compact touch interfaces.',
-  origin: 'ported',
 };

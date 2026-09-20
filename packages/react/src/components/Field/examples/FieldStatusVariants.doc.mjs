@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'FieldStatusVariants',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'Field',
   description:
     'All three validation states: error, warning, and success. Use error for invalid input, warning for potential issues like reserved names, and success to confirm valid entries like API keys.',
-  origin: 'ported',
 };

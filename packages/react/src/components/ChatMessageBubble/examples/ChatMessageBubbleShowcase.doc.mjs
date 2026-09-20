@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'ChatMessageBubbleShowcase',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'ChatMessageBubble',
   description:
     'Grouped user bubbles with filled styling and a ghost-variant agent response, with timestamps and delivery status.',
-  origin: 'ported',
 };

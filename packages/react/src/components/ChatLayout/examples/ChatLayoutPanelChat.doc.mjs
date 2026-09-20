@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'ChatLayoutPanelChat',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'ChatLayout',
   description:
     'Narrow sidebar chat in a constrained container that triggers compact density. Use for side panels, drawers, or embedded chat widgets where horizontal space is limited.',
-  origin: 'ported',
 };

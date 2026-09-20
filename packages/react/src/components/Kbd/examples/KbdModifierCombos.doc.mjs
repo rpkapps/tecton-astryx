@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'KbdModifierCombos',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'Kbd',
   description:
     'Modifier combinations and special keys rendered as shortcut badges',
-  origin: 'ported',
 };

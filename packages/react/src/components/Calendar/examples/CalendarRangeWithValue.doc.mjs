@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'CalendarRangeWithValue',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'Calendar',
   description:
     'Pick a start and end date with the range highlighted between them. Use for booking dates, time-off requests, or report filters.',
-  origin: 'ported',
 };

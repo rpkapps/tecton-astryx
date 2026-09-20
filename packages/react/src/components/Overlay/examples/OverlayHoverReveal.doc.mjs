@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'OverlayHoverReveal',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'Overlay',
   description:
     'Reveals an overlay action on hover or keyboard focus. Use when actions should stay visually quiet until the media receives attention.',
-  origin: 'ported',
 };

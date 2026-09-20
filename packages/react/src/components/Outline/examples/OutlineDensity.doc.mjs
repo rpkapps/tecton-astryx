@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'OutlineDensity',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'Outline',
   description:
     'Two density variants control item padding. Use compact for dense sidebars and default for standard documentation layouts. The sliding indicator automatically matches each item height.',
-  origin: 'ported',
 };

@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'GridSpanShowcase',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'GridSpan',
   description:
     'GridSpan lets a grid item span multiple columns or rows within an Grid, enabling masonry-style and asymmetric layouts.',
-  origin: 'ported',
 };

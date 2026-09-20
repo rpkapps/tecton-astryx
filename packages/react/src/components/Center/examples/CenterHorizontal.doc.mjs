@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'CenterHorizontal',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'Center',
   description:
     'A formatting control group centered with axis="horizontal" in the default horizontal writing mode. In other writing modes, Center currently follows the flex main axis rather than guaranteeing physical horizontal centering.',
-  origin: 'ported',
 };

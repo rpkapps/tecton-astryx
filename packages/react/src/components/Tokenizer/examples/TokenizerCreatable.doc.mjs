@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'TokenizerCreatable',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'Tokenizer',
   description:
     'Free-text tokenizer for creating custom tags and a combined create-or-search pattern. Use when users need to enter values that may not exist in a predefined list.',
-  origin: 'ported',
 };

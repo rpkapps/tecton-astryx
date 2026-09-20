@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'ItemRowBasicItem',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'ItemRow',
   description:
     'A basic item with a label, supporting description, and end-aligned timestamp. Use this for simple rows that need consistent text alignment and spacing.',
-  origin: 'ported',
 };

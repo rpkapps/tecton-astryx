@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'LayoutBasicCardLayout',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'Layout',
   description:
     'A card layout with header, scrollable content area, and footer with action buttons.',
-  origin: 'ported',
 };

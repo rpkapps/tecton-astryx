@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'SideNavEndContent',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'SideNav',
   description:
     'Side navigation items with badges, counts, and context menus as trailing content.',
-  origin: 'ported',
 };

@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'ContextMenuItemBasic',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'ContextMenuItem',
   description:
     'Context menu items with labels and secondary descriptions. Use ContextMenuItem to render custom menu entries with consistent styling.',
-  origin: 'ported',
 };

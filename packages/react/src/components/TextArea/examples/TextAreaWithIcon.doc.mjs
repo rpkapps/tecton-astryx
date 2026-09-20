@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'TextAreaWithIcon',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'TextArea',
   description:
     'Textareas with a leading icon that hints at the expected content, like a chat bubble for messages or a pencil for notes.',
-  origin: 'ported',
 };

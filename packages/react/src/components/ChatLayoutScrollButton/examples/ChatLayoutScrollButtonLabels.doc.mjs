@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'ChatLayoutScrollButtonLabels',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'ChatLayoutScrollButton',
   description:
     'Scroll button with different labels for context-specific notifications like new messages, unread replies, or a generic scroll prompt.',
-  origin: 'ported',
 };

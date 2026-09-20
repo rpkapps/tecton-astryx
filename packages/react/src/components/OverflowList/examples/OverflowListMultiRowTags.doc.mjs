@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'OverflowListMultiRowTags',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'OverflowList',
   description:
     'Tags wrap onto up to two rows with maxRows, then collapse the rest into a count badge',
-  origin: 'ported',
 };

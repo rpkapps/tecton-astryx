@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'AspectRatioSquareImage',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'AspectRatio',
   description:
     '1:1 square aspect ratio, ideal for avatars and Instagram-style images.',
-  origin: 'ported',
 };

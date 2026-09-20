@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'ResizableSidebar',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'ResizeHandle',
   description:
     'A collapsible sidebar with snap points, driven by useResizable. Dragging snaps to preset widths, dragging past the minimum collapses the panel, and the expand method restores it programmatically.',
-  origin: 'ported',
 };

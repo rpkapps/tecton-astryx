@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'AlertShowcase',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'Alert',
   description:
     'All four status banners stacked: info, success, warning, and error. A quick visual reference for choosing the right status.',
-  origin: 'ported',
 };

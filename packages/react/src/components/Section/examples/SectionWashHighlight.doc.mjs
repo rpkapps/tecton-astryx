@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'SectionWashHighlight',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'Section',
   description:
     'A default section stacked with a full-width muted section. Shows how muted draws attention to a specific region like an upgrade prompt or banner.',
-  origin: 'ported',
 };

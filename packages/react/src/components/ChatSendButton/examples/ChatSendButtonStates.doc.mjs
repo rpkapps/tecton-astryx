@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'ChatSendButtonStates',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'ChatSendButton',
   description:
     'Disabled, ready, and streaming states at both sizes. The button automatically toggles between send (primary) and stop (secondary) based on streaming state.',
-  origin: 'ported',
 };

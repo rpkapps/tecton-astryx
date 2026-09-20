@@ -493,6 +493,33 @@ function exportsMap(existing) {
   return out;
 }
 
+/**
+ * The upstream-to-Tecton table in `docs/engineering/component-mapping.md`.
+ *
+ * Generated so it cannot drift from the manifest it describes: one row per
+ * Tecton component, what it is built on, whether it is designed or generated,
+ * and how many examples it carries.
+ */
+function surfaceTable() {
+  const rows = [...components].sort((a, b) => a.name.localeCompare(b.name));
+  const lines = [
+    `${rows.length} Tecton components. "Designed" means hand-written; "generated"`,
+    'means emitted from the manifest and published with its behaviour unchanged.',
+    '',
+    '| Tecton | Built on | Kind | Category | Examples |',
+    '| --- | --- | --- | --- | --- |',
+  ];
+  for (const entry of rows) {
+    const upstream = entry.upstream?.export
+      ? `\`${entry.upstream.export}\` (\`${entry.upstream.module}\`)`
+      : '— (Tecton only)';
+    lines.push(
+      `| \`${entry.name}\` | ${upstream} | ${entry.handwritten ? 'designed' : 'generated'} | ${entry.category} | ${examplesOf(entry.name).length} |`,
+    );
+  }
+  return lines.join('\n');
+}
+
 /* ------------------------------------------------------------- the run ---- */
 
 /**
@@ -582,6 +609,31 @@ for (const entry of generated) {
       docSource(entry, doc, propNames.get(entry.name) ?? new Set()),
     ),
   );
+}
+
+const mappingDoc = path.join(
+  PACKAGE,
+  '..',
+  '..',
+  'docs',
+  'engineering',
+  'component-mapping.md',
+);
+if (fs.existsSync(mappingDoc)) {
+  const source = fs.readFileSync(mappingDoc, 'utf8');
+  const open = '<!-- generated:surface-table -->';
+  const close = '<!-- /generated:surface-table -->';
+  const from = source.indexOf(open);
+  const to = source.indexOf(close);
+  if (from !== -1 && to !== -1) {
+    const next =
+      source.slice(0, from + open.length) +
+      '\n\n' +
+      surfaceTable() +
+      '\n' +
+      source.slice(to);
+    wanted.set(mappingDoc, await formatted(mappingDoc, next));
+  }
 }
 
 const exportsFile = path.join(SRC, 'generated', 'componentExports.ts');

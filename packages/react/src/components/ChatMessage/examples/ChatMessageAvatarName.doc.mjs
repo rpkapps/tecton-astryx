@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'ChatMessageAvatarName',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'ChatMessage',
   description:
     'Messages with avatars and sender names. Place the name on the bubble when using bubbles, or on the message wrapper for raw content.',
-  origin: 'ported',
 };

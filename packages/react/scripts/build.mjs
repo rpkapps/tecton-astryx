@@ -323,6 +323,17 @@ run(
   'generate-wrappers --check',
 );
 
+// 0d — README drift ----------------------------------------------------------
+// The README's component table is generated from the components' own
+// documentation. It is the package's front page, so it fails the build rather
+// than going stale.
+step('Checking the README component list');
+run(
+  process.execPath,
+  [path.join(PACKAGE_ROOT, 'scripts', 'generate-readme.mjs'), '--check'],
+  'generate-readme --check',
+);
+
 // 1 — clean -------------------------------------------------------------------
 step('Cleaning dist/');
 await fsp.rm(DIST, {recursive: true, force: true});

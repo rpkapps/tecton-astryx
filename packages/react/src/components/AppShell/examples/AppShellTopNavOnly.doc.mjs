@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'AppShellTopNavOnly',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'AppShell',
   description:
     'Simple layout with TopNav and no side navigation, suitable for landing pages.',
-  origin: 'ported',
 };

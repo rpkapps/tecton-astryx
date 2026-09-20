@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'StackDirections',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'Stack',
   description:
     'Badges arranged horizontally and vertically in side-by-side cards.',
-  origin: 'ported',
 };

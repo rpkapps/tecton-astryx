@@ -118,6 +118,277 @@ Two of those are judgement calls worth knowing about:
 These six semantic names have no Tecton glyph and keep the Astryx default:
 `chevronsLeft`, `chevronsRight`, `calendar`, `clock`, `checkDouble`, `stop`.
 
+## The whole surface
+
+Tecton publishes a component for every component the library underneath it
+publishes — 180 Tecton components over 164 upstream ones, because several
+upstream exports are split (a family's subcomponents each get their own
+directory) and a few Tecton components have no upstream counterpart at all
+(`Panel`, `Icon`, `ColorSwatch`, `Fab`).
+
+Two kinds of component live in that list, and the difference is the whole
+design:
+
+- **Designed** (48). Tecton names the props, narrows the choices, takes data
+  where upstream took children, and writes the documentation. These are the
+  components in the table above. They are hand-written and stay hand-written.
+- **Generated** (132). Tecton has no opinion about these _yet_. They are
+  published under Tecton names, with Tecton-named types and Tecton glyphs
+  accepted on their icon props, and nothing else changed — so a consumer can
+  reach for a `Calendar` or a `CommandPalette` today and get the designed
+  version later without changing the import. `packages/react/wrappers.manifest.json`
+  is the source of truth and `packages/react/scripts/generate-wrappers.mjs`
+  emits the wrapper, its documentation, a smoke test and the export surface
+  from it. `--check` runs in the package build and in `pnpm check`, so an
+  upstream upgrade that moves a prop fails the build with a diff.
+
+Promoting a generated component to a designed one is a manifest edit
+(`handwritten: true`) plus the wrapper: the generator then leaves it alone.
+
+Five names had to bend around the designed surface, because the designed names
+win and the two would otherwise collide in the barrel:
+
+| Upstream               | Tecton                     | Why                                                          |
+| ---------------------- | -------------------------- | ------------------------------------------------------------ |
+| `DropdownMenuItem`     | `MenuActionItem`           | `MenuItem` is already Menu's data shape for an entry.        |
+| `DropdownMenuDivider`  | `MenuSeparator`            | `MenuDivider` is already Menu's data shape for a rule.       |
+| `SelectorOption`       | `SelectChoice`             | `SelectOption` and `SelectItem` are already Select's data.   |
+| `SegmentedControlItem` | `ToggleButtonGroupSegment` | `ToggleButtonGroupItem` is already the group's data shape.   |
+| `FieldStatus`          | `FieldMessage`             | `FieldStatus` is already Tecton's shared field-status type.  |
+| `Item`                 | `ItemRow`                  | `ListItem` is Tecton's list row; this is the bare primitive. |
+| `ToggleButtonGroup`    | `ToggleButtonBar`          | Tecton's `ToggleButtonGroup` is the segmented control.       |
+
+Three upstream exports are folded rather than published: `AlertDialog` is
+Tecton's `Dialog` with a `confirmation`, and `CheckboxListItem` and
+`RadioListItem` are data on `CheckboxGroup` and `RadioGroup`. `Theme` and
+`Layer` are `TectonProvider`.
+
+<!-- generated:surface-table -->
+
+180 Tecton components. "Designed" means hand-written; "generated"
+means emitted from the manifest and published with its behaviour unchanged.
+
+| Tecton                       | Built on                                    | Kind      | Category   | Examples |
+| ---------------------------- | ------------------------------------------- | --------- | ---------- | -------- |
+| `Accordion`                  | `Collapsible` (`Collapsible`)               | designed  | Surfaces   | 8        |
+| `AccordionGroup`             | `CollapsibleGroup` (`Collapsible`)          | designed  | Surfaces   | 2        |
+| `Alert`                      | `Banner` (`Banner`)                         | designed  | Feedback   | 7        |
+| `AppShell`                   | `AppShell` (`AppShell`)                     | generated | Layout     | 6        |
+| `AspectRatio`                | `AspectRatio` (`AspectRatio`)               | generated | Layout     | 6        |
+| `Autocomplete`               | `Typeahead` (`Typeahead`)                   | designed  | Forms      | 5        |
+| `AutocompleteBase`           | `BaseTypeahead` (`Typeahead`)               | generated | Forms      | 0        |
+| `AutocompleteItem`           | `TypeaheadItem` (`Typeahead`)               | generated | Forms      | 0        |
+| `Avatar`                     | `Avatar` (`Avatar`)                         | designed  | Content    | 10       |
+| `AvatarGroup`                | `AvatarGroup` (`AvatarGroup`)               | designed  | Content    | 1        |
+| `AvatarGroupOverflow`        | `AvatarGroupOverflow` (`AvatarGroup`)       | generated | Content    | 0        |
+| `AvatarStatusDot`            | `AvatarStatusDot` (`Avatar`)                | generated | Content    | 2        |
+| `Badge`                      | `Badge` (`Badge`)                           | designed  | Content    | 6        |
+| `Blockquote`                 | `Blockquote` (`Blockquote`)                 | generated | Content    | 3        |
+| `BottomSheet`                | `BottomSheet` (`BottomSheet`)               | generated | Overlay    | 4        |
+| `BottomSheetSwitcher`        | `BottomSheetSwitcher` (`BottomSheet`)       | generated | Overlay    | 2        |
+| `BreadcrumbItem`             | `BreadcrumbItem` (`Breadcrumbs`)            | designed  | Navigation | 2        |
+| `Breadcrumbs`                | `Breadcrumbs` (`Breadcrumbs`)               | designed  | Navigation | 5        |
+| `Button`                     | `Button` (`Button`)                         | designed  | Action     | 5        |
+| `ButtonGroup`                | `ButtonGroup` (`ButtonGroup`)               | designed  | Action     | 3        |
+| `Calendar`                   | `Calendar` (`Calendar`)                     | generated | Forms      | 5        |
+| `Card`                       | `Card` (`Card`)                             | designed  | Surfaces   | 6        |
+| `Carousel`                   | `Carousel` (`Carousel`)                     | generated | Surfaces   | 3        |
+| `Center`                     | `Center` (`Center`)                         | generated | Layout     | 3        |
+| `ChatComposer`               | `ChatComposer` (`Chat`)                     | generated | Chat       | 5        |
+| `ChatComposerDrawer`         | `ChatComposerDrawer` (`Chat`)               | generated | Chat       | 4        |
+| `ChatComposerInput`          | `ChatComposerInput` (`Chat`)                | generated | Chat       | 6        |
+| `ChatComposerTokenElement`   | `ChatComposerTokenElement` (`Chat`)         | generated | Chat       | 0        |
+| `ChatDictationButton`        | `ChatDictationButton` (`Chat`)              | generated | Chat       | 5        |
+| `ChatLayout`                 | `ChatLayout` (`Chat`)                       | generated | Chat       | 2        |
+| `ChatLayoutScrollButton`     | `ChatLayoutScrollButton` (`Chat`)           | generated | Chat       | 2        |
+| `ChatMessage`                | `ChatMessage` (`Chat`)                      | generated | Chat       | 4        |
+| `ChatMessageBubble`          | `ChatMessageBubble` (`Chat`)                | generated | Chat       | 6        |
+| `ChatMessageList`            | `ChatMessageList` (`Chat`)                  | generated | Chat       | 2        |
+| `ChatMessageMetadata`        | `ChatMessageMetadata` (`Chat`)              | generated | Chat       | 4        |
+| `ChatSendButton`             | `ChatSendButton` (`Chat`)                   | generated | Chat       | 4        |
+| `ChatSystemMessage`          | `ChatSystemMessage` (`Chat`)                | generated | Chat       | 4        |
+| `ChatTokenizedText`          | `ChatTokenizedText` (`Chat`)                | generated | Chat       | 3        |
+| `ChatToolCalls`              | `ChatToolCalls` (`Chat`)                    | generated | Chat       | 4        |
+| `Checkbox`                   | `CheckboxInput` (`CheckboxInput`)           | designed  | Forms      | 3        |
+| `CheckboxGroup`              | `CheckboxList` (`CheckboxList`)             | designed  | Forms      | 1        |
+| `Chip`                       | `Token` (`Token`)                           | designed  | Content    | 6        |
+| `Citation`                   | `Citation` (`Citation`)                     | generated | Content    | 3        |
+| `ClickableCard`              | `ClickableCard` (`ClickableCard`)           | generated | Surfaces   | 3        |
+| `Code`                       | `Code` (`Code`)                             | generated | Content    | 4        |
+| `CodeBlock`                  | `CodeBlock` (`CodeBlock`)                   | generated | Content    | 6        |
+| `CodeTheme`                  | `SyntaxTheme` (`theme`)                     | generated | Providers  | 3        |
+| `ColorSwatch`                | — (Tecton only)                             | designed  | Content    | 1        |
+| `CommandPalette`             | `CommandPalette` (`CommandPalette`)         | generated | Overlay    | 5        |
+| `CommandPaletteEmpty`        | `CommandPaletteEmpty` (`CommandPalette`)    | generated | Overlay    | 2        |
+| `CommandPaletteFooter`       | `CommandPaletteFooter` (`CommandPalette`)   | generated | Overlay    | 2        |
+| `CommandPaletteGroup`        | `CommandPaletteGroup` (`CommandPalette`)    | generated | Overlay    | 2        |
+| `CommandPaletteInput`        | `CommandPaletteInput` (`CommandPalette`)    | generated | Overlay    | 2        |
+| `CommandPaletteItem`         | `CommandPaletteItem` (`CommandPalette`)     | generated | Overlay    | 1        |
+| `CommandPaletteList`         | `CommandPaletteList` (`CommandPalette`)     | generated | Overlay    | 2        |
+| `ComplexSelector`            | `ComplexSelector` (`ComplexSelector`)       | generated | Forms      | 0        |
+| `ContextMenu`                | `ContextMenu` (`ContextMenu`)               | generated | Action     | 3        |
+| `ContextMenuCheckboxItem`    | `ContextMenuCheckboxItem` (`ContextMenu`)   | generated | Overlay    | 0        |
+| `ContextMenuItem`            | `ContextMenuItem` (`ContextMenu`)           | generated | Action     | 2        |
+| `ContextMenuRadioGroup`      | `ContextMenuRadioGroup` (`ContextMenu`)     | generated | Overlay    | 0        |
+| `ContextMenuRadioItem`       | `ContextMenuRadioItem` (`ContextMenu`)      | generated | Overlay    | 0        |
+| `ContextMenuSeparator`       | `ContextMenuDivider` (`ContextMenu`)        | generated | Overlay    | 0        |
+| `ContextMenuSubMenu`         | `ContextMenuSubMenu` (`ContextMenu`)        | generated | Overlay    | 0        |
+| `DateInput`                  | `DateInput` (`DateInput`)                   | generated | Forms      | 6        |
+| `DateRangeInput`             | `DateRangeInput` (`DateRangeInput`)         | generated | Forms      | 3        |
+| `DateTimeInput`              | `DateTimeInput` (`DateTimeInput`)           | generated | Forms      | 2        |
+| `Dialog`                     | `Dialog` (`Dialog`)                         | designed  | Overlay    | 3        |
+| `DialogHeader`               | `DialogHeader` (`Dialog`)                   | generated | Overlay    | 0        |
+| `Divider`                    | `Divider` (`Divider`)                       | designed  | Layout     | 5        |
+| `EmptyState`                 | `EmptyState` (`EmptyState`)                 | generated | Content    | 4        |
+| `Fab`                        | `Button` (`Button`)                         | designed  | Action     | 1        |
+| `Field`                      | `Field` (`Field`)                           | generated | Forms      | 4        |
+| `FieldLabel`                 | `FieldLabel` (`Field`)                      | generated | Forms      | 2        |
+| `FieldMessage`               | `FieldStatus` (`FieldStatus`)               | generated | Forms      | 2        |
+| `FileInput`                  | `FileInput` (`FileInput`)                   | generated | Forms      | 2        |
+| `FormLayout`                 | `FormLayout` (`FormLayout`)                 | generated | Layout     | 4        |
+| `Grid`                       | `Grid` (`Grid`)                             | designed  | Layout     | 6        |
+| `GridSpan`                   | `GridSpan` (`Grid`)                         | generated | Layout     | 2        |
+| `Heading`                    | `Heading` (`Text`)                          | designed  | Typography | 6        |
+| `HoverCard`                  | `HoverCard` (`HoverCard`)                   | generated | Overlay    | 2        |
+| `HStack`                     | `HStack` (`HStack`)                         | designed  | Layout     | 2        |
+| `Icon`                       | — (Tecton only)                             | designed  | Content    | 5        |
+| `IconButton`                 | `IconButton` (`IconButton`)                 | designed  | Action     | 5        |
+| `InputGroup`                 | `InputGroup` (`InputGroup`)                 | generated | Forms      | 2        |
+| `InputGroupText`             | `InputGroupText` (`InputGroup`)             | generated | Forms      | 0        |
+| `ItemRow`                    | `Item` (`Item`)                             | generated | Data       | 4        |
+| `Kbd`                        | `Kbd` (`Kbd`)                               | generated | Content    | 4        |
+| `Layout`                     | `Layout` (`Layout`)                         | generated | Layout     | 7        |
+| `LayoutContent`              | `LayoutContent` (`Layout`)                  | generated | Layout     | 2        |
+| `LayoutFooter`               | `LayoutFooter` (`Layout`)                   | generated | Layout     | 2        |
+| `LayoutHeader`               | `LayoutHeader` (`Layout`)                   | generated | Layout     | 2        |
+| `LayoutPanel`                | `LayoutPanel` (`Layout`)                    | generated | Layout     | 2        |
+| `Lightbox`                   | `Lightbox` (`Lightbox`)                     | generated | Overlay    | 4        |
+| `Link`                       | `Link` (`Link`)                             | designed  | Navigation | 5        |
+| `LinkProvider`               | `LinkProvider` (`Link`)                     | generated | Providers  | 1        |
+| `List`                       | `List` (`List`)                             | designed  | Data       | 6        |
+| `ListItem`                   | `ListItem` (`List`)                         | designed  | Data       | 5        |
+| `LocaleProvider`             | `InternationalizationProvider` (`i18n`)     | generated | Providers  | 0        |
+| `Markdown`                   | `Markdown` (`Markdown`)                     | generated | Content    | 5        |
+| `Menu`                       | `DropdownMenu` (`DropdownMenu`)             | designed  | Action     | 1        |
+| `MenuActionItem`             | `DropdownMenuItem` (`DropdownMenu`)         | generated | Action     | 0        |
+| `MenuCheckboxItem`           | `DropdownMenuCheckboxItem` (`DropdownMenu`) | generated | Action     | 0        |
+| `MenuRadioGroup`             | `DropdownMenuRadioGroup` (`DropdownMenu`)   | generated | Action     | 0        |
+| `MenuRadioItem`              | `DropdownMenuRadioItem` (`DropdownMenu`)    | generated | Action     | 0        |
+| `MenuSeparator`              | `DropdownMenuDivider` (`DropdownMenu`)      | generated | Action     | 0        |
+| `MenuSubMenu`                | `DropdownMenuSubMenu` (`DropdownMenu`)      | generated | Action     | 0        |
+| `MetadataList`               | `MetadataList` (`MetadataList`)             | generated | Data       | 5        |
+| `MetadataListItem`           | `MetadataListItem` (`MetadataList`)         | generated | Data       | 2        |
+| `MobileNav`                  | `MobileNav` (`MobileNav`)                   | generated | Navigation | 4        |
+| `MobileNavToggle`            | `MobileNavToggle` (`MobileNav`)             | generated | Navigation | 2        |
+| `MoreMenu`                   | `MoreMenu` (`MoreMenu`)                     | generated | Action     | 5        |
+| `MultiSelector`              | `MultiSelector` (`MultiSelector`)           | generated | Forms      | 7        |
+| `NavHeadingMenu`             | `NavHeadingMenu` (`NavMenu`)                | generated | Navigation | 1        |
+| `NavHeadingMenuItem`         | `NavHeadingMenuItem` (`NavMenu`)            | generated | Navigation | 0        |
+| `NavIcon`                    | `NavIcon` (`NavIcon`)                       | generated | Navigation | 2        |
+| `NumberInput`                | `NumberInput` (`NumberInput`)               | generated | Forms      | 5        |
+| `Outline`                    | `Outline` (`Outline`)                       | generated | Navigation | 4        |
+| `OverflowList`               | `OverflowList` (`OverflowList`)             | generated | Data       | 4        |
+| `Overlay`                    | `Overlay` (`Overlay`)                       | generated | Overlay    | 3        |
+| `Pagination`                 | `Pagination` (`Pagination`)                 | generated | Navigation | 4        |
+| `Panel`                      | — (Tecton only)                             | designed  | Surfaces   | 2        |
+| `Popover`                    | `Popover` (`Popover`)                       | generated | Overlay    | 5        |
+| `PowerSearch`                | `PowerSearch` (`PowerSearch`)               | generated | Forms      | 5        |
+| `Progress`                   | `ProgressBar` (`ProgressBar`)               | designed  | Feedback   | 5        |
+| `Radio`                      | `RadioListItem` (`RadioList`)               | designed  | Forms      | 2        |
+| `RadioGroup`                 | `RadioList` (`RadioList`)                   | designed  | Forms      | 6        |
+| `ResizeHandle`               | `ResizeHandle` (`Resizable`)                | generated | Layout     | 1        |
+| `ScrollableArea`             | `ScrollableArea` (`ScrollableArea`)         | generated | Layout     | 0        |
+| `Section`                    | `Section` (`Section`)                       | generated | Layout     | 3        |
+| `Select`                     | `Selector` (`Selector`)                     | designed  | Forms      | 5        |
+| `SelectableCard`             | `SelectableCard` (`SelectableCard`)         | generated | Surfaces   | 3        |
+| `SelectChoice`               | `SelectorOption` (`Selector`)               | generated | Forms      | 2        |
+| `SideNav`                    | `SideNav` (`SideNav`)                       | generated | Navigation | 4        |
+| `SideNavCollapseButton`      | `SideNavCollapseButton` (`SideNav`)         | generated | Navigation | 2        |
+| `SideNavHeading`             | `SideNavHeading` (`SideNav`)                | generated | Navigation | 2        |
+| `SideNavItem`                | `SideNavItem` (`SideNav`)                   | generated | Navigation | 2        |
+| `SideNavSection`             | `SideNavSection` (`SideNav`)                | generated | Navigation | 2        |
+| `Skeleton`                   | `Skeleton` (`Skeleton`)                     | generated | Feedback   | 4        |
+| `Slider`                     | `Slider` (`Slider`)                         | designed  | Forms      | 2        |
+| `Stack`                      | `Stack` (`Stack`)                           | designed  | Layout     | 4        |
+| `StackItem`                  | `StackItem` (`Layout`)                      | generated | Layout     | 2        |
+| `StatusDot`                  | `StatusDot` (`StatusDot`)                   | generated | Feedback   | 4        |
+| `Step`                       | `Step` (`Stepper`)                          | generated | Navigation | 3        |
+| `Stepper`                    | `Stepper` (`Stepper`)                       | generated | Navigation | 7        |
+| `SurfaceTheme`               | `MediaTheme` (`theme`)                      | generated | Providers  | 3        |
+| `Switch`                     | `Switch` (`Switch`)                         | designed  | Forms      | 6        |
+| `Tab`                        | `Tab` (`TabList`)                           | designed  | Navigation | 2        |
+| `Table`                      | `Table` (`Table`)                           | designed  | Data       | 5        |
+| `TableBody`                  | `TableBody` (`Table`)                       | generated | Data       | 0        |
+| `TableCell`                  | `TableCell` (`Table`)                       | generated | Data       | 0        |
+| `TableFooter`                | `TableFooter` (`Table`)                     | generated | Data       | 0        |
+| `TableHeader`                | `TableHeader` (`Table`)                     | generated | Data       | 0        |
+| `TableHeaderCell`            | `TableHeaderCell` (`Table`)                 | generated | Data       | 0        |
+| `TableRow`                   | `TableRow` (`Table`)                        | generated | Data       | 0        |
+| `TabMenu`                    | `TabMenu` (`TabList`)                       | generated | Navigation | 2        |
+| `Tabs`                       | `TabList` (`TabList`)                       | designed  | Navigation | 6        |
+| `Text`                       | `Text` (`Text`)                             | designed  | Typography | 9        |
+| `TextArea`                   | `TextArea` (`TextArea`)                     | designed  | Forms      | 6        |
+| `TextField`                  | `TextInput` (`TextInput`)                   | designed  | Forms      | 9        |
+| `Thumbnail`                  | `Thumbnail` (`Thumbnail`)                   | generated | Content    | 5        |
+| `TimeInput`                  | `TimeInput` (`TimeInput`)                   | generated | Forms      | 5        |
+| `Timestamp`                  | `Timestamp` (`Timestamp`)                   | generated | Content    | 5        |
+| `Toast`                      | `useToast` (`Toast`)                        | designed  | Feedback   | 1        |
+| `ToggleButton`               | `ToggleButton` (`ToggleButton`)             | designed  | Action     | 4        |
+| `ToggleButtonBar`            | `ToggleButtonGroup` (`ToggleButton`)        | generated | Action     | 3        |
+| `ToggleButtonGroup`          | `SegmentedControl` (`SegmentedControl`)     | designed  | Action     | 1        |
+| `ToggleButtonGroupSegment`   | `SegmentedControlItem` (`SegmentedControl`) | generated | Action     | 0        |
+| `Tokenizer`                  | `Tokenizer` (`Tokenizer`)                   | generated | Forms      | 8        |
+| `Toolbar`                    | `Toolbar` (`Toolbar`)                       | generated | Action     | 4        |
+| `Tooltip`                    | `Tooltip` (`Tooltip`)                       | designed  | Overlay    | 4        |
+| `TopNav`                     | `TopNav` (`TopNav`)                         | generated | Navigation | 7        |
+| `TopNavHeading`              | `TopNavHeading` (`TopNav`)                  | generated | Navigation | 2        |
+| `TopNavItem`                 | `TopNavItem` (`TopNav`)                     | generated | Navigation | 2        |
+| `TopNavMegaMenu`             | `TopNavMegaMenu` (`TopNav`)                 | generated | Navigation | 2        |
+| `TopNavMegaMenuFeaturedCard` | `TopNavMegaMenuFeaturedCard` (`TopNav`)     | generated | Navigation | 2        |
+| `TopNavMegaMenuItem`         | `TopNavMegaMenuItem` (`TopNav`)             | generated | Navigation | 2        |
+| `TopNavMenu`                 | `TopNavMenu` (`TopNav`)                     | generated | Navigation | 2        |
+| `TreeView`                   | `TreeList` (`TreeList`)                     | designed  | Data       | 1        |
+| `VisuallyHidden`             | `VisuallyHidden` (`VisuallyHidden`)         | generated | Content    | 3        |
+| `VStack`                     | `VStack` (`VStack`)                         | designed  | Layout     | 2        |
+
+<!-- /generated:surface-table -->
+
+## Examples and page templates
+
+Every example beside a Tecton component, and every page template under
+`packages/react/src/templates`, is a _translation_ of the upstream example
+blocks rather than a copy. `packages/react/scripts/port-examples.mjs` reads
+each one with the TypeScript parser and rewrites it: imports become relative
+Tecton imports, component names go through the manifest, props go through
+`port-examples.mapping.mjs`, and glyphs are substituted for the closest of
+Tecton's 131.
+
+The port is one-shot but re-runnable — a ported example records
+`origin: 'ported'` in its own documentation, which is how a re-run takes back
+exactly its own output — and it is **not** part of the build. Re-run it after
+an upstream upgrade and read the diff.
+
+`docs/engineering/ported-examples.log` is the full record: every glyph
+substituted, every prop dropped in translation, every file refused and every
+file removed because it would not compile, each with its reason. Four kinds of
+thing do not survive the port, and none of them is a shortcut:
+
+1. **A dependency Tecton does not ship.** Five page templates draw charts with
+   a charting library, and a few blocks reach for StyleX token variables that
+   Tecton does not publish. Tecton would have to take on a dependency or
+   publish its token variables to keep them.
+2. **A model Tecton deliberately does not have.** Tecton's Menu, Select,
+   CheckboxGroup, RadioGroup, TreeView and Table take **data**, not children;
+   an upstream example written as `<Selector><SelectorOption/></Selector>` has
+   no mechanical translation. These are the bulk of the removals, and each one
+   is a candidate for a hand-written Tecton example instead.
+3. **A prop Tecton dropped that the example was about.** Where dropping the
+   prop left a required prop missing, the example went with it.
+4. **A pattern the repository's lint rules forbid** — reading a ref or the
+   clock during render. Those are listed in `EXCLUDED` in
+   `port-examples.mapping.mjs` with the reason, because an example is code
+   people copy.
+
 ## Where the wrappers are checked
 
 - `scripts/check-consumer-surface.mjs` — no upstream name in any published

@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'TextWordBreak',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'Text',
   description:
     'Compares break-word and break-all word break modes on a long unbreakable string.',
-  origin: 'ported',
 };

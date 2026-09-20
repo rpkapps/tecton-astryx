@@ -771,7 +771,9 @@
     "generate:icons": "node scripts/generate-icons.mjs",
     "icons:check": "node scripts/generate-icons.mjs --check",
     "generate:wrappers": "node scripts/generate-wrappers.mjs",
-    "wrappers:check": "node scripts/generate-wrappers.mjs --check"
+    "wrappers:check": "node scripts/generate-wrappers.mjs --check",
+    "generate:readme": "node scripts/generate-readme.mjs",
+    "readme:check": "node scripts/generate-readme.mjs --check"
   },
   "dependencies": {
     "@stylexjs/stylex": "0.19.1",

@@ -1,3 +1,4 @@
+/* Ported from the upstream example blocks by scripts/port-examples.mjs. */
 /** @type {import('@tecton/docs').ExampleDoc} */
 export const docs = {
   id: 'CalendarTwoMonths',
@@ -5,5 +6,4 @@ export const docs = {
   component: 'Calendar',
   description:
     'Two months side by side for selecting ranges that span a month boundary. Use in booking or travel UIs where check-in and check-out often fall in different months.',
-  origin: 'ported',
 };
