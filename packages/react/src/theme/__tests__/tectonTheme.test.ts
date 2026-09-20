@@ -286,3 +286,160 @@ describe('component overrides', () => {
     expect(checked.backgroundColor).toContain(row('tertiary Press text').dark);
   });
 });
+
+/**
+ * Tecton is a look, not a layout.
+ *
+ * Everything below is a rule the components' own CSS depends on and an earlier
+ * version of this theme broke; each one is pinned so it cannot come back. The
+ * evidence for every one of them is in `docs/design/theme-audit.md`, which
+ * measures the same 646 examples under this theme and under the theme the
+ * upstream docs site renders them with.
+ */
+describe('the theme leaves the components’ geometry alone', () => {
+  const components = (tectonTheme.components ?? {}) as Record<
+    string,
+    Record<string, Record<string, unknown>>
+  >;
+
+  /**
+   * A `border-radius` shorthand from the theme layer beats the per-corner radii
+   * a component uses to square the interior edges of a connected control, so a
+   * button group, a toggle group or a joined input comes apart into separate
+   * pills. Tecton's corner is `--radius-element`, and every one of these
+   * components already reads it.
+   */
+  it.each([
+    'button',
+    'toggle-button',
+    'button-group',
+    'segmented-control',
+    'segmented-control-item',
+    'input-group',
+    'field',
+    'text-input',
+    'text-area',
+    'selector',
+  ])('%s does not restate a corner radius on its base', target => {
+    expect(components[target]?.base?.borderRadius).toBeUndefined();
+  });
+
+  /**
+   * `boxShadow` is not only elevation. `Card` composes a selection ring into
+   * the same property through `--_card-ring`, and every surface with an
+   * `elevation` prop steps through it. Erasing it on a base erases the prop.
+   */
+  it.each(['card', 'banner-frame', 'popover', 'dropdown-menu', 'dialog'])(
+    '%s does not erase its box-shadow',
+    target => {
+      expect(components[target]?.base?.boxShadow).toBeUndefined();
+    },
+  );
+
+  /**
+   * `Card` and `Section` already pad to spacing step 4 with no theme, draw
+   * their own border on the default variant and fill from
+   * `--color-background-card`. Tecton re-points all of those through tokens, so
+   * there is nothing left for a component rule to say.
+   */
+  it.each(['card', 'section', 'tooltip', 'button-group', 'heading', 'field'])(
+    'does not override %s at all',
+    target => {
+      expect(components[target]).toBeUndefined();
+    },
+  );
+
+  /**
+   * Striping and row hover are `Table`'s props (`isStriped`, `hasHover`), and
+   * it paints both from tokens it also republishes to pinned cells. Tecton says
+   * what colour, never when.
+   */
+  it('gives Table its stripe and hover through the tokens Table uses', () => {
+    const base = components['table-row'].base;
+    expect(base['--color-background-muted']).toBeTruthy();
+    expect(base['--color-overlay-hover']).toBeTruthy();
+    expect(base[':nth-child(even)']).toBeUndefined();
+    expect(base[':hover']).toBeUndefined();
+  });
+
+  it.each(['item', 'list-item', 'dropdown-menu-item'])(
+    '%s hovers through --color-overlay-hover, not a :hover rule of its own',
+    target => {
+      expect(components[target].base['--color-overlay-hover']).toBeTruthy();
+      expect(components[target].base[':hover']).toBeUndefined();
+    },
+  );
+
+  /**
+   * `Switch` keeps `border-width: 0` so the only border it ever draws is the
+   * `CanvasText` one that makes the control perceivable under forced colours;
+   * its track and thumb are sized in whole pixels on a border-box.
+   */
+  it('colours the Switch track with a fill, not a border', () => {
+    expect(components.switch.base.borderWidth).toBeUndefined();
+    expect(components.switch.base['--color-background-gray']).toBeTruthy();
+  });
+
+  /**
+   * A field rings itself with `:focus-within` on the border it also uses at
+   * rest, so re-colouring the resting border has to restate the focused one or
+   * the field stops showing keyboard focus (WCAG 2.4.7).
+   */
+  it.each([
+    'text-input',
+    'text-area',
+    'selector',
+    'typeahead',
+    'tokenizer',
+    'complex-selector',
+    'date-input',
+    'date-range-input',
+    'date-time-input',
+    'date-time-input-date-segment',
+    'date-time-input-time-segment',
+    'file-input',
+    'multi-selector',
+    'number-input',
+    'power-search',
+    'time-input',
+  ])('%s shows keyboard focus in the focus ink', target => {
+    const base = components[target].base as Record<
+      string,
+      Record<string, string>
+    >;
+    expect(base[':focus-within']?.borderColor).toContain(
+      '--focus-outline-color',
+    );
+  });
+
+  /** `Link`'s `color` prop has five values; the design speaks about one. */
+  it('sets the link ink on the default colour, not on every colour', () => {
+    expect(components.link.base).toBeUndefined();
+    expect(components.link['color:accent'].color).toBe(
+      'var(--color-text-primary)',
+    );
+  });
+
+  /**
+   * `Banner` rounds its corners a few at a time — top on the header, bottom on
+   * the footer, so the two meet flush — and every one of those rules reads
+   * `--_banner-radius`. A `border-radius` shorthand overrides all of them at
+   * once and puts corners in the middle of the banner.
+   */
+  it('gives Banner its corner through the variable Banner rounds from', () => {
+    const card = components.banner['container:card'];
+    expect(card.borderRadius).toBeUndefined();
+    expect(card['--_banner-radius']).toBeTruthy();
+  });
+
+  /**
+   * The hot pink is the focus ink. Selection has to be something else, or a
+   * selected control and a focused one look the same.
+   */
+  it('does not dress selection up as focus', () => {
+    const tokens = tectonTheme.tokens as Record<string, unknown>;
+    expect(String(tokens['--shadow-inset-selected'])).not.toContain(
+      '--focus-outline-color',
+    );
+  });
+});
