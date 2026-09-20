@@ -4,8 +4,16 @@
  * `useToast` returns a function that raises one toast and hands back a way to
  * take it down again. What it takes is **data** — a title, a body, a kind, a
  * duration and at most one action — never a rendered node, so raising a toast
- * never reaches for a component and a later phase can route the same payload
- * anywhere it likes without breaking a caller.
+ * never reaches for a component.
+ *
+ * That data-only shape is what lets the toast go anywhere. Every raised toast
+ * is routed through a document-keyed bus (`../../runtime/toastBus.ts`) to the
+ * one viewport on the page, whichever copy of Tecton mounted it: with two
+ * copies on a page, two viewports used to land at identical coordinates and
+ * draw their toasts on top of each other (measured, F8/F12 in
+ * `docs/engineering/micro-frontends/analysis.md`). An element built by one
+ * copy's React cannot be rendered by another's, so only data crosses; the copy
+ * that owns the viewport renders it with its own components.
  *
  * @example
  * const toast = useToast();
@@ -18,26 +26,7 @@
  * });
  */
 import {useCallback} from 'react';
-import * as stylex from '@stylexjs/stylex';
-import {useToast as useBaseToast} from '@astryxdesign/core/Toast';
-import {Button} from '@astryxdesign/core/Button';
-import {
-  colorVars,
-  spacingVars,
-  typeScaleVars,
-} from '@astryxdesign/core/theme/tokens.stylex';
-
-const styles = stylex.create({
-  body: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: spacingVars['--spacing-0-5'],
-  },
-  title: {
-    fontWeight: typeScaleVars['--text-label-weight'],
-    color: colorVars['--color-text-primary'],
-  },
-});
+import {routeToast} from '../../runtime/toastBus.js';
 
 /** What kind of toast this is. An error toast stays until it is dismissed. */
 export type ToastType = 'info' | 'error';
@@ -81,32 +70,8 @@ export type DismissToast = () => void;
 export type ShowToast = (payload: ToastPayload) => DismissToast;
 
 export function useToast(): ShowToast {
-  const showToast = useBaseToast();
-
-  return useCallback<ShowToast>(
-    ({title, body, type = 'info', durationMs, action}) =>
-      showToast({
-        body:
-          title === undefined ? (
-            body
-          ) : (
-            <span {...stylex.props(styles.body)}>
-              <span {...stylex.props(styles.title)}>{title}</span>
-              <span>{body}</span>
-            </span>
-          ),
-        type,
-        autoHideDuration: durationMs,
-        endContent:
-          action === undefined ? undefined : (
-            <Button
-              label={action.label}
-              variant="text-only"
-              size="sm"
-              onClick={action.onAction}
-            />
-          ),
-      }),
-    [showToast],
-  );
+  // Nothing here depends on where the toast will be shown, which is the point:
+  // the hook works the same in a page-root provider, in a nested container and
+  // in a container whose own provider renders no viewport at all.
+  return useCallback<ShowToast>(payload => routeToast(payload), []);
 }

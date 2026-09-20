@@ -9,8 +9,12 @@ pnpm add @tecton/react react react-dom
 ```
 
 `react` and `react-dom` (>= 19) are the only peer dependencies. Everything else
-Tecton needs ships inside the package: compiled ESM, type declarations and one
-stylesheet. No Babel, PostCSS or bundler plugin is required.
+Tecton needs ships inside the package: compiled ESM, type declarations, one
+stylesheet, and the component library Tecton is implemented on, vendored into
+`dist/vendor/` with every import pointing at it. No Babel, PostCSS or bundler
+plugin is required, and there is nothing else to install or keep in step — the
+install line above is the whole story, and stays the whole story when Tecton
+upgrades what it is built on.
 
 ## Usage
 
@@ -234,12 +238,17 @@ does not load them. Add them to your document, for example:
 
 ## What is in the package
 
-| Path              | Contents                                        |
-| ----------------- | ----------------------------------------------- |
-| `dist/index.js`   | Compiled ESM entry point                        |
-| `dist/tecton.css` | `@tecton/react/styles.css` — the one stylesheet |
-| `dist/css/*.css`  | The same CSS in separate parts, for debugging   |
-| `dist/theme/`     | The pre-built theme module, its CSS and icons   |
+| Path                | Contents                                              |
+| ------------------- | ----------------------------------------------------- |
+| `dist/index.js`     | Compiled ESM entry point                              |
+| `dist/tecton.css`   | `@tecton/react/styles.css` — the one stylesheet       |
+| `dist/css/*.css`    | The same CSS in separate parts, for debugging         |
+| `dist/theme/`       | The pre-built theme module, its CSS and icons         |
+| `dist/vendor/core/` | The library Tecton is built on — internal, not an API |
+
+`dist/vendor/` is Tecton's own business: it is not exported, nothing public
+re-exports from it, and its contents can change in any release. Import from
+`@tecton/react` and its documented subpaths only.
 
 See `docs/engineering/build-pipeline.md` in the repository for how these are
 produced.

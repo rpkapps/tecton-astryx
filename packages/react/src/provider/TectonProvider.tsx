@@ -12,9 +12,10 @@
 import type {ReactNode} from 'react';
 import {useEffect, useLayoutEffect} from 'react';
 import {Theme} from '@astryxdesign/core/theme';
-import {LayerProvider} from '@astryxdesign/core/Layer';
+import {LayerContext, LayerProvider} from '@astryxdesign/core/Layer';
 import {tectonTheme} from '../theme/index.js';
 import {claimRoot} from '../runtime/rootRegistry.js';
+import {ToastBridge} from '../components/Toast/ToastBridge.js';
 
 /** Colour mode: force one, or follow the operating system preference. */
 export type TectonColorMode = 'dark' | 'light' | 'system';
@@ -55,7 +56,9 @@ export interface TectonProviderProps {
    *   The tree is still fully themed and still renders in its own `mode`; this
    *   provider simply does not try to decide the page's mode or theme name. It
    *   still holds a non-owning claim, so the attributes survive **this**
-   *   container unmounting while others are still on the page.
+   *   container unmounting while others are still on the page. It also renders
+   *   **no toast viewport** — `useToast` inside it raises toasts into the
+   *   page's single viewport, the one the root provider published.
    *
    * A container deployed into a host shell that calls `configureTectonRoot()`
    * should pass `'nested'`.
@@ -72,6 +75,20 @@ export interface TectonProviderProps {
  */
 const useIsomorphicLayoutEffect =
   typeof document === 'undefined' ? useEffect : useLayoutEffect;
+
+/**
+ * What a nested provider puts in place of a layer provider.
+ *
+ * A layer provider's job is to mount the page's toast viewport; a nested
+ * container must not mount a second one, because two viewports land at
+ * identical coordinates and draw their toasts on top of each other (measured,
+ * F8 in `docs/engineering/micro-frontends/analysis.md`). Providing the layer
+ * context without the viewport keeps the tree's layer configuration intact —
+ * including for an upstream layer provider a consumer nests inside it, which
+ * sees a provider above it and passes through — while the page's single
+ * viewport, published by the root provider, shows every copy's toasts.
+ */
+const NESTED_LAYER_CONTEXT = {toastConfig: {}, isProvider: true} as const;
 
 export function TectonProvider({
   children,
@@ -91,7 +108,14 @@ export function TectonProvider({
 
   return (
     <Theme theme={tectonTheme} mode={mode}>
-      <LayerProvider>{children}</LayerProvider>
+      {owning ? (
+        <LayerProvider>
+          <ToastBridge />
+          {children}
+        </LayerProvider>
+      ) : (
+        <LayerContext value={NESTED_LAYER_CONTEXT}>{children}</LayerContext>
+      )}
     </Theme>
   );
 }

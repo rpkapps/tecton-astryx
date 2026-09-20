@@ -11,9 +11,13 @@ ships pre-built CSS and compiled ESM. Two constraints follow from that:
 
 1. **Consumers must never see the upstream system.** They install
    `@tecton/react`, import from it and from `@tecton/react/styles.css`, and
-   nothing else. The upstream packages are therefore ordinary, exactly pinned
-   `dependencies` of `@tecton/react` — not peer dependencies — and no exported
-   identifier, type name or documented string names them.
+   nothing else. The upstream library is not a dependency of the published
+   package at all: it is **vendored into `dist/vendor/core/`** at build time
+   (step 8) and every import of it is rewritten to a relative path, so a
+   consumer's `node_modules` has no `@astryxdesign` directory in it. The exact
+   pins live in `devDependencies`, where they remain the single source of truth
+   for which upstream version Tecton is built against. No exported identifier,
+   type name or documented string names the upstream system;
    `scripts/check-consumer-surface.mjs` enforces that on every `pnpm check`.
 2. **Consumers must not need a StyleX toolchain.** Tecton's own components are
    written in StyleX (`stylex.create`, `stylex.props`), which is a compile-time
@@ -24,11 +28,16 @@ ships pre-built CSS and compiled ESM. Two constraints follow from that:
 A third constraint now shapes both: several versions of `@tecton/react` may end
 up on one page in a micro-frontend. Nothing in the package keeps mutable
 module-level state, so no copy can stomp another, and the page-level state that
-copies would otherwise fight over is arbitrated through a document-keyed
-registry (`src/runtime/rootRegistry.ts`). The build's share of that constraint
-is two things: the **token-coverage manifest** (step 6) and the **five
-stylesheet entry points** (step 7). Both are explained below, and the consumer
-rules are in `docs/engineering/micro-frontends/README.md`.
+copies would otherwise fight over is arbitrated through document-keyed records
+(`src/runtime/rootRegistry.ts` for the `<html>` attributes,
+`src/runtime/toastBus.ts` for toasts). The build's share of that constraint is
+three things: the **token-coverage manifest** (step 6), the **five stylesheet
+entry points** (step 7) and the **vendoring** (step 8) — which is also what
+carries the two upstream patches
+(`docs/engineering/upstream-patches.md`) to consumers, since a `pnpm patch`
+applies to this workspace's install and nobody else's. All three are explained
+below, and the consumer rules are in
+`docs/engineering/micro-frontends/README.md`.
 
 ## Commands
 
@@ -58,7 +67,7 @@ those have to exist first.
 
 ## The package build
 
-`packages/react/scripts/build.mjs` runs nine steps in order. Every step is
+`packages/react/scripts/build.mjs` runs ten steps (0–9) in order. Every step is
 verified — the script fails loudly rather than producing half a package.
 
 ### 0. Check the generated palette
@@ -281,7 +290,62 @@ is what a theme is: those rules ship with the tokens, and they are all inside
 the theme's `@scope`. The build asserts the honest form of "no component
 styling" — no `.astryx`/`.tecton` rule _outside_ that scope.
 
-### 8. Verify
+### 8. Vendor the upstream library
+
+```
+dist/vendor/core/dist/      the upstream package's own dist/, verbatim
+dist/vendor/core/locales/   its JSON message catalogues
+```
+
+The upstream `dist` and `locales` directories are copied into
+`dist/vendor/core/` and every upstream import in Tecton's compiled JavaScript
+**and** its emitted `.d.ts` is rewritten to a relative path into that copy:
+
+```js
+import {Dialog} from '@astryxdesign/core/Dialog';
+// becomes
+import {Dialog} from '../../vendor/core/dist/Dialog/index.js';
+```
+
+Two reasons, and the second is the one that forced it:
+
+1. **The install story.** One dependency, no upstream name in a consumer's
+   lockfile, and no way for an application to reach past Tecton to the library
+   underneath by importing it directly.
+2. **The patches.** `patches/@astryxdesign__core@0.6.2.patch` fixes the
+   scroll lock and the layer stack (`docs/engineering/upstream-patches.md`).
+   pnpm applies patches to _this_ workspace's install; a consumer resolving
+   their own copy would get the unpatched one, and the S1 frozen-page defect
+   with it. Shipping the code is what makes the fix reach them.
+
+Details that matter:
+
+- **The mapping is the upstream `exports` map**, read from its `package.json`
+  rather than guessed. `@astryxdesign/core/Dialog` is `dist/Dialog/index.js`
+  only because the map says so, and subpaths like `./theme/tokens.stylex`,
+  `./naming` and the `./locales/*.json` pattern do not follow the
+  directory-plus-index shape at all. A specifier the map does not cover fails
+  the build rather than shipping a broken import.
+- **`.d.ts` files are rewritten too**, including the `declare module '…'` of the
+  generated `theme/tecton.variants.d.ts`. The rewritten paths keep the `.js`
+  spelling, which is how TypeScript resolves the neighbouring `.d.ts`.
+- **A module position, not a string match.** The vendored code's own prose is
+  full of `import … from '@astryxdesign/core/Layout'` examples and one runtime
+  warning builds such a specifier inside a template literal. The build reads
+  each file as code — comments and string bodies blanked, offsets preserved —
+  and only rewrites specifiers in module positions.
+- **Bare imports stay bare.** The upstream code imports `react`,
+  `react-dom`, `react/jsx-runtime`, `@stylexjs/stylex` and
+  `intl-messageformat`, and those keep resolving from the consumer's own tree.
+  So `@stylexjs/stylex` and `intl-messageformat` (the range upstream declares)
+  are `dependencies` of `@tecton/react`, and React stays a peer dependency.
+- **`*.d.ts.map` is the one thing not copied.** Those maps point at upstream
+  `src/` files the package does not ship; the dangling
+  `//# sourceMappingURL=` comments are stripped with them.
+- **Step 7 still reads the stylesheets from `node_modules`.** The CSS is
+  assembled, not referenced, so it has no import to rewrite.
+
+### 9. Verify
 
 The build refuses to finish unless:
 
@@ -300,7 +364,24 @@ The build refuses to finish unless:
 - `tecton-components.css` and `tecton-components-no-reset.css` contain no
   `[data-astryx-theme=` scope at all, and do contain Tecton's components;
 - every `.css` path in `package.json#exports` resolves to a file that was just
-  written, and there are exactly as many of them as the build produced.
+  written, and there are exactly as many of them as the build produced;
+- **no module position anywhere in `dist/` names `@astryxdesign/*`** — compiled
+  JS and emitted `.d.ts`, the vendored code included. One surviving specifier
+  means a consumer's bundler tries to resolve a package that is not in their
+  tree;
+- **the vendored code carries both patches**, checked by the `Symbol.for` keys
+  in `dist/vendor/core/dist/hooks/useScrollLock.js` and
+  `dist/vendor/core/dist/Layer/layerStack.js`. An install that skipped the
+  patch would silently vendor upstream's own modules and ship the failures back.
+
+Finally the build prints what the package weighs — `npm pack --dry-run`, the
+unpacked size and the vendored share of it — because vendoring makes the
+upstream release a visible part of Tecton's own download size:
+
+```
+tecton-react-0.1.0.tgz: 2.2 MB packed, 9.2 MB unpacked, 2205 files
+of which dist/vendor/core: 7.0 MB unpacked
+```
 
 ## dist layout
 
@@ -330,7 +411,15 @@ dist/
     tokens.js                      token helpers and the `tecton` token map
   css/
     reset.css, foundation.css, tecton-components.css, tecton-theme.css
+  runtime/toastBus.js              the document-keyed toast bus
+  vendor/core/                     THE UPSTREAM LIBRARY, PATCHED (step 8)
+    dist/                            its compiled ESM + declarations, verbatim
+    locales/                         its JSON message catalogues
 ```
+
+`dist/vendor/` is internal. It is not in `package.json#exports`, nothing public
+re-exports from it, and the only references to it are the rewritten import
+paths inside Tecton's own modules and declarations.
 
 `package.json#exports` maps `.`, the five `*.css` entry points, `./theme`,
 `./Button`, `./Panel` and `./package.json`. Adding a component means adding a directory
@@ -432,6 +521,11 @@ adding to every check. The fixture's own README lists what the spec asserts.
   its own module, and keep it JSX-free, or the theme build will fail to load the
   theme (see step 5).
 - **Upgrading the upstream library**: bump the exact pins in
-  `packages/react/package.json`, reinstall, and rebuild — the theme must be
-  recompiled against the new version because built CSS is not repaired at
-  runtime. `scripts/upgrade-astryx.mjs` is the stub where that flow will live.
+  `packages/react/package.json` (they live in `devDependencies` now), re-point
+  `pnpm.patchedDependencies` at a patch file for the new version, reinstall, and
+  rebuild — the theme must be recompiled against the new version because built
+  CSS is not repaired at runtime, and the vendored copy must be re-taken because
+  that is what consumers run. A patch that no longer applies fails the install,
+  which is deliberate; `docs/engineering/upstream-patches.md` has the procedure.
+  `scripts/upgrade-astryx.mjs` is the stub where that flow will live, and the
+  same document lists what it must do.

@@ -20,6 +20,16 @@
  * reachable declaration file is checked, not just the names it exports.
  *
  * Internal imports inside packages/react/src are expected and not checked.
+ *
+ * The build vendors the upstream library into `dist/vendor/core/` and rewrites
+ * every import of it to a relative path (`../vendor/core/dist/Dialog/index.js`
+ * and friends — see docs/engineering/build-pipeline.md, step 8). Those paths
+ * are internal plumbing, not surface: they name a directory, not the upstream
+ * system, so they do not trip rule 2 and no exception is needed for them. Rule
+ * 2 keeps doing its job either way — a vendored path that still carried the
+ * upstream name, or a declaration that re-exported an upstream type under an
+ * upstream name, would still fail. Keep the vendor directory named for its
+ * role rather than for its origin, and this stays true.
  */
 import fs from 'node:fs';
 import path from 'node:path';

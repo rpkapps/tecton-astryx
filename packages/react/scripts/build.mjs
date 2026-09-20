@@ -14,10 +14,15 @@
  *      theme compiler, replacing the source placeholder in dist/theme/
  *   6. check the theme's token coverage against theme-token-manifest.json
  *   7. assemble the consumer stylesheets (dist/tecton*.css)
- *   8. verify the output actually loads and contains what it must
+ *   8. vendor the upstream library into dist/vendor/core and rewrite every
+ *      upstream import in the compiled JS and the emitted .d.ts to a relative
+ *      path into it
+ *   9. verify the output actually loads and contains what it must, then report
+ *      what the published package weighs
  *
- * Everything a consumer needs ends up in dist/: compiled ESM, declarations and
- * the stylesheets. No StyleX or Babel setup is required downstream.
+ * Everything a consumer needs ends up in dist/: compiled ESM, declarations,
+ * the stylesheets and the upstream code itself. No StyleX or Babel setup is
+ * required downstream, and nothing named `@astryxdesign/*` is installed.
  *
  * `--update-manifest` rewrites theme-token-manifest.json from the theme that
  * was just built, for when the token set changes on purpose.
@@ -34,6 +39,8 @@ import {babelOptionsFor, PACKAGE_ROOT} from './stylex-babel.mjs';
 const SRC = path.join(PACKAGE_ROOT, 'src');
 const DIST = path.join(PACKAGE_ROOT, 'dist');
 const DIST_CSS = path.join(DIST, 'css');
+/** Where the upstream library's own files are copied (step 8). */
+const VENDOR = path.join(DIST, 'vendor', 'core');
 const THEME_SOURCE = path.join(SRC, 'theme', 'tectonTheme.ts');
 const THEME_NAME = 'tecton';
 const TOKEN_MANIFEST = path.join(PACKAGE_ROOT, 'theme-token-manifest.json');
@@ -66,6 +73,143 @@ function listSourceFiles(dir, out = []) {
     }
   }
   return out;
+}
+
+// --- finding upstream imports ------------------------------------------------
+// "The upstream package's name appears in this file" is not the question: the
+// vendored code's own prose is full of `import {stack} from
+// '@astryxdesign/core/Layout'` examples, and one runtime warning builds such a
+// specifier inside a template literal. The question is whether a *module
+// position* names it — which needs the file read as code rather than as text.
+
+/**
+ * Split `source` into code and string literals.
+ *
+ * Returns the source with every comment and every string body blanked out
+ * (offsets preserved, so an index into it is an index into the original), plus
+ * where each string literal is and what it says. A template literal is one
+ * literal, taken whole: the `${}` holes are not code for this purpose, which is
+ * exactly what keeps a warning message that *quotes* an import out of the
+ * results.
+ */
+function tokenizeModule(source) {
+  const masked = [];
+  const strings = [];
+  let i = 0;
+  /** The last code character seen, for telling `/` division from `/`regex. */
+  let previous = '';
+
+  const blank = text => text.replace(/[^\n]/g, ' ');
+
+  while (i < source.length) {
+    const char = source[i];
+    const next = source[i + 1];
+
+    if (char === '/' && next === '*') {
+      const end = source.indexOf('*/', i + 2);
+      const stop = end === -1 ? source.length : end + 2;
+      masked.push(blank(source.slice(i, stop)));
+      i = stop;
+      continue;
+    }
+    if (char === '/' && next === '/') {
+      const end = source.indexOf('\n', i);
+      const stop = end === -1 ? source.length : end;
+      masked.push(blank(source.slice(i, stop)));
+      i = stop;
+      continue;
+    }
+    if (char === '/' && /[(,=:[!&|?{};+\-*%~^]/.test(previous)) {
+      // A regular expression literal: skip it whole, so a quote or a `//`
+      // inside its character classes cannot be read as a string or a comment.
+      let j = i + 1;
+      let inClass = false;
+      for (; j < source.length; j += 1) {
+        const c = source[j];
+        if (c === '\\') j += 1;
+        else if (c === '[') inClass = true;
+        else if (c === ']') inClass = false;
+        else if (c === '/' && !inClass) break;
+        else if (c === '\n') break;
+      }
+      const stop = Math.min(j + 1, source.length);
+      masked.push(blank(source.slice(i, stop)));
+      i = stop;
+      previous = '/';
+      continue;
+    }
+    if (char === '"' || char === "'" || char === '`') {
+      let j = i + 1;
+      for (; j < source.length; j += 1) {
+        if (source[j] === '\\') j += 1;
+        else if (source[j] === char) break;
+      }
+      const end = Math.min(j + 1, source.length);
+      strings.push({
+        start: i + 1,
+        end: end - 1,
+        value: source.slice(i + 1, end - 1),
+      });
+      masked.push(blank(source.slice(i, end)));
+      i = end;
+      previous = char;
+      continue;
+    }
+
+    masked.push(char);
+    if (!/\s/.test(char)) previous = char;
+    i += 1;
+  }
+
+  return {masked: masked.join(''), strings};
+}
+
+/** Where a module position names the upstream package: `{specifier, start, end}`. */
+function upstreamImports(source) {
+  const {masked, strings} = tokenizeModule(source);
+  const hits = [];
+  for (const literal of strings) {
+    if (!/^@astryxdesign\/[^'"`]+$/.test(literal.value)) continue;
+    // `from '…'`, a bare `import '…'`, a dynamic `import('…')`, a
+    // `require('…')`, or the `declare module '…'` of a generated augmentation.
+    const before = masked.slice(
+      Math.max(0, literal.start - 64),
+      literal.start - 1,
+    );
+    if (
+      !/(?:^|[^\w$.])(?:from|import|require|declare\s+module)\s*\(?\s*$/.test(
+        before,
+      )
+    ) {
+      continue;
+    }
+    hits.push({
+      specifier: literal.value,
+      start: literal.start,
+      end: literal.end,
+    });
+  }
+  return hits;
+}
+
+/** Every file under `dir`, recursively, whose path passes `test`. */
+function listFiles(dir, test, out = []) {
+  if (!fs.existsSync(dir)) return out;
+  for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) listFiles(full, test, out);
+    else if (test(full)) out.push(full);
+  }
+  return out;
+}
+
+/** Total size of everything under `dir`, in megabytes, for the build log. */
+function directorySizeMb(dir) {
+  let bytes = 0;
+  for (const file of listFiles(dir, () => true)) {
+    bytes += fs.statSync(file).size;
+  }
+  return (bytes / 1024 / 1024).toFixed(1);
 }
 
 function run(command, args, label) {
@@ -329,11 +473,10 @@ if (UPDATE_MANIFEST) {
 step('Assembling the consumer stylesheets');
 const resetCssPath = resolveFromPackage('@astryxdesign/core/reset.css');
 const baseCssPath = resolveFromPackage('@astryxdesign/core/astryx.css');
+/** The upstream package's own root, read from an export it publishes. */
+const CORE_ROOT = path.join(path.dirname(baseCssPath), '..');
 const corePkg = JSON.parse(
-  await fsp.readFile(
-    path.join(path.dirname(baseCssPath), '..', 'package.json'),
-    'utf8',
-  ),
+  await fsp.readFile(path.join(CORE_ROOT, 'package.json'), 'utf8'),
 );
 
 const [resetCss, baseCss, themeCss] = await Promise.all([
@@ -467,8 +610,201 @@ for (const [file, css] of entryPoints) {
 }
 console.log('  dist/css/ parts (debugging only, not public)');
 
-// 8 — verify ------------------------------------------------------------------
+// 8 — vendor the upstream library ---------------------------------------------
+// A consumer installs `@tecton/react` and nothing else — no `@astryxdesign/*`
+// package is ever in their tree — so the upstream code has to travel inside
+// this package. Two reasons, and the second is the one that forced it:
+//
+//   1. the install story. One dependency, no upstream name in a lockfile, no
+//      way for an application to reach past Tecton to the library underneath.
+//   2. the patches. `patches/@astryxdesign__core@0.6.2.patch` fixes the
+//      document-keyed scroll lock and layer stack (see
+//      docs/engineering/upstream-patches.md). pnpm applies patches to THIS
+//      workspace's install; a consumer resolving their own copy of the
+//      upstream package would get the unpatched one, and the S1 frozen-page
+//      failure back with it. Shipping the code is what makes the fix reach
+//      them.
+//
+// The copy is verbatim apart from `*.d.ts.map`, which point at upstream
+// `src/` files this package does not ship. Everything else — `'use client'`
+// banners, the JSON locale catalogues, `astryx.css` — is byte-identical.
+step('Vendoring the upstream library into dist/vendor/core');
+
+await fsp.cp(path.join(CORE_ROOT, 'dist'), path.join(VENDOR, 'dist'), {
+  recursive: true,
+  filter: src => !src.endsWith('.d.ts.map'),
+});
+await fsp.cp(path.join(CORE_ROOT, 'locales'), path.join(VENDOR, 'locales'), {
+  recursive: true,
+});
+
+// The declaration maps are gone, so the comments pointing at them are noise.
+let strippedMapComments = 0;
+for (const file of listFiles(VENDOR, f => f.endsWith('.d.ts'))) {
+  const before = await fsp.readFile(file, 'utf8');
+  const after = before.replace(
+    /\n?\/\/# sourceMappingURL=[^\n]*\.d\.ts\.map\n?/g,
+    '\n',
+  );
+  if (after !== before) {
+    await fsp.writeFile(file, after, 'utf8');
+    strippedMapComments += 1;
+  }
+}
+
+/**
+ * Resolve one upstream specifier to the file it names inside `dist/vendor/core`.
+ *
+ * The mapping is the upstream package's own `exports` map, read from its
+ * `package.json` rather than guessed: `@astryxdesign/core/Dialog` is only
+ * `dist/Dialog/index.js` because the map says so, and subpaths like
+ * `./theme/tokens.stylex`, `./naming` and the `./locales/*.json` pattern do
+ * not follow the directory-plus-index shape at all. An upgrade that moves a
+ * file therefore moves the rewrite with it, and a specifier the map does not
+ * cover fails the build instead of shipping a broken import.
+ */
+function resolveVendored(specifier) {
+  const subpath =
+    specifier === corePkg.name
+      ? '.'
+      : `.${specifier.slice(corePkg.name.length)}`;
+
+  const pick = entry => (typeof entry === 'string' ? entry : entry?.default);
+  let target = pick(corePkg.exports[subpath]);
+
+  if (target === undefined) {
+    for (const [pattern, entry] of Object.entries(corePkg.exports)) {
+      const star = pattern.indexOf('*');
+      if (star === -1) continue;
+      const head = pattern.slice(0, star);
+      const tail = pattern.slice(star + 1);
+      if (!subpath.startsWith(head) || !subpath.endsWith(tail)) continue;
+      const filled = subpath.slice(head.length, subpath.length - tail.length);
+      target = pick(entry)?.replace('*', filled);
+      break;
+    }
+  }
+
+  if (target === undefined) {
+    throw new Error(
+      `"${specifier}" is not in ${corePkg.name}@${corePkg.version}'s exports map, ` +
+        'so it cannot be rewritten to a vendored path.',
+    );
+  }
+
+  const file = path.join(VENDOR, target);
+  if (!fs.existsSync(file)) {
+    throw new Error(
+      `The exports map points "${specifier}" at ${target}, which is not vendored ` +
+        '— only the upstream dist/ and locales/ directories are copied.',
+    );
+  }
+  return file;
+}
+
+const ownModules = listFiles(
+  DIST,
+  f =>
+    (f.endsWith('.js') || f.endsWith('.d.ts')) &&
+    !f.startsWith(`${VENDOR}${path.sep}`),
+);
+
+let rewrittenSpecifiers = 0;
+let rewrittenFiles = 0;
+for (const file of ownModules) {
+  const before = await fsp.readFile(file, 'utf8');
+  const hits = upstreamImports(before);
+  if (hits.length === 0) continue;
+
+  // Right to left, so an earlier replacement cannot move a later offset.
+  let after = before;
+  for (const hit of [...hits].reverse()) {
+    let relative = path
+      .relative(path.dirname(file), resolveVendored(hit.specifier))
+      .split(path.sep)
+      .join('/');
+    if (!relative.startsWith('.')) relative = `./${relative}`;
+    after = after.slice(0, hit.start) + relative + after.slice(hit.end);
+  }
+  await fsp.writeFile(file, after, 'utf8');
+  rewrittenSpecifiers += hits.length;
+  rewrittenFiles += 1;
+}
+
+console.log(
+  `  ${corePkg.name}@${corePkg.version} → dist/vendor/core ` +
+    `(${directorySizeMb(VENDOR)} MB, ${strippedMapComments} declaration-map comments removed)`,
+);
+console.log(
+  `  ${rewrittenSpecifiers} upstream specifiers rewritten in ${rewrittenFiles} of ` +
+    `${ownModules.length} emitted modules`,
+);
+
+// 9 — verify ------------------------------------------------------------------
 step('Verifying the build');
+
+/**
+ * Nothing in the published JavaScript or types may import the upstream package
+ * by name. If one specifier survives, a consumer's bundler tries to resolve
+ * `@astryxdesign/core` from their node_modules — where it is not installed,
+ * and where, if they installed it themselves, it would be the UNPATCHED copy.
+ */
+const leakedSpecifiers = [];
+const publishedModules = listFiles(
+  DIST,
+  f => f.endsWith('.js') || f.endsWith('.d.ts'),
+);
+for (const file of publishedModules) {
+  const source = await fsp.readFile(file, 'utf8');
+  for (const hit of upstreamImports(source)) {
+    leakedSpecifiers.push(`${path.relative(DIST, file)} → ${hit.specifier}`);
+  }
+}
+if (leakedSpecifiers.length > 0) {
+  throw new Error(
+    [
+      'A bare upstream import survived the vendoring step:',
+      ...leakedSpecifiers.map(line => `  ${line}`),
+      '',
+      'Every module position must point into dist/vendor/core. Check that the',
+      "specifier is in the upstream exports map (step 8's resolver reads it).",
+    ].join('\n'),
+  );
+}
+console.log(
+  `  ✓ no bare upstream import in any of ${publishedModules.length} published ` +
+    'modules (vendored code included)',
+);
+
+/**
+ * The vendored copy must be the PATCHED one. pnpm applies
+ * `patches/@astryxdesign__core@0.6.2.patch` on install; an install that
+ * skipped it (a `--no-optional`-style flag, a stale store, a merge that
+ * dropped `pnpm.patchedDependencies`) would vendor upstream's own modules and
+ * silently ship the frozen-page and wrong-Escape defects the patch removes.
+ */
+const PATCH_MARKERS = [
+  [
+    'dist/hooks/useScrollLock.js',
+    "Symbol.for('@astryxdesign/core/scroll-lock/v1')",
+  ],
+  [
+    'dist/Layer/layerStack.js',
+    "Symbol.for('@astryxdesign/core/layer-stack/v1')",
+  ],
+];
+for (const [file, marker] of PATCH_MARKERS) {
+  const source = await fsp.readFile(path.join(VENDOR, file), 'utf8');
+  if (!source.includes(marker)) {
+    throw new Error(
+      `dist/vendor/core/${file} does not carry ${marker}: the upstream patch is ` +
+        'not applied. Run `pnpm install` from the repository root and see ' +
+        'docs/engineering/upstream-patches.md.',
+    );
+  }
+  console.log(`  ✓ dist/vendor/core/${file} carries the patched store`);
+}
+
 const entry = path.join(DIST, 'index.js');
 const importCheck = spawnSync(
   process.execPath,
@@ -593,5 +929,36 @@ if (cssExports.length !== entryPoints.length) {
   );
 }
 console.log(`  ✓ ${cssExports.length} CSS export paths resolve`);
+
+/**
+ * What a consumer actually downloads. Vendoring the upstream library is the
+ * dominant term, so the number belongs in the build log where a change to it
+ * is visible rather than in a document that goes stale.
+ */
+step('Measuring the published package');
+const packed = spawnSync('npm', ['pack', '--dry-run', '--json'], {
+  cwd: PACKAGE_ROOT,
+  encoding: 'utf8',
+  stdio: ['ignore', 'pipe', 'ignore'],
+});
+if (packed.status === 0) {
+  try {
+    const [report] = JSON.parse(packed.stdout);
+    console.log(
+      `  ${report.filename}: ${(report.size / 1024 / 1024).toFixed(1)} MB packed, ` +
+        `${(report.unpackedSize / 1024 / 1024).toFixed(1)} MB unpacked, ` +
+        `${report.entryCount} files`,
+    );
+    console.log(
+      `  of which dist/vendor/core: ${directorySizeMb(VENDOR)} MB unpacked`,
+    );
+  } catch {
+    console.log(
+      '  (npm pack produced no readable report; skipping the size line)',
+    );
+  }
+} else {
+  console.log('  (npm pack unavailable; skipping the size line)');
+}
 
 console.log('\n@tecton/react built.\n');

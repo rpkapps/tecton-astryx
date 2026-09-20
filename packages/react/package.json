@@ -236,8 +236,8 @@
     "icons:check": "node scripts/generate-icons.mjs --check"
   },
   "dependencies": {
-    "@astryxdesign/core": "0.6.2",
-    "@stylexjs/stylex": "0.19.1"
+    "@stylexjs/stylex": "0.19.1",
+    "intl-messageformat": "^11.2.9"
   },
   "peerDependencies": {
     "react": ">=19",
@@ -245,6 +245,7 @@
   },
   "devDependencies": {
     "@astryxdesign/cli": "0.6.2",
+    "@astryxdesign/core": "0.6.2",
     "@babel/core": "^7.29.7",
     "@babel/preset-react": "^7.29.7",
     "@babel/preset-typescript": "^7.29.7",

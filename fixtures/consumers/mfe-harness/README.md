@@ -38,6 +38,14 @@ tests/mfe.spec.ts        the assertions
 Everything generated lands in `dist/`, which is git-ignored. Nothing outside
 this fixture is written.
 
+Each container renders a panel (what the styling assertions read) plus the three
+things that used to fight across containers: a modal `Dialog`, a `Menu` (a
+dismissible layer) and a button that raises a toast. The dialog and the menu are
+controlled and driven through the container's imperative handle —
+`window.__mfe.a.openDialog()`, `.openMenu()`, `.closeDialog()` — because a modal
+belonging to one container covers the other container's buttons, which is a real
+page's problem but not one a test should click its way through.
+
 The two versions differ in exactly four places, so every difference is
 attributable:
 
@@ -93,6 +101,17 @@ containers mount with `scope="nested"`.
 | 3   | `styles-no-reset.css` leaves the host's own `<h1>` byte-identical to a page with no Tecton CSS at all, while the container it serves stays completely themed                                                 | mitigation |
 | 4   | With the split entry points both containers resolve the host's tokens, their component styles stay their own, every sheet declares the same layer order, and a container leaving does not take the root away | mitigation |
 | 5   | With two complete bundles the **last-loaded** theme wins for every container, in both load orders; component styles stay version-safe; the layer statement fixes the order regardless of arrival             | recorded   |
+| 6   | A modal in each container shares **one** scroll lock: closing the first leaves the body pinned, and only the last one out restores it — in either closing order, with the scroll position intact             | patch      |
+| 7   | One Escape dismisses the layer that is **on top**, whichever container opened it: a menu over the other container's dialog goes first, the dialog next — and the same with the containers swapped            | patch      |
+| 8   | Toasts raised by both containers land in **one** viewport, both with two `scope="root"` providers and in the split shape where the nested container has no viewport of its own                               | mitigation |
+
+Rows 6 and 7 assert the two upstream patches
+(`docs/engineering/upstream-patches.md`), which reach the page because the
+patched library is vendored into `@tecton/react`. Three of those four
+assertions fail against unpatched code (verified by vendoring the unpatched
+modules and re-running); the fourth — the swapped-containers Escape case —
+passed before the patch **by luck**, because the copy that attached its listener
+first happened to own the top layer, and it is kept for exactly that reason.
 
 Row 5 is deliberately not a fix. Under one theme name two sheets put their
 tokens in the same layer under the same `@scope`, so source order decides — and

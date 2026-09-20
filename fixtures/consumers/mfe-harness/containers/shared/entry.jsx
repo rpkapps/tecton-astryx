@@ -6,6 +6,11 @@
  *   configureRoot({mode})     claim the document root from this copy, the way
  *                             a host shell would from the Tecton version it
  *                             ships
+ *   openDialog() / closeDialog() / openMenu() / closeMenu() / raiseToast()
+ *                             drive this container's own layers and toasts.
+ *                             A modal from the *other* container covers this
+ *                             one's buttons, so the page-level tests reach for
+ *                             these rather than clicking through a backdrop.
  *
  * `configureRoot` is here so the host page — plain HTML, no bundler — can call
  * the real exported `configureTectonRoot` of a real built version.
@@ -47,6 +52,11 @@ export function createContainerApi({id, version}) {
     version,
     mount,
     unmount,
+    openDialog: () => handleRef.current?.openDialog(),
+    closeDialog: () => handleRef.current?.closeDialog(),
+    openMenu: () => handleRef.current?.openMenu(),
+    closeMenu: () => handleRef.current?.closeMenu(),
+    raiseToast: body => handleRef.current?.raiseToast(body),
     configureRoot(options) {
       releaseRoot?.();
       releaseRoot = configureTectonRoot(options);

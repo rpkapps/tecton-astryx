@@ -1,10 +1,13 @@
 /**
  * Two independently built versions of `@tecton/react` on one page.
  *
- * Three of these tests assert a mitigation that Phase 3 shipped; the last two
- * record what the cascade does, because the cascade is not something a wrapper
- * can fix — it is a property of the page, and the documented rule is to make
- * it deterministic rather than to pretend it is not there.
+ * Most of these tests assert a mitigation that Tecton ships; two of them —
+ * the scroll lock and the Escape ordering — assert the two upstream patches in
+ * `patches/@astryxdesign__core@0.6.2.patch`, which every copy of Tecton
+ * carries because the patched code is vendored into the package; and the last
+ * two record what the cascade does, because the cascade is not something a
+ * wrapper can fix — it is a property of the page, and the documented rule is
+ * to make it deterministic rather than to pretend it is not there.
  *
  * The findings this file is anchored to are in
  * `docs/engineering/micro-frontends/analysis.md`; the model the split test
@@ -12,12 +15,23 @@
  */
 import {test, expect, type Page} from '@playwright/test';
 
+/** One container's bundle, as the host page exposes it. */
+interface ContainerApi {
+  openDialog(): void;
+  closeDialog(): void;
+  openMenu(): void;
+  closeMenu(): void;
+  raiseToast(body?: string): void;
+}
+
 declare global {
   interface Window {
     /** The host shell's driving API; see `host/mfe-page.html`. */
     __mfe: {
       mount(id: string, opts?: {mode?: string; scope?: string}): void;
       unmount(id: string): void;
+      a: ContainerApi;
+      b: ContainerApi;
     };
   }
 }
@@ -247,6 +261,234 @@ test("the split entry points give both containers the host's tokens", async ({
   await page.evaluate(() => window.__mfe.unmount('a'));
   await page.waitForTimeout(200);
   expect(await root(page)).toMatchObject({mode: 'dark', theme: 'tecton'});
+});
+
+// ---------------------------------------------------------------------------
+// The upstream patches: one scroll lock and one layer stack per page
+// ---------------------------------------------------------------------------
+//
+// Both of these failed before `patches/@astryxdesign__core@0.6.2.patch`, and
+// both fail again the moment a copy of Tecton on the page carries the
+// unpatched library — which is why the package vendors the patched code rather
+// than depending on it. See docs/engineering/upstream-patches.md.
+
+/** What a scroll lock has done to the page. */
+function bodyLock(page: Page) {
+  return page.evaluate(() => ({
+    position: document.body.style.position,
+    top: document.body.style.top,
+    overflow: document.body.style.overflow,
+    scrollY: Math.round(window.scrollY),
+  }));
+}
+
+/**
+ * Which of the two containers' layers are on screen right now.
+ *
+ * Both are in the DOM for the container's whole life — a closed dialog is a
+ * `<dialog>` that is not `open`, a closed menu is a hidden popover — so this
+ * asks the DOM whether they are showing rather than whether they exist.
+ */
+function layers(page: Page) {
+  return page.evaluate(() => {
+    const isOpen = (id: string) =>
+      (
+        document.querySelector(
+          `[data-testid="${id}-dialog"]`,
+        ) as HTMLDialogElement | null
+      )?.open ?? false;
+    const visibleMenus = Array.from(
+      document.querySelectorAll('[role="menu"]'),
+    ).filter(menu => (menu as HTMLElement).checkVisibility());
+    const menuText = visibleMenus.map(menu => menu.textContent ?? '').join(' ');
+    return {
+      dialogA: isOpen('a'),
+      dialogB: isOpen('b'),
+      menuA: menuText.includes('Rename A'),
+      menuB: menuText.includes('Rename B'),
+    };
+  });
+}
+
+/** Drive one container's own React tree through its imperative handle. */
+async function drive(
+  page: Page,
+  id: 'a' | 'b',
+  action: 'openDialog' | 'closeDialog' | 'openMenu' | 'closeMenu',
+): Promise<void> {
+  await page.evaluate(
+    ([containerId, method]) => {
+      const api = window.__mfe[containerId as 'a' | 'b'] as unknown as Record<
+        string,
+        () => void
+      >;
+      api[method]!();
+    },
+    [id, action],
+  );
+  // Long enough for the layer to mount or unmount and its effects to settle.
+  await page.waitForTimeout(150);
+}
+
+async function pressEscape(page: Page): Promise<void> {
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(150);
+}
+
+test('two containers, one scroll lock: the body is restored only when the last modal closes', async ({
+  page,
+}) => {
+  await open(page, '?styles=full&mount=ab');
+  await page.evaluate(() => window.scrollTo(0, 300));
+  await page.waitForTimeout(100);
+  expect(await bodyLock(page)).toMatchObject({position: '', overflow: ''});
+
+  await drive(page, 'a', 'openDialog');
+  expect(await bodyLock(page)).toMatchObject({
+    position: 'fixed',
+    overflow: 'hidden',
+    top: '-300px',
+  });
+
+  await drive(page, 'b', 'openDialog');
+  expect(await bodyLock(page)).toMatchObject({position: 'fixed'});
+
+  // Closing A while B is still open must leave the page pinned. Before the
+  // patch each copy counted its own locks, so A's copy went 1 → 0 here and
+  // restored the body — the page scrolled behind B's open modal, and B's own
+  // close then restored the page to *A's pinned* snapshot: position: fixed,
+  // top: -300px, nothing open, permanently unscrollable (analysis.md F1, S1).
+  await drive(page, 'a', 'closeDialog');
+  expect(await bodyLock(page)).toMatchObject({
+    position: 'fixed',
+    overflow: 'hidden',
+    top: '-300px',
+  });
+
+  await drive(page, 'b', 'closeDialog');
+  expect(await bodyLock(page)).toMatchObject({
+    position: '',
+    overflow: '',
+    top: '',
+    scrollY: 300,
+  });
+
+  // ...and the page really does scroll again.
+  await page.evaluate(() => window.scrollTo(0, 600));
+  await page.waitForTimeout(100);
+  expect((await bodyLock(page)).scrollY).toBe(600);
+});
+
+test('the scroll lock survives the containers closing in the other order', async ({
+  page,
+}) => {
+  await open(page, '?styles=full&mount=ab');
+  await page.evaluate(() => window.scrollTo(0, 200));
+  await page.waitForTimeout(100);
+
+  await drive(page, 'b', 'openDialog');
+  await drive(page, 'a', 'openDialog');
+  await drive(page, 'b', 'closeDialog');
+  expect(await bodyLock(page)).toMatchObject({
+    position: 'fixed',
+    top: '-200px',
+  });
+
+  await drive(page, 'a', 'closeDialog');
+  expect(await bodyLock(page)).toMatchObject({
+    position: '',
+    overflow: '',
+    scrollY: 200,
+  });
+});
+
+test('one Escape dismisses the layer on top, whichever container opened it', async ({
+  page,
+}) => {
+  await open(page, '?styles=full&mount=ab');
+
+  // A dialog in A, then a menu opened over it from B.
+  await drive(page, 'a', 'openDialog');
+  await drive(page, 'b', 'openMenu');
+  expect(await layers(page)).toMatchObject({dialogA: true, menuB: true});
+
+  // Before the patch the two copies kept separate stacks and separate
+  // document listeners, so the press went to whichever copy listened first —
+  // A's dialog — and left B's menu open and orphaned (analysis.md F6/F7).
+  await pressEscape(page);
+  expect(await layers(page)).toMatchObject({dialogA: true, menuB: false});
+
+  await pressEscape(page);
+  expect(await layers(page)).toMatchObject({dialogA: false, menuB: false});
+});
+
+test('one Escape dismisses the layer on top with the containers the other way round', async ({
+  page,
+}) => {
+  await open(page, '?styles=full&mount=ab');
+
+  // The same shape with the containers swapped: the dialog belongs to B and
+  // the menu over it to A. Which container registered the layer is not a key
+  // in the ordering — what is on top is — so the result must mirror exactly.
+  await drive(page, 'b', 'openDialog');
+  await drive(page, 'a', 'openMenu');
+  expect(await layers(page)).toMatchObject({dialogB: true, menuA: true});
+
+  await pressEscape(page);
+  expect(await layers(page)).toMatchObject({dialogB: true, menuA: false});
+
+  await pressEscape(page);
+  expect(await layers(page)).toMatchObject({dialogB: false, menuA: false});
+});
+
+// ---------------------------------------------------------------------------
+// One toast viewport for the page
+// ---------------------------------------------------------------------------
+
+/** Every toast on the page, and how many viewports they are spread across. */
+function toasts(page: Page) {
+  return page.evaluate(() => {
+    const rows = Array.from(document.querySelectorAll('[data-toast-id]'));
+    return {
+      bodies: rows.map(row => row.textContent?.trim() ?? ''),
+      viewports: new Set(rows.map(row => row.parentElement)).size,
+    };
+  });
+}
+
+test('toasts from both containers land in one viewport', async ({page}) => {
+  await open(page, '?styles=full&mount=ab');
+
+  await page.click('[data-testid="a-raise-toast"]');
+  await page.click('[data-testid="b-raise-toast"]');
+  await page.waitForTimeout(200);
+
+  // Two viewports used to sit at identical coordinates with their toasts drawn
+  // on top of each other, one of them invisible (analysis.md F8/F12). The
+  // document-keyed toast bus gives the page one viewport: the first
+  // scope="root" provider's, whichever copy of Tecton raised the toast.
+  const shown = await toasts(page);
+  expect(shown.viewports).toBe(1);
+  expect(shown.bodies.join(' ')).toContain('toast from container a');
+  expect(shown.bodies.join(' ')).toContain('toast from container b');
+});
+
+test("a nested container's toast lands in the root provider's viewport", async ({
+  page,
+}) => {
+  // The recommended split shape, with container A as the page's toast owner:
+  // the host shell holds the root, A mounts scope="root" and B scope="nested",
+  // so only A renders a viewport at all.
+  await open(page, '?styles=split&scopeA=root&scopeB=nested');
+
+  await page.click('[data-testid="b-raise-toast"]');
+  await page.click('[data-testid="a-raise-toast"]');
+  await page.waitForTimeout(200);
+
+  const shown = await toasts(page);
+  expect(shown.viewports).toBe(1);
+  expect(shown.bodies.join(' ')).toContain('toast from container a');
+  expect(shown.bodies.join(' ')).toContain('toast from container b');
 });
 
 // ---------------------------------------------------------------------------
