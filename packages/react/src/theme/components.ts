@@ -1,15 +1,24 @@
 /**
  * Component overrides.
  *
- * The token layer gets the palette right everywhere at once; this file is for
- * the places where Tecton's *shape* differs from the component library's — a
- * checkbox that fills near-white instead of accent, a banner whose severity
- * fill carries dark text, a table whose header is the lightest surface in the
- * component, two button emphases that need a variant of their own.
+ * This file is the whole of Tecton's per-component styling, and it is the only
+ * place Tecton styling lives at all: there is no Tecton component in front of
+ * anything. The token layer gets the palette right everywhere at once; this
+ * file is for the places where the Tecton *design*'s shape differs from the
+ * component's — a checkbox that fills near-white instead of accent, a banner
+ * whose severity fill carries dark text, a table whose header is the lightest
+ * surface in the component, two button emphases that need a variant of their
+ * own.
  *
  * Every key is a theming target verified with `astryx theme targets` /
  * `astryx component <Name>`; an unknown key fails the theme build, so this file
  * is checked on every `pnpm --filter @tecton/react build`.
+ *
+ * The custom variants below (`Button` `outlined` and `text-only`, `Banner`
+ * `neutral`, `Badge` `lime`) are declared through `defineTheme`. They are
+ * theme extensions of the component's own API — new values for a prop the
+ * component already has, type-checked through the declarations the theme
+ * compiler emits — not new components.
  *
  * Values prefer `var(--token)` over a literal, so a consumer who re-points a
  * token moves the components with it. Where a role has no token, the pair is
@@ -47,12 +56,13 @@ const NO_OVERLAY_TINT = {
 /* -------------------------------------------------------------------------- */
 
 /**
- * Tecton's five button emphases are `primary / secondary / tertiary / outlined
- * / textOnly`; the library ships `primary / secondary / ghost / destructive`.
- * `ghost` carries Tecton's tertiary, and `outlined` and `text-only` are added
- * as custom variants so the ladder survives intact. Tecton has no destructive
- * button at all — the variant is kept and painted from the error role so a
- * consumer reaching for it gets something coherent.
+ * `Button` ships `primary / secondary / ghost / destructive`; the Tecton design
+ * draws five emphases. `ghost` carries Tecton's tertiary, and `outlined` and
+ * `text-only` are added as custom variants so the ladder survives intact — two
+ * more values for `variant`, on the same component. The Tecton design has no
+ * destructive button at all; `destructive` is kept and painted from the error
+ * role, so a consumer reaching for it gets something coherent rather than the
+ * untouched default.
  */
 const button = {
   base: {
@@ -201,9 +211,10 @@ const inputStatus = {
 /* -------------------------------------------------------------------------- */
 
 /**
- * Tecton's alert is a saturated fill with *dark* ink on it. The library's
- * banner paints a tinted header and keeps body ink, so each status re-points
- * the ink tokens inside the banner rather than setting `color` once.
+ * The Tecton design's alert is a saturated fill with *dark* ink on it, and
+ * `Banner` is where it lands. `Banner` paints a tinted header and keeps body
+ * ink, so each status re-points the ink tokens inside it rather than setting
+ * `color` once.
  */
 function bannerStatus(fill: ColorPair, ink: ColorPair, glyph: ColorPair) {
   return {
@@ -236,7 +247,7 @@ const banner = {
     status.error.filledText,
     status.error.filledAdornment,
   ),
-  /** NEW — Tecton's fifth severity, which the library does not ship. */
+  /** A custom variant: the Tecton design's fifth severity. */
   'status:neutral': bannerStatus(
     status.neutral.filledBackground,
     status.neutral.filledText,
@@ -253,9 +264,9 @@ const bannerIcon = {
 } as const;
 
 /**
- * The library's badge is a standalone pill, which is Tecton's *chip*, so the
- * badge variants are painted from the chip matrix: neutral and the four
- * severities are solid fills, the hue variants stay tinted.
+ * `Badge` is a standalone pill, which is what the Tecton design calls a chip,
+ * so its variants are painted from the design's chip matrix: neutral and the
+ * four severities are solid fills, the hue variants stay tinted.
  */
 function badgeFill(fill: ColorPair, ink: ColorPair) {
   return {backgroundColor: pair(fill), color: pair(ink)};
@@ -290,7 +301,7 @@ const badge = {
     status.error.filledBackground,
     status.error.filledText,
   ),
-  /** NEW — lime is a Tecton accent with no hue family to borrow. */
+  /** A custom variant: lime is a Tecton accent with no hue family to borrow. */
   'variant:lime': badgeFill(accent.lime.fill, component.badge.contrastText),
   'variant:blue': badgeTint('blue'),
   'variant:cyan': badgeTint('cyan'),
@@ -303,7 +314,7 @@ const badge = {
   'variant:yellow': badgeTint('yellow'),
 } as const;
 
-/** The chip: same colour logic, one size step smaller, always a pill. */
+/** `Token`: the same chip matrix, one size step smaller, always a pill. */
 const token = {
   base: {borderRadius: RADIUS_PILL},
   'color:default': badgeFill(
@@ -381,9 +392,9 @@ const radioIndicator = {
 /* -------------------------------------------------------------------------- */
 
 /**
- * Tecton panels are flat: a 1px subtle rule, 16px of padding, no shadow.
- * Elevation runs *dark* — a panel is darker than the page it sits on — so the
- * card surface token is the elevated one and the shadow is dropped.
+ * The Tecton design's panel is flat: a 1px subtle rule, 16px of padding, no
+ * shadow. Elevation runs *dark* — a panel is darker than the page it sits on —
+ * so `Card` takes the elevated surface token and drops the shadow.
  */
 const card = {
   base: {
