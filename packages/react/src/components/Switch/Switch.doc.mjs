@@ -108,7 +108,14 @@ export const docs = {
     },
   ],
 
-  examples: ['SwitchBasic'],
+  examples: [
+    'SwitchBasic',
+    'SwitchDisabled',
+    'SwitchSettingsPanel',
+    'SwitchShowcase',
+    'SwitchWithDescription',
+    'SwitchWithStatus',
+  ],
 
   notes: [
     "Tecton's off track is an outline with no fill, which survived into the theme. Disabled-and-on cannot drop the violet to grey the way the design does: that is two states at once and only one is addressable.",

@@ -101,7 +101,18 @@ export const docs = {
     },
   ],
 
-  examples: ['AvatarBasic', 'AvatarShapes'],
+  examples: [
+    'AvatarBasic',
+    'AvatarFallbackChain',
+    'AvatarInitialsFallback',
+    'AvatarInteractive',
+    'AvatarShapes',
+    'AvatarShowcase',
+    'AvatarTooltip',
+    'AvatarUserCard',
+    'AvatarWithImage',
+    'AvatarWithStatus',
+  ],
 
   notes: [
     "Tecton's seven accent colours for avatars are a per-instance choice in the design with no prop underneath, so every avatar takes the theme's one fill.",

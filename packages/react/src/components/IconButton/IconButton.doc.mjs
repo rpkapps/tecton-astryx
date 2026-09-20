@@ -93,7 +93,13 @@ export const docs = {
     },
   ],
 
-  examples: ['IconButtonBasic'],
+  examples: [
+    'IconButtonActionBar',
+    'IconButtonBasic',
+    'IconButtonLoadingToggle',
+    'IconButtonShowcase',
+    'IconButtonTooltipIconButton',
+  ],
 
   notes: [
     'Tecton draws icon buttons as circles and as rounded squares; there is no shape prop underneath, so every icon button takes the theme corner.',

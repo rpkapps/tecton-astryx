@@ -47,7 +47,7 @@ export const docs = {
     ],
   },
 
-  examples: ['TabBasic'],
+  examples: ['TabBasic', 'TabShowcase'],
 
   props: [
     {

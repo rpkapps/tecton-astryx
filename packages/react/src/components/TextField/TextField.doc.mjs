@@ -171,7 +171,17 @@ export const docs = {
     },
   ],
 
-  examples: ['TextFieldBasic', 'TextFieldValidation'],
+  examples: [
+    'TextFieldBasic',
+    'TextFieldIcon',
+    'TextFieldSearch',
+    'TextFieldShowcase',
+    'TextFieldSizes',
+    'TextFieldStates',
+    'TextFieldStatusVariant',
+    'TextFieldTypes',
+    'TextFieldValidation',
+  ],
 
   notes: [
     "Only the outlined appearance ships. The design's filled and text-only fields have no variant axis underneath, and the dotted disabled-filled rule, the solid red filled error surface and the violet-tinted active interior are all unreachable.",

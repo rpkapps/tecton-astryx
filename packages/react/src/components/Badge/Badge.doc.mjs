@@ -65,7 +65,14 @@ export const docs = {
     },
   ],
 
-  examples: ['BadgeBasic', 'BadgeVariants'],
+  examples: [
+    'BadgeBasic',
+    'BadgeCategoryTags',
+    'BadgeCountBadges',
+    'BadgeShowcase',
+    'BadgeStatusLabels',
+    'BadgeVariants',
+  ],
 
   notes: [
     "Tecton's own Badge in the design is an overlay anchored to another element's corner, with a count that caps at 99+. That is a different component and is not built. This Badge is the standalone pill the design also draws, and Chip is its interactive sibling.",

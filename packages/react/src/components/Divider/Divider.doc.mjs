@@ -69,7 +69,13 @@ export const docs = {
     },
   ],
 
-  examples: ['DividerBasic'],
+  examples: [
+    'DividerBasic',
+    'DividerFullBleed',
+    'DividerShowcase',
+    'DividerVariants',
+    'DividerVertical',
+  ],
 
   notes: [
     "The variant axis underneath is `subtle | strong`. Tecton's third emphasis, `medium`, is painted here from the design's own token as a style preset rather than a theme variant.",

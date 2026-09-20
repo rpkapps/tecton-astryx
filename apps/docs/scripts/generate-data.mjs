@@ -145,16 +145,37 @@ export const ${constName}: ${type ?? `readonly ${typeName}[]`} = ${JSON.stringif
 /* -------------------------------------------------------------------------- */
 
 /** Every value and type name the package's barrel exports. */
-function barrelExports(entry) {
+function barrelExports(entry, seen = new Set()) {
   const full = path.join(PACKAGE_SRC, entry);
-  if (!fs.existsSync(full)) return new Set();
+  if (!fs.existsSync(full) || seen.has(full)) return new Set();
+  seen.add(full);
   const source = fs.readFileSync(full, 'utf8').replace(/\r\n/g, '\n');
   const names = new Set();
   for (const match of source.matchAll(/export\s+(?:type\s+)?\{([^}]*)\}/g)) {
     for (const name of match[1].split(',')) {
-      const trimmed = name.trim().replace(/^type\s+/, '');
+      const trimmed = name
+        .trim()
+        .replace(/^type\s+/, '')
+        .replace(/^.*\s+as\s+/, '');
       if (trimmed) names.add(trimmed);
     }
+  }
+  // Names declared and exported in place (`export type X = …`,
+  // `export const x = …`, `export function X()`).
+  for (const match of source.matchAll(
+    /^export\s+(?:declare\s+)?(?:const|let|function|class|type|interface|enum)\s+([A-Za-z_$][\w$]*)/gm,
+  )) {
+    names.add(match[1]);
+  }
+  // `export * from './x.js'` re-exports another module wholesale (the barrel
+  // keeps its generated pass-through components in one); follow it.
+  for (const match of source.matchAll(/export\s+\*\s+from\s+'(\.[^']*)'/g)) {
+    const target = path
+      .join(path.dirname(entry), match[1])
+      .replace(/\.js$/, '.ts');
+    for (const name of barrelExports(target, seen)) names.add(name);
+    const tsx = target.replace(/\.ts$/, '.tsx');
+    for (const name of barrelExports(tsx, seen)) names.add(name);
   }
   return names;
 }
@@ -180,9 +201,12 @@ function rewriteSource(rawSource, {id, entryPoints}) {
     /^import\s+(type\s+)?\{([^}]*)\}\s+from\s+'(\.[^']*)';\n/gm,
     (line, typeOnly, names, from) => {
       for (const raw of names.split(',')) {
-        const name = typeOnly ? `type ${raw.trim()}` : raw.trim();
-        if (!name || name === 'type') continue;
-        const bare = name.replace(/^type\s+/, '');
+        const trimmed = raw.trim();
+        if (!trimmed) continue; // trailing comma in a multi-line import
+        const name = typeOnly ? `type ${trimmed}` : trimmed;
+        // `Exported as Local` keeps the alias; the entry point must publish
+        // the exported (left-hand) name.
+        const bare = name.replace(/^type\s+/, '').replace(/\s+as\s+.*$/, '');
         const entry = entryPoints.find(candidate =>
           candidate.exports.has(bare),
         );
@@ -644,13 +668,19 @@ const examples = await load(docFiles.filter(isExample), file => ({
     .replaceAll(path.sep, '/')
     .replace(/\.doc\.mjs$/, '.tsx'),
 }));
-const templates = await load(findDocFiles(TEMPLATE_SRC), (file, doc) => ({
-  id: doc.id ?? doc.name,
-  path: path
-    .relative(PACKAGE_SRC, file)
-    .replaceAll(path.sep, '/')
-    .replace(/\.doc\.mjs$/, '.tsx'),
-}));
+const templates = await load(findDocFiles(TEMPLATE_SRC), (file, doc) => {
+  // A ported page template lives in its own directory as
+  // `<slug>/Template.tsx` beside `<slug>/template.doc.mjs`; a template
+  // authored as `<Name>.tsx` + `<Name>.doc.mjs` still resolves by stem.
+  const sibling = path.join(path.dirname(file), 'Template.tsx');
+  const source = fs.existsSync(sibling)
+    ? sibling
+    : file.replace(/\.doc\.mjs$/, '.tsx');
+  return {
+    id: doc.slug ?? doc.id ?? doc.name,
+    path: path.relative(PACKAGE_SRC, source).replaceAll(path.sep, '/'),
+  };
+});
 const guides = await load(findDocFiles(GUIDE_SRC));
 
 // Every example a component lists has to exist, or the site links into nothing.

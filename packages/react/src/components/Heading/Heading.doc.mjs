@@ -94,7 +94,14 @@ export const docs = {
     },
   ],
 
-  examples: ['HeadingBasic', 'HeadingLevels'],
+  examples: [
+    'HeadingBasic',
+    'HeadingCardGrid',
+    'HeadingLevels',
+    'HeadingPageLayout',
+    'HeadingShowcase',
+    'HeadingTruncation',
+  ],
 
   notes: [
     "Tecton's type foundation names `heading1` and `heading2`; levels 3 to 6 continue the ladder with the interface variants that sit at those sizes, which is what the design's sub-headings actually use.",

@@ -159,7 +159,13 @@ export const docs = {
     },
   ],
 
-  examples: ['SelectBasic', 'SelectWithSections'],
+  examples: [
+    'SelectBasic',
+    'SelectBottomSheet',
+    'SelectGhostToolbar',
+    'SelectWithSections',
+    'SelectWithStatus',
+  ],
 
   notes: [
     "Tecton's filled field appearance has no slot underneath; `outlined` and `textOnly` are the two Tecton ships.",

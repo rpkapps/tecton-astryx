@@ -103,21 +103,48 @@ function propsOf(symbol) {
 
 // --- what the barrel exports -------------------------------------------------
 
-const barrel = fs.readFileSync(path.join(SRC, 'index.ts'), 'utf8');
+/**
+ * The barrel is in two halves: the hand-written components are exported by
+ * `src/index.ts` itself, and the generated pass-throughs by the module it
+ * re-exports (`scripts/generate-wrappers.mjs` writes that one). Both are read
+ * the same way, so a generated component is held to the same standard as a
+ * designed one.
+ */
+const barrelFiles = [
+  path.join(SRC, 'index.ts'),
+  path.join(SRC, 'generated', 'componentExports.ts'),
+];
+
 /** @type {Map<string, string[]>} component directory → exported value names */
 const directories = new Map();
-for (const match of barrel.matchAll(
-  /export\s+\{([^}]*)\}\s+from\s+'\.\/components\/([A-Za-z]+)\/index\.js'/g,
-)) {
-  const names = match[1]
-    .split(',')
-    .map(name => name.trim())
-    .filter(Boolean);
-  directories.set(match[2], names);
+for (const file of barrelFiles) {
+  if (!fs.existsSync(file)) {
+    fail(`${path.relative(ROOT, file)} is missing — has the barrel moved?`);
+    continue;
+  }
+  const barrel = fs.readFileSync(file, 'utf8');
+  for (const match of barrel.matchAll(
+    /export\s+\{([^}]*)\}\s+from\s+'\.\.?\/components\/([A-Za-z]+)\/index\.js'/g,
+  )) {
+    const names = match[1]
+      .split(',')
+      .map(name => name.trim())
+      .filter(Boolean);
+    const existing = directories.get(match[2]) ?? [];
+    directories.set(match[2], [...new Set([...existing, ...names])]);
+  }
 }
 
 if (directories.size === 0) {
   fail('The barrel exports no components — has src/index.ts moved?');
+}
+
+// Every component directory has to be reachable from the barrel; one that is
+// not is a component a consumer cannot import, documented or otherwise.
+for (const dir of fs.readdirSync(COMPONENTS)) {
+  if (!directories.has(dir)) {
+    fail(`components/${dir} is not exported from the barrel.`);
+  }
 }
 
 // --- the checks --------------------------------------------------------------

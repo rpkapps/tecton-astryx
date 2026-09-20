@@ -123,5 +123,12 @@ export const docs = {
     },
   ],
 
-  examples: ['RadioGroupBasic'],
+  examples: [
+    'RadioGroupBasic',
+    'RadioGroupHorizontalLayout',
+    'RadioGroupPricingTier',
+    'RadioGroupShowcase',
+    'RadioGroupWithDescriptions',
+    'RadioGroupWithValidation',
+  ],
 };

@@ -109,7 +109,17 @@ export const docs = {
     },
   ],
 
-  examples: ['TextBasic', 'TextVariants'],
+  examples: [
+    'TextBasic',
+    'TextColors',
+    'TextHeadingLevels',
+    'TextInline',
+    'TextShowcase',
+    'TextTruncation',
+    'TextVariants',
+    'TextWordBreak',
+    'TextWrap',
+  ],
 
   notes: [
     'Eight of the fourteen variants have no counterpart in the base type scale and are carried by the theme as custom types. The package declares their types itself, so `variant="mediumData"` checks like any other.',

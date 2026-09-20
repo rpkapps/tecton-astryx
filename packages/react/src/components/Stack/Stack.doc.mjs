@@ -112,5 +112,10 @@ export const docs = {
     },
   ],
 
-  examples: ['StackBasic'],
+  examples: [
+    'StackAlignment',
+    'StackBasic',
+    'StackDirections',
+    'StackFillItem',
+  ],
 };

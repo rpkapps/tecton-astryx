@@ -85,7 +85,14 @@ export const docs = {
     },
   ],
 
-  examples: ['ListBasic'],
+  examples: [
+    'ListBasic',
+    'ListBasicList',
+    'ListBulletedFeatures',
+    'ListMessageList',
+    'ListOrderedSteps',
+    'ListShowcase',
+  ],
 
   notes: [
     'Tecton names two densities; the scale underneath has three, and `comfortable` is offered as the third rather than hidden.',

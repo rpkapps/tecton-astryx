@@ -10,9 +10,18 @@ import {Button as BaseButton} from '@astryxdesign/core/Button';
 import {renderIcon, type TectonIconRef} from '../../icons/renderIcon.js';
 import type {ControlSize} from '../../types/field.js';
 
-/** Visual emphasis, from the loudest to the quietest. */
+/**
+ * Visual emphasis, from the loudest to the quietest — plus `destructive`,
+ * which steps outside the ladder because it carries meaning rather than
+ * weight: the action it commits cannot be undone.
+ */
 export type ButtonVariant =
-  'primary' | 'secondary' | 'tertiary' | 'outlined' | 'textOnly';
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'outlined'
+  | 'textOnly'
+  | 'destructive';
 
 /** Control height: `md` is 32px, `sm` is 28px. */
 export type ButtonSize = ControlSize;
@@ -23,6 +32,7 @@ const VARIANT = {
   tertiary: 'ghost',
   outlined: 'outlined',
   textOnly: 'text-only',
+  destructive: 'destructive',
 } as const satisfies Record<ButtonVariant, string>;
 
 export interface ButtonProps {

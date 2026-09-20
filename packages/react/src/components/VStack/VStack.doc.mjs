@@ -101,5 +101,5 @@ export const docs = {
     },
   ],
 
-  examples: ['VStackBasic'],
+  examples: ['VStackBasic', 'VStackShowcase'],
 };

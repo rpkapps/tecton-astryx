@@ -101,7 +101,12 @@ export const docs = {
     },
   ],
 
-  examples: ['ToggleButtonBasic'],
+  examples: [
+    'ToggleButtonBasic',
+    'ToggleButtonColor',
+    'ToggleButtonIconSwap',
+    'ToggleButtonStates',
+  ],
 
   notes: [
     'Tecton names four sizes and the scale underneath has three, so `extraSmall` and `small` are both drawn at the smallest.',
