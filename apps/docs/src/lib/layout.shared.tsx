@@ -4,7 +4,12 @@ export const siteName = 'Tecton';
 export const siteDescription =
   'The Tecton design system for React: foundations, components and live examples, printed from the package itself.';
 
-/** Options both the docs shell and the landing page shell are built from. */
+/**
+ * Options both shells are built from.
+ *
+ * The docs shell takes these as they are: its sidebar already lists every
+ * section, so repeating them as header links would say the same thing twice.
+ */
 export function baseOptions(): BaseLayoutProps {
   return {
     nav: {
@@ -20,6 +25,13 @@ export function baseOptions(): BaseLayoutProps {
       ),
       transparentMode: 'none',
     },
+  };
+}
+
+/** The landing page's header, which is the only navigation on that page. */
+export function homeOptions(): BaseLayoutProps {
+  return {
+    ...baseOptions(),
     links: [
       {text: 'Guides', url: '/docs', active: 'nested-url'},
       {

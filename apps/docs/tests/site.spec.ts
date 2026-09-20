@@ -41,7 +41,9 @@ test('the landing page introduces Tecton and renders live tiles', async ({
   const errors = watchConsole(page);
   await page.goto('/');
 
-  await expect(page.getByRole('heading', {name: 'Tecton', exact: true})).toBeVisible();
+  await expect(
+    page.getByRole('heading', {name: 'Tecton', exact: true}),
+  ).toBeVisible();
   await expect(page.getByText('pnpm add @tecton/react')).toBeVisible();
 
   // The gallery tiles are the components themselves, mounted after hydration.
@@ -59,7 +61,9 @@ test('a component page renders every example live and shows its source', async (
   const errors = watchConsole(page);
   await page.goto('/docs/components/Button/');
 
-  await expect(page.getByRole('heading', {name: 'Button', level: 1})).toBeVisible();
+  await expect(
+    page.getByRole('heading', {name: 'Button', level: 1}),
+  ).toBeVisible();
 
   // Every example on the page is a frame, and each one runs.
   const frames = page.locator('figure[id]');
@@ -84,7 +88,9 @@ test('a component page renders every example live and shows its source', async (
   await expect(rendered).toBeVisible();
 
   // The props table is printed from the component's own doc.
-  await expect(page.getByRole('cell', {name: 'isLoading'}).first()).toBeVisible();
+  await expect(
+    page.getByRole('cell', {name: 'isLoading'}).first(),
+  ).toBeVisible();
 
   expect(await visibleText(page)).not.toMatch(/astryx/i);
   expect(errors).toEqual([]);
@@ -110,8 +116,12 @@ test('the colour page prints both modes of every role', async ({page}) => {
   const errors = watchConsole(page);
   await page.goto('/docs/foundations/colour/');
 
-  await expect(page.getByRole('heading', {name: 'Colour', level: 1})).toBeVisible();
-  await expect(page.getByText(/colour roles, each with the value/)).toBeVisible();
+  await expect(
+    page.getByRole('heading', {name: 'Colour', level: 1}),
+  ).toBeVisible();
+  await expect(
+    page.getByText(/colour roles, each with the value/),
+  ).toBeVisible();
   await expect(page.getByText('dark  #1d1c1f').first()).toBeVisible();
   await expect(page.getByText('light #f6f4f7').first()).toBeVisible();
 
@@ -123,7 +133,10 @@ test('search finds the Button page in the static index', async ({page}) => {
   const errors = watchConsole(page);
   await page.goto('/docs/');
 
-  await page.getByRole('button', {name: /search/i}).first().click();
+  await page
+    .getByRole('button', {name: /search/i})
+    .first()
+    .click();
   const input = page.getByPlaceholder(/search/i);
   await input.fill('button');
 

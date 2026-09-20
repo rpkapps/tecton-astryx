@@ -124,8 +124,8 @@ function ColourFoundation() {
     <div className="grid gap-2">
       <Text display="block" color="secondary" variant="small">
         {foundationData.paletteTotal} colour roles, each with the value it takes
-        in dark and in light. {foundationData.paletteDescribed} of them carry the
-        design foundation&rsquo;s own description.
+        in dark and in light. {foundationData.paletteDescribed} of them carry
+        the design foundation&rsquo;s own description.
       </Text>
 
       <div className="not-prose my-4 max-w-sm">
@@ -207,7 +207,9 @@ function ColourFoundation() {
 /* -------------------------------------------------------------------------- */
 
 function TypographyFoundation() {
-  const sections = [...new Set(foundationData.typeRows.map(row => row.section))];
+  const sections = [
+    ...new Set(foundationData.typeRows.map(row => row.section)),
+  ];
   return (
     <div className="grid gap-2">
       <Section title="Families">
@@ -267,7 +269,11 @@ function Bar({value}: {value?: string}) {
   return (
     <span
       className="inline-block h-4 rounded-[2px]"
-      style={{width: value ?? 0, minWidth: 2, background: 'var(--color-accent)'}}
+      style={{
+        width: value ?? 0,
+        minWidth: 2,
+        background: 'var(--color-accent)',
+      }}
     />
   );
 }
@@ -431,7 +437,9 @@ function IconsFoundation() {
             className="flex flex-col items-center gap-2 rounded-md border border-fd-border p-3 text-center"
           >
             <Icon name={name as TectonIconName} variant={variant} size={24} />
-            <code className="text-[0.6875rem] break-all">{name}</code>
+            <code className="text-[0.6875rem] leading-tight break-words">
+              {name}
+            </code>
           </li>
         ))}
       </ul>

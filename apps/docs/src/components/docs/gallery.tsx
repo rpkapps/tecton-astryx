@@ -52,16 +52,24 @@ export function ComponentGallery() {
     return [...byCategory.entries()].sort((a, b) => a[0].localeCompare(b[0]));
   }, [filter]);
 
+  const shown = groups.reduce((total, [, docs]) => total + docs.length, 0);
+
   return (
     <div className="not-prose grid gap-8">
-      <div className="max-w-sm">
-        <TextField
-          label="Filter components"
-          placeholder="Search by name, category or keyword"
-          value={filter}
-          onChange={setFilter}
-          startIcon="search"
-        />
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div className="w-full max-w-sm">
+          <TextField
+            label="Filter components"
+            placeholder="Search by name, category or keyword"
+            value={filter}
+            onChange={setFilter}
+            startIcon="search"
+          />
+        </div>
+        <Text variant="small" color="secondary">
+          {shown} of {componentRegistry.length} components, {groups.length}{' '}
+          {groups.length === 1 ? 'category' : 'categories'}
+        </Text>
       </div>
 
       {groups.length === 0 ? (

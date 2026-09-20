@@ -163,12 +163,16 @@ function barrelExports(entry) {
  * Rewrite an example so the site — and the reader — see what a consumer writes.
  *
  * An example is authored beside its component and imports it by a relative
- * path; every one of those paths is a component the barrel exports, so they all
- * collapse into a single `@tecton/react` import. Anything that does not
- * collapse is a mistake worth failing the build for.
+ * path; every one of those paths is something the package publishes, so they
+ * all collapse into the entry point a consumer would import that name from —
+ * `@tecton/react` for a component, `@tecton/react/templates` for a template.
+ * A name that no entry point publishes is a mistake worth failing the build
+ * for: it would mean the code on the page is not code a reader can run.
  */
-function rewriteSource(source, {id, exported, specifier}) {
-  const tectonNames = [];
+function rewriteSource(source, {id, entryPoints}) {
+  /** specifier → the names imported from it, in the order first seen. */
+  const grouped = new Map(entryPoints.map(entry => [entry.specifier, []]));
+  let imported = 0;
   let rest = source.replace(
     /^import\s+(type\s+)?\{([^}]*)\}\s+from\s+'(\.[^']*)';\n/gm,
     (line, typeOnly, names, from) => {
@@ -176,12 +180,19 @@ function rewriteSource(source, {id, exported, specifier}) {
         const name = typeOnly ? `type ${raw.trim()}` : raw.trim();
         if (!name || name === 'type') continue;
         const bare = name.replace(/^type\s+/, '');
-        if (!exported.has(bare)) {
+        const entry = entryPoints.find(candidate =>
+          candidate.exports.has(bare),
+        );
+        if (!entry) {
           throw new Error(
-            `${id} imports "${bare}" from "${from}", which ${specifier} does not export.`,
+            `${id} imports "${bare}" from "${from}", which no entry point of @tecton/react exports.`,
           );
         }
-        if (!tectonNames.includes(name)) tectonNames.push(name);
+        const bucket = grouped.get(entry.specifier);
+        if (!bucket.includes(name)) {
+          bucket.push(name);
+          imported += 1;
+        }
       }
       return '';
     },
@@ -189,16 +200,22 @@ function rewriteSource(source, {id, exported, specifier}) {
   if (/from\s+'\.\.?\//.test(rest)) {
     throw new Error(`${id} still has a relative import after rewriting.`);
   }
-  if (tectonNames.length === 0) {
+  if (imported === 0) {
     throw new Error(`${id} imports nothing from the package.`);
   }
-  const tectonImport = `import {${tectonNames.join(', ')}} from '${specifier}';\n`;
-  // Keep any remaining import (React's hooks) above the package import.
+  const packageImports = [...grouped]
+    .filter(([, names]) => names.length > 0)
+    .map(
+      ([specifier, names]) =>
+        `import {${names.join(', ')}} from '${specifier}';\n`,
+    )
+    .join('');
+  // Keep any remaining import (React's hooks) above the package imports.
   const otherImports = [...rest.matchAll(/^import .*;\n/gm)].map(
     match => match[0],
   );
   rest = rest.replace(/^import .*;\n/gm, '').replace(/^\n+/, '');
-  return `${otherImports.join('')}${tectonImport}\n${rest}`;
+  return `${otherImports.join('')}${packageImports}\n${rest}`;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -528,11 +545,21 @@ function fence(code, language = '') {
   return `${ticks}${language}\n${String(code).replace(/\n$/, '')}\n${ticks}`;
 }
 
+/**
+ * Frontmatter is plain text, not Markdown.
+ *
+ * fumadocs prints the description under the page title as it is, so a backtick
+ * authored for a Markdown paragraph would be shown as a backtick.
+ */
+function plain(text) {
+  return String(text).replace(/`/g, '').replace(/\s+/g, ' ').trim();
+}
+
 /** A YAML frontmatter block. Values are JSON, which YAML reads as strings. */
 function frontmatter(fields) {
   const lines = Object.entries(fields)
     .filter(([, value]) => value !== undefined && value !== '')
-    .map(([key, value]) => `${key}: ${JSON.stringify(String(value))}`);
+    .map(([key, value]) => `${key}: ${JSON.stringify(plain(value))}`);
   return `---\n${lines.join('\n')}\n---`;
 }
 
@@ -672,8 +699,7 @@ for (const example of examples) {
   const source = fs.readFileSync(path.join(PACKAGE_SRC, example.path), 'utf8');
   const code = rewriteSource(source, {
     id: example.id,
-    exported,
-    specifier: '@tecton/react',
+    entryPoints: [{specifier: '@tecton/react', exports: exported}],
   });
   exampleSources.set(example.id, code);
   await fsp.writeFile(
@@ -693,8 +719,10 @@ for (const template of templates) {
   }
   const code = rewriteSource(fs.readFileSync(full, 'utf8'), {
     id: template.id,
-    exported: new Set([...exported, ...templateExports]),
-    specifier: '@tecton/react/templates',
+    entryPoints: [
+      {specifier: '@tecton/react', exports: exported},
+      {specifier: '@tecton/react/templates', exports: templateExports},
+    ],
   });
   templateSources.set(template.id, code);
   await fsp.writeFile(
@@ -815,7 +843,11 @@ await fsp.writeFile(
 );
 await fsp.writeFile(
   path.join(OUT_DIR, 'guideRegistry.ts'),
-  renderModule({typeName: 'DocTopic', constName: 'guideRegistry', data: guides}),
+  renderModule({
+    typeName: 'DocTopic',
+    constName: 'guideRegistry',
+    data: guides,
+  }),
   'utf8',
 );
 
@@ -881,10 +913,9 @@ await write(
 
 ${MDX_BANNER}
 
-Tecton is a React implementation of one design system: components, a theme and a
-single stylesheet, published as \`@tecton/react\`. Everything on this site is
-printed from that package — the tokens on the foundations pages come out of the
-built theme, and every example is the running code, not a picture of it.
+Everything here is printed from the package itself: the tokens on the
+foundations pages come out of the built theme, and every example is the running
+code rather than a picture of it.
 
 ## Start here
 
@@ -938,8 +969,6 @@ for (const page of foundationPages) {
 
 ${MDX_BANNER}
 
-${mdxText(FOUNDATION_INTRO[page.name] ?? '')}
-
 <Foundation ${attrs({name: page.name})} />
 `,
   );
@@ -974,12 +1003,10 @@ await write(
   'components/index.mdx',
   `${frontmatter({
     title: 'Components',
-    description: `The ${components.length} components \`@tecton/react\` publishes, grouped by what they are for. Every tile below is the component itself, running.`,
+    description: `Every component @tecton/react publishes, grouped by what it is for. Each tile is live — the component itself, rendering in your browser.`,
   })}
 
 ${MDX_BANNER}
-
-\`@tecton/react\` publishes ${components.length} components across ${categories.length} categories. Every tile is live: it is the component rendering in your browser, in the mode the site is in.
 
 <ComponentGallery />
 `,
@@ -991,7 +1018,6 @@ for (const component of componentRecords) {
   sections.push(`<ComponentHeader ${attrs({name: component.name})} />`);
 
   sections.push('## Usage');
-  sections.push(mdxText(component.usage.description));
 
   const dos = (component.usage.bestPractices ?? []).filter(
     entry => entry.guidance,
@@ -1047,9 +1073,7 @@ for (const component of componentRecords) {
 
   if ((component.notes ?? []).length > 0) {
     sections.push('## Notes and deviations');
-    sections.push(
-      component.notes.map(note => `- ${mdxText(note)}`).join('\n'),
-    );
+    sections.push(component.notes.map(note => `- ${mdxText(note)}`).join('\n'));
   }
 
   if ((component.theming ?? []).length > 0) {
@@ -1076,7 +1100,7 @@ for (const component of componentRecords) {
   );
 }
 
-const componentPages = ['index'];
+const componentPages = [];
 for (const category of categories) {
   componentPages.push(`---${category}---`);
   for (const component of components.filter(
@@ -1109,13 +1133,6 @@ await write(
   })}
 
 ${MDX_BANNER}
-
-A template is a whole page built from Tecton components — the layout, the
-spacing and the states already decided. ${
-    templates.length > 0
-      ? `The package publishes ${templates.length} of them from \`@tecton/react/templates\`; each thumbnail below is the template itself, rendering at reduced scale.`
-      : 'The package does not publish any yet. This page lists them the moment it does — it is printed from the template registry, not from a list kept here.'
-  }
 
 <TemplateGallery />
 `,
@@ -1150,7 +1167,7 @@ await write(
   `${JSON.stringify(
     {
       title: 'Page templates',
-      pages: ['index', ...templates.map(template => template.id)],
+      pages: templates.map(template => template.id),
     },
     null,
     2,
@@ -1168,12 +1185,6 @@ await write(
 
 ${MDX_BANNER}
 
-${
-  changelog.length > 0
-    ? `Every release of \`@tecton/react\`, newest first, printed from the package's own \`CHANGELOG.md\`.`
-    : `The package has not published a \`CHANGELOG.md\` yet. This page prints one the moment it lands in the package — nothing here is written by hand.`
-}
-
 <Changelog />
 `,
 );
@@ -1190,9 +1201,8 @@ await write(
         'index',
         '---Guides---',
         ...orderedGuides.map(topic => topic.name),
-        '---Foundations---',
-        'foundations',
         '---Library---',
+        'foundations',
         'components',
         'templates',
         '---Releases---',

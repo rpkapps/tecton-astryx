@@ -39,14 +39,15 @@ pnpm --filter @tecton/react test
 pnpm --filter @tecton/docs dev
 ```
 
-`pnpm check` also runs four guards:
+`pnpm check` also runs five guards:
 
-| Guard                                                 | Fails when                                                                                                                                    |
-| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `scripts/check-consumer-surface.mjs`                  | the upstream library's name reaches any published subpath's declarations — an exported name, a type alias's right-hand side, or a doc comment |
-| `scripts/check-docs-drift.mjs`                        | a component has no doc, a documented prop does not exist, a declared prop is undocumented, or an example is missing or does not compile       |
-| `packages/react/scripts/generate-palette.mjs --check` | the generated colour palette has drifted from `tokens/tecton.tokens.json`                                                                     |
-| `packages/react/scripts/generate-icons.mjs --check`   | the generated icon components have drifted from `design/icons/tecton/`                                                                        |
+| Guard                                                 | Fails when                                                                                                                                                                                       |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `scripts/check-consumer-surface.mjs`                  | the upstream library's name reaches any published subpath's declarations — an exported name, a type alias's right-hand side, or a doc comment                                                    |
+| `scripts/check-docs-drift.mjs`                        | a component has no doc, a documented prop does not exist, a declared prop is undocumented, or an example is missing or does not compile                                                          |
+| `scripts/check-docs-site.mjs`                         | a component has no page on the docs site, an example is rendered by no page or by two, a guide is missing from the sidebar, a foundations source has moved, or a page is not in the search index |
+| `packages/react/scripts/generate-palette.mjs --check` | the generated colour palette has drifted from `tokens/tecton.tokens.json`                                                                                                                        |
+| `packages/react/scripts/generate-icons.mjs --check`   | the generated icon components have drifted from `design/icons/tecton/`                                                                                                                           |
 
 `pnpm check:mfe` builds `fixtures/consumers/mfe-harness` — two independently
 built versions of `@tecton/react` on one page — and asserts the multi-version
@@ -55,19 +56,26 @@ rebuilds the package a second time and launches a browser. Read
 `docs/engineering/micro-frontends/README.md` before shipping Tecton into a
 micro-frontend.
 
-`node scripts/capture-fidelity.mjs` screenshots the theme gallery at
-`/preview/theme` in both colour modes into `docs/design/fidelity/`; the renders
-are read alongside the design captures in `docs/design/fidelity-report.md`.
+`pnpm docs:site:e2e` runs the documentation site's Playwright suite against its
+static export — live examples, the icon and colour pages, and search. Like
+`check:mfe` it launches a browser, so it is deliberately outside `pnpm check`.
+
+`node scripts/capture-fidelity.mjs` screenshotted the Phase 1 theme gallery at
+`/preview/theme`; Phase 4 removed that page along with the upstream dependency
+it needed, so the script needs a new source before it can run again. The renders
+it produced are read alongside the design captures in
+`docs/design/fidelity-report.md`.
 
 Requires Node >= 22 and pnpm 10.33.
 
 ## Status
 
-Phase 2: the consumer-facing component surface. 47 components and the `useToast`
-hook, each with its documentation, its examples and its tests; the 131 Tecton
-glyphs generated from the design delivery; and two new drift guards. The
-documentation site still renders from generated data rather than a real site —
-Phase 4 builds that.
+Phase 4: the documentation site. `apps/docs` is the Tecton docsite — a landing
+page, the written guides, the foundations printed from the built theme, a page
+per component with every example running and its source beside it, the icon
+gallery, the page templates and the changelog — built on fumadocs and Next.js,
+exported as static HTML, and generated from the package itself. See
+`docs/engineering/docs-site.md`.
 
 - `docs/engineering/component-mapping.md` — every component, what it is built
   on, how its props map, and where Tecton's design and the upstream model
@@ -83,6 +91,19 @@ Phase 4 builds that.
 ## Deviations
 
 Choices that differ from the briefs, and why.
+
+### Phase 4
+
+- **The `/preview/theme` gallery is gone, with the upstream dependency it
+  needed.** `apps/docs` no longer depends on the component library underneath
+  Tecton in any form; the site is built from `@tecton/react` alone.
+- **The site is generated, not written.** `apps/docs/content` and
+  `apps/docs/src/generated` are both build output and both gitignored; the only
+  authored content is the nine guides under `apps/docs/guides`.
+- **Examples run in the reader's browser, not during the build.** The export is
+  static, so each example ships as its own dynamic import and mounts after
+  hydration — which is why an example on the site is the running component
+  rather than a picture of one.
 
 ### Phase 2
 
@@ -110,9 +131,6 @@ Choices that differ from the briefs, and why.
   The theme compiler emits four of them into `dist/`, but not the custom `Text`
   types, and `src/` has to type-check before a build has run. The file is
   internal and is not emitted.
-- **The `/preview/theme` page declares those augmentations for itself.** It
-  drives the upstream components directly, so it is not a consumer and cannot
-  reach them through Tecton. Phase 4 removes the page.
 - **Generated files are formatted with Prettier by their generator**, so
   `pnpm format` and `--check` never disagree about one.
 - **`packages/react` type-checks with `vite/client` types.** The test that
@@ -144,10 +162,6 @@ Choices that differ from the briefs, and why.
   synchronous loader that compiles JSX against the classic runtime and that
   stops resolving `./icons.js` to a `.tsx` file once the theme has more than one
   relative import. A plain `.ts` module avoids both.
-- **`apps/docs` depends on the upstream component library as a devDependency.**
-  The temporary `/preview/theme` gallery renders components Tecton does not wrap
-  yet, so it imports them directly. That one route is the only place in the
-  repository outside `packages/react/src` that does; Phase 4 removes it.
 - **`src/theme/tecton.ts` is a placeholder** that re-exports the source theme;
   in `dist/` the generated built theme module replaces it. Tests therefore
   exercise the runtime theme, while consumers always get the built one.

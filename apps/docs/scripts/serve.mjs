@@ -76,8 +76,7 @@ createServer(async (request, response) => {
     return;
   }
   response.writeHead(200, {
-    'Content-Type':
-      TYPES.get(path.extname(file)) ?? 'application/octet-stream',
+    'Content-Type': TYPES.get(path.extname(file)) ?? 'application/octet-stream',
     'Cache-Control': 'no-store',
   });
   response.end(await fsp.readFile(file));

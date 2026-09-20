@@ -137,10 +137,7 @@ export interface DocListBlock {
 }
 
 export type DocBlock =
-  | DocProseBlock
-  | DocCodeBlock
-  | DocTableBlock
-  | DocListBlock;
+  DocProseBlock | DocCodeBlock | DocTableBlock | DocListBlock;
 
 export interface DocSection {
   title: string;
@@ -249,5 +246,6 @@ export interface SitePage {
   /** What the page is called. */
   title: string;
   /** Which part of the site it belongs to. */
-  kind: 'guide' | 'foundation' | 'component' | 'template' | 'index' | 'changelog';
+  kind:
+    'guide' | 'foundation' | 'component' | 'template' | 'index' | 'changelog';
 }

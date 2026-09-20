@@ -2,8 +2,7 @@
 import {
   Suspense,
   lazy,
-  useEffect,
-  useRef,
+  useCallback,
   useState,
   type ComponentType,
   type ReactNode,
@@ -19,29 +18,32 @@ import {templateLoaders} from '@/generated/templateLoaders';
  * example's own module and mounts it after hydration. The module is the same
  * source the Code tab shows, generated from the file that lives beside the
  * component in `packages/react`, which is what stops the two drifting apart.
+ *
+ * The lazy wrappers are built once, when this module is first evaluated.
+ * `lazy()` does not call its loader, so this costs one small object per example
+ * and nothing is fetched until something actually renders.
  */
-const cache = new Map<string, ComponentType>();
-
 type Loaders = Readonly<Record<string, () => Promise<unknown>>>;
 
-function resolve(id: string, loaders: Loaders): ComponentType | undefined {
-  const cached = cache.get(id);
-  if (cached) return cached;
-  const load = loaders[id];
-  if (!load) return undefined;
-  const Component = lazy(async () => {
-    const module = (await load()) as Record<string, unknown>;
-    const exported =
-      module[id] ??
-      Object.values(module).find(value => typeof value === 'function');
-    if (typeof exported !== 'function') {
-      throw new Error(`The module for "${id}" exports no component.`);
-    }
-    return {default: exported as ComponentType};
-  });
-  cache.set(id, Component);
-  return Component;
+function lazyComponents(loaders: Loaders): Record<string, ComponentType> {
+  const map: Record<string, ComponentType> = {};
+  for (const [id, load] of Object.entries(loaders)) {
+    map[id] = lazy(async () => {
+      const module = (await load()) as Record<string, unknown>;
+      const exported =
+        module[id] ??
+        Object.values(module).find(value => typeof value === 'function');
+      if (typeof exported !== 'function') {
+        throw new Error(`The module for "${id}" exports no component.`);
+      }
+      return {default: exported as ComponentType};
+    });
+  }
+  return map;
 }
+
+const EXAMPLES = lazyComponents(exampleLoaders);
+const TEMPLATES = lazyComponents(templateLoaders);
 
 function Missing({id}: {id: string}) {
   return (
@@ -62,7 +64,7 @@ function Pending() {
 }
 
 export function LivePreview({id}: {id: string}) {
-  const Component = resolve(id, exampleLoaders);
+  const Component = EXAMPLES[id];
   if (!Component) return <Missing id={id} />;
   return (
     <Suspense fallback={<Pending />}>
@@ -72,7 +74,7 @@ export function LivePreview({id}: {id: string}) {
 }
 
 export function LiveTemplate({id}: {id: string}) {
-  const Component = resolve(id, templateLoaders);
+  const Component = TEMPLATES[id];
   if (!Component) return <Missing id={id} />;
   return (
     <Suspense fallback={<Pending />}>
@@ -84,9 +86,11 @@ export function LiveTemplate({id}: {id: string}) {
 /**
  * Mount the children only once they are close to being looked at.
  *
- * The components index puts one running example in every tile. Loading a
- * hundred and sixty modules the moment the page opens would cost far more than
- * it is worth, so each tile waits until it is near the viewport.
+ * The components index puts one running example in every tile. Loading every
+ * module the moment the page opens would cost far more than it is worth, so a
+ * tile waits until it is near the viewport. The observer is attached from the
+ * ref callback rather than an effect, so it is set up in the same commit that
+ * puts the element in the document and torn down when it leaves.
  */
 export function WhenVisible({
   children,
@@ -95,12 +99,11 @@ export function WhenVisible({
   children: ReactNode;
   placeholder?: ReactNode;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
   const [shown, setShown] = useState(false);
 
-  useEffect(() => {
-    const element = ref.current;
-    if (!element || shown) return;
+  const watch = useCallback((element: HTMLDivElement | null) => {
+    if (!element) return;
+    // Without an observer — an old browser, or a test harness — show it now.
     if (typeof IntersectionObserver === 'undefined') {
       setShown(true);
       return;
@@ -113,11 +116,11 @@ export function WhenVisible({
     );
     observer.observe(element);
     return () => observer.disconnect();
-  }, [shown]);
+  }, []);
 
+  // The wrapper keeps a layout box on purpose: an element with `display:
+  // contents` has none, and an IntersectionObserver would never report it.
   return (
-    <div ref={ref} className="contents-none">
-      {shown ? children : (placeholder ?? <Pending />)}
-    </div>
+    <div ref={watch}>{shown ? children : (placeholder ?? <Pending />)}</div>
   );
 }

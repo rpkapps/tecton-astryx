@@ -81,7 +81,7 @@ export function Landing() {
         </div>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-2">
+      <section className="grid items-start gap-6 lg:grid-cols-2">
         <Snippet label="Install" code={INSTALL} />
         <Snippet label="Mount" code={MOUNT} />
       </section>
