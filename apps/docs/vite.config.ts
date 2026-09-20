@@ -34,6 +34,9 @@ import {stylexCssPlugin} from './scripts/vite-stylex-css.mjs';
 const stylexPlugin = stylex(styleXOptions);
 
 export default defineConfig({
+  // The repository's README sends a reader to http://localhost:3000, and the
+  // docs site is the only thing in it that serves a page.
+  server: {port: 3000},
   resolve: {
     alias: {
       // The same `@/*` the app's tsconfig declares. The build resolves it
