@@ -429,6 +429,14 @@ const component = {
   },
   checkbox: {
     border: ramp('mauve', '830'),
+    /**
+     * `design/components/checkbox.md`: "Hovered — the box border/fill
+     * brightens a step (`#bab3c0` → `#cac5d2`)". The theme does not state this
+     * value: the component reaches it itself, by mixing `--color-tint-hover`
+     * into the resting border, and a 20 % white mix of `#bab3c0` *is*
+     * `#c8c2cc`. It is recorded here because it is the number the design gives
+     * and the number the render has to land on.
+     */
     hoverBorder: ramp('mauve', '1000'),
     checkedFill: ramp('mauve', '1300'),
     indeterminateFill: ramp('mauve', '1000'),
@@ -436,12 +444,36 @@ const component = {
     glyph: neutral('50'),
     disabledBorder: neutral('190'),
   },
+  /**
+   * `design/components/switch.md`. The off track is *an outline*, not a filled
+   * grey pill — "a distinctive, low-ink treatment" — which is why `offBorder`
+   * and `offThumb` are the same mauve: the ring is 1px and the knob inside it
+   * is solid, so the two read as an outline with a dot in it and never as one
+   * flat shape.
+   */
   switch: {
     offBorder: ramp('mauve', '680'),
     offThumb: ramp('mauve', '680'),
     onTrack: ramp('violet', '370'),
     onThumb: ramp('lilac', '1300'),
+    /** "Disabled off — transparent with a dim `~#4b4a4d` border." */
+    disabledBorder: neutral('190'),
+    /** "Disabled on — solid neutral grey `~#57515c`; the violet is discarded." */
     disabledTrack: ramp('graphite', '220'),
+  },
+  /**
+   * `design/components/toggle-button.md`, the "Activated" column: "a filled
+   * mauve square `~#433d47`–`#4e4853` with a brighter icon `~#cbc4d5`; the
+   * border disappears into the fill". The matrix documents no hover or pressed
+   * column, so those are the next two steps of the same graphite ramp — an
+   * activated toggle stays activated under the pointer instead of dropping
+   * back to the unpressed hover fill.
+   */
+  toggleButton: {
+    activatedFill: ramp('graphite', '190'),
+    activatedHoverFill: ramp('graphite', '220'),
+    activatedPressFill: ramp('graphite', '260'),
+    activatedText: ramp('mauve', '1000'),
   },
   progress: {
     /** Linear "primary" — a neutral, barely above the track. */

@@ -68,6 +68,22 @@ const NO_OVERLAY_TINT = {
  */
 const hoverTint = (color: string) => ({'--color-overlay-hover': color});
 
+/**
+ * Brighten the subtle glyph ink with the control it sits in.
+ *
+ * `design/components/toggle-button.md` does this explicitly — "Enabled: icon
+ * `~#9a91a2`; Activated: a brighter icon `~#cbc4d5`" — and the measurement
+ * says it is not decoration: an `<Icon color="secondary" />` inside a button
+ * keeps `--color-icon-secondary`, which is chosen against the *page*, while
+ * the button underneath it fills with its hover or press colour. On the
+ * tertiary press fill that pairing measures 2.88:1, under the 3:1 WCAG 1.4.11
+ * asks of a glyph that carries meaning. Re-pointing the token on the state
+ * hands the glyph the same ink the label gets.
+ */
+const glyphInk = (color: ColorPair) => ({
+  '--color-icon-secondary': pair(color),
+});
+
 /* -------------------------------------------------------------------------- */
 /* Actions                                                                    */
 /* -------------------------------------------------------------------------- */
@@ -120,10 +136,12 @@ const button = {
     ':hover': {
       backgroundColor: pair(action.secondary.hoverBackground),
       color: pair(action.secondary.hoverText),
+      ...glyphInk(action.secondary.hoverText),
     },
     ':active': {
       backgroundColor: pair(action.secondary.pressBackground),
       color: pair(action.secondary.pressText),
+      ...glyphInk(action.secondary.pressText),
     },
     ':disabled': {
       backgroundColor: pair(action.disabled.filledBackground),
@@ -132,14 +150,19 @@ const button = {
   },
   'variant:ghost': {
     backgroundColor: pair(action.tertiary.background),
-    color: pair(action.tertiary.text),
+    // As a token, not a value: a ghost button has no fill of its own, so it
+    // wears whatever surface it is dropped onto — and inside a `Banner` that
+    // is a saturated severity fill the page ink cannot be read on.
+    color: local('--tecton-color-action-tertiary-text'),
     ':hover': {
       backgroundColor: pair(action.tertiary.hoverBackground),
       color: pair(action.tertiary.hoverText),
+      ...glyphInk(action.tertiary.hoverText),
     },
     ':active': {
       backgroundColor: pair(action.tertiary.pressBackground),
       color: pair(action.tertiary.pressText),
+      ...glyphInk(action.tertiary.pressText),
     },
     ':disabled': {
       backgroundColor: pair(action.disabled.filledBackground),
@@ -167,11 +190,13 @@ const button = {
       backgroundColor: pair(action.outlined.hoverBackground),
       borderColor: pair(action.outlined.hoverBorder),
       color: pair(action.outlined.hoverText),
+      ...glyphInk(action.outlined.hoverText),
     },
     ':active': {
       backgroundColor: pair(action.outlined.pressBackground),
       borderColor: pair(action.outlined.pressBorder),
       color: pair(action.outlined.pressText),
+      ...glyphInk(action.outlined.pressText),
     },
     ':disabled': {
       backgroundColor: pair(action.disabled.outlineBackground),
@@ -194,16 +219,45 @@ const button = {
 } as const;
 
 /**
- * The same emphases on a pressed toggle: Tecton's "activated" look.
+ * Tecton's "activated" toggle.
+ *
+ * The key is `isPressed:true`, not `isPressed`. A bare state key compiles to
+ * `[data-<state>="<state>"]`, which is right for every state in the system
+ * that reflects itself that way (`checked`, `selected`, `disabled`) — but
+ * `ToggleButton` writes `themeProps('toggle-button', {isPressed: isPressed ?
+ * 'true' : 'false'})`, so the attribute is `data-is-pressed="true"`. Written
+ * bare, the rule compiled to `[data-is-pressed="isPressed"]` and never matched
+ * anything: the toggle flipped `aria-pressed` correctly and painted nothing.
+ *
+ * The fill is the theme's own `background-color` rather than the
+ * `--color-overlay-pressed` the component paints its pressed background from.
+ * That token is suppressed on the `button` base (see {@link NO_OVERLAY_TINT}),
+ * and un-suppressing it here does not work: `Button`'s own pressed paint is a
+ * StyleX rule, and `variant:ghost` below — which is the variant `ToggleButton`
+ * renders — sets `background-color` from `@layer astryx-theme`, which beats
+ * any StyleX declaration whatever its specificity. Worse, `Button` composites
+ * its press state as a `background-image` gradient of that same token, and the
+ * design's activated fill is opaque, so a re-pointed token would paint the
+ * resting activated fill *over* the pressed one and flatten `:active`.
+ *
+ * `:hover` and `:active` are stated for the same cascade reason: without them
+ * the ghost variant's own hover fill — which is darker than the activated one
+ * — wins on a pressed toggle and makes hovering it look like turning it off.
  *
  * No `borderRadius`: `ToggleButton` is a `Button`, so it takes the 4px corner
  * from `--radius-element` already — and restating it as a shorthand would
  * square-off a toggle placed in a `ButtonGroup` exactly as it did for `Button`.
  */
 const toggleButton = {
-  isPressed: {
-    backgroundColor: pair(action.outlined.pressBackground),
-    color: pair(action.secondary.pressText),
+  'isPressed:true': {
+    backgroundColor: pair(component.toggleButton.activatedFill),
+    color: pair(component.toggleButton.activatedText),
+    ':hover': {
+      backgroundColor: pair(component.toggleButton.activatedHoverFill),
+    },
+    ':active': {
+      backgroundColor: pair(component.toggleButton.activatedPressFill),
+    },
   },
 } as const;
 
@@ -282,6 +336,13 @@ function bannerStatus(fill: ColorPair, ink: ColorPair, glyph: ColorPair) {
     '--color-text-secondary': pair(ink),
     '--color-icon-primary': pair(glyph),
     '--color-icon-secondary': pair(glyph),
+    /**
+     * And the ghost button's ink, which is the other thing that lands on this
+     * fill: a banner's collapse chevron and its action buttons are `ghost`
+     * buttons, which have no fill of their own at rest and so wore the page's
+     * tertiary mauve — 1.2:1 on the warning band, 1.4:1 on success.
+     */
+    '--tecton-color-action-tertiary-text': pair(glyph),
     /**
      * And the focus ring with them.
      *
@@ -444,37 +505,54 @@ const avatarStatusDot = {
  * Tecton reads selection as a *bright chip*, not as an accent: a checked box is
  * near-white with dark ink, and the switch is the only control that carries the
  * violet.
+ *
+ * Both indicators paint the same three tokens and brighten all of them on
+ * hover with a `color-mix()` against `--color-tint-hover`: the box from
+ * `--color-background-surface`, its rule from `--color-border-emphasized`, and
+ * the whole checked chip from `--color-accent`. `design/components/checkbox.md`
+ * asks for exactly that — "Hovered: the box border/fill brightens a step
+ * (`#bab3c0` → `#cac5d2`)" — so the colours go into those tokens rather than
+ * onto `background-color` and `border-color`, which overrode the mix along
+ * with the resting value and left a checked box inert under the pointer.
+ *
+ * No `borderRadius`: the indicator already draws `--radius-inner`, which
+ * Tecton points at 2px — the value `design/components/checkbox.md` measures.
  */
-const checkboxIndicator = {
-  base: {
-    backgroundColor: pair(component.input.outlined.background),
-    borderColor: pair(component.checkbox.border),
-    // No `borderRadius`: the indicator already draws `--radius-inner`, which
-    // Tecton points at 2px — the value `design/components/checkbox.md` measures.
-    ':hover': {borderColor: pair(component.checkbox.hoverBorder)},
-  },
-  checked: {
-    backgroundColor: pair(component.checkbox.checkedFill),
-    borderColor: pair(component.checkbox.checkedFill),
-    color: pair(component.checkbox.glyph),
-  },
-  disabled: {
-    borderColor: pair(component.checkbox.disabledBorder),
-  },
+const indicatorSurface = {
+  '--color-background-surface': pair(component.input.outlined.background),
+  '--color-border-emphasized': pair(component.checkbox.border),
 } as const;
 
-const radioIndicator = {
-  base: {
-    backgroundColor: pair(component.input.outlined.background),
-    borderColor: pair(component.checkbox.border),
-    ':hover': {borderColor: pair(component.checkbox.hoverBorder)},
-  },
+const indicatorDisabled = {
+  disabled: {'--color-border': pair(component.checkbox.disabledBorder)},
+} as const;
+
+const checkboxIndicator = {
+  base: indicatorSurface,
   checked: {
-    borderColor: pair(component.checkbox.checkedFill),
+    '--color-accent': pair(component.checkbox.checkedFill),
+    color: pair(component.checkbox.glyph),
   },
-  disabled: {
-    borderColor: pair(component.checkbox.disabledBorder),
+  ...indicatorDisabled,
+} as const;
+
+/**
+ * `design/components/radio.md`: "No accent colour is used for selection" — an
+ * unchecked ring with a *transparent centre*, and checked is "a brighter ring
+ * plus a filled near-white dot in the centre". So the ring takes the chip
+ * colour through `--color-accent` (and brightens from it on hover), the centre
+ * is held transparent, and the dot — which paints from `--color-on-accent`,
+ * with a `CanvasText` branch beside it for forced colours — is re-pointed
+ * rather than repainted, so that branch survives.
+ */
+const radioIndicator = {
+  base: indicatorSurface,
+  checked: {
+    '--color-accent': pair(component.checkbox.checkedFill),
+    '--color-on-accent': pair(component.checkbox.checkedFill),
+    backgroundColor: pair(component.input.outlined.background),
   },
+  ...indicatorDisabled,
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -543,8 +621,22 @@ export const tectonComponents = {
    * instead painted over every other value of the prop — `secondary`,
    * `disabled` and `inherit` all came out near-white — and took the hover
    * tint with them.
+   *
+   * Said as the **token**, not as `color`, and that is not a stylistic
+   * preference. The moment a theme names `link` at all, the compiler emits its
+   * own `.astryx-link[data-color="accent"] { color: var(--color-text-accent) }`
+   * (`generateColorOverrides`, so that a colour prop always beats a token
+   * change), later in the same layer. A `color` here is therefore overwritten
+   * by that rule anyway; re-pointing the token is what actually reaches it, and
+   * it leaves every other value of the prop alone.
+   *
+   * What neither form can restore is `Link`'s own hover `color-mix()`, which
+   * the compiler's rule flattens along with everything else. That costs
+   * nothing here: `design/components/link.md` records the hovered link, in
+   * both underline policies, as "text unchanged" — the affordance is the
+   * underline appearing, which is untouched.
    */
-  link: {'color:accent': {color: 'var(--color-text-primary)'}},
+  link: {'color:accent': {'--color-text-accent': 'var(--color-text-primary)'}},
 
   /* Fields ---------------------------------------------------------------- */
   'text-input': {base: inputSurface, ...inputDisabled, ...inputStatus},
@@ -573,8 +665,29 @@ export const tectonComponents = {
   // field's control already round from `--radius-element`, which is Tecton's
   // 4px, and a radius on the layout wrapper only fought the caps for it.
   'field-label': {base: {color: pair(component.input.outlined.contrastText)}},
+  /**
+   * Validation is a coloured rule and coloured helper text. There is no box.
+   *
+   * `design/components/textfield.md` puts "Helper text below the field …
+   * replaced by 'Validation failed' in red in the Error state", and the state
+   * matrix draws the error as "border, label and helper all red" — ink on the
+   * page, nothing behind it. `FieldStatus` paints its message from
+   * `--color-{error,warning,success}-muted`, a wash the component was drawn
+   * with, and on Tecton's *transparent* field that wash also bled up into the
+   * bottom of the control: the `attached` message overlaps the field by 6px,
+   * which upstream hides behind an opaque input surface and Tecton does not
+   * have. Turning the fill off removes both at once and costs no geometry —
+   * the padding that positioned the text still positions it.
+   *
+   * The tokens themselves are left alone: `Banner`'s muted severities and
+   * `ChatComposer`'s error strip are drawn as tinted surfaces on purpose, and
+   * they read correctly in both modes.
+   */
   'field-status': {
-    base: {color: pair(component.input.outlined.contrastText)},
+    base: {
+      backgroundColor: 'transparent',
+      color: pair(component.input.outlined.contrastText),
+    },
     'type:error': {color: pair(status.error.outlineText)},
     'type:warning': {color: pair(status.warning.outlineText)},
     'type:success': {color: pair(status.success.outlineText)},
@@ -596,35 +709,64 @@ export const tectonComponents = {
   // `--color-on-accent` and is left alone — see the fidelity report.
   'checkbox-indicator-check': {base: {color: pair(component.checkbox.glyph)}},
   'radio-indicator': radioIndicator,
-  'radio-indicator-dot': {
-    base: {backgroundColor: pair(component.checkbox.checkedFill)},
-  },
+  // `radio-indicator-dot` is not a target: the dot paints from
+  // `--color-on-accent`, which the checked ring above re-points, and a
+  // `background-color` here would have overridden the `CanvasText` the dot
+  // falls back to under forced colours (WCAG 1.4.11).
   switch: {
     /**
-     * The off track is a fill, not a border.
+     * The off track is an outline round a transparent pill, which is what
+     * `design/components/switch.md` measures and calls out as the unusual
+     * thing about it: "the off track is an outline, not a filled grey pill".
      *
-     * `Switch` sizes its track and thumb in whole pixels (32×20 with a 2px
-     * inset at md) and keeps `border-width: 0` on purpose — the only border it
+     * It is drawn as an **inset shadow**, not as a border. `Switch` sizes its
+     * track and thumb in whole pixels (32×20 with a 2px inset at md) on a
+     * border-box and keeps `border-width: 0` on purpose — the only border it
      * ever draws is a `CanvasText` one under forced colours, so the control
-     * stays perceivable when Windows strips the fill (WCAG 1.4.11). Adding a
-     * 1px border here ate 2px of a border-box track in both axes, squeezed the
-     * thumb off-centre, and overrode the forced-colours rule with a colour that
-     * does not exist in that mode.
+     * stays perceivable when Windows strips the fill (WCAG 1.4.11). A 1px
+     * border here ate 2px of the track in both axes, squeezed the thumb
+     * off-centre, and overrode the forced-colours rule with a colour that does
+     * not exist in that mode. An inset shadow costs no layout and leaves that
+     * rule alone. `Switch` draws no shadow of its own, so nothing is displaced.
      *
-     * The off track paints from `--color-background-gray`, so Tecton says what
-     * it wants by re-pointing that, the way the neutral theme does.
+     * Filling the track with `offBorder` instead — which is what this said
+     * before — made the off switch a featureless blob: the design gives the
+     * off track and the off knob *the same* mauve, because one of them is a
+     * 1px ring. Painted as a fill they cancelled out and the knob vanished.
      */
     base: {
-      '--color-background-gray': pair(component.switch.offBorder),
+      '--color-background-gray': 'transparent',
+      boxShadow: `inset 0px 0px 0px 1px ${pair(component.switch.offBorder)}`,
     },
-    checked: {backgroundColor: pair(component.switch.onTrack)},
+    /**
+     * The on track paints from `--color-accent`, and `Switch` mixes its own
+     * hover tint into that same value — so the colour goes into the token and
+     * the component keeps its hover. Setting `background-color` here instead
+     * overrode both the resting fill *and* the `color-mix()` above it, and an
+     * on switch stopped reacting to the pointer at all.
+     */
+    checked: {
+      '--color-accent': pair(component.switch.onTrack),
+      boxShadow: 'none',
+    },
     disabled: {
-      '--color-background-gray': pair(component.switch.disabledTrack),
+      boxShadow: `inset 0px 0px 0px 1px ${pair(component.switch.disabledBorder)}`,
+    },
+    /** "Disabled on — solid neutral grey; the violet is discarded." */
+    'checked+disabled': {
+      '--color-accent': pair(component.switch.disabledTrack),
+      boxShadow: 'none',
     },
   },
+  /**
+   * The knob fills from `--color-background-surface` in both states, and the
+   * forced-colours branch beside it swaps in `CanvasText` / `HighlightText` so
+   * the knob survives when Windows strips the paint. Re-pointing the token
+   * rather than setting `background-color` keeps that branch working.
+   */
   'switch-thumb': {
-    base: {backgroundColor: pair(component.switch.offThumb)},
-    checked: {backgroundColor: pair(component.switch.onThumb)},
+    base: {'--color-background-surface': pair(component.switch.offThumb)},
+    checked: {'--color-background-surface': pair(component.switch.onThumb)},
   },
 
   /* Status ---------------------------------------------------------------- */
@@ -815,8 +957,57 @@ export const tectonComponents = {
   'code-block': {base: {backgroundColor: 'var(--color-background-muted)'}},
   slider: {base: {color: pair(component.checkbox.checkedFill)}},
   'slider-track': {base: {backgroundColor: 'var(--color-track)'}},
+  // The thumb fills from `--color-accent` and brightens from it on hover, so
+  // the chip colour goes into the token; `background-color` here overrode the
+  // `color-mix()` and the thumb stopped lighting up under the pointer.
   'slider-thumb': {
-    base: {backgroundColor: pair(component.checkbox.checkedFill)},
+    base: {'--color-accent': pair(component.checkbox.checkedFill)},
+  },
+
+  /**
+   * `--color-accent` is a *fill* in Tecton — the primary button's — and at
+   * `#5d4d68` it is 2.2:1 against the page. `Icon color="accent"` paints ink
+   * with it, so an accent glyph (the pressed icon of a `ToggleButton`, a
+   * status mark) was unreadable. `--color-icon-accent` is the design's
+   * adornment lilac, which is what accent-coloured *ink* means here, and it
+   * clears 8.3:1. Said on `color:accent` only, so the prop's other values are
+   * untouched — the same shape as `link` above.
+   */
+  icon: {'color:accent': {color: 'var(--color-icon-accent)'}},
+  /**
+   * The same confusion, inside two components that read `--color-accent`
+   * directly as ink rather than through a prop.
+   *
+   * `Stepper`'s indicator is one element with two flavours: a glyph tinted
+   * `--color-accent` and a numbered badge *filled* with it under
+   * `--color-background-surface` text. Both were unreadable — 2.2:1 for the
+   * glyph on the page, 2.0:1 for the badge's own text on its own fill — and
+   * re-pointing the token on the indicator fixes both at once, because the
+   * adornment lilac is light where the accent is dark. The connector takes it
+   * too, so the completed run of the bar reads against its track. The token is
+   * *not* re-pointed on `stepper` itself: a step's content panel may hold a
+   * primary button, whose fill this is.
+   *
+   * `MetadataList`'s "Show more" is a bare `<button>` with
+   * `color: --color-accent` and nothing else, at 2.2:1.
+   */
+  'step-indicator': {base: {'--color-accent': 'var(--color-icon-accent)'}},
+  'step-connector': {base: {'--color-accent': 'var(--color-icon-accent)'}},
+  'metadata-list': {base: {'--color-accent': 'var(--color-text-accent)'}},
+  /**
+   * And once more for the status hues. `ChatToolCalls` writes its diff stat
+   * and its failure line in `--color-success` / `--color-error`, which are the
+   * *filled* severity colours — `#4fa66f` and `#c16e6c`. Both clear 4.5:1 on
+   * the bare page by a tenth, and a tool-call row is hoverable, so the wash
+   * under them took the deletions count to 4.0:1. `--color-text-green` and
+   * `--color-text-red` are the same two severities as ink, four ramp steps
+   * lighter, and clear the bar hovered or not.
+   */
+  'chat-tool-calls': {
+    base: {
+      '--color-success': 'var(--color-text-green)',
+      '--color-error': 'var(--color-text-red)',
+    },
   },
 
   /* Type ------------------------------------------------------------------ */

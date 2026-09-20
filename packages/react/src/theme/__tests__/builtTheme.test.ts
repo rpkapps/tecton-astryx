@@ -110,4 +110,39 @@ describe.skipIf(!fs.existsSync(BUILT_CSS))('the built theme stylesheet', () => {
       expect(css).toContain(needle);
     }
   });
+
+  /**
+   * A state key is only worth writing if it compiles to the attribute the
+   * component actually reflects. `parseStyleKey` turns a *bare* state into
+   * `[data-<state>="<state>"]`, which is right for the states that reflect
+   * themselves that way and wrong for the two that reflect `true`/`false` —
+   * `ToggleButton`'s `isPressed` and `SelectableCard`'s `selected`. Written
+   * bare, `isPressed` compiled to `[data-is-pressed="isPressed"]`, which
+   * matches nothing at all, and the pressed toggle painted nothing.
+   */
+  it('keys the pressed toggle on the attribute ToggleButton writes', () => {
+    expect(css).toContain('[data-is-pressed="true"]');
+    expect(css).not.toContain('data-is-pressed="isPressed"');
+  });
+
+  /**
+   * And the same guard for every other state key in the theme: none of them
+   * may compile to an attribute whose value repeats the state's own name
+   * unless that is genuinely what the component writes. The three below are
+   * the ones that do (`checked`, `selected`, `disabled`); anything else
+   * appearing in this shape is a key that will never match.
+   */
+  it('emits no state selector that cannot match', () => {
+    const reflexive = new Set(['checked', 'selected', 'disabled']);
+    const emitted = new Set(
+      [...css.matchAll(/\[data-([a-z-]+)="([A-Za-z-]+)"\]/g)]
+        // An attribute whose value repeats its own name is a bare state key.
+        .filter(match => match[1] === match[2])
+        .map(match => match[2]),
+    );
+    expect(emitted.size).toBeGreaterThan(0);
+    for (const state of emitted) {
+      expect(reflexive.has(state)).toBe(true);
+    }
+  });
 });
