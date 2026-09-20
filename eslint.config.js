@@ -27,6 +27,8 @@ export default tseslint.config(
       'apps/docs/content/**',
       'apps/docs/.source/**',
       'apps/docs/.tanstack/**',
+      'apps/docs/.next/**',
+      'apps/docs/out/**',
       // Written by the TanStack Router plugin from the files under src/routes.
       'apps/docs/src/routeTree.gen.ts',
       'design/**',
