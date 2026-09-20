@@ -1,6 +1,5 @@
 import {useState} from 'react';
 import {HStack} from '../../HStack/HStack.js';
-import {Icon} from '../../Icon/Icon.js';
 import {IconButton} from '../IconButton.js';
 
 export function IconButtonLoadingToggle() {
@@ -15,20 +14,20 @@ export function IconButtonLoadingToggle() {
     <HStack gap={2}>
       <IconButton
         label="Copy"
-        icon={<Icon name="copy" />}
+        icon="copy"
         variant="primary"
         isLoading={loadingId === 'copy'}
         onClick={() => handleClick('copy')}
       />
       <IconButton
         label="Search"
-        icon={<Icon name="search" />}
+        icon="search"
         isLoading={loadingId === 'search'}
         onClick={() => handleClick('search')}
       />
       <IconButton
         label="Close"
-        icon={<Icon name="close" />}
+        icon="close"
         variant="tertiary"
         isLoading={loadingId === 'close'}
         onClick={() => handleClick('close')}

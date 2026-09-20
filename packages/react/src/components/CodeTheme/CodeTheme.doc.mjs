@@ -58,7 +58,11 @@ export const docs = {
       required: true,
     },
   ],
-  examples: [],
+  examples: [
+    'CodeThemeDarkPreset',
+    'CodeThemeLightPreset',
+    'CodeThemeShowcase',
+  ],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

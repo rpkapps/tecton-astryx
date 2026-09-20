@@ -7,7 +7,7 @@
  */
 import type {ComponentProps} from 'react';
 import {MetadataListItem as BaseMetadataListItem} from '@astryxdesign/core/MetadataList';
-import {renderIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconNode, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type MetadataListItemBaseProps = ComponentProps<typeof BaseMetadataListItem>;
 
@@ -20,14 +20,14 @@ export interface MetadataListItemProps extends Omit<
    * Icon rendered before the label text. Takes a Tecton glyph name or an
    * SVG component.
    */
-  icon?: TectonIconRef;
+  icon?: TectonIconRef | MetadataListItemBaseProps['icon'];
 }
 
 export function MetadataListItem({icon, ...rest}: MetadataListItemProps) {
   return (
     <BaseMetadataListItem
       {...(rest as MetadataListItemBaseProps)}
-      icon={renderIcon(icon)}
+      icon={tectonIconNode(icon) as MetadataListItemBaseProps['icon']}
     />
   );
 }

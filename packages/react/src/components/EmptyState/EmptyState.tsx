@@ -9,7 +9,7 @@
  */
 import type {ComponentProps} from 'react';
 import {EmptyState as BaseEmptyState} from '@astryxdesign/core/EmptyState';
-import {renderIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconNode, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type EmptyStateBaseProps = ComponentProps<typeof BaseEmptyState>;
 
@@ -20,14 +20,14 @@ export interface EmptyStateProps extends Omit<EmptyStateBaseProps, 'icon'> {
    * decorative (aria-hidden="true"). Takes a Tecton glyph name or an SVG
    * component.
    */
-  icon?: TectonIconRef;
+  icon?: TectonIconRef | EmptyStateBaseProps['icon'];
 }
 
 export function EmptyState({icon, ...rest}: EmptyStateProps) {
   return (
     <BaseEmptyState
       {...(rest as EmptyStateBaseProps)}
-      icon={renderIcon(icon)}
+      icon={tectonIconNode(icon) as EmptyStateBaseProps['icon']}
     />
   );
 }

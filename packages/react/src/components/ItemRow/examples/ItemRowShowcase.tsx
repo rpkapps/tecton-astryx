@@ -16,7 +16,7 @@ export function ItemRowShowcase() {
         onClick={() => {}}
       />
       <ItemRow
-        startContent={<Icon name={'notifications'} size={16} />}
+        startContent={<Icon name="notifications" size={16} />}
         label="Build completed successfully"
         description="Pipeline #4521 — all 42 tests passed"
         endContent={<Text color="secondary">5h ago</Text>}
@@ -24,7 +24,7 @@ export function ItemRowShowcase() {
         onClick={() => {}}
       />
       <ItemRow
-        startContent={<Icon name={'reports-analytics'} size={16} />}
+        startContent={<Icon name="reports-analytics" size={16} />}
         label="design-spec.pdf"
         description="Modified 2 hours ago"
         endContent={<Text color="secondary">2.4 MB</Text>}
@@ -32,7 +32,7 @@ export function ItemRowShowcase() {
         onClick={() => {}}
       />
       <ItemRow
-        startContent={<Icon name={'person'} size={16} />}
+        startContent={<Icon name="person" size={16} />}
         label="Compact menu item"
         density="compact"
         onClick={() => {}}

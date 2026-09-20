@@ -8,7 +8,7 @@
  */
 import type {ComponentProps} from 'react';
 import {SegmentedControlItem as BaseToggleButtonGroupSegment} from '@astryxdesign/core/SegmentedControl';
-import {renderIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconNode, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type ToggleButtonGroupSegmentBaseProps = ComponentProps<
   typeof BaseToggleButtonGroupSegment
@@ -23,7 +23,7 @@ export interface ToggleButtonGroupSegmentProps extends Omit<
    * Icon element displayed before the label. Takes a Tecton glyph name or
    * an SVG component.
    */
-  icon?: TectonIconRef;
+  icon?: TectonIconRef | ToggleButtonGroupSegmentBaseProps['icon'];
 }
 
 export function ToggleButtonGroupSegment({
@@ -33,7 +33,7 @@ export function ToggleButtonGroupSegment({
   return (
     <BaseToggleButtonGroupSegment
       {...(rest as ToggleButtonGroupSegmentBaseProps)}
-      icon={renderIcon(icon)}
+      icon={tectonIconNode(icon) as ToggleButtonGroupSegmentBaseProps['icon']}
     />
   );
 }

@@ -25,7 +25,6 @@ export function TextAreaStates() {
         value=""
         onChange={() => {}}
         placeholder="Generating summary..."
-        isLoading
       />
     </Stack>
   );

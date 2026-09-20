@@ -1,5 +1,4 @@
 import {Button} from '../../Button/Button.js';
-import {Icon} from '../../Icon/Icon.js';
 import {NavIcon} from '../../NavIcon/NavIcon.js';
 import {TopNav} from '../TopNav.js';
 import {TopNavHeading} from '../../TopNavHeading/TopNavHeading.js';
@@ -12,7 +11,7 @@ export function TopNavWithLogo() {
       heading={
         <TopNavHeading
           heading="My App"
-          logo={<NavIcon icon={<Icon name={'cube'} size={16} />} />}
+          logo={<NavIcon icon="cube" />}
           headingHref="#"
         />
       }

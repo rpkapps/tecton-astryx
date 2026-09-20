@@ -100,7 +100,6 @@ export const docs = {
   examples: [
     'FormLayoutHorizontal',
     'FormLayoutHorizontalLabels',
-    'FormLayoutMixedControls',
     'FormLayoutNested',
     'FormLayoutShowcase',
   ],

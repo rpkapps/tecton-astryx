@@ -132,7 +132,13 @@ export const docs = {
     },
   ],
 
-  examples: ['ButtonBasic', 'ButtonVariants', 'ButtonWithIcon'],
+  examples: [
+    'ButtonBasic',
+    'ButtonShowcase',
+    'ButtonVariants',
+    'ButtonWithEndSlot',
+    'ButtonWithIcon',
+  ],
 
   notes: [
     "The design's `activated` state — a button stuck in the pressed look — is not on Button. A button that stays down is a ToggleButton.",

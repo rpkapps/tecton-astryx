@@ -94,5 +94,12 @@ export const docs = {
     },
   ],
 
-  examples: ['GridBasic'],
+  examples: [
+    'GridBasic',
+    'GridDashboardLayout',
+    'GridGalleryExample',
+    'GridResponsiveAutoFit',
+    'GridShowcase',
+    'GridWithGridSpan',
+  ],
 };

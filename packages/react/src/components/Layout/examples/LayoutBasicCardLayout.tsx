@@ -45,8 +45,8 @@ export function LayoutBasicCardLayout() {
         footer={
           <LayoutFooter hasDivider>
             <HStack gap={2}>
-              <Button label="Cancel" variant="secondary" label="Cancel" />
-              <Button label="Save" variant="primary" label="Save" />
+              <Button label="Cancel" variant="secondary" />
+              <Button label="Save" variant="primary" />
             </HStack>
           </LayoutFooter>
         }

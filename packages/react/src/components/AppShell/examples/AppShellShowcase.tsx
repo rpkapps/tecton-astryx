@@ -24,14 +24,10 @@ export function AppShellShowcase() {
           }
         >
           <SideNavSection title="Main" isHeaderHidden>
-            <SideNavItem label="Home" icon={'home'} isSelected href="#" />
-            <SideNavItem label="Reports" icon={'reports-analytics'} href="#" />
-            <SideNavItem
-              label="Documents"
-              icon={'reports-analytics'}
-              href="#"
-            />
-            <SideNavItem label="Team" icon={'person'} href="#" />
+            <SideNavItem label="Home" icon="home" isSelected href="#" />
+            <SideNavItem label="Reports" icon="reports-analytics" href="#" />
+            <SideNavItem label="Documents" icon="reports-analytics" href="#" />
+            <SideNavItem label="Team" icon="person" href="#" />
           </SideNavSection>
         </SideNav>
       }

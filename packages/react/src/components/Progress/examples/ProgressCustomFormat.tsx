@@ -6,15 +6,7 @@ export function ProgressCustomFormat() {
   return (
     <div style={{width: 300}}>
       <VStack gap={1}>
-        <Progress
-          value={3.2}
-          max={5}
-          label="Disk usage"
-          hasValueLabel
-          formatValueLabel={(value: number, max: number) =>
-            `${value} GB / ${max} GB`
-          }
-        />
+        <Progress value={3.2} max={5} label="Disk usage" hasValueLabel />
         <Text variant="small" color="secondary">
           1.8 GB remaining
         </Text>

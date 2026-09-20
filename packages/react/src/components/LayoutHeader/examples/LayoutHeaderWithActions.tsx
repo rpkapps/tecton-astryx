@@ -17,7 +17,7 @@ export function LayoutHeaderWithActions() {
           <LayoutHeader hasDivider>
             <HStack gap={2}>
               <Heading level={4}>Dashboard</Heading>
-              <Button label="New Item" variant="primary" label="New Item" />
+              <Button label="New Item" variant="primary" />
             </HStack>
           </LayoutHeader>
         }

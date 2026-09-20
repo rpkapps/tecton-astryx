@@ -101,5 +101,5 @@ export const docs = {
     },
   ],
 
-  examples: ['HStackBasic'],
+  examples: ['HStackBasic', 'HStackShowcase'],
 };

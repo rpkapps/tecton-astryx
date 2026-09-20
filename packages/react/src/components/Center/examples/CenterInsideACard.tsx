@@ -9,7 +9,7 @@ export function CenterInsideACard() {
     <Card width={400}>
       <Center height={200}>
         <Stack direction="vertical" gap={2}>
-          <Icon name={'folder-open'} size={24} />
+          <Icon name="folder-open" size={24} />
           <Text variant="medium" weight="bold">
             No messages yet
           </Text>

@@ -8,7 +8,7 @@
  */
 import type {ComponentProps} from 'react';
 import {SideNavItem as BaseSideNavItem} from '@astryxdesign/core/SideNav';
-import {resolveIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconValue, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type SideNavItemBaseProps = ComponentProps<typeof BaseSideNavItem>;
 
@@ -21,20 +21,22 @@ export interface SideNavItemProps extends Omit<
    * Icon displayed in the outline (unselected) variant. Takes a Tecton
    * glyph name or an SVG component.
    */
-  icon?: TectonIconRef;
+  icon?: TectonIconRef | SideNavItemBaseProps['icon'];
   /**
    * Icon displayed when the item is selected (filled variant). Takes a
    * Tecton glyph name or an SVG component.
    */
-  selectedIcon?: TectonIconRef;
+  selectedIcon?: TectonIconRef | SideNavItemBaseProps['selectedIcon'];
 }
 
 export function SideNavItem({icon, selectedIcon, ...rest}: SideNavItemProps) {
   return (
     <BaseSideNavItem
       {...(rest as SideNavItemBaseProps)}
-      icon={resolveIcon(icon)}
-      selectedIcon={resolveIcon(selectedIcon)}
+      icon={tectonIconValue(icon) as SideNavItemBaseProps['icon']}
+      selectedIcon={
+        tectonIconValue(selectedIcon) as SideNavItemBaseProps['selectedIcon']
+      }
     />
   );
 }

@@ -79,7 +79,14 @@ export const docs = {
     },
   ],
 
-  examples: ['CardBasic'],
+  examples: [
+    'CardBasic',
+    'CardCallout',
+    'CardElevations',
+    'CardShowcase',
+    'CardWithInnerLayout',
+    'CardWithSimpleContent',
+  ],
 
   notes: [
     'Elevation is not exposed. Tecton surfaces are flat and separated by darkness and a rule, so a shadow would contradict the rest of the system.',

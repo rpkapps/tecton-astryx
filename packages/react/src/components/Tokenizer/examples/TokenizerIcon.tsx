@@ -35,7 +35,7 @@ export function TokenizerIcon() {
         searchSource={userSource}
         value={value}
         onChange={items => setValue(items)}
-        startIcon={'search'}
+        startIcon="search"
         style={{width: 400}}
       />
     </Stack>

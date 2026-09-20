@@ -32,7 +32,7 @@ export function LayoutFullBleedContent() {
         footer={
           <LayoutFooter hasDivider>
             <HStack gap={2}>
-              <Button label="Close" variant="secondary" label="Close" />
+              <Button label="Close" variant="secondary" />
             </HStack>
           </LayoutFooter>
         }

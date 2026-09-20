@@ -39,7 +39,6 @@ export function TextFieldTypes() {
           value={tooltip}
           onChange={setTooltip}
           placeholder="Enter your API key"
-          labelTooltip="Your unique API key for authentication. Keep this secret!"
         />
         <TextField
           label="Required field"

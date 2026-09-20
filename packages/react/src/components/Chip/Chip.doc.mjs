@@ -92,7 +92,14 @@ export const docs = {
     },
   ],
 
-  examples: ['ChipBasic', 'ChipRemovable'],
+  examples: [
+    'ChipBasic',
+    'ChipClickable',
+    'ChipEndContent',
+    'ChipIcon',
+    'ChipRemovable',
+    'ChipShowcase',
+  ],
 
   notes: [
     "Tecton's filled and outlined chip emphases have no prop underneath: every chip is drawn in the one treatment the theme paints.",

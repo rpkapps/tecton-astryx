@@ -18,28 +18,14 @@ export function AccordionShowcase() {
     <Card width={420}>
       <AccordionGroup type="single" defaultValue="notifications">
         <Stack gap={4}>
-          <Accordion
-            trigger={
-              <Text variant="medium" weight="semibold">
-                General
-              </Text>
-            }
-            value="general"
-          >
+          <Accordion title="General" value="general">
             <Text variant="medium" color="secondary">
               Display name, language, and time zone. Time zone drives every date
               shown in the product, including scheduled reports.
             </Text>
           </Accordion>
 
-          <Accordion
-            trigger={
-              <Text variant="medium" weight="semibold">
-                Notifications
-              </Text>
-            }
-            value="notifications"
-          >
+          <Accordion title="Notifications" value="notifications">
             <Stack gap={2}>
               <Text variant="medium" color="secondary">
                 Choose which email and push notifications you receive. Mentions
@@ -53,14 +39,7 @@ export function AccordionShowcase() {
             </Stack>
           </Accordion>
 
-          <Accordion
-            trigger={
-              <Text variant="medium" weight="semibold">
-                Privacy
-              </Text>
-            }
-            value="privacy"
-          >
+          <Accordion title="Privacy" value="privacy">
             <Text variant="medium" color="secondary">
               Control who can see your profile and activity, and whether your
               workspace appears in search for people outside your organization.

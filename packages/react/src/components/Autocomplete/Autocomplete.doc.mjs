@@ -187,7 +187,13 @@ export const docs = {
     },
   ],
 
-  examples: ['AutocompleteBasic'],
+  examples: [
+    'AutocompleteBasic',
+    'AutocompleteLimitedResults',
+    'AutocompleteSearchField',
+    'AutocompleteWithHelperText',
+    'AutocompleteWithValidation',
+  ],
 
   notes: [
     "Tecton's tokenised, multi-value autocomplete is not part of this component — it is a different control underneath, and it is not built yet.",

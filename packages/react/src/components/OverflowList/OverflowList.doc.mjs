@@ -139,11 +139,9 @@ export const docs = {
     },
   ],
   examples: [
-    'OverflowListCappedToolbar',
     'OverflowListCollapseFromStartList',
     'OverflowListMultiRowTags',
     'OverflowListOverflowBadges',
-    'OverflowListOverflowDropdownActions',
     'OverflowListShowcase',
   ],
   notes: [

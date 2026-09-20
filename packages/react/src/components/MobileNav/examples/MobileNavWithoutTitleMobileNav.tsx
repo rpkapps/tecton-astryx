@@ -1,6 +1,5 @@
 import {useState} from 'react';
 import {Button} from '../../Button/Button.js';
-import {Icon} from '../../Icon/Icon.js';
 import {MobileNav} from '../MobileNav.js';
 import {SideNavItem} from '../../SideNavItem/SideNavItem.js';
 import {SideNavSection} from '../../SideNavSection/SideNavSection.js';
@@ -11,7 +10,7 @@ export function MobileNavWithoutTitleMobileNav() {
     <>
       <Button
         label="Open Navigation"
-        icon={<Icon name="menu" />}
+        icon="menu"
         variant="tertiary"
         onClick={() => setIsOpen(true)}
       />
@@ -19,11 +18,11 @@ export function MobileNavWithoutTitleMobileNav() {
         <SideNavSection title="Main">
           <SideNavItem
             label="Dashboard"
-            icon={'home'}
+            icon="home"
             isSelected
             href="/dashboard"
           />
-          <SideNavItem label="Projects" icon={'folder'} href="/projects" />
+          <SideNavItem label="Projects" icon="folder" href="/projects" />
         </SideNavSection>
       </MobileNav>
     </>

@@ -65,7 +65,7 @@ export const docs = {
       default: 'true',
     },
   ],
-  examples: ['DialogHeaderBasic', 'DialogHeaderShowcase'],
+  examples: [],
   notes: [
     'Generated wrapper: Tecton publishes this component with its behaviour unchanged, under Tecton names and with Tecton glyphs on its icon props.',
   ],

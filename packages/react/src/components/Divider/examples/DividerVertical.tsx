@@ -1,4 +1,3 @@
-import type {CSSProperties} from 'react';
 import {Card} from '../../Card/Card.js';
 import {Divider} from '../Divider.js';
 import {HStack} from '../../HStack/HStack.js';
@@ -6,11 +5,6 @@ import {Section} from '../../Section/Section.js';
 import {StackItem} from '../../StackItem/StackItem.js';
 import {Text} from '../../Text/Text.js';
 import {VStack} from '../../VStack/VStack.js';
-
-const dividerFill: CSSProperties = {
-  alignSelf: 'stretch',
-  height: 'auto',
-};
 
 export function DividerVertical() {
   return (

@@ -10,7 +10,7 @@
  */
 import type {ComponentProps} from 'react';
 import {AvatarStatusDot as BaseAvatarStatusDot} from '@astryxdesign/core/Avatar';
-import {renderIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconNode, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type AvatarStatusDotBaseProps = ComponentProps<typeof BaseAvatarStatusDot>;
 
@@ -24,14 +24,14 @@ export interface AvatarStatusDotProps extends Omit<
    * replaces the built-in shape glyph, so use a different icon per status.
    * Takes a Tecton glyph name or an SVG component.
    */
-  icon?: TectonIconRef;
+  icon?: TectonIconRef | AvatarStatusDotBaseProps['icon'];
 }
 
 export function AvatarStatusDot({icon, ...rest}: AvatarStatusDotProps) {
   return (
     <BaseAvatarStatusDot
       {...(rest as AvatarStatusDotBaseProps)}
-      icon={renderIcon(icon)}
+      icon={tectonIconNode(icon) as AvatarStatusDotBaseProps['icon']}
     />
   );
 }

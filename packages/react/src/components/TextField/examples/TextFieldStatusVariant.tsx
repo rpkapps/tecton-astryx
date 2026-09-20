@@ -17,7 +17,6 @@ export function TextFieldStatusVariant() {
             value={attached}
             onChange={setAttached}
             placeholder="you@example.com"
-            statusVariant="attached"
             status={{
               type: 'error',
               message: 'Please enter a valid email address.',
@@ -34,7 +33,6 @@ export function TextFieldStatusVariant() {
             value={detached}
             onChange={setDetached}
             placeholder="you@example.com"
-            statusVariant="detached"
             status={{
               type: 'error',
               message: 'Please enter a valid email address.',

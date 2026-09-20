@@ -15,7 +15,7 @@ export function TextFieldIcon() {
           value={name}
           onChange={setName}
           placeholder="Sarah Chen"
-          startIcon={'person'}
+          startIcon="person"
         />
         <TextField
           type="email"
@@ -23,7 +23,7 @@ export function TextFieldIcon() {
           value={email}
           onChange={setEmail}
           placeholder="sarah@company.com"
-          startIcon={'reports-analytics'}
+          startIcon="reports-analytics"
         />
         <TextField
           type="password"
@@ -31,7 +31,7 @@ export function TextFieldIcon() {
           value={password}
           onChange={setPassword}
           placeholder="Enter your password"
-          startIcon={'lock'}
+          startIcon="lock"
         />
       </Stack>
     </div>

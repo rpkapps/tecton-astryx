@@ -3,7 +3,7 @@ import {ListItem} from '../../ListItem/ListItem.js';
 
 export function ListOrderedSteps() {
   return (
-    <List listStyle="decimal">
+    <List>
       <ListItem
         label="Install the package"
         description="npm install @astryxdesign/core"

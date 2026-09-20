@@ -12,7 +12,7 @@ export function TopNavMultipleDropdowns() {
       heading={
         <TopNavHeading
           heading="My App"
-          logo={<NavIcon icon={<Icon name={'cube'} size={16} />} />}
+          logo={<NavIcon icon="cube" />}
           headingHref="#"
         />
       }

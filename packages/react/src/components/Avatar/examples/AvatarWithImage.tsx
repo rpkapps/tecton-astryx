@@ -7,7 +7,7 @@ export function AvatarWithImage() {
       <Avatar
         src="/template-assets/DATA-Ami-Pena.png"
         name="Ami Pena"
-        size="xsm"
+        size={18}
       />
       <Avatar
         src="/template-assets/DATA-Ana-Thomas.png"

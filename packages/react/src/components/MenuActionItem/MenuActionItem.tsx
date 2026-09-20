@@ -7,7 +7,7 @@
  */
 import type {ComponentProps} from 'react';
 import {DropdownMenuItem as BaseMenuActionItem} from '@astryxdesign/core/DropdownMenu';
-import {resolveIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconValue, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type MenuActionItemBaseProps = ComponentProps<typeof BaseMenuActionItem>;
 
@@ -20,14 +20,14 @@ export interface MenuActionItemProps extends Omit<
    * Icon to display before the label. Takes a Tecton glyph name or an SVG
    * component.
    */
-  icon?: TectonIconRef;
+  icon?: TectonIconRef | MenuActionItemBaseProps['icon'];
 }
 
 export function MenuActionItem({icon, ...rest}: MenuActionItemProps) {
   return (
     <BaseMenuActionItem
       {...(rest as MenuActionItemBaseProps)}
-      icon={resolveIcon(icon)}
+      icon={tectonIconValue(icon) as MenuActionItemBaseProps['icon']}
     />
   );
 }

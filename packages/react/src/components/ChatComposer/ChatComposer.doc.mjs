@@ -121,9 +121,6 @@ export const docs = {
   ],
   examples: [
     'ChatComposerAttachments',
-    'ChatComposerFlat',
-    'ChatComposerFooterActions',
-    'ChatComposerFullFeatured',
     'ChatComposerShowcase',
     'ChatComposerSimple',
     'ChatComposerStreaming',

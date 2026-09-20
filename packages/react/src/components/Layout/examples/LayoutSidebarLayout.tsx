@@ -46,12 +46,8 @@ export function LayoutSidebarLayout() {
         footer={
           <LayoutFooter hasDivider>
             <HStack gap={2}>
-              <Button label="Reset" variant="secondary" label="Reset" />
-              <Button
-                label="Save Changes"
-                variant="primary"
-                label="Save Changes"
-              />
+              <Button label="Reset" variant="secondary" />
+              <Button label="Save Changes" variant="primary" />
             </HStack>
           </LayoutFooter>
         }

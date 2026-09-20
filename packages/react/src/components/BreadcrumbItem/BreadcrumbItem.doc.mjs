@@ -37,7 +37,7 @@ export const docs = {
     ],
   },
 
-  examples: ['BreadcrumbItemBasic'],
+  examples: ['BreadcrumbItemBasic', 'BreadcrumbItemShowcase'],
 
   props: [
     {

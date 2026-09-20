@@ -208,7 +208,6 @@ export const docs = {
     'CommandPaletteAutoGrouped',
     'CommandPaletteCustomFooter',
     'CommandPalettePickerMode',
-    'CommandPaletteRichItems',
     'CommandPaletteShowcase',
   ],
   notes: [

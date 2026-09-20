@@ -10,7 +10,7 @@
  */
 import type {ComponentProps} from 'react';
 import {ChatSystemMessage as BaseChatSystemMessage} from '@astryxdesign/core/Chat';
-import {renderIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconNode, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type ChatSystemMessageBaseProps = ComponentProps<typeof BaseChatSystemMessage>;
 
@@ -24,14 +24,14 @@ export interface ChatSystemMessageProps extends Omit<
    * consistent sizing. Use for membership changes, encryption notices, or
    * AI activity. Takes a Tecton glyph name or an SVG component.
    */
-  icon?: TectonIconRef;
+  icon?: TectonIconRef | ChatSystemMessageBaseProps['icon'];
 }
 
 export function ChatSystemMessage({icon, ...rest}: ChatSystemMessageProps) {
   return (
     <BaseChatSystemMessage
       {...(rest as ChatSystemMessageBaseProps)}
-      icon={renderIcon(icon)}
+      icon={tectonIconNode(icon) as ChatSystemMessageBaseProps['icon']}
     />
   );
 }

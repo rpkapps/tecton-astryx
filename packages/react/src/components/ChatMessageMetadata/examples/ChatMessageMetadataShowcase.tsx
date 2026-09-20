@@ -4,7 +4,6 @@ import {ChatMessageBubble} from '../../ChatMessageBubble/ChatMessageBubble.js';
 import {ChatMessageList} from '../../ChatMessageList/ChatMessageList.js';
 import {ChatMessageMetadata} from '../ChatMessageMetadata.js';
 import {HStack} from '../../HStack/HStack.js';
-import {Icon} from '../../Icon/Icon.js';
 import {Text} from '../../Text/Text.js';
 import {Timestamp} from '../../Timestamp/Timestamp.js';
 import {VStack} from '../../VStack/VStack.js';
@@ -27,7 +26,7 @@ export function ChatMessageMetadataShowcase() {
                       label="Retry"
                       variant="tertiary"
                       size="sm"
-                      icon={<Icon name={'rotate'} size={16} />}
+                      icon="rotate"
                       onClick={() => {}}
                     />
                   </HStack>
@@ -67,28 +66,28 @@ export function ChatMessageMetadataShowcase() {
                       label="Copy"
                       variant="tertiary"
                       size="sm"
-                      icon={<Icon name={'copy'} size={16} />}
+                      icon="copy"
                       onClick={() => {}}
                     />
                     <Button
                       label="Retry"
                       variant="tertiary"
                       size="sm"
-                      icon={<Icon name={'rotate'} size={16} />}
+                      icon="rotate"
                       onClick={() => {}}
                     />
                     <Button
                       label="Good response"
                       variant="tertiary"
                       size="sm"
-                      icon={<Icon name={'check-circle-open'} size={16} />}
+                      icon="check-circle-open"
                       onClick={() => {}}
                     />
                     <Button
                       label="Bad response"
                       variant="tertiary"
                       size="sm"
-                      icon={<Icon name={'cancel-circle'} size={16} />}
+                      icon="cancel-circle"
                       onClick={() => {}}
                     />
                     <Text variant="small" color="secondary">

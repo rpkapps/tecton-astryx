@@ -111,7 +111,13 @@ export const docs = {
     },
   ],
 
-  examples: ['TableBasic'],
+  examples: [
+    'TableBasic',
+    'TableInCard',
+    'TableRichCellTable',
+    'TableShowcase',
+    'TableStripedTable',
+  ],
 
   notes: [
     'Tecton names two row heights; the scale underneath has three, so `md` is the middle one and `sm` the tightest.',

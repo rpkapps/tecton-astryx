@@ -18,7 +18,7 @@ export function AccordionMultipleAccordion() {
     <AccordionGroup type="multiple" defaultValue={['features', 'pricing']}>
       <Stack gap={2} maxWidth={440}>
         <Card>
-          <Accordion trigger="Features" value="features">
+          <Accordion title="Features" value="features">
             <Text variant="medium" color="secondary">
               Real-time collaboration, full version history, and granular
               permissions. Every plan includes unlimited documents and unlimited
@@ -28,7 +28,7 @@ export function AccordionMultipleAccordion() {
         </Card>
 
         <Card>
-          <Accordion trigger="Pricing" value="pricing">
+          <Accordion title="Pricing" value="pricing">
             <Stack gap={2}>
               <Text variant="medium" color="secondary">
                 Free for up to 5 editors. Pro is $12 per editor per month billed
@@ -42,7 +42,7 @@ export function AccordionMultipleAccordion() {
         </Card>
 
         <Card>
-          <Accordion trigger="Integrations" value="integrations">
+          <Accordion title="Integrations" value="integrations">
             <Text variant="medium" color="secondary">
               Slack, GitHub, Jira, Figma, and 40 more through pre-built
               connectors, plus a REST API and outbound webhooks for anything not

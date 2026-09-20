@@ -48,11 +48,7 @@ export function LayoutShowcase() {
         footer={
           <LayoutFooter hasDivider>
             <HStack gap={2}>
-              <Button
-                label="New Project"
-                variant="primary"
-                label="New Project"
-              />
+              <Button label="New Project" variant="primary" />
             </HStack>
           </LayoutFooter>
         }

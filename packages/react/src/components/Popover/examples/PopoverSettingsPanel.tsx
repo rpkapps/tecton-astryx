@@ -41,7 +41,7 @@ export function PopoverSettingsPanel() {
         </VStack>
       }
     >
-      <Button label="Settings" label="Settings" />
+      <Button label="Settings" />
     </Popover>
   );
 }

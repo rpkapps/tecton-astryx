@@ -1,5 +1,4 @@
 import {useState} from 'react';
-import {Icon} from '../../Icon/Icon.js';
 import {Stack} from '../../Stack/Stack.js';
 import {Text} from '../../Text/Text.js';
 import {ToggleButton} from '../ToggleButton.js';
@@ -17,24 +16,24 @@ export function ToggleButtonIconSwap() {
       <Stack direction="horizontal" gap={3}>
         <ToggleButton
           label="Favorite"
-          icon={<Icon name={'crown'} />}
-          pressedIcon={<Icon name={'crown'} />}
+          icon="crown"
+          pressedIcon="crown"
           isPressed={isFavorited}
           onPressedChange={setIsFavorited}
           isIconOnly
         />
         <ToggleButton
           label="Bookmark"
-          icon={<Icon name={'add-pin'} />}
-          pressedIcon={<Icon name={'add-pin'} />}
+          icon="add-pin"
+          pressedIcon="add-pin"
           isPressed={isBookmarked}
           onPressedChange={setIsBookmarked}
           isIconOnly
         />
         <ToggleButton
           label={isMuted ? 'Unmute notifications' : 'Mute notifications'}
-          icon={<Icon name={'notifications'} />}
-          pressedIcon={<Icon name={'notifications'} />}
+          icon="notifications"
+          pressedIcon="notifications"
           isPressed={isMuted}
           onPressedChange={setIsMuted}
           isIconOnly

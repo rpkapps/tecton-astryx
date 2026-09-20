@@ -113,7 +113,13 @@ export const docs = {
     },
   ],
 
-  examples: ['LinkBasic'],
+  examples: [
+    'LinkBasic',
+    'LinkExternalLinks',
+    'LinkInlineLink',
+    'LinkShowcase',
+    'LinksWithTooltips',
+  ],
 
   notes: [
     'Tecton links carry no colour of their own. `color="accent"` is still available for a link that has to stand out, but the default matches the surrounding text as the design draws it.',

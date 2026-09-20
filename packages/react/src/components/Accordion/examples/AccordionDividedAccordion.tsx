@@ -24,11 +24,7 @@ export function AccordionDividedAccordion() {
 
       <AccordionGroup type="single" hasDividers defaultValue="proration">
         <Accordion
-          trigger={
-            <Text variant="medium" weight="semibold">
-              How is my bill prorated when I change plans mid-cycle?
-            </Text>
-          }
+          title="How is my bill prorated when I change plans mid-cycle?"
           value="proration"
         >
           <Stack gap={2}>
@@ -45,28 +41,14 @@ export function AccordionDividedAccordion() {
           </Stack>
         </Accordion>
 
-        <Accordion
-          trigger={
-            <Text variant="medium" weight="semibold">
-              Can I change my username?
-            </Text>
-          }
-          value="username"
-        >
+        <Accordion title="Can I change my username?" value="username">
           <Text variant="medium" color="secondary">
             Once every 30 days, from your profile settings. Old links keep
             working — we redirect them for a year.
           </Text>
         </Accordion>
 
-        <Accordion
-          trigger={
-            <Text variant="medium" weight="semibold">
-              What happens to my data if I cancel?
-            </Text>
-          }
-          value="cancel"
-        >
+        <Accordion title="What happens to my data if I cancel?" value="cancel">
           <Stack gap={2}>
             <Text variant="medium" color="secondary">
               Your workspace goes read-only at the end of the billing period.
@@ -78,18 +60,12 @@ export function AccordionDividedAccordion() {
               removed. Export first if you want a copy — an export covers
               documents, comments, and version history.
             </Text>
-            <Link href="#export" isStandalone hasUnderline>
-              How to export your workspace
-            </Link>
+            <Link href="#export">How to export your workspace</Link>
           </Stack>
         </Accordion>
 
         <Accordion
-          trigger={
-            <Text variant="medium" weight="semibold">
-              Do you offer discounts for non-profits or education?
-            </Text>
-          }
+          title="Do you offer discounts for non-profits or education?"
           value="discounts"
         >
           <Text variant="medium" color="secondary">

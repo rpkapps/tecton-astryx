@@ -16,21 +16,18 @@ export function SwitchSettingsPanel() {
           value={notifications}
           onChange={setNotifications}
           labelPosition="start"
-          labelSpacing="spread"
         />
         <Switch
           label="Dark mode"
           value={darkMode}
           onChange={setDarkMode}
           labelPosition="start"
-          labelSpacing="spread"
         />
         <Switch
           label="Auto-save"
           value={autoSave}
           onChange={setAutoSave}
           labelPosition="start"
-          labelSpacing="spread"
         />
       </VStack>
     </Card>

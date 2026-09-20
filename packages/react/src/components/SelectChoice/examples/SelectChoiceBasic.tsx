@@ -1,12 +1,5 @@
 import {useState} from 'react';
 import {Select} from '../../Select/Select.js';
-import {SelectChoice} from '../SelectChoice.js';
-
-const descriptions: Record<string, string> = {
-  admin: 'Full access to all resources',
-  editor: 'Can edit and publish content',
-  viewer: 'Read-only access',
-};
 
 const roles = [
   {value: 'admin', label: 'Admin'},
@@ -24,12 +17,6 @@ export function SelectChoiceBasic() {
       value={value}
       onChange={setValue}
       placeholder="Assign a role..."
-      renderOption={option => (
-        <SelectChoice
-          label={option.label}
-          description={descriptions[option.value]}
-        />
-      )}
     />
   );
 }

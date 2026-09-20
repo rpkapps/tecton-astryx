@@ -8,7 +8,7 @@
  */
 import type {ComponentProps} from 'react';
 import {DropdownMenuRadioItem as BaseMenuRadioItem} from '@astryxdesign/core/DropdownMenu';
-import {resolveIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconValue, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type MenuRadioItemBaseProps = ComponentProps<typeof BaseMenuRadioItem>;
 
@@ -21,14 +21,14 @@ export interface MenuRadioItemProps extends Omit<
    * Icon to display before the label. Takes a Tecton glyph name or an SVG
    * component.
    */
-  icon?: TectonIconRef;
+  icon?: TectonIconRef | MenuRadioItemBaseProps['icon'];
 }
 
 export function MenuRadioItem({icon, ...rest}: MenuRadioItemProps) {
   return (
     <BaseMenuRadioItem
       {...(rest as MenuRadioItemBaseProps)}
-      icon={resolveIcon(icon)}
+      icon={tectonIconValue(icon) as MenuRadioItemBaseProps['icon']}
     />
   );
 }

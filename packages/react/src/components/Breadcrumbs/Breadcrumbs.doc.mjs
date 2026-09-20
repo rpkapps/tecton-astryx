@@ -76,7 +76,13 @@ export const docs = {
     },
   ],
 
-  examples: ['BreadcrumbsBasic'],
+  examples: [
+    'BreadcrumbsBasic',
+    'BreadcrumbsDeepHierarchy',
+    'BreadcrumbsShowcase',
+    'BreadcrumbsSupportingVariant',
+    'BreadcrumbsWithIcons',
+  ],
 
   notes: [
     "There is no overflow prop: the design's `Home / ··· / Current` collapse has to be built from the crumbs themselves, using a crumb whose label is an ellipsis.",

@@ -76,10 +76,8 @@ export const docs = {
   },
   props: [],
   examples: [
-    'ToolbarBulkActions',
     'ToolbarCardHeader',
     'ToolbarSizes',
-    'ToolbarTableFilter',
     'ToolbarThreeSlot',
     'ToolbarWithTabs',
   ],

@@ -1,5 +1,4 @@
 import {Button} from '../../Button/Button.js';
-import {Icon} from '../../Icon/Icon.js';
 import {NavIcon} from '../../NavIcon/NavIcon.js';
 import {TopNav} from '../TopNav.js';
 import {TopNavHeading} from '../../TopNavHeading/TopNavHeading.js';
@@ -11,10 +10,7 @@ export function TopNavShowcase() {
       style={{width: 600}}
       label="Main navigation"
       heading={
-        <TopNavHeading
-          heading="My App"
-          logo={<NavIcon icon={<Icon name={'cube'} size={16} />} />}
-        />
+        <TopNavHeading heading="My App" logo={<NavIcon icon="cube" />} />
       }
       startContent={
         <>
@@ -25,11 +21,7 @@ export function TopNavShowcase() {
       }
       endContent={
         <>
-          <Button
-            label="Search"
-            variant="tertiary"
-            icon={<Icon name="search" />}
-          />
+          <Button label="Search" variant="tertiary" icon="search" />
           <Button
             label="Notifications"
             variant="tertiary"

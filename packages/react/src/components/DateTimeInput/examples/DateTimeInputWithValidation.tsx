@@ -1,15 +1,7 @@
 import {useState} from 'react';
-import * as stylex from '@stylexjs/stylex';
 import {DateTimeInput} from '../DateTimeInput.js';
 import {Stack} from '../../Stack/Stack.js';
 import type {IsoDateTimeString as ISODateTimeString} from '../../../support/index.js';
-
-const styles = stylex.create({
-  container: {
-    width: {default: '100%', '@media (min-width: 480px)': 400},
-    maxWidth: '100%',
-  },
-});
 
 export function DateTimeInputWithValidation() {
   const [errorVal, setErrorVal] = useState<ISODateTimeString | undefined>(

@@ -9,7 +9,7 @@
  */
 import type {ComponentProps} from 'react';
 import {NumberInput as BaseNumberInput} from '@astryxdesign/core/NumberInput';
-import {resolveIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconValue, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type NumberInputBaseProps = ComponentProps<typeof BaseNumberInput>;
 
@@ -22,20 +22,24 @@ export interface NumberInputProps extends Omit<
    * Icon to display before the label text. Takes a Tecton glyph name or an
    * SVG component.
    */
-  labelIcon?: TectonIconRef;
+  labelIcon?: TectonIconRef | NumberInputBaseProps['labelIcon'];
   /**
    * Icon to display at the start of the input. Takes a Tecton glyph name
    * or an SVG component.
    */
-  startIcon?: TectonIconRef;
+  startIcon?: TectonIconRef | NumberInputBaseProps['startIcon'];
 }
 
 export function NumberInput({labelIcon, startIcon, ...rest}: NumberInputProps) {
   return (
     <BaseNumberInput
       {...(rest as NumberInputBaseProps)}
-      labelIcon={resolveIcon(labelIcon)}
-      startIcon={resolveIcon(startIcon)}
+      labelIcon={
+        tectonIconValue(labelIcon) as NumberInputBaseProps['labelIcon']
+      }
+      startIcon={
+        tectonIconValue(startIcon) as NumberInputBaseProps['startIcon']
+      }
     />
   );
 }

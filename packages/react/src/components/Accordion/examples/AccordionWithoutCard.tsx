@@ -15,14 +15,7 @@ import {Text} from '../../Text/Text.js';
 export function AccordionWithoutCard() {
   return (
     <Stack gap={3} maxWidth={480}>
-      <Accordion
-        trigger={
-          <Text variant="medium" weight="semibold">
-            Deployment details
-          </Text>
-        }
-        value="deployment"
-      >
+      <Accordion title="Deployment details" value="deployment">
         <Stack gap={1}>
           <Text variant="medium" color="secondary">
             Build 4,182 shipped to production from <code>main</code>. 847
@@ -37,14 +30,7 @@ export function AccordionWithoutCard() {
 
       <Divider />
 
-      <Accordion
-        trigger={
-          <Text variant="medium" weight="semibold">
-            Environment variables
-          </Text>
-        }
-        value="environment"
-      >
+      <Accordion title="Environment variables" value="environment">
         <Stack gap={1}>
           <Text variant="medium" color="secondary">
             12 variables configured across production and preview. Secrets are
@@ -56,14 +42,7 @@ export function AccordionWithoutCard() {
 
       <Divider />
 
-      <Accordion
-        trigger={
-          <Text variant="medium" weight="semibold">
-            Rollback
-          </Text>
-        }
-        value="rollback"
-      >
+      <Accordion title="Rollback" value="rollback">
         <Stack gap={1}>
           <Text variant="medium" color="secondary">
             The previous build stays warm for 24 hours, so a rollback swaps

@@ -35,8 +35,8 @@ export function LayoutContentWidth() {
       footer={
         <LayoutFooter hasDivider>
           <HStack gap={2}>
-            <Button label="Cancel" variant="secondary" label="Cancel" />
-            <Button label="Submit" variant="primary" label="Submit" />
+            <Button label="Cancel" variant="secondary" />
+            <Button label="Submit" variant="primary" />
           </HStack>
         </LayoutFooter>
       }

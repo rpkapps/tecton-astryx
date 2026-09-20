@@ -8,7 +8,7 @@
  */
 import type {ComponentProps} from 'react';
 import {ContextMenuItem as BaseContextMenuItem} from '@astryxdesign/core/ContextMenu';
-import {resolveIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconValue, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type ContextMenuItemBaseProps = ComponentProps<typeof BaseContextMenuItem>;
 
@@ -21,14 +21,14 @@ export interface ContextMenuItemProps extends Omit<
    * Icon to display before the label. Takes a Tecton glyph name or an SVG
    * component.
    */
-  icon?: TectonIconRef;
+  icon?: TectonIconRef | ContextMenuItemBaseProps['icon'];
 }
 
 export function ContextMenuItem({icon, ...rest}: ContextMenuItemProps) {
   return (
     <BaseContextMenuItem
       {...(rest as ContextMenuItemBaseProps)}
-      icon={resolveIcon(icon)}
+      icon={tectonIconValue(icon) as ContextMenuItemBaseProps['icon']}
     />
   );
 }

@@ -20,8 +20,8 @@ export function LayoutHeaderShowcase() {
             <HStack gap={2}>
               <Heading level={4}>Dashboard</Heading>
               <HStack gap={2}>
-                <Button label="Export" variant="secondary" label="Export" />
-                <Button label="New Item" variant="primary" label="New Item" />
+                <Button label="Export" variant="secondary" />
+                <Button label="New Item" variant="primary" />
               </HStack>
             </HStack>
           </LayoutHeader>

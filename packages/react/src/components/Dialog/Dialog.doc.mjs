@@ -138,7 +138,7 @@ export const docs = {
     },
   ],
 
-  examples: ['DialogBasic', 'DialogConfirmation'],
+  examples: ['DialogBasic', 'DialogConfirmation', 'DialogDeleteConfirmation'],
 
   notes: [
     'Open and close live on `isOpen` and `onOpenChange` on purpose: a later phase adds page-level coordination — one dialog at a time, a dialog that survives a route change — behind those two props, so applications never change how they open one.',

@@ -33,7 +33,7 @@ export function PopoverKeyboardShortcuts() {
         </VStack>
       }
     >
-      <Button label="Shortcuts" label="Shortcuts" />
+      <Button label="Shortcuts" />
     </Popover>
   );
 }

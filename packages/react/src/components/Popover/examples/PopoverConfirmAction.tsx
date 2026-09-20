@@ -28,23 +28,17 @@ export function PopoverConfirmAction() {
               label="Delete"
               variant="destructive"
               onClick={() => setIsOpen(false)}
-              label="Delete"
             />
             <Button
               label="Cancel"
               variant="tertiary"
               onClick={() => setIsOpen(false)}
-              label="Cancel"
             />
           </HStack>
         </VStack>
       }
     >
-      <Button
-        label="Delete project"
-        variant="destructive"
-        label="Delete project"
-      />
+      <Button label="Delete project" variant="destructive" />
     </Popover>
   );
 }

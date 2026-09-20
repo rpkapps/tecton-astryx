@@ -121,7 +121,13 @@ export const docs = {
     },
   ],
 
-  examples: ['ProgressBasic', 'ProgressCircular'],
+  examples: [
+    'ProgressBasic',
+    'ProgressCircular',
+    'ProgressCustomFormat',
+    'ProgressIndeterminate',
+    'ProgressWithValueLabel',
+  ],
 
   notes: [
     "Determinate circular progress has no counterpart underneath — the ring is Tecton's own, drawn in StyleX against the design tokens. The indeterminate ring and the linear bar are the shared ones, themed.",

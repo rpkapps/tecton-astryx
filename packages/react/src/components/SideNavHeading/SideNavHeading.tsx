@@ -8,7 +8,7 @@
  */
 import type {ComponentProps} from 'react';
 import {SideNavHeading as BaseSideNavHeading} from '@astryxdesign/core/SideNav';
-import {renderIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconNode, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type SideNavHeadingBaseProps = ComponentProps<typeof BaseSideNavHeading>;
 
@@ -20,14 +20,14 @@ export interface SideNavHeadingProps extends Omit<
   /**
    * Product/app icon. Takes a Tecton glyph name or an SVG component.
    */
-  icon?: TectonIconRef;
+  icon?: TectonIconRef | SideNavHeadingBaseProps['icon'];
 }
 
 export function SideNavHeading({icon, ...rest}: SideNavHeadingProps) {
   return (
     <BaseSideNavHeading
       {...(rest as SideNavHeadingBaseProps)}
-      icon={renderIcon(icon)}
+      icon={tectonIconNode(icon) as SideNavHeadingBaseProps['icon']}
     />
   );
 }

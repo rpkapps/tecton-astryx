@@ -1,7 +1,6 @@
 import {Button} from '../../Button/Button.js';
 import {Card} from '../../Card/Card.js';
 import {Heading} from '../../Heading/Heading.js';
-import {Icon} from '../../Icon/Icon.js';
 import {Stack} from '../../Stack/Stack.js';
 import {Toolbar} from '../Toolbar.js';
 
@@ -22,12 +21,8 @@ export function ToolbarSizes() {
             startContent={<Heading level={4}>{label}</Heading>}
             endContent={
               <>
-                <Button
-                  label="Filter"
-                  variant="tertiary"
-                  icon={<Icon name={'filter'} />}
-                />
-                <Button label="Add" icon={<Icon name={'add'} />} />
+                <Button label="Filter" variant="tertiary" icon="filter" />
+                <Button label="Add" icon="add" />
               </>
             }
           />

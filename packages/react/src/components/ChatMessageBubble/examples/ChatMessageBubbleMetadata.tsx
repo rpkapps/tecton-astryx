@@ -5,7 +5,6 @@ import {ChatMessageBubble} from '../ChatMessageBubble.js';
 import {ChatMessageList} from '../../ChatMessageList/ChatMessageList.js';
 import {ChatMessageMetadata} from '../../ChatMessageMetadata/ChatMessageMetadata.js';
 import {HStack} from '../../HStack/HStack.js';
-import {Icon} from '../../Icon/Icon.js';
 import {Text} from '../../Text/Text.js';
 import {Timestamp} from '../../Timestamp/Timestamp.js';
 
@@ -33,7 +32,7 @@ export function ChatMessageBubbleMetadata() {
                     label="Copy"
                     variant="tertiary"
                     size="sm"
-                    icon={<Icon name="copy" size={16} />}
+                    icon="copy"
                     onClick={() => {}}
                   />
                   <Text variant="small" color="secondary">

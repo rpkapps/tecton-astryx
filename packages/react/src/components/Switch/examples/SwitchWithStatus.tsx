@@ -15,7 +15,6 @@ export function SwitchWithStatus() {
           label="Accept terms and conditions"
           value={terms}
           onChange={setTerms}
-          isRequired
           status={{
             type: 'error',
             message: 'You must accept the terms to continue',

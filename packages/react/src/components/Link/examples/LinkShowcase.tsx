@@ -1,9 +1,5 @@
 import {Link} from '../Link.js';
 
 export function LinkShowcase() {
-  return (
-    <Link href="#" isStandalone>
-      Documentation
-    </Link>
-  );
+  return <Link href="#">Documentation</Link>;
 }

@@ -90,7 +90,7 @@ export const docs = {
     },
   ],
 
-  examples: ['AccordionGroupBasic'],
+  examples: ['AccordionGroupBasic', 'AccordionGroupShowcase'],
 
   notes: [
     'The design offers dividers as a group option and Tecton keeps it, but the group draws the rule itself rather than the items drawing their own edges, so a divider sits under an open item as well as a closed one.',

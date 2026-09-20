@@ -40,10 +40,21 @@ import path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 import prettier from 'prettier';
 import ts from 'typescript';
-import {ICON_SUBSTITUTIONS, SUBSTITUTE_FALLBACK} from './port-examples.icons.mjs';
-import {FOLDED, PROP_RULES, SUPPORT} from './port-examples.mapping.mjs';
+import {
+  ICON_SUBSTITUTIONS,
+  SUBSTITUTE_FALLBACK,
+} from './port-examples.icons.mjs';
+import {
+  EXCLUDED,
+  FOLDED,
+  PROP_RULES,
+  SUPPORT,
+} from './port-examples.mapping.mjs';
 
-const PACKAGE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const PACKAGE = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '..',
+);
 const ROOT = path.resolve(PACKAGE, '..', '..');
 const SRC = path.join(PACKAGE, 'src');
 const COMPONENTS = path.join(SRC, 'components');
@@ -87,11 +98,21 @@ COMPONENT_MAP.set('Card', 'Card');
 COMPONENT_MAP.set('Section', 'Section');
 COMPONENT_MAP.set('Icon', 'Icon');
 COMPONENT_MAP.set('Spinner', 'Progress');
+// Some example folders are named for a family rather than for an export.
+COMPONENT_MAP.set('Toast', 'Toast');
+COMPONENT_MAP.set('ChatDictation', 'ChatDictationButton');
+COMPONENT_MAP.set('Hooks', 'Toast');
 
 /** Every Tecton glyph name, for checking a substitution really exists. */
 const glyphNames = new Set(
-  (await import(pathToFileURL(path.join(SRC, 'icons', 'names.ts')).href.replace(/\.ts$/, '.ts')).catch(() => ({})))
-    .tectonIconNames ?? [],
+  (
+    await import(
+      pathToFileURL(path.join(SRC, 'icons', 'names.ts')).href.replace(
+        /\.ts$/,
+        '.ts',
+      )
+    ).catch(() => ({}))
+  ).tectonIconNames ?? [],
 );
 if (glyphNames.size === 0) {
   // names.ts is TypeScript; read the literal list out of it instead.
@@ -159,6 +180,25 @@ function isJsxTag(node) {
   );
 }
 
+/**
+ * The words inside a JSX value, if it has any.
+ *
+ * Upstream lets a header be a slot; Tecton takes a string. Losing the slot is
+ * unavoidable, losing the words in it is not — so a `<Text>Billing</Text>`
+ * header becomes `title="Billing"` rather than nothing.
+ */
+function plainText(node, file) {
+  if (!node) return undefined;
+  const parts = [];
+  const walk = child => {
+    if (ts.isJsxText(child)) parts.push(child.getText(file));
+    ts.forEachChild(child, walk);
+  };
+  walk(node);
+  const text = parts.join(' ').replace(/\s+/g, ' ').trim();
+  return text || undefined;
+}
+
 /** The text of a JSX attribute's value, if it is a plain string. */
 function attributeString(attribute) {
   const value = attribute.initializer;
@@ -179,6 +219,35 @@ const ICON_PROP =
 
 /** Tecton components that take their text as `label` rather than children. */
 const LABELLED = new Set(['Button', 'Fab']);
+
+/** Props every component carries that no documentation lists. */
+const PLUMBING = new Set(['key', 'ref', 'children', 'data-testid']);
+
+/**
+ * The props each designed Tecton component actually has.
+ *
+ * Read from the components' own documentation, which the drift guard keeps
+ * equal to their props types — so this is the real surface, not a second copy
+ * of it. Pass-through components are absent on purpose: they publish whatever
+ * is underneath them, so nothing about them needs dropping.
+ */
+const ALLOWED_PROPS = new Map();
+for (const entry of manifest.components) {
+  if (!entry.handwritten) continue;
+  const docFile = path.join(
+    SRC,
+    'components',
+    entry.name,
+    `${entry.name}.doc.mjs`,
+  );
+  if (!fs.existsSync(docFile)) continue;
+  const module = await import(pathToFileURL(docFile).href);
+  const doc = module.docs ?? module.default;
+  ALLOWED_PROPS.set(
+    entry.name,
+    new Set((doc?.props ?? []).map(prop => prop.name)),
+  );
+}
 
 /**
  * Port one source file.
@@ -326,7 +395,11 @@ function port(source, fileName, targetDir) {
       !isJsxTag(node) &&
       iconBindings.has(node.text) &&
       !inRemoved(node.getStart(file)) &&
-      !(node.parent && ts.isPropertyAssignment(node.parent) && node.parent.name === node) &&
+      !(
+        node.parent &&
+        ts.isPropertyAssignment(node.parent) &&
+        node.parent.name === node
+      ) &&
       !(node.parent && ts.isImportSpecifier(node.parent))
     ) {
       edits.push({
@@ -345,7 +418,11 @@ function port(source, fileName, targetDir) {
       const builder = node.expression.text;
       const args = node.arguments.map(argument => argument.getText(file));
       if (builder === 'pixel') {
-        edits.push({start: node.getStart(file), end: node.end, text: args[0] ?? '0'});
+        edits.push({
+          start: node.getStart(file),
+          end: node.end,
+          text: args[0] ?? '0',
+        });
       } else if (builder === 'proportional') {
         const extra = args[1] ? `, ...${args[1]}` : '';
         edits.push({
@@ -378,9 +455,9 @@ function port(source, fileName, targetDir) {
           attribute.initializer.expression &&
           (ts.isJsxSelfClosingElement(attribute.initializer.expression) ||
             ts.isJsxElement(attribute.initializer.expression))
-            ? (ts.isJsxElement(attribute.initializer.expression)
-                ? attribute.initializer.expression.openingElement
-                : attribute.initializer.expression)
+            ? ts.isJsxElement(attribute.initializer.expression)
+              ? attribute.initializer.expression.openingElement
+              : attribute.initializer.expression
             : undefined;
         if (
           iconElement &&
@@ -392,6 +469,45 @@ function port(source, fileName, targetDir) {
             end: attribute.initializer.end,
             text: `"${iconBindings.get(iconElement.tagName.text)}"`,
           });
+        } else if (
+          iconElement &&
+          ts.isIdentifier(iconElement.tagName) &&
+          componentBindings.get(iconElement.tagName.text) === 'Icon'
+        ) {
+          // `icon={<Icon icon="check" />}` is `icon="check"` in Tecton: the
+          // prop takes the glyph, and the component draws it at its own size.
+          const inner = iconElement.attributes.properties.find(
+            property =>
+              ts.isJsxAttribute(property) &&
+              ts.isIdentifier(property.name) &&
+              (property.name.text === 'icon' || property.name.text === 'name'),
+          );
+          // The inner glyph is either a name upstream spelled, or one of the
+          // third-party glyphs this port is substituting for.
+          const innerValue = inner?.initializer;
+          const innerIdentifier =
+            innerValue &&
+            ts.isJsxExpression(innerValue) &&
+            innerValue.expression &&
+            ts.isIdentifier(innerValue.expression)
+              ? innerValue.expression.text
+              : undefined;
+          const glyphName = inner
+            ? (attributeString(inner) ??
+              (innerIdentifier && iconBindings.has(innerIdentifier)
+                ? iconBindings.get(innerIdentifier)
+                : undefined))
+            : undefined;
+          if (glyphName !== undefined) {
+            const glyph = glyphNames.has(glyphName)
+              ? glyphName
+              : substitute(glyphName);
+            edits.push({
+              start: attribute.initializer.getStart(file),
+              end: attribute.initializer.end,
+              text: `"${glyph}"`,
+            });
+          }
         } else if (
           ICON_PROP.test(name) &&
           attribute.initializer &&
@@ -418,12 +534,13 @@ function port(source, fileName, targetDir) {
           }
         }
 
-        if (!rule) continue;
-
         const value = attributeString(attribute);
+        const allowed = component ? ALLOWED_PROPS.get(component) : undefined;
+        if (!rule && !allowed) continue;
         if (
-          rule.drop?.includes(name) ||
-          (value !== undefined && rule.dropIfValue?.[rule.rename?.[name] ?? name]?.includes(value))
+          rule?.drop?.includes(name) ||
+          (value !== undefined &&
+            rule?.dropIfValue?.[rule.rename?.[name] ?? name]?.includes(value))
         ) {
           notes.push(`<${component}> dropped \`${name}\``);
           edits.push({
@@ -434,7 +551,81 @@ function port(source, fileName, targetDir) {
           continue;
         }
 
-        const renamed = rule.rename?.[name];
+        // A rename that is only right when the value is a plain string: the
+        // Tecton prop takes text where the upstream one took a slot.
+        const stringRename = rule?.renameString?.[name];
+        if (stringRename !== undefined) {
+          // A slot that held markup still usually held *words*; keep them.
+          const text = value ?? plainText(attribute.initializer, file);
+          if (text === undefined) {
+            notes.push(
+              `<${component}> dropped \`${name}\`, which Tecton takes as text`,
+            );
+            edits.push({
+              start: attribute.getFullStart(),
+              end: attribute.end,
+              text: '',
+            });
+            continue;
+          }
+          edits.push({
+            start: attribute.name.getStart(file),
+            end: attribute.name.end,
+            text: stringRename,
+          });
+          edits.push({
+            start: attribute.initializer.getStart(file),
+            end: attribute.initializer.end,
+            text: `"${text.replace(/"/g, '&quot;')}"`,
+          });
+          continue;
+        }
+
+        // A prop the Tecton component simply does not have. Tecton's designed
+        // components are narrower than the ones underneath them, and an
+        // example that sets a prop Tecton dropped is an example that does not
+        // compile — so the prop goes, and the log says which.
+        if (
+          allowed &&
+          !allowed.has(name) &&
+          !rule?.rename?.[name] &&
+          !PLUMBING.has(name)
+        ) {
+          notes.push(
+            `<${component}> dropped \`${name}\`, which Tecton has no prop for`,
+          );
+          edits.push({
+            start: attribute.getFullStart(),
+            end: attribute.end,
+            text: '',
+          });
+          continue;
+        }
+
+        // Renaming onto a prop the element already sets would produce two
+        // attributes with one name, which is not valid JSX.
+        const proposed = rule?.rename?.[name];
+        const collides =
+          proposed !== undefined &&
+          node.properties.some(
+            other =>
+              other !== attribute &&
+              ts.isJsxAttribute(other) &&
+              ts.isIdentifier(other.name) &&
+              other.name.text === proposed,
+          );
+        const renamed = collides ? undefined : proposed;
+        if (collides) {
+          notes.push(
+            `<${component}> dropped \`${name}\`, already set as \`${proposed}\``,
+          );
+          edits.push({
+            start: attribute.getFullStart(),
+            end: attribute.end,
+            text: '',
+          });
+          continue;
+        }
         if (renamed) {
           edits.push({
             start: attribute.name.getStart(file),
@@ -443,9 +634,10 @@ function port(source, fileName, targetDir) {
           });
         }
         const effective = renamed ?? name;
-        const mapped = value !== undefined ? rule.values?.[effective]?.[value] : undefined;
+        const mapped =
+          value !== undefined ? rule?.values?.[effective]?.[value] : undefined;
         if (mapped !== undefined && attribute.initializer) {
-          const numeric = rule.numeric?.includes(effective);
+          const numeric = rule?.numeric?.includes(effective);
           edits.push({
             start: attribute.initializer.getStart(file),
             end: attribute.initializer.end,
@@ -463,16 +655,26 @@ function port(source, fileName, targetDir) {
       node.children.length > 0 &&
       node.children.every(child => ts.isJsxText(child))
     ) {
+      const alreadyLabelled = node.openingElement.attributes.properties.some(
+        property =>
+          ts.isJsxAttribute(property) &&
+          ts.isIdentifier(property.name) &&
+          property.name.text === 'label',
+      );
       const text = node.children
         .map(child => child.getText(file))
         .join('')
         .trim()
         .replace(/\s+/g, ' ');
       if (text) {
+        // The element already names itself; the children were the same text
+        // twice, which upstream allowed and Tecton does not.
         edits.push({
           start: node.openingElement.attributes.end,
           end: node.end,
-          text: ` label="${text.replace(/"/g, '&quot;')}" />`,
+          text: alreadyLabelled
+            ? ' />'
+            : ` label="${text.replace(/"/g, '&quot;')}" />`,
         });
       }
     }
@@ -502,15 +704,22 @@ function port(source, fileName, targetDir) {
     edits.push({start: range.start, end: range.end, text: ''});
   }
 
-  // Apply back to front so earlier offsets stay valid, and refuse overlaps
-  // rather than producing something that only looks like code.
-  edits.sort((a, b) => b.start - a.start || b.end - a.end);
-  let out = source;
-  let lastStart = Infinity;
+  // An edit that rewrites a whole expression wins over the edits inside it:
+  // `icon={<Icon icon={Clipboard} />}` becomes `icon="copy"`, so the rewrites
+  // of the inner element and of the glyph identifier have nothing left to say.
+  // Widest-first ordering, then drop anything contained in what was kept.
+  edits.sort((a, b) => a.start - b.start || b.end - a.end);
+  const applied = [];
   for (const edit of edits) {
-    if (edit.end > lastStart) continue;
+    const covering = applied[applied.length - 1];
+    if (covering && edit.start < covering.end) continue;
+    applied.push(edit);
+  }
+
+  // Apply back to front so the offsets ahead of each edit stay valid.
+  let out = source;
+  for (const edit of applied.reverse()) {
     out = out.slice(0, edit.start) + edit.text + out.slice(edit.end);
-    lastStart = edit.start;
   }
 
   // The import block, rebuilt.
@@ -519,13 +728,14 @@ function port(source, fileName, targetDir) {
     return rel.startsWith('.') ? rel : `./${rel}`;
   };
   const imports = [...keptImports];
+  // Only what the rewritten file still names: an `icon={<Icon …/>}` that
+  // collapsed to `icon="copy"` leaves no Icon behind to import.
   const usedComponents = new Set(
-    [...componentBindings.values()].filter(name => {
-      if (name === 'Icon') return true;
-      return new RegExp(`<${name}[\\s/>]`).test(out);
-    }),
+    [...componentBindings.values()].filter(name =>
+      new RegExp(`<${name}[\\s/>]`).test(out),
+    ),
   );
-  if (iconBindings.size > 0 && /(<Icon[\s/>])/.test(out)) usedComponents.add('Icon');
+  if (/<Icon[\s/>]/.test(out)) usedComponents.add('Icon');
   for (const name of [...usedComponents].sort()) {
     imports.push(
       `import {${name}} from '${relative(path.join(COMPONENTS, name, `${name}.js`))}';`,
@@ -533,11 +743,19 @@ function port(source, fileName, targetDir) {
   }
   const supportValues = [];
   const supportTypes = [];
+  const iconTypes = [];
   const componentTypes = new Map();
+  const componentFiles = new Map();
   for (const [local, entry] of supportBindings) {
     const spec = entry.name === local ? local : `${entry.name} as ${local}`;
-    if (entry.component) {
-      const list = componentTypes.get(entry.component) ?? {values: [], types: []};
+    if (entry.icons) {
+      iconTypes.push(spec);
+    } else if (entry.component) {
+      if (entry.file) componentFiles.set(entry.component, entry.file);
+      const list = componentTypes.get(entry.component) ?? {
+        values: [],
+        types: [],
+      };
       (entry.type ? list.types : list.values).push(spec);
       componentTypes.set(entry.component, list);
     } else if (entry.type) {
@@ -547,17 +765,32 @@ function port(source, fileName, targetDir) {
     }
   }
   for (const [component, list] of [...componentTypes].sort()) {
-    const from = relative(path.join(COMPONENTS, component, `${component}.js`));
+    const from = relative(
+      path.join(
+        COMPONENTS,
+        component,
+        `${componentFiles.get(component) ?? component}.js`,
+      ),
+    );
     if (list.values.length > 0) {
       imports.push(`import {${list.values.sort().join(', ')}} from '${from}';`);
     }
     if (list.types.length > 0) {
-      imports.push(`import type {${list.types.sort().join(', ')}} from '${from}';`);
+      imports.push(
+        `import type {${list.types.sort().join(', ')}} from '${from}';`,
+      );
     }
+  }
+  if (iconTypes.length > 0) {
+    imports.push(
+      `import type {${iconTypes.sort().join(', ')}} from '${relative(path.join(SRC, 'icons', 'renderIcon.js'))}';`,
+    );
   }
   const supportFrom = relative(path.join(SRC, 'support', 'index.js'));
   if (supportValues.length > 0) {
-    imports.push(`import {${supportValues.sort().join(', ')}} from '${supportFrom}';`);
+    imports.push(
+      `import {${supportValues.sort().join(', ')}} from '${supportFrom}';`,
+    );
   }
   if (supportTypes.length > 0) {
     imports.push(
@@ -566,7 +799,146 @@ function port(source, fileName, targetDir) {
   }
 
   out = `${imports.join('\n')}\n\n${out.replace(/^\s*\n+/, '')}`;
+  out = dropOrphanedConstants(out, notes);
   return {code: out, notes};
+}
+
+/**
+ * Remove the constants the translation orphaned.
+ *
+ * Dropping a StyleX `xstyle` prop — Tecton has no such prop — leaves the
+ * `stylex.create` block it referred to with nothing pointing at it, and the
+ * package compiles with `noUnusedLocals`. The same goes for a lookup table
+ * that only fed a prop Tecton does not have. Only declarations whose
+ * initializer cannot have a side effect are removed, and only while they are
+ * referenced nowhere else; removing one can orphan the next, so this runs to a
+ * fixed point.
+ */
+function dropOrphanedConstants(code, notes) {
+  for (let pass = 0; pass < 6; pass += 1) {
+    const file = ts.createSourceFile(
+      'ported.tsx',
+      code,
+      ts.ScriptTarget.ESNext,
+      true,
+      ts.ScriptKind.TSX,
+    );
+    let removedOne = false;
+    const statements = [];
+    const collect = node => {
+      if (ts.isVariableStatement(node)) statements.push(node);
+      ts.forEachChild(node, collect);
+    };
+    ts.forEachChild(file, collect);
+    for (const statement of statements.reverse()) {
+      if (
+        statement.modifiers?.some(m => m.kind === ts.SyntaxKind.ExportKeyword)
+      ) {
+        continue;
+      }
+      const declarations = statement.declarationList.declarations;
+      if (declarations.length !== 1) continue;
+      const [declaration] = declarations;
+      if (!ts.isIdentifier(declaration.name)) continue;
+      if (!isInert(declaration.initializer)) continue;
+      const name = declaration.name.text;
+      const uses = code.match(new RegExp(`\\b${name}\\b`, 'g'))?.length ?? 0;
+      if (uses !== 1) continue;
+      code =
+        code.slice(0, statement.getFullStart()) + code.slice(statement.end);
+      notes.push(`dropped the now-unreferenced constant \`${name}\``);
+      removedOne = true;
+    }
+    // An unused StyleX import is the last thing to go.
+    if (!/stylex\./.test(code.replace(/^import .*stylex.*$/m, ''))) {
+      const without = code.replace(
+        /^import \* as stylex from '@stylexjs\/stylex';\n/m,
+        '',
+      );
+      if (without !== code) {
+        code = without;
+        removedOne = true;
+      }
+    }
+    const trimmed = dropUnusedImports(code);
+    if (trimmed !== code) {
+      code = trimmed;
+      removedOne = true;
+    }
+    if (!removedOne) break;
+  }
+  return code;
+}
+
+/**
+ * Drop the import specifiers nothing in the file names any more.
+ *
+ * A `CSSProperties` that only typed a `style` prop Tecton does not have, a
+ * `useState` whose state fed a dropped control — the package compiles with
+ * `noUnusedLocals`, so an orphaned specifier is an error rather than lint.
+ */
+function dropUnusedImports(code) {
+  const file = ts.createSourceFile(
+    'ported.tsx',
+    code,
+    ts.ScriptTarget.ESNext,
+    true,
+    ts.ScriptKind.TSX,
+  );
+  const edits = [];
+  for (const statement of file.statements) {
+    if (!ts.isImportDeclaration(statement)) continue;
+    const bindings = statement.importClause?.namedBindings;
+    if (!bindings || !ts.isNamedImports(bindings)) continue;
+    const kept = bindings.elements.filter(element => {
+      const name = element.name.text;
+      return (code.match(new RegExp(`\\b${name}\\b`, 'g'))?.length ?? 0) > 1;
+    });
+    if (kept.length === bindings.elements.length) continue;
+    if (kept.length === 0) {
+      edits.push({
+        start: statement.getFullStart(),
+        end: statement.end,
+        text: '',
+      });
+      continue;
+    }
+    edits.push({
+      start: bindings.getStart(file),
+      end: bindings.end,
+      text: `{${kept.map(element => element.getText(file)).join(', ')}}`,
+    });
+  }
+  let out = code;
+  for (const edit of edits.reverse()) {
+    out = out.slice(0, edit.start) + edit.text + out.slice(edit.end);
+  }
+  return out;
+}
+
+/** True for an initializer that cannot do anything when it is removed. */
+function isInert(node) {
+  if (!node) return false;
+  if (
+    ts.isObjectLiteralExpression(node) ||
+    ts.isArrayLiteralExpression(node) ||
+    ts.isStringLiteral(node) ||
+    ts.isNumericLiteral(node)
+  ) {
+    return true;
+  }
+  if (ts.isAsExpression(node) || ts.isSatisfiesExpression(node)) {
+    return isInert(node.expression);
+  }
+  if (
+    ts.isCallExpression(node) &&
+    ts.isPropertyAccessExpression(node.expression) &&
+    ts.isIdentifier(node.expression.expression) &&
+    node.expression.expression.text === 'stylex'
+  ) {
+    return true;
+  }
+  return false;
 }
 
 /* ---------------------------------------------------------- the sources ---- */
@@ -683,6 +1055,10 @@ for (const folder of fs.readdirSync(BLOCKS).sort()) {
     const blockName = file.replace(/\.tsx$/, '');
     const docFile = path.join(dir, `${blockName}.doc.mjs`);
     const label = `blocks/${folder}/${file}`;
+    if (EXCLUDED[`${folder}/${file}`]) {
+      refused.push({file: label, reason: EXCLUDED[`${folder}/${file}`]});
+      continue;
+    }
     const doc = fs.existsSync(docFile) ? await loadDoc(docFile) : undefined;
     const upstream = doc?.exampleFor ?? folder;
     const component = COMPONENT_MAP.get(upstream);
@@ -702,7 +1078,11 @@ for (const folder of fs.readdirSync(BLOCKS).sort()) {
       });
       continue;
     }
-    const result = port(clean(fs.readFileSync(path.join(dir, file), 'utf8')), file, targetDir);
+    const result = port(
+      clean(fs.readFileSync(path.join(dir, file), 'utf8')),
+      file,
+      targetDir,
+    );
     if ('error' in result) {
       refused.push({file: label, reason: result.error});
       continue;
@@ -744,7 +1124,11 @@ if (!only) {
     const label = `pages/${slug}/page.tsx`;
     const doc = await loadDoc(path.join(dir, 'template.doc.mjs'));
     const targetDir = path.join(TEMPLATES, slug);
-    const result = port(clean(fs.readFileSync(pageFile, 'utf8')), 'page.tsx', targetDir);
+    const result = port(
+      clean(fs.readFileSync(pageFile, 'utf8')),
+      'page.tsx',
+      targetDir,
+    );
     if ('error' in result) {
       refused.push({file: label, reason: result.error});
       continue;
@@ -776,12 +1160,28 @@ export const docs = ${JSON.stringify(
     );
     fs.mkdirSync(targetDir, {recursive: true});
     fs.writeFileSync(path.join(targetDir, 'Template.tsx'), formatted.code);
-    fs.writeFileSync(path.join(targetDir, 'template.doc.mjs'), formattedDoc.code);
-    templates.push({slug, name: String(doc?.name ?? slug), description: String(doc?.description ?? ''), category: String(doc?.category ?? 'Page')});
-    ported.push({file: label, target: `templates/${slug}/Template.tsx`, notes: result.notes});
+    fs.writeFileSync(
+      path.join(targetDir, 'template.doc.mjs'),
+      formattedDoc.code,
+    );
+    templates.push({
+      slug,
+      name: String(doc?.name ?? slug),
+      description: String(doc?.description ?? ''),
+      category: String(doc?.category ?? 'Page'),
+    });
+    ported.push({
+      file: label,
+      target: `templates/${slug}/Template.tsx`,
+      notes: result.notes,
+    });
   }
 
-  // The templates barrel.
+  fs.writeFileSync(path.join(TEMPLATES, 'index.ts'), await templatesBarrel());
+}
+
+/** The `@tecton/react/templates` barrel, from whatever survived the port. */
+async function templatesBarrel() {
   const lines = [
     '/**',
     ' * @generated by packages/react/scripts/port-examples.mjs — do not edit.',
@@ -815,10 +1215,8 @@ export const docs = ${JSON.stringify(
   lines.push(
     `export const tectonTemplates: readonly TectonTemplateEntry[] = ${JSON.stringify(templates, null, 2)};`,
   );
-  fs.writeFileSync(
-    path.join(TEMPLATES, 'index.ts'),
-    (await format(path.join(TEMPLATES, 'index.ts'), lines.join('\n'))).code,
-  );
+  return (await format(path.join(TEMPLATES, 'index.ts'), lines.join('\n')))
+    .code;
 }
 
 function pascal(slug) {
@@ -827,6 +1225,116 @@ function pascal(slug) {
     .filter(Boolean)
     .map(part => part[0].toUpperCase() + part.slice(1))
     .join('');
+}
+
+/* ------------------------------------------------------------- the prune ---- */
+
+/**
+ * Compile what was ported, and take back what does not compile.
+ *
+ * A mechanical translation gets a long way, but not all the way: where Tecton
+ * redesigned a component — a menu that takes data instead of children, a
+ * select that takes options instead of `<SelectChoice>`s — the upstream
+ * example is written against a shape Tecton does not have, and no rename
+ * rescues it. Rather than ship an example that does not compile, the port
+ * removes it and writes down the compiler's own first complaint as the reason.
+ * That list is the honest inventory of where the two models disagree.
+ */
+const pruned = [];
+{
+  const configPath = path.join(PACKAGE, 'tsconfig.json');
+  const config = ts.readConfigFile(configPath, ts.sys.readFile);
+  const parsed = ts.parseJsonConfigFileContent(config.config, ts.sys, PACKAGE);
+  const program = ts.createProgram(parsed.fileNames, parsed.options);
+
+  const portedFiles = new Map();
+  for (const entry of ported) {
+    const full = entry.target.startsWith('templates/')
+      ? path.join(SRC, entry.target)
+      : path.join(COMPONENTS, entry.target);
+    portedFiles.set(path.normalize(full), entry);
+  }
+
+  for (const [full, entry] of portedFiles) {
+    const source = program.getSourceFile(full);
+    if (!source) continue;
+    const diagnostics = [
+      ...program.getSemanticDiagnostics(source),
+      ...program.getSyntacticDiagnostics(source),
+    ];
+    if (diagnostics.length === 0) continue;
+    const first = diagnostics[0];
+    const {line} = source.getLineAndCharacterOfPosition(first.start ?? 0);
+    const message = ts
+      .flattenDiagnosticMessageText(first.messageText, ' ')
+      .slice(0, 200);
+    pruned.push({
+      file: entry.file,
+      target: entry.target,
+      reason: `line ${line + 1}: ${message}`,
+    });
+  }
+
+  for (const entry of pruned) {
+    const full = entry.target.startsWith('templates/')
+      ? path.join(SRC, entry.target)
+      : path.join(COMPONENTS, entry.target);
+    if (entry.target.startsWith('templates/')) {
+      fs.rmSync(path.dirname(full), {recursive: true, force: true});
+    } else {
+      fs.rmSync(full, {force: true});
+      fs.rmSync(full.replace(/\.tsx$/, '.doc.mjs'), {force: true});
+    }
+  }
+
+  const removed = new Set(pruned.map(entry => entry.target));
+  for (let i = ported.length - 1; i >= 0; i -= 1) {
+    if (removed.has(ported[i].target)) ported.splice(i, 1);
+  }
+  for (let i = templates.length - 1; i >= 0; i -= 1) {
+    if (removed.has(`templates/${templates[i].slug}/Template.tsx`)) {
+      templates.splice(i, 1);
+    }
+  }
+  if (!only)
+    fs.writeFileSync(path.join(TEMPLATES, 'index.ts'), await templatesBarrel());
+}
+
+/* -------------------------------------------------- the documentation ---- */
+
+/**
+ * Point each designed component's documentation at the examples it now has.
+ *
+ * A generated component's documentation is rewritten from its examples
+ * directory every time the wrappers are generated; the hand-written ones keep
+ * their `examples` list in the file, so the port updates it here. The drift
+ * guard insists the two agree in both directions, which is what makes this a
+ * step rather than an afterthought.
+ */
+for (const entry of manifest.components) {
+  if (!entry.handwritten) continue;
+  const docFile = path.join(COMPONENTS, entry.name, `${entry.name}.doc.mjs`);
+  if (!fs.existsSync(docFile)) continue;
+  const dir = path.join(COMPONENTS, entry.name, 'examples');
+  const ids = fs.existsSync(dir)
+    ? fs
+        .readdirSync(dir)
+        .filter(file => file.endsWith('.tsx'))
+        .map(file => file.replace(/\.tsx$/, ''))
+        .sort()
+    : [];
+  const list = `examples: ${JSON.stringify(ids)},`;
+  const source = fs.readFileSync(docFile, 'utf8');
+  let updated;
+  if (/\n\s*examples:\s*\[[^\]]*\],/.test(source)) {
+    updated = source.replace(/\n(\s*)examples:\s*\[[^\]]*\],/, `\n$1${list}`);
+  } else {
+    updated = source.replace(/\n(\s*)notes:/, `\n$1${list}\n\n$1notes:`);
+  }
+  if (updated === source) continue;
+  const formatted = await format(docFile, updated);
+  if ('error' in formatted) continue;
+  fs.writeFileSync(docFile, formatted.code);
 }
 
 /* ----------------------------------------------------------- the report ---- */
@@ -854,13 +1362,27 @@ const report = [
   '',
   ...ported
     .filter(entry => entry.notes.length > 0)
-    .flatMap(entry => [`  ${entry.target}`, ...entry.notes.map(note => `    - ${note}`)]),
+    .flatMap(entry => [
+      `  ${entry.target}`,
+      ...entry.notes.map(note => `    - ${note}`),
+    ]),
   '',
-  'Refused',
-  '-------',
-  'These could not be ported. Each reason is a real gap, not a shortcut.',
+  'Refused before translation',
+  '--------------------------',
+  'These reach for something Tecton does not publish at all. Each reason is a',
+  'real gap, not a shortcut.',
   '',
   ...refused
+    .sort((a, b) => a.file.localeCompare(b.file))
+    .map(entry => `  ${entry.file}: ${entry.reason}`),
+  '',
+  'Removed after translation',
+  '-------------------------',
+  'These translated cleanly but do not compile against the Tecton API: almost',
+  'always a component Tecton redesigned to take data where upstream took',
+  "children. The line is the compiler's own first complaint.",
+  '',
+  ...pruned
     .sort((a, b) => a.file.localeCompare(b.file))
     .map(entry => `  ${entry.file}: ${entry.reason}`),
   '',
@@ -869,5 +1391,7 @@ fs.mkdirSync(path.dirname(LOG), {recursive: true});
 fs.writeFileSync(LOG, report.join('\n'));
 
 console.log(
-  `Ported ${ported.length} files (${templates.length} templates), refused ${refused.length}. Log: ${path.relative(ROOT, LOG)}`,
+  `Ported ${ported.length} files (${templates.length} templates); ` +
+    `refused ${refused.length}, pruned ${pruned.length}. ` +
+    `Log: ${path.relative(ROOT, LOG)}`,
 );

@@ -41,7 +41,7 @@ function Stars({count}: {count: number}) {
   return (
     <Stack direction="horizontal" gap={0}>
       {Array.from({length: count}, (_, i) => (
-        <Icon key={i} name={'crown'} size={16} />
+        <Icon key={i} name="crown" size={16} />
       ))}
     </Stack>
   );

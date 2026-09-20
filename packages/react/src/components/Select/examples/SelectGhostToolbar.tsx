@@ -13,7 +13,6 @@ export function SelectGhostToolbar() {
       <Select
         label="Calendar view"
         isLabelHidden
-        variant="ghost"
         options={[
           {value: 'day', label: 'Day'},
           {value: 'week', label: 'Week'},
@@ -25,7 +24,6 @@ export function SelectGhostToolbar() {
       <Select
         label="Density"
         isLabelHidden
-        variant="ghost"
         options={[
           {value: 'compact', label: 'Compact'},
           {value: 'comfortable', label: 'Comfortable'},
@@ -34,7 +32,6 @@ export function SelectGhostToolbar() {
         value={density}
         onChange={setDensity}
         status={{type: 'warning', message: 'This setting affects all users'}}
-        statusVariant="tooltip"
       />
       <Button label="Export" variant="tertiary" />
     </HStack>

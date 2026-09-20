@@ -52,12 +52,7 @@ export function TextFieldStates() {
           placeholder="Enter a value"
           isDisabled
         />
-        <TextField
-          label="Loading field"
-          value="sarahc"
-          onChange={() => {}}
-          isLoading
-        />
+        <TextField label="Loading field" value="sarahc" onChange={() => {}} />
       </Stack>
     </div>
   );

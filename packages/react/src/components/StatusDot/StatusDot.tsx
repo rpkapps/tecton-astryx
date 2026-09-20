@@ -10,7 +10,7 @@
  */
 import type {ComponentProps} from 'react';
 import {StatusDot as BaseStatusDot} from '@astryxdesign/core/StatusDot';
-import {renderIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconNode, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type StatusDotBaseProps = ComponentProps<typeof BaseStatusDot>;
 
@@ -23,12 +23,15 @@ export interface StatusDotProps extends Omit<StatusDotBaseProps, 'icon'> {
    * ignored, so `cond && <Icon />` is safe. Same contract as
    * AvatarStatusDot. Takes a Tecton glyph name or an SVG component.
    */
-  icon?: TectonIconRef;
+  icon?: TectonIconRef | StatusDotBaseProps['icon'];
 }
 
 export function StatusDot({icon, ...rest}: StatusDotProps) {
   return (
-    <BaseStatusDot {...(rest as StatusDotBaseProps)} icon={renderIcon(icon)} />
+    <BaseStatusDot
+      {...(rest as StatusDotBaseProps)}
+      icon={tectonIconNode(icon) as StatusDotBaseProps['icon']}
+    />
   );
 }
 

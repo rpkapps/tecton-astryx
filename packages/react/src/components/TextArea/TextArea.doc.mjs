@@ -147,7 +147,14 @@ export const docs = {
     },
   ],
 
-  examples: ['TextAreaBasic'],
+  examples: [
+    'TextAreaBasic',
+    'TextAreaCharacterCount',
+    'TextAreaShowcase',
+    'TextAreaStates',
+    'TextAreaValidation',
+    'TextAreaWithIcon',
+  ],
 
   notes: [
     'Validation is drawn the way the design draws it: plain coloured helper text under the field, never the boxed callout the control underneath uses by default.',

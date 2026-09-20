@@ -14,7 +14,7 @@ export function HoverCardInteractiveContent() {
         content={
           <VStack gap={2}>
             <HStack gap={2}>
-              <Icon name={'link'} size={16} />
+              <Icon name="link" size={16} />
               <VStack gap={1}>
                 <Text variant="smallStrong">Getting Started Guide</Text>
                 <Text variant="medium" color="secondary">
@@ -29,9 +29,7 @@ export function HoverCardInteractiveContent() {
           </VStack>
         }
       >
-        <Link href="#" hasUnderline>
-          Getting Started Guide
-        </Link>
+        <Link href="#">Getting Started Guide</Link>
       </HoverCard>
       .
     </Text>

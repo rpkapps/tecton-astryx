@@ -42,7 +42,7 @@ export const docs = {
     ],
   },
 
-  examples: ['RadioBasic'],
+  examples: ['RadioBasic', 'RadioShowcase'],
 
   props: [
     {

@@ -132,7 +132,16 @@ export const docs = {
     },
   ],
 
-  examples: ['AccordionBasic', 'AccordionWithSecondaryText'],
+  examples: [
+    'AccordionBasic',
+    'AccordionControlledAccordion',
+    'AccordionDividedAccordion',
+    'AccordionMultipleAccordion',
+    'AccordionShowcase',
+    'AccordionSingleAccordion',
+    'AccordionWithSecondaryText',
+    'AccordionWithoutCard',
+  ],
 
   notes: [
     "The design's header action row — edit, settings, delete, overflow — is not offered. The header is one button, and putting buttons inside it would nest interactive elements, which no assistive technology handles predictably. Put those actions in the content, or in the section header above the group.",

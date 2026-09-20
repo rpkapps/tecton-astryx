@@ -8,7 +8,7 @@
  */
 import type {ComponentProps} from 'react';
 import {FieldLabel as BaseFieldLabel} from '@astryxdesign/core/Field';
-import {resolveIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconValue, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type FieldLabelBaseProps = ComponentProps<typeof BaseFieldLabel>;
 
@@ -21,14 +21,14 @@ export interface FieldLabelProps extends Omit<
    * Icon before the label text. Takes a Tecton glyph name or an SVG
    * component.
    */
-  labelIcon?: TectonIconRef;
+  labelIcon?: TectonIconRef | FieldLabelBaseProps['labelIcon'];
 }
 
 export function FieldLabel({labelIcon, ...rest}: FieldLabelProps) {
   return (
     <BaseFieldLabel
       {...(rest as FieldLabelBaseProps)}
-      labelIcon={resolveIcon(labelIcon)}
+      labelIcon={tectonIconValue(labelIcon) as FieldLabelBaseProps['labelIcon']}
     />
   );
 }

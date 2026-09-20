@@ -3,7 +3,7 @@ import {ListItem} from '../../ListItem/ListItem.js';
 
 export function ListBulletedFeatures() {
   return (
-    <List listStyle="disc">
+    <List>
       <ListItem label="Accessible by default" />
       <ListItem label="Themeable with StyleX" />
       <ListItem label="Composable and extensible" />

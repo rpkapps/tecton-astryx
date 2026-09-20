@@ -9,7 +9,7 @@
  */
 import type {ComponentProps} from 'react';
 import {NavIcon as BaseNavIcon} from '@astryxdesign/core/NavIcon';
-import {renderIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconNode, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type NavIconBaseProps = ComponentProps<typeof BaseNavIcon>;
 
@@ -20,12 +20,15 @@ export interface NavIconProps extends Omit<NavIconBaseProps, 'icon'> {
    * an Icon or similar icon component. Takes a Tecton glyph name or an SVG
    * component.
    */
-  icon?: TectonIconRef;
+  icon?: TectonIconRef | NavIconBaseProps['icon'];
 }
 
 export function NavIcon({icon, ...rest}: NavIconProps) {
   return (
-    <BaseNavIcon {...(rest as NavIconBaseProps)} icon={renderIcon(icon)} />
+    <BaseNavIcon
+      {...(rest as NavIconBaseProps)}
+      icon={tectonIconNode(icon) as NavIconBaseProps['icon']}
+    />
   );
 }
 

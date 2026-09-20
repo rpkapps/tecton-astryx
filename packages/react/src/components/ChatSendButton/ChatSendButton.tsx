@@ -11,7 +11,7 @@
  */
 import type {ComponentProps} from 'react';
 import {ChatSendButton as BaseChatSendButton} from '@astryxdesign/core/Chat';
-import {renderIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconNode, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type ChatSendButtonBaseProps = ComponentProps<typeof BaseChatSendButton>;
 
@@ -24,12 +24,12 @@ export interface ChatSendButtonProps extends Omit<
    * Custom icon for the send state. Defaults to arrowUp from icon
    * registry. Takes a Tecton glyph name or an SVG component.
    */
-  sendIcon?: TectonIconRef;
+  sendIcon?: TectonIconRef | ChatSendButtonBaseProps['sendIcon'];
   /**
    * Custom icon for the stop state. Defaults to stop from icon registry.
    * Takes a Tecton glyph name or an SVG component.
    */
-  stopIcon?: TectonIconRef;
+  stopIcon?: TectonIconRef | ChatSendButtonBaseProps['stopIcon'];
 }
 
 export function ChatSendButton({
@@ -40,8 +40,8 @@ export function ChatSendButton({
   return (
     <BaseChatSendButton
       {...(rest as ChatSendButtonBaseProps)}
-      sendIcon={renderIcon(sendIcon)}
-      stopIcon={renderIcon(stopIcon)}
+      sendIcon={tectonIconNode(sendIcon) as ChatSendButtonBaseProps['sendIcon']}
+      stopIcon={tectonIconNode(stopIcon) as ChatSendButtonBaseProps['stopIcon']}
     />
   );
 }

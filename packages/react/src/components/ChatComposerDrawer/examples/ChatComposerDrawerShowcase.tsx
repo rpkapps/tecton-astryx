@@ -3,7 +3,6 @@ import {Button} from '../../Button/Button.js';
 import {ChatComposer} from '../../ChatComposer/ChatComposer.js';
 import {ChatComposerDrawer} from '../ChatComposerDrawer.js';
 import {Chip} from '../../Chip/Chip.js';
-import {Icon} from '../../Icon/Icon.js';
 import {Stack} from '../../Stack/Stack.js';
 
 const drawerBorder: CSSProperties = {
@@ -34,7 +33,7 @@ export function ChatComposerDrawerShowcase() {
             label="Attach"
             variant="tertiary"
             size="sm"
-            icon={<Icon name={'link'} size={16} />}
+            icon="link"
             onClick={() => {}}
           />
         }

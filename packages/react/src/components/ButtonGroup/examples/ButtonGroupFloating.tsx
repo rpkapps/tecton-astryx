@@ -9,7 +9,7 @@ export function ButtonGroupFloating() {
       <Text variant="small" color="secondary">
         The whole group shares one raised surface — a floating action bar
       </Text>
-      <ButtonGroup label="Zoom controls" elevation="med">
+      <ButtonGroup label="Zoom controls">
         <Button label="Zoom out" />
         <Button label="Reset" />
         <Button label="Zoom in" />

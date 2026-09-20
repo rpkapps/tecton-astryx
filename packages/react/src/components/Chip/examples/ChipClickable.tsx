@@ -9,10 +9,10 @@ export function ChipClickable() {
         Click a token to view details
       </Text>
       <Stack direction="horizontal" gap={2} wrap="wrap">
-        <Chip label="Bug" color="red" onClick={() => {}} />
-        <Chip label="Feature" color="blue" onClick={() => {}} />
-        <Chip label="Enhancement" color="green" onClick={() => {}} />
-        <Chip label="Documentation" color="gray" onClick={() => {}} />
+        <Chip label="Bug" color="error" onClick={() => {}} />
+        <Chip label="Feature" color="info" onClick={() => {}} />
+        <Chip label="Enhancement" color="success" onClick={() => {}} />
+        <Chip label="Documentation" color="default" onClick={() => {}} />
       </Stack>
     </Stack>
   );

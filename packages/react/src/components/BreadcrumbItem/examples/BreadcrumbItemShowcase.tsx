@@ -1,6 +1,5 @@
 import {BreadcrumbItem} from '../BreadcrumbItem.js';
 import {Breadcrumbs} from '../../Breadcrumbs/Breadcrumbs.js';
-import {Icon} from '../../Icon/Icon.js';
 import {Text} from '../../Text/Text.js';
 import {VStack} from '../../VStack/VStack.js';
 
@@ -12,9 +11,7 @@ export function BreadcrumbItemShowcase() {
           With start icon
         </Text>
         <Breadcrumbs>
-          <BreadcrumbItem href="/" startIcon={<Icon name={'home'} size={16} />}>
-            Home
-          </BreadcrumbItem>
+          <BreadcrumbItem href="/">Home</BreadcrumbItem>
           <BreadcrumbItem href="/docs">Docs</BreadcrumbItem>
           <BreadcrumbItem isCurrent>Components</BreadcrumbItem>
         </Breadcrumbs>

@@ -19,7 +19,6 @@ export function SelectBottomSheet() {
         value={value}
         onChange={setValue}
         placeholder="Choose a team"
-        presentation="bottom-sheet"
       />
     </div>
   );

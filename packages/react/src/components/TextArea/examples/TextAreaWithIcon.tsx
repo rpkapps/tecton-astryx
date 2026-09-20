@@ -12,7 +12,7 @@ export function TextAreaWithIcon() {
         value={value}
         onChange={setValue}
         placeholder="What was discussed?"
-        startIcon={'edit-square'}
+        startIcon="edit-square"
       />
     </div>
   );

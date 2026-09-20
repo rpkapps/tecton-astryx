@@ -1,5 +1,4 @@
 import {HStack} from '../../HStack/HStack.js';
-import {Icon} from '../../Icon/Icon.js';
 import {IconButton} from '../IconButton.js';
 
 export function IconButtonTooltipIconButton() {
@@ -7,19 +6,19 @@ export function IconButtonTooltipIconButton() {
     <HStack gap={2}>
       <IconButton
         label="Search"
-        icon={<Icon name="search" />}
+        icon="search"
         variant="tertiary"
         tooltip="Search items"
       />
       <IconButton
         label="Copy link"
-        icon={<Icon name="copy" />}
+        icon="copy"
         variant="tertiary"
         tooltip="Copy to clipboard"
       />
       <IconButton
         label="More options"
-        icon={<Icon name="diamond-mark" />}
+        icon="diamond-mark"
         variant="tertiary"
         tooltip="More options"
       />

@@ -1,7 +1,6 @@
 import {Button} from '../../Button/Button.js';
 import {Card} from '../../Card/Card.js';
 import {Heading} from '../../Heading/Heading.js';
-import {Icon} from '../../Icon/Icon.js';
 import {Section} from '../../Section/Section.js';
 import {Toolbar} from '../Toolbar.js';
 
@@ -12,11 +11,7 @@ export function ToolbarThreeSlot() {
         label="Document toolbar"
         dividers={['bottom']}
         startContent={
-          <Button
-            label="Back"
-            variant="tertiary"
-            icon={<Icon name={'arrow-left'} />}
-          />
+          <Button label="Back" variant="tertiary" icon="arrow-left" />
         }
         centerContent={<Heading level={4}>Title</Heading>}
         endContent={

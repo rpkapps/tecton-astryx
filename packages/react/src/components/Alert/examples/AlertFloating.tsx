@@ -6,7 +6,6 @@ export function AlertFloating() {
       status="info"
       title="You have unsaved changes"
       description="A raised banner reads as an overlay floating above the page."
-      elevation="med"
     />
   );
 }

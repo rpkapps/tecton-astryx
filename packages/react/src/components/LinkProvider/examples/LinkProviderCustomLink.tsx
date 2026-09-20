@@ -33,9 +33,7 @@ function RouterLink({
 export function LinkProviderCustomLink() {
   return (
     <LinkProvider component={RouterLink}>
-      <Link href="/dashboard" isStandalone>
-        Go to dashboard
-      </Link>
+      <Link href="/dashboard">Go to dashboard</Link>
     </LinkProvider>
   );
 }

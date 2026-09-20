@@ -184,10 +184,8 @@ export const docs = {
     },
   ],
   examples: [
-    'TimestampAutoFormat',
     'TimestampColors',
     'TimestampFormats',
-    'TimestampRelativeFormat',
     'TimestampShowcase',
     'TimestampTimezone',
     'TimestampTooltipTimezones',

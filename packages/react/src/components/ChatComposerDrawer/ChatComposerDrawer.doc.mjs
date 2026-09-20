@@ -54,7 +54,6 @@ export const docs = {
   examples: [
     'ChatComposerDrawerAttachments',
     'ChatComposerDrawerCollapsible',
-    'ChatComposerDrawerFeedback',
     'ChatComposerDrawerShowcase',
     'ChatComposerDrawerWithProgress',
   ],

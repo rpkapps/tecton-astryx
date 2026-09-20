@@ -18,7 +18,7 @@ export function AccordionGroupShowcase() {
     <AccordionGroup type="single" defaultValue="shipping">
       <Stack gap={2} width="100%" maxWidth={420}>
         <Card>
-          <Accordion trigger="Shipping" value="shipping">
+          <Accordion title="Shipping" value="shipping">
             <Text variant="medium" color="secondary">
               Standard delivery takes 3–5 business days and is free over $50.
               Express is next business day if you order before 2pm.
@@ -27,7 +27,7 @@ export function AccordionGroupShowcase() {
         </Card>
 
         <Card>
-          <Accordion trigger="Returns" value="returns">
+          <Accordion title="Returns" value="returns">
             <Text variant="medium" color="secondary">
               30 days from delivery, unused and in the original packaging.
               Return shipping is on us for anything that arrived damaged or was
@@ -37,7 +37,7 @@ export function AccordionGroupShowcase() {
         </Card>
 
         <Card>
-          <Accordion trigger="Payment" value="payment">
+          <Accordion title="Payment" value="payment">
             <Text variant="medium" color="secondary">
               All major cards, PayPal, and bank transfer. Cards are charged when
               the order ships, not when it is placed.

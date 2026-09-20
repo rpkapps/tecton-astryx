@@ -61,7 +61,6 @@ export const docs = {
   ],
   examples: [
     'VisuallyHiddenLiveRegion',
-    'VisuallyHiddenShowcase',
     'VisuallyHiddenStructuralHeading',
     'VisuallyHiddenSupplementaryContext',
   ],

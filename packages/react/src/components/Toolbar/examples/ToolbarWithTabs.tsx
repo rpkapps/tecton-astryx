@@ -1,18 +1,10 @@
-import {useState, type CSSProperties} from 'react';
+import {useState} from 'react';
 import {Button} from '../../Button/Button.js';
 import {Card} from '../../Card/Card.js';
-import {Icon} from '../../Icon/Icon.js';
 import {Section} from '../../Section/Section.js';
 import {Tab} from '../../Tab/Tab.js';
 import {Tabs} from '../../Tabs/Tabs.js';
 import {Toolbar} from '../Toolbar.js';
-
-const card: CSSProperties = {
-  width: '100%',
-  maxWidth: 500,
-  height: '100%',
-  marginTop: 200,
-};
 
 export function ToolbarWithTabs() {
   const [tab, setTab] = useState('overview');
@@ -28,7 +20,7 @@ export function ToolbarWithTabs() {
             <Tab value="settings" label="Settings" />
           </Tabs>
         }
-        endContent={<Button label="New item" icon={<Icon name={'add'} />} />}
+        endContent={<Button label="New item" icon="add" />}
       />
       <Section />
     </Card>

@@ -9,7 +9,7 @@
  */
 import type {ComponentProps} from 'react';
 import {DropdownMenuCheckboxItem as BaseMenuCheckboxItem} from '@astryxdesign/core/DropdownMenu';
-import {resolveIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconValue, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type MenuCheckboxItemBaseProps = ComponentProps<typeof BaseMenuCheckboxItem>;
 
@@ -22,14 +22,14 @@ export interface MenuCheckboxItemProps extends Omit<
    * Icon to display before the label. Takes a Tecton glyph name or an SVG
    * component.
    */
-  icon?: TectonIconRef;
+  icon?: TectonIconRef | MenuCheckboxItemBaseProps['icon'];
 }
 
 export function MenuCheckboxItem({icon, ...rest}: MenuCheckboxItemProps) {
   return (
     <BaseMenuCheckboxItem
       {...(rest as MenuCheckboxItemBaseProps)}
-      icon={resolveIcon(icon)}
+      icon={tectonIconValue(icon) as MenuCheckboxItemBaseProps['icon']}
     />
   );
 }

@@ -2,7 +2,6 @@ import {Button} from '../../Button/Button.js';
 import {ChatComposer} from '../../ChatComposer/ChatComposer.js';
 import {ChatComposerDrawer} from '../ChatComposerDrawer.js';
 import {Chip} from '../../Chip/Chip.js';
-import {Icon} from '../../Icon/Icon.js';
 import {Progress} from '../../Progress/Progress.js';
 import {Stack} from '../../Stack/Stack.js';
 
@@ -24,14 +23,14 @@ export function ChatComposerDrawerWithProgress() {
               label="Mention"
               variant="tertiary"
               size="sm"
-              icon={<Icon name={'link'} size={16} />}
+              icon="link"
               onClick={() => {}}
             />
             <Button
               label="Attach"
               variant="tertiary"
               size="sm"
-              icon={<Icon name={'link'} size={16} />}
+              icon="link"
               onClick={() => {}}
             />
           </>

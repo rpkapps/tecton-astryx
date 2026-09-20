@@ -17,7 +17,7 @@ export function AccordionSingleAccordion() {
     <AccordionGroup type="single" defaultValue="general">
       <Stack gap={2} maxWidth={440}>
         <Section>
-          <Accordion trigger="General" value="general">
+          <Accordion title="General" value="general">
             <Text variant="medium" color="secondary">
               Language, time zone, and date format. Time zone drives every
               timestamp in the product, including exports and scheduled reports.
@@ -26,7 +26,7 @@ export function AccordionSingleAccordion() {
         </Section>
 
         <Section>
-          <Accordion trigger="Privacy" value="privacy">
+          <Accordion title="Privacy" value="privacy">
             <Text variant="medium" color="secondary">
               Control who can see your profile and activity. Turning off
               discovery also removes you from @-mention autocomplete for people
@@ -36,7 +36,7 @@ export function AccordionSingleAccordion() {
         </Section>
 
         <Section>
-          <Accordion trigger="Notifications" value="notifications">
+          <Accordion title="Notifications" value="notifications">
             <Text variant="medium" color="secondary">
               Choose what you are notified about and how it reaches you.
               Mentions always come through; everything else can be batched into

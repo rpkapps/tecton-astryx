@@ -4,11 +4,6 @@ import {Pagination} from '../Pagination.js';
 import {Stack} from '../../Stack/Stack.js';
 import {Table} from '../../Table/Table.js';
 
-const root: CSSProperties = {
-  width: '100%',
-  maxWidth: 500,
-};
-
 const pagination: CSSProperties = {
   paddingTop: 8,
   flexDirection: 'row-reverse',

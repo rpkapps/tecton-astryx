@@ -88,7 +88,12 @@ export const docs = {
     },
   ],
 
-  examples: ['TooltipBasic'],
+  examples: [
+    'TooltipActionBarTooltips',
+    'TooltipBasic',
+    'TooltipInlineTextTooltips',
+    'TooltipShowcase',
+  ],
 
   notes: [
     'Buttons, icon buttons and fields have their own `tooltip` prop; prefer it over wrapping them, because a disabled control swallows the hover events this component needs.',

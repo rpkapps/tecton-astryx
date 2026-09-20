@@ -20,6 +20,23 @@
  * publishes them.
  */
 
+/**
+ * Blocks that translate and compile but that Tecton will not publish.
+ *
+ * The repository lints examples with the React compiler's rules, because an
+ * example is code people copy: one that reads a ref during render or calls
+ * `Date.now()` in the render path teaches a bug. Listed by their upstream
+ * path, with the reason, and reported in the port log like any other refusal.
+ */
+export const EXCLUDED = {
+  'Timestamp/TimestampAutoFormat.tsx':
+    'reads the clock during render, which the React rules this repository lints with forbid',
+  'Timestamp/TimestampRelativeFormat.tsx':
+    'reads the clock during render, which the React rules this repository lints with forbid',
+  'Tooltip/TooltipHookUsage.tsx':
+    'reads a ref during render, which the React rules this repository lints with forbid',
+};
+
 /** Upstream names Tecton folds into a component rather than publishing. */
 export const FOLDED = {
   // Tecton's Dialog takes `confirmation` instead of a separate component.
@@ -39,7 +56,11 @@ const CONTROL_SIZE = {size: {lg: 'md', xs: 'sm'}};
 /** Per-Tecton-component prop translation. */
 export const PROP_RULES = {
   Text: {
-    rename: {type: 'variant', justify: 'align', hasStrikethrough: 'isStruckThrough'},
+    rename: {
+      type: 'variant',
+      justify: 'align',
+      hasStrikethrough: 'isStruckThrough',
+    },
     values: {
       variant: {
         body: 'medium',
@@ -57,41 +78,149 @@ export const PROP_RULES = {
       variant: ['inherit'],
       as: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'strong', 'em', 'small'],
     },
-    drop: ['size', 'hasTruncateTooltip', 'wordBreak', 'textWrap', 'hasCapsize', 'xstyle', 'className', 'style'],
+    drop: [
+      'size',
+      'hasTruncateTooltip',
+      'wordBreak',
+      'textWrap',
+      'hasCapsize',
+      'xstyle',
+      'className',
+      'style',
+    ],
   },
   Heading: {
-    rename: {type: 'variant', justify: 'align', accessibilityLevel: 'outlineLevel'},
+    rename: {
+      type: 'variant',
+      justify: 'align',
+      accessibilityLevel: 'outlineLevel',
+    },
     values: {
-      variant: {'display-1': 'display1', 'display-2': 'display2', 'display-3': 'display3'},
+      variant: {
+        'display-1': 'display1',
+        'display-2': 'display2',
+        'display-3': 'display3',
+      },
       weight: {normal: 'regular'},
     },
-    drop: ['display', 'hasTruncateTooltip', 'wordBreak', 'textWrap', 'hasCapsize', 'hasStrikethrough', 'size', 'xstyle', 'className', 'style'],
+    drop: [
+      'display',
+      'hasTruncateTooltip',
+      'wordBreak',
+      'textWrap',
+      'hasCapsize',
+      'hasStrikethrough',
+      'size',
+      'xstyle',
+      'className',
+      'style',
+    ],
   },
   Card: {
     drop: ['elevation', 'height', 'xstyle', 'className', 'style'],
     dropIfValue: {
       padding: ['0.5', '1.5'],
-      variant: ['blue', 'cyan', 'gray', 'green', 'orange', 'pink', 'purple', 'red', 'teal', 'yellow'],
+      variant: [
+        'blue',
+        'cyan',
+        'gray',
+        'green',
+        'orange',
+        'pink',
+        'purple',
+        'red',
+        'teal',
+        'yellow',
+      ],
     },
   },
   Stack: {
-    values: {direction: {row: 'horizontal', column: 'vertical', 'row-reverse': 'horizontal', 'column-reverse': 'vertical'}},
-    drop: ['hAlign', 'vAlign', 'paddingInline', 'paddingInlineStart', 'paddingInlineEnd', 'paddingBlock', 'paddingBlockStart', 'paddingBlockEnd', 'xstyle', 'className', 'style'],
-    dropIfValue: {gap: ['0.5', '1.5'], padding: ['0.5', '1.5'], align: ['baseline'], justify: ['space-between', 'space-around', 'space-evenly']},
+    values: {
+      direction: {
+        row: 'horizontal',
+        column: 'vertical',
+        'row-reverse': 'horizontal',
+        'column-reverse': 'vertical',
+      },
+    },
+    drop: [
+      'hAlign',
+      'vAlign',
+      'paddingInline',
+      'paddingInlineStart',
+      'paddingInlineEnd',
+      'paddingBlock',
+      'paddingBlockStart',
+      'paddingBlockEnd',
+      'xstyle',
+      'className',
+      'style',
+    ],
+    dropIfValue: {
+      gap: ['0.5', '1.5'],
+      padding: ['0.5', '1.5'],
+      align: ['baseline'],
+      justify: ['space-between', 'space-around', 'space-evenly'],
+    },
   },
   HStack: {
-    drop: ['hAlign', 'vAlign', 'direction', 'paddingInline', 'paddingInlineStart', 'paddingInlineEnd', 'paddingBlock', 'paddingBlockStart', 'paddingBlockEnd', 'xstyle', 'className', 'style'],
-    dropIfValue: {gap: ['0.5', '1.5'], padding: ['0.5', '1.5'], align: ['baseline'], justify: ['space-between', 'space-around', 'space-evenly']},
+    drop: [
+      'hAlign',
+      'vAlign',
+      'direction',
+      'paddingInline',
+      'paddingInlineStart',
+      'paddingInlineEnd',
+      'paddingBlock',
+      'paddingBlockStart',
+      'paddingBlockEnd',
+      'xstyle',
+      'className',
+      'style',
+    ],
+    dropIfValue: {
+      gap: ['0.5', '1.5'],
+      padding: ['0.5', '1.5'],
+      align: ['baseline'],
+      justify: ['space-between', 'space-around', 'space-evenly'],
+    },
   },
   VStack: {
-    drop: ['hAlign', 'vAlign', 'direction', 'paddingInline', 'paddingInlineStart', 'paddingInlineEnd', 'paddingBlock', 'paddingBlockStart', 'paddingBlockEnd', 'xstyle', 'className', 'style'],
-    dropIfValue: {gap: ['0.5', '1.5'], padding: ['0.5', '1.5'], align: ['baseline'], justify: ['space-between', 'space-around', 'space-evenly']},
+    drop: [
+      'hAlign',
+      'vAlign',
+      'direction',
+      'paddingInline',
+      'paddingInlineStart',
+      'paddingInlineEnd',
+      'paddingBlock',
+      'paddingBlockStart',
+      'paddingBlockEnd',
+      'xstyle',
+      'className',
+      'style',
+    ],
+    dropIfValue: {
+      gap: ['0.5', '1.5'],
+      padding: ['0.5', '1.5'],
+      align: ['baseline'],
+      justify: ['space-between', 'space-around', 'space-evenly'],
+    },
   },
   Select: {values: {...CONTROL_SIZE}, drop: ['xstyle', 'className', 'style']},
-  Autocomplete: {values: {...CONTROL_SIZE}, drop: ['xstyle', 'className', 'style']},
+  Autocomplete: {
+    values: {...CONTROL_SIZE},
+    drop: ['xstyle', 'className', 'style'],
+  },
   Tabs: {values: {...CONTROL_SIZE}, drop: ['xstyle', 'className', 'style']},
-  ToggleButton: {values: {...CONTROL_SIZE}, drop: ['xstyle', 'className', 'style']},
-  ToggleButtonGroup: {values: {...CONTROL_SIZE}, drop: ['xstyle', 'className', 'style']},
+  ToggleButton: {
+    values: {...CONTROL_SIZE},
+    drop: ['xstyle', 'className', 'style'],
+  },
+  ToggleButtonGroup: {
+    values: {...CONTROL_SIZE},
+    drop: ['xstyle', 'className', 'style'],
+  },
   Slider: {values: {...CONTROL_SIZE}, drop: ['xstyle', 'className', 'style']},
   Menu: {values: {...CONTROL_SIZE}, drop: ['xstyle', 'className', 'style']},
   Icon: {
@@ -101,21 +230,99 @@ export const PROP_RULES = {
     numeric: ['size'],
   },
   Button: {
-    values: {variant: {ghost: 'tertiary', 'text-only': 'textOnly'}, size: {lg: 'md'}},
-    drop: ['elevation', 'name', 'value', 'form', 'isInterruptible', 'isIconOnly', 'width', 'clickAction', 'href', 'as', 'target', 'rel', 'endContent', 'xstyle', 'className', 'style'],
+    values: {
+      variant: {ghost: 'tertiary', 'text-only': 'textOnly'},
+      size: {lg: 'md'},
+    },
+    drop: [
+      'elevation',
+      'name',
+      'value',
+      'form',
+      'isInterruptible',
+      'isIconOnly',
+      'width',
+      'clickAction',
+      'href',
+      'as',
+      'target',
+      'rel',
+      'endContent',
+      'xstyle',
+      'className',
+      'style',
+    ],
   },
   IconButton: {
-    values: {variant: {ghost: 'tertiary', 'text-only': 'textOnly'}, size: {lg: 'md'}},
-    drop: ['elevation', 'clickAction', 'href', 'as', 'target', 'rel', 'xstyle', 'className', 'style'],
+    values: {
+      variant: {ghost: 'tertiary', 'text-only': 'textOnly'},
+      size: {lg: 'md'},
+    },
+    drop: [
+      'elevation',
+      'clickAction',
+      'href',
+      'as',
+      'target',
+      'rel',
+      'xstyle',
+      'className',
+      'style',
+    ],
   },
   Badge: {
-    dropIfValue: {variant: ['blue', 'cyan', 'gray', 'green', 'orange', 'pink', 'purple', 'red', 'teal', 'yellow']},
+    dropIfValue: {
+      variant: [
+        'blue',
+        'cyan',
+        'gray',
+        'green',
+        'orange',
+        'pink',
+        'purple',
+        'red',
+        'teal',
+        'yellow',
+      ],
+    },
     drop: ['xstyle', 'className', 'style'],
   },
-  Chip: {drop: ['xstyle', 'className', 'style'], values: {size: {xs: 'sm'}}},
+  Accordion: {
+    // Tecton's accordion header is a string and an optional glyph, not a slot.
+    renameString: {trigger: 'title'},
+    drop: ['xstyle', 'className', 'style'],
+  },
+  AccordionGroup: {drop: ['xstyle', 'className', 'style']},
+  Chip: {
+    drop: ['xstyle', 'className', 'style'],
+    values: {
+      size: {xs: 'sm', xsm: 'sm'},
+      // Tecton colours a chip by role, not by hue.
+      color: {
+        blue: 'info',
+        cyan: 'info',
+        teal: 'info',
+        green: 'success',
+        red: 'error',
+        orange: 'warning',
+        yellow: 'warning',
+        gray: 'default',
+        purple: 'primary',
+        pink: 'primary',
+      },
+    },
+  },
   Avatar: {
     values: {
-      size: {xs: '18', sm: '24', md: '32', lg: '40', xl: '40', '2xl': '40'},
+      size: {
+        xs: '18',
+        xsm: '18',
+        sm: '24',
+        md: '32',
+        lg: '40',
+        xl: '40',
+        '2xl': '40',
+      },
       shape: {rounded: 'rounded', circle: 'circle', square: 'square'},
     },
     numeric: ['size'],
@@ -124,17 +331,50 @@ export const PROP_RULES = {
   AvatarGroup: {drop: ['xstyle', 'className', 'style']},
   Alert: {drop: ['xstyle', 'className', 'style']},
   Divider: {drop: ['xstyle', 'className', 'style']},
-  Link: {drop: ['xstyle', 'className', 'style']},
+  Link: {
+    drop: [
+      'hasUnderline',
+      'isStandalone',
+      'isExternal',
+      'type',
+      'size',
+      'startIcon',
+      'endIcon',
+      'target',
+      'rel',
+      'as',
+      'xstyle',
+      'className',
+      'style',
+    ],
+  },
+  BreadcrumbItem: {
+    drop: ['startIcon', 'endIcon', 'as', 'xstyle', 'className', 'style'],
+  },
   Grid: {drop: ['xstyle', 'className', 'style']},
-  Progress: {drop: ['xstyle', 'className', 'style'], values: {...CONTROL_SIZE}},
+  Progress: {
+    // Tecton draws a 32px ring and a 16px one; there is no third size.
+    values: {size: {xsm: '16', xs: '16', sm: '16', md: '32', lg: '32'}},
+    numeric: ['size'],
+    drop: ['xstyle', 'className', 'style'],
+  },
   Switch: {drop: ['xstyle', 'className', 'style'], values: {...CONTROL_SIZE}},
-  TextField: {drop: ['xstyle', 'className', 'style'], values: {...CONTROL_SIZE}},
+  TextField: {
+    drop: ['xstyle', 'className', 'style'],
+    values: {...CONTROL_SIZE},
+  },
   TextArea: {drop: ['xstyle', 'className', 'style'], values: {...CONTROL_SIZE}},
   Checkbox: {drop: ['xstyle', 'className', 'style'], values: {...CONTROL_SIZE}},
   Tooltip: {drop: ['xstyle', 'className', 'style']},
   List: {
     drop: ['xstyle', 'className', 'style'],
-    values: {density: {compact: 'condensed', spacious: 'comfortable', balanced: 'default'}},
+    values: {
+      density: {
+        compact: 'condensed',
+        spacious: 'comfortable',
+        balanced: 'default',
+      },
+    },
   },
   ListItem: {drop: ['xstyle', 'className', 'style']},
 };
@@ -152,7 +392,7 @@ export const SUPPORT = {
   pixel: {inline: true},
   TableColumn: {name: 'TableColumn', type: true, component: 'Table'},
 
-  useToast: {name: 'useToast', component: 'Toast'},
+  useToast: {name: 'useToast', component: 'Toast', file: 'useToast'},
 
   createStaticSource: {name: 'createAutocompleteSource'},
   SearchSource: {name: 'AutocompleteSource', type: true},
@@ -223,4 +463,20 @@ export const SUPPORT = {
   ChatToolCallItem: {name: 'ChatToolCallItem', type: true},
   AppShellMobileContext: {name: 'AppShellMobileContext'},
   MenuPresentation: {name: 'MenuPresentation', type: true},
+
+  IconType: {name: 'TectonIconRef', type: true, icons: true},
+
+  defineSyntaxTheme: {name: 'defineCodeTheme'},
+  catppuccinLatte: {name: 'catppuccinLatte'},
+  catppuccinMocha: {name: 'catppuccinMocha'},
+  dracula: {name: 'dracula'},
+  githubDark: {name: 'githubDark'},
+  githubLight: {name: 'githubLight'},
+  monokai: {name: 'monokai'},
+  nord: {name: 'nord'},
+  oneDarkPro: {name: 'oneDarkPro'},
+  oneLight: {name: 'oneLight'},
+  solarizedLight: {name: 'solarizedLight'},
+  tokyoNight: {name: 'tokyoNight'},
+  tokyoNightLight: {name: 'tokyoNightLight'},
 };

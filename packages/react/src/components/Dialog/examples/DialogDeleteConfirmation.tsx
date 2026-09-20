@@ -14,15 +14,7 @@ export function DialogDeleteConfirmation() {
 
   return (
     <>
-      <Dialog
-        isOpen
-        isInline
-        onOpenChange={() => {}}
-        {...alertProps}
-        onAction={() =>
-          alert.show({...alertProps, onAction: () => alert.hide()})
-        }
-      />
+      <Dialog isOpen onOpenChange={() => {}} {...alertProps} />
       {alert.element}
     </>
   );

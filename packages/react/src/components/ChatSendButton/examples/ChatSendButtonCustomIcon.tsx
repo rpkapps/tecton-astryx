@@ -1,5 +1,4 @@
 import {ChatSendButton} from '../ChatSendButton.js';
-import {Icon} from '../../Icon/Icon.js';
 import {Stack} from '../../Stack/Stack.js';
 import {Text} from '../../Text/Text.js';
 
@@ -13,22 +12,18 @@ export function ChatSendButtonCustomIcon() {
         <ChatSendButton
           isDisabled={false}
           onSend={() => {}}
-          sendIcon={<Icon name={'arrow-right'} size={16} />}
+          sendIcon="arrow-right"
         />
+        <ChatSendButton isDisabled={false} onSend={() => {}} sendIcon="check" />
         <ChatSendButton
           isDisabled={false}
           onSend={() => {}}
-          sendIcon={<Icon name={'check'} size={16} />}
-        />
-        <ChatSendButton
-          isDisabled={false}
-          onSend={() => {}}
-          sendIcon={<Icon name={'robot-2'} size={16} />}
+          sendIcon="robot-2"
         />
         <ChatSendButton
           isStopShown
           onStop={() => {}}
-          stopIcon={<Icon name={'cancel-circle'} size={16} />}
+          stopIcon="cancel-circle"
         />
       </Stack>
     </Stack>

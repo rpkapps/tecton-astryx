@@ -9,7 +9,7 @@
  */
 import type {ComponentProps} from 'react';
 import {MoreMenu as BaseMoreMenu} from '@astryxdesign/core/MoreMenu';
-import {renderIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconNode, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type MoreMenuBaseProps = ComponentProps<typeof BaseMoreMenu>;
 
@@ -19,12 +19,15 @@ export interface MoreMenuProps extends Omit<MoreMenuBaseProps, 'icon'> {
    * Override the default three-dot icon. Accepts any ReactNode. Takes a
    * Tecton glyph name or an SVG component.
    */
-  icon?: TectonIconRef;
+  icon?: TectonIconRef | MoreMenuBaseProps['icon'];
 }
 
 export function MoreMenu({icon, ...rest}: MoreMenuProps) {
   return (
-    <BaseMoreMenu {...(rest as MoreMenuBaseProps)} icon={renderIcon(icon)} />
+    <BaseMoreMenu
+      {...(rest as MoreMenuBaseProps)}
+      icon={tectonIconNode(icon) as MoreMenuBaseProps['icon']}
+    />
   );
 }
 

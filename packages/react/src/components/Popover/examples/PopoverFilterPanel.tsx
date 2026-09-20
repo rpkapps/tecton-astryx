@@ -56,7 +56,6 @@ export function PopoverFilterPanel() {
               label="Apply"
               variant="primary"
               onClick={() => setIsOpen(false)}
-              label="Apply"
             />
             <Button
               label="Reset"
@@ -69,13 +68,12 @@ export function PopoverFilterPanel() {
                   shared: false,
                 })
               }
-              label="Reset"
             />
           </HStack>
         </VStack>
       }
     >
-      <Button label="Filter" label="Filter" />
+      <Button label="Filter" />
     </Popover>
   );
 }

@@ -240,7 +240,7 @@ function wrapperSource(entry, doc) {
     const helpers = [
       ...new Set(
         iconProps.map(([, kind]) =>
-          kind === 'resolve' ? 'resolveIcon' : 'renderIcon',
+          kind === 'resolve' ? 'tectonIconValue' : 'tectonIconNode',
         ),
       ),
     ].sort();
@@ -277,7 +277,7 @@ function wrapperSource(entry, doc) {
         lines.push(`   * ${line}`);
       }
       lines.push('   */');
-      lines.push(`  ${prop}?: TectonIconRef;`);
+      lines.push(`  ${prop}?: TectonIconRef | ${name}BaseProps['${prop}'];`);
     }
     lines.push('}');
     lines.push('');
@@ -288,8 +288,10 @@ function wrapperSource(entry, doc) {
     lines.push(`    <${base}`);
     lines.push(`      {...(rest as ${name}BaseProps)}`);
     for (const [prop, kind] of iconProps) {
-      const helper = kind === 'resolve' ? 'resolveIcon' : 'renderIcon';
-      lines.push(`      ${prop}={${helper}(${prop})}`);
+      const helper = kind === 'resolve' ? 'tectonIconValue' : 'tectonIconNode';
+      lines.push(
+        `      ${prop}={${helper}(${prop}) as ${name}BaseProps['${prop}']}`,
+      );
     }
     lines.push('    />');
     lines.push('  );');

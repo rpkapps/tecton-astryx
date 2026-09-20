@@ -10,7 +10,7 @@
  */
 import type {ComponentProps} from 'react';
 import {PowerSearch as BasePowerSearch} from '@astryxdesign/core/PowerSearch';
-import {resolveIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconValue, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type PowerSearchBaseProps = ComponentProps<typeof BasePowerSearch>;
 
@@ -25,14 +25,16 @@ export interface PowerSearchProps extends Omit<
    * SVG icon component, or a ReactNode directly. Takes a Tecton glyph name
    * or an SVG component.
    */
-  startIcon?: TectonIconRef;
+  startIcon?: TectonIconRef | PowerSearchBaseProps['startIcon'];
 }
 
 export function PowerSearch({startIcon, ...rest}: PowerSearchProps) {
   return (
     <BasePowerSearch
       {...(rest as PowerSearchBaseProps)}
-      startIcon={resolveIcon(startIcon)}
+      startIcon={
+        tectonIconValue(startIcon) as PowerSearchBaseProps['startIcon']
+      }
     />
   );
 }

@@ -19,9 +19,7 @@ export function PopoverShowcase() {
       width={280}
       content={
         <VStack gap={3}>
-          <Heading level={4} tabIndex={0}>
-            Settings
-          </Heading>
+          <Heading level={4}>Settings</Heading>
           <Divider />
           <Text variant="medium">
             Notifications, dark mode, and sound preferences.
@@ -29,7 +27,7 @@ export function PopoverShowcase() {
         </VStack>
       }
     >
-      <Button label="Settings" label="Settings" />
+      <Button label="Settings" />
     </Popover>
   );
 }

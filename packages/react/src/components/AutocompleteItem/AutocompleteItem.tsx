@@ -9,7 +9,7 @@
  */
 import type {ComponentProps} from 'react';
 import {TypeaheadItem as BaseAutocompleteItem} from '@astryxdesign/core/Typeahead';
-import {renderIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconNode, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type AutocompleteItemBaseProps = ComponentProps<typeof BaseAutocompleteItem>;
 
@@ -22,14 +22,14 @@ export interface AutocompleteItemProps extends Omit<
    * Icon or avatar to display before the label. Takes a Tecton glyph name
    * or an SVG component.
    */
-  icon?: TectonIconRef;
+  icon?: TectonIconRef | AutocompleteItemBaseProps['icon'];
 }
 
 export function AutocompleteItem({icon, ...rest}: AutocompleteItemProps) {
   return (
     <BaseAutocompleteItem
       {...(rest as AutocompleteItemBaseProps)}
-      icon={renderIcon(icon)}
+      icon={tectonIconNode(icon) as AutocompleteItemBaseProps['icon']}
     />
   );
 }

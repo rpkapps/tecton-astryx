@@ -10,7 +10,7 @@
  */
 import type {ComponentProps} from 'react';
 import {Tokenizer as BaseTokenizer} from '@astryxdesign/core/Tokenizer';
-import {resolveIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconValue, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type TokenizerBaseProps = ComponentProps<typeof BaseTokenizer>;
 
@@ -21,14 +21,14 @@ export interface TokenizerProps extends Omit<TokenizerBaseProps, 'startIcon'> {
    * a semantic icon name, an SVG icon component, or a ReactNode directly.
    * Takes a Tecton glyph name or an SVG component.
    */
-  startIcon?: TectonIconRef;
+  startIcon?: TectonIconRef | TokenizerBaseProps['startIcon'];
 }
 
 export function Tokenizer({startIcon, ...rest}: TokenizerProps) {
   return (
     <BaseTokenizer
       {...(rest as TokenizerBaseProps)}
-      startIcon={resolveIcon(startIcon)}
+      startIcon={tectonIconValue(startIcon) as TokenizerBaseProps['startIcon']}
     />
   );
 }

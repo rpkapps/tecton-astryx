@@ -25,7 +25,7 @@ export function SectionDefaultWithWash() {
           <Stack direction="vertical" gap={2}>
             {FEATURES.map(feature => (
               <Stack key={feature} direction="horizontal" gap={2}>
-                <Icon name={'check'} size={16} />
+                <Icon name="check" size={16} />
                 <Text variant="medium">{feature}</Text>
               </Stack>
             ))}

@@ -8,7 +8,7 @@
  */
 import type {ComponentProps} from 'react';
 import {TopNavItem as BaseTopNavItem} from '@astryxdesign/core/TopNav';
-import {renderIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconNode, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type TopNavItemBaseProps = ComponentProps<typeof BaseTopNavItem>;
 
@@ -18,14 +18,14 @@ export interface TopNavItemProps extends Omit<TopNavItemBaseProps, 'icon'> {
    * Optional icon to display before the label. Takes a Tecton glyph name
    * or an SVG component.
    */
-  icon?: TectonIconRef;
+  icon?: TectonIconRef | TopNavItemBaseProps['icon'];
 }
 
 export function TopNavItem({icon, ...rest}: TopNavItemProps) {
   return (
     <BaseTopNavItem
       {...(rest as TopNavItemBaseProps)}
-      icon={renderIcon(icon)}
+      icon={tectonIconNode(icon) as TopNavItemBaseProps['icon']}
     />
   );
 }

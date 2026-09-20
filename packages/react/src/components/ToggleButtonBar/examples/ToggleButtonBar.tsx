@@ -1,5 +1,4 @@
 import {useState} from 'react';
-import {Icon} from '../../Icon/Icon.js';
 import {Stack} from '../../Stack/Stack.js';
 import {Text} from '../../Text/Text.js';
 import {ToggleButton} from '../../ToggleButton/ToggleButton.js';
@@ -16,22 +15,17 @@ export function ToggleButtonGroupBlock() {
           Single selection
         </Text>
         <ToggleButtonBar value={view} onChange={setView} label="View mode">
-          <ToggleButton
-            value="list"
-            label="List view"
-            icon={<Icon name={'list'} />}
-            isIconOnly
-          />
+          <ToggleButton value="list" label="List view" icon="list" isIconOnly />
           <ToggleButton
             value="grid"
             label="Grid view"
-            icon={<Icon name={'view-module'} />}
+            icon="view-module"
             isIconOnly
           />
           <ToggleButton
             value="table"
             label="Table view"
-            icon={<Icon name={'view-column'} />}
+            icon="view-column"
             isIconOnly
           />
         </ToggleButtonBar>
@@ -46,28 +40,23 @@ export function ToggleButtonGroupBlock() {
           onChange={setFormats}
           label="Text formatting"
         >
-          <ToggleButton
-            value="bold"
-            label="Bold"
-            icon={<Icon name={'annotate'} />}
-            isIconOnly
-          />
+          <ToggleButton value="bold" label="Bold" icon="annotate" isIconOnly />
           <ToggleButton
             value="italic"
             label="Italic"
-            icon={<Icon name={'annotate'} />}
+            icon="annotate"
             isIconOnly
           />
           <ToggleButton
             value="underline"
             label="Underline"
-            icon={<Icon name={'annotate'} />}
+            icon="annotate"
             isIconOnly
           />
           <ToggleButton
             value="strikethrough"
             label="Strikethrough"
-            icon={<Icon name={'annotate'} />}
+            icon="annotate"
             isIconOnly
           />
         </ToggleButtonBar>

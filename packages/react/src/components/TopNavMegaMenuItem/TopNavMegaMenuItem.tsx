@@ -8,7 +8,7 @@
  */
 import type {ComponentProps} from 'react';
 import {TopNavMegaMenuItem as BaseTopNavMegaMenuItem} from '@astryxdesign/core/TopNav';
-import {renderIcon, type TectonIconRef} from '../../icons/renderIcon.js';
+import {tectonIconNode, type TectonIconRef} from '../../icons/renderIcon.js';
 
 type TopNavMegaMenuItemBaseProps = ComponentProps<
   typeof BaseTopNavMegaMenuItem
@@ -23,14 +23,14 @@ export interface TopNavMegaMenuItemProps extends Omit<
    * Optional icon element displayed to the left. Takes a Tecton glyph name
    * or an SVG component.
    */
-  icon?: TectonIconRef;
+  icon?: TectonIconRef | TopNavMegaMenuItemBaseProps['icon'];
 }
 
 export function TopNavMegaMenuItem({icon, ...rest}: TopNavMegaMenuItemProps) {
   return (
     <BaseTopNavMegaMenuItem
       {...(rest as TopNavMegaMenuItemBaseProps)}
-      icon={renderIcon(icon)}
+      icon={tectonIconNode(icon) as TopNavMegaMenuItemBaseProps['icon']}
     />
   );
 }

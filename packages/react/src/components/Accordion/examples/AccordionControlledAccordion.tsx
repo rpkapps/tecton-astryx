@@ -51,7 +51,7 @@ export function AccordionControlledAccordion() {
       <AccordionGroup type="single" value={open} onChange={handleOpenChange}>
         <Stack gap={2}>
           <Card>
-            <Accordion trigger="Profile" value="profile">
+            <Accordion title="Profile" value="profile">
               <Text variant="medium" color="secondary">
                 Name, email, and photo. Changes save as you type; the email
                 address needs confirmation from the new inbox before it takes
@@ -61,7 +61,7 @@ export function AccordionControlledAccordion() {
           </Card>
 
           <Card>
-            <Accordion trigger="Security" value="security">
+            <Accordion title="Security" value="security">
               <Text variant="medium" color="secondary">
                 Two-factor authentication, active sessions, and recent login
                 history. Signing out of a session revokes its token immediately.
@@ -70,7 +70,7 @@ export function AccordionControlledAccordion() {
           </Card>
 
           <Card>
-            <Accordion trigger="Billing" value="billing">
+            <Accordion title="Billing" value="billing">
               <Text variant="medium" color="secondary">
                 Invoices, payment method, and plan. Invoices stay downloadable
                 for seven years, including after a downgrade.

@@ -1,4 +1,3 @@
-import {Icon} from '../../Icon/Icon.js';
 import {Stack} from '../../Stack/Stack.js';
 import {Text} from '../../Text/Text.js';
 import {ToggleButton} from '../ToggleButton.js';
@@ -13,15 +12,15 @@ export function ToggleButtonStates() {
         <Stack direction="horizontal" gap={3}>
           <ToggleButton
             label="Favorite"
-            icon={<Icon name={'crown'} />}
-            pressedIcon={<Icon name={'crown'} />}
+            icon="crown"
+            pressedIcon="crown"
             isPressed={false}
             onPressedChange={() => {}}
           />
           <ToggleButton
             label="Favorite"
-            icon={<Icon name={'crown'} />}
-            pressedIcon={<Icon name={'crown'} />}
+            icon="crown"
+            pressedIcon="crown"
             isPressed={false}
             onPressedChange={() => {}}
             isIconOnly
@@ -35,15 +34,15 @@ export function ToggleButtonStates() {
         <Stack direction="horizontal" gap={3}>
           <ToggleButton
             label="Favorite"
-            icon={<Icon name={'crown'} />}
-            pressedIcon={<Icon name={'crown'} />}
+            icon="crown"
+            pressedIcon="crown"
             isPressed={true}
             onPressedChange={() => {}}
           />
           <ToggleButton
             label="Favorite"
-            icon={<Icon name={'crown'} />}
-            pressedIcon={<Icon name={'crown'} />}
+            icon="crown"
+            pressedIcon="crown"
             isPressed={true}
             onPressedChange={() => {}}
             isIconOnly
@@ -57,14 +56,14 @@ export function ToggleButtonStates() {
         <Stack direction="horizontal" gap={3}>
           <ToggleButton
             label="Favorite"
-            icon={<Icon name={'crown'} />}
+            icon="crown"
             isPressed={false}
             onPressedChange={() => {}}
             isDisabled
           />
           <ToggleButton
             label="Favorite"
-            icon={<Icon name={'crown'} />}
+            icon="crown"
             isPressed={false}
             onPressedChange={() => {}}
             isIconOnly
@@ -79,18 +78,16 @@ export function ToggleButtonStates() {
         <Stack direction="horizontal" gap={3}>
           <ToggleButton
             label="Favorite"
-            icon={<Icon name={'crown'} />}
+            icon="crown"
             isPressed={false}
             onPressedChange={() => {}}
-            isLoading
           />
           <ToggleButton
             label="Favorite"
-            icon={<Icon name={'crown'} />}
+            icon="crown"
             isPressed={false}
             onPressedChange={() => {}}
             isIconOnly
-            isLoading
           />
         </Stack>
       </Stack>

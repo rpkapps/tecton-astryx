@@ -16,8 +16,8 @@ export function MobileNavEndSideMobileNav() {
         side="end"
       >
         <SideNavSection title="Settings">
-          <SideNavItem label="General" icon={'settings'} href="/settings" />
-          <SideNavItem label="Team" icon={'person'} href="/team" />
+          <SideNavItem label="General" icon="settings" href="/settings" />
+          <SideNavItem label="Team" icon="person" href="/team" />
         </SideNavSection>
       </MobileNav>
     </>

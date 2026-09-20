@@ -24,17 +24,13 @@ export function AppShellSideNavOnly() {
           }
         >
           <SideNavSection title="Main" isHeaderHidden>
-            <SideNavItem label="Dashboard" icon={'home'} isSelected href="#" />
-            <SideNavItem
-              label="Analytics"
-              icon={'reports-analytics'}
-              href="#"
-            />
-            <SideNavItem label="Projects" icon={'folder'} href="#" />
+            <SideNavItem label="Dashboard" icon="home" isSelected href="#" />
+            <SideNavItem label="Analytics" icon="reports-analytics" href="#" />
+            <SideNavItem label="Projects" icon="folder" href="#" />
           </SideNavSection>
           <SideNavSection title="Organization">
-            <SideNavItem label="Team" icon={'person'} href="#" />
-            <SideNavItem label="Settings" icon={'settings'} href="#" />
+            <SideNavItem label="Team" icon="person" href="#" />
+            <SideNavItem label="Settings" icon="settings" href="#" />
           </SideNavSection>
         </SideNav>
       }

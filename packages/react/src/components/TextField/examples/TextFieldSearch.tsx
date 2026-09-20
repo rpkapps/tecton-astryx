@@ -14,7 +14,7 @@ export function TextFieldSearch() {
           value={query}
           onChange={setQuery}
           placeholder="Search projects…"
-          startIcon={'search'}
+          startIcon="search"
           hasClear
         />
         <TextField
@@ -22,7 +22,7 @@ export function TextFieldSearch() {
           value={filter}
           onChange={setFilter}
           placeholder="Filter…"
-          startIcon={'search'}
+          startIcon="search"
           hasClear
         />
       </Stack>

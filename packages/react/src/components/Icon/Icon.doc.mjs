@@ -70,7 +70,13 @@ export const docs = {
     },
   ],
 
-  examples: ['IconBasic', 'IconSizes'],
+  examples: [
+    'IconBasic',
+    'IconNonSemanticColors',
+    'IconSemanticColors',
+    'IconShowcase',
+    'IconSizes',
+  ],
 
   notes: [
     '`strata` is the one glyph that does not take the surrounding colour: its top face is drawn in the purple-to-orange gradient the design gives it. Every other glyph paints in `currentColor`.',
