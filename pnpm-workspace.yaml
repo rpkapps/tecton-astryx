@@ -2,3 +2,9 @@ packages:
   - 'packages/*'
   - 'apps/*'
   - 'fixtures/consumers/*'
+  # The registry fixtures depend on published versions of @tecton/react that
+  # only exist while `pnpm verify:registry` has its local registry running, and
+  # they are installed with npm, not pnpm. A workspace member would have the
+  # package linked instead of installed, which is the one thing they exist not
+  # to do.
+  - '!fixtures/consumers/registry-*'

@@ -7,3 +7,5 @@ design/
 tokens/
 screenshots/
 .gitattributes
+fixtures/consumers/registry-vite-app/package-lock.json
+fixtures/consumers/registry-mfe-page/package-lock.json

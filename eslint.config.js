@@ -48,4 +48,13 @@ export default tseslint.config(
       globals: {...globals.node},
     },
   },
+  {
+    // This one drives a browser from Node: the function bodies it hands to
+    // `page.evaluate()` are serialised and run in the page, so `document`,
+    // `window` and friends are in scope for half the file.
+    files: ['scripts/verify-registry.mjs'],
+    languageOptions: {
+      globals: {...globals.node, ...globals.browser},
+    },
+  },
 );

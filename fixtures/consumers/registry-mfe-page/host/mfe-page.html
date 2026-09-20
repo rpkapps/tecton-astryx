@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tecton micro-frontend page (registry-installed)</title>
+    <!--
+      The page shape docs/engineering/micro-frontends/README.md §1 recommends,
+      built entirely out of packages installed from a registry:
+
+        - ONE tokens.css, the newest Tecton the shell knows about (version B);
+        - one components.css per container, matching the code in its bundle;
+        - configureTectonRoot() before any container mounts;
+        - every container scope="nested".
+
+      Both stylesheets and both bundles come from `node_modules`, copied by
+      `scripts/build.mjs` — nothing here is patched, aliased or hand-made.
+    -->
+    <link rel="stylesheet" href="./css/tokens-b.css" data-sheet="tokens-b" />
+    <link
+      rel="stylesheet"
+      href="./css/components-a.css"
+      data-sheet="components-a"
+    />
+    <link
+      rel="stylesheet"
+      href="./css/components-b.css"
+      data-sheet="components-b"
+    />
+    <style>
+      /* Host chrome only — no design-system tokens are used here. */
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+      }
+      #shell {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        padding: 24px;
+      }
+      #tall {
+        height: 2000px;
+      }
+      .slot {
+        border: 1px dashed #8884;
+        min-height: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="host-title">Host shell</h1>
+    <div id="shell">
+      <div class="slot" id="slot-a"></div>
+      <div class="slot" id="slot-b"></div>
+    </div>
+    <div id="tall">spacer so the document can scroll</div>
+
+    <script src="./container-a.js"></script>
+    <script src="./container-b.js"></script>
+    <script>
+      window.__mfe = {
+        a: window.ContainerA?.default ?? window.ContainerA,
+        b: window.ContainerB?.default ?? window.ContainerB,
+        mount(id, opts) {
+          this[id].mount(document.getElementById('slot-' + id), opts);
+        },
+        unmount(id) {
+          this[id].unmount();
+        },
+      };
+
+      // The shell decides the page's mode once, before anything mounts. It
+      // uses container B's copy of Tecton because B is the newest version the
+      // page carries — a real shell would ship its own copy of that version.
+      window.__mfe.b.configureRoot({mode: 'dark'});
+
+      for (const id of ['a', 'b']) {
+        window.__mfe.mount(id, {mode: 'dark', scope: 'nested'});
+      }
+      window.__versions = {
+        a: window.__mfe.a.version,
+        b: window.__mfe.b.version,
+      };
+      window.__ready = true;
+    </script>
+  </body>
+</html>
