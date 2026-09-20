@@ -2,8 +2,8 @@
 
 `apps/docs` is the Tecton docsite: a landing page, nine written guides, seven
 foundations pages, a page for every module the package publishes, 53 page
-templates, and the changelog. It is a [fumadocs][] site on Next.js 16, exported
-as static HTML.
+templates, and the changelog. It is a [fumadocs][] site on TanStack Start and
+Vite, prerendered to static HTML.
 
 Three things about it are worth knowing before anything else.
 
@@ -29,10 +29,10 @@ its header says which file it came from.
 
 |            |                                                                             |
 | ---------- | --------------------------------------------------------------------------- |
-| Framework  | Next.js 16 (App Router, `output: 'export'`, webpack)                        |
-| Docs shell | `fumadocs-ui` and `fumadocs-core` 16, `fumadocs-mdx` 15                     |
+| Framework  | TanStack Start 1.168 on Vite 8, prerendered into `dist/client`              |
+| Docs shell | `fumadocs-ui` and `fumadocs-core` 16, `fumadocs-mdx` 15 (Vite plugin)       |
 | Styling    | Tailwind v4 (fumadocs requires it) over `@tecton/react/styles-no-reset.css` |
-| Also       | StyleX, compiled through Babel, for the examples that use it                |
+| Also       | StyleX, compiled by `@stylexjs/unplugin`, for the examples that use it      |
 | Search     | Orama, exported as a static index                                           |
 | Tests      | Playwright, against the static export                                       |
 
@@ -51,6 +51,64 @@ its header says which file it came from.
 | `/docs/changelog`          | The package's releases                                                           |
 | `/api/search`              | The exported search index — a build artefact, not a server                       |
 
+## The framework
+
+Four files are the whole of it.
+
+`vite.config.ts` is where the site is assembled. `fumadocsMdx()` compiles
+`content/docs/**` and expands the `defineDocs` macro in `src/lib/source.ts`;
+`tanstackStart()` is the framework and the prerenderer; `@tailwindcss/vite`
+draws fumadocs' shell; the StyleX plugins compile the examples that need them.
+`@/*` is spelled out under `resolve.alias` as well as in `tsconfig.json`,
+because the dev server's dependency scanner does not read the one in the
+tsconfig.
+
+`src/routes/__root.tsx` is the page shell — the `<html>` element, the fonts, the
+two stylesheets, and `RootProvider` from `fumadocs-ui/provider/tanstack` with
+Tecton's own provider inside it (`src/components/provider.tsx`).
+
+`src/routes/index.tsx` is the landing page under fumadocs' `HomeLayout`, and
+`src/routes/docs/$.tsx` is every other page: one splat route that draws
+`DocsLayout` around `DocsPage`, from the grouped sidebar tree and the MDX
+components the generator's pages are written against.
+
+`src/routes/api/search.ts` is the search index, prerendered like a page.
+
+### Why it is not slow
+
+The collection in `src/lib/source.ts` is declared `async`, which on a site with
+217 pages is not a detail. Eagerly, one module would import every compiled MDX
+file on the site, so the bundler would have to compile all of them to serve any
+of them — and every page a reader opened would carry all of them. Asynchronous,
+a page's compiled MDX is its own chunk, and the `/docs/$` route's loader fetches
+the one the page being read needs. What stays eager is the frontmatter and the
+`meta.json` files, which is what the sidebar and the page tree are built from.
+
+The generated modules follow the same rule (see **Data flow** below), and the
+route's loader fetches a component page's doc entry the same way it fetches its
+MDX.
+
+The body renders inside a `<Suspense>` boundary. Prerendering waits for the
+chunk, so the served HTML is complete; in the browser the boundary is what lets
+React hold that HTML on screen while the chunk arrives, rather than clearing the
+page and drawing it again.
+
+### The static export
+
+`pnpm --filter @tecton/docs build` prerenders every route into `dist/client`:
+one directory per page with an `index.html` in it, the assets beside them, and
+the search index at `api/search`. Any file server can host it, and
+`scripts/serve.mjs` is one — it resolves a path the way a host does, which is
+what the end-to-end tests run against.
+
+The page list is not guessed at. `scripts/prerender-pages.mjs` reads
+`src/generated/sitePages.ts`, so every page the generator wrote is prerendered
+whether or not anything links to it — `/api/search` is linked from nowhere,
+because the dialog fetches it. Crawling is on as well, and held to that same
+list: every page here renders running examples, and a page template is a whole
+screen with links of its own, to `/team/alex` and the like, which belong to the
+example rather than to this site.
+
 ## Data flow
 
 ```
@@ -60,7 +118,8 @@ apps/docs/examples/**  ─┤
 apps/docs/guides/*     ─┼─► apps/docs/scripts/generate-data.mjs ─┬─► apps/docs/content/docs/**
 packages/react/dist/** ─┤                                        │     (MDX + meta.json)
 design/foundations/*   ─┘                                        └─► apps/docs/src/generated/**
-                                                                       (registries + loader maps)
+                                                                       (indexes, per-page modules,
+                                                                        loader maps)
 ```
 
 `generate-data.mjs` runs first in `dev`, `build` and `typecheck`
@@ -90,11 +149,21 @@ tables, previews and playground are JSX elements resolving to the components
 registered in `src/components/mdx.tsx`.
 
 `apps/docs/src/generated/**` — typed modules the page components import:
-`componentRegistry`, `exampleRegistry`, `templateRegistry`, `componentSidebar`,
-`showcaseRegistry`, `eagerShowcases`, `guideRegistry`, `foundationData`,
-`foundationPages`, `changelog`, `sitePages`, and the `exampleLoaders` /
+`componentIndex`, `components/<Name>.ts` (one per component page),
+`exampleIndex`, `templateIndex`, `componentSidebar`, `showcaseRegistry`,
+`eagerShowcases`, `guideIndex`, `foundationData`, `foundationPages`,
+`changelog`, `siteCounts`, `sitePages`, and the `exampleLoaders` /
 `templateLoaders` maps of dynamic imports. `apps/docs/src/types/docs.ts` is the
 hand-written contract they are typed against.
+
+**What a page is allowed to cost is the shape of that list.** An index is what a
+listing draws from and is small enough for every page to carry; anything that is
+only one page's business is a module of its own, fetched by that page's loader.
+A component's props, theming targets, accessibility requirements and parts are
+in `components/<Name>.ts` and nothing imports all 144 of them; an example's
+source is in the MDX of the page that renders it and nothing holds all 646; the
+five figures the landing page prints are in `siteCounts` rather than counted by
+importing what they count.
 
 ### Making the docs speak Tecton
 
@@ -239,9 +308,15 @@ A block marked `isShowcase` leads its page; the rest follow under Examples.
    toast viewport. Inside it, `<LivePreview id>` resolves the id in the loader
    map and renders it under `<Suspense>`.
 
-Because the site is a **static export**, step 3 happens in the browser: the
-prerendered HTML carries the frame and the code, and the example's own chunk is
-fetched and mounted after hydration. The gallery goes one step further and waits
+Step 3 happens in the browser, and is made to: `LivePreview` renders its
+placeholder until it is mounted. That is not only faithful to what a static
+export can promise — it is what an example _is_. An example is a running
+program that reads the browser it is in, measures elements and asks whether
+speech recognition exists; rendering one where none of that is true produces
+markup the reader's browser then disagrees with, which React reports as a
+hydration error and repairs by drawing the page twice. So the prerendered HTML
+carries the frame, the description and the source, and the example's own chunk
+is fetched and mounted after hydration. The gallery goes one step further and waits
 until a tile is near the viewport (`WhenVisible`), except for the first twelve,
 which are statically imported through `src/generated/eagerShowcases.ts` so the
 top of the gallery is in the prerendered HTML.
@@ -253,21 +328,32 @@ those read `@tecton/react/theme/tokens.stylex`. They are shown as source and run
 in the reader's browser, so the site compiles StyleX the way a consumer's build
 would:
 
-- `babel.config.json` runs `@stylexjs/babel-plugin` with the options the package
-  builds with (`classNamePrefix: 'tecton'`). It is JSON because Next's Babel
-  loader refuses a `.cjs` or `.mjs` config and this package is `"type":
-"module"`, so a `.js` one would be read as ESM.
-- A Babel config means webpack rather than Turbopack, so `dev` and `build` pass
-  `--webpack`.
-- `postcss.config.cjs` runs `@stylexjs/postcss-plugin` over `src/**` and
-  `examples/**` and writes the classes it compiled where `@stylex;` sits.
-- That `@stylex;` is in **`src/app/stylex.css`, on its own sheet**, not in
-  `global.css`. Tailwind v4 rebuilds the stylesheet it is handed from its own
-  tree and drops the rules the StyleX plugin injected, whichever order the two
-  plugins run in. On its own sheet nothing rewrites it.
-- `package.json` carries a modern `browserslist`. Without it, Babel down-levels
-  the Unicode property escapes in fumadocs' own dependencies and the build fails
-  on regular expressions nobody here wrote.
+- `@stylexjs/unplugin` compiles them as Vite transforms them, with the options
+  the package itself builds with (`scripts/stylex-options.mjs`:
+  `classNamePrefix: 'tecton'`, `treeshakeCompensation`,
+  `enableInlinedConditionalMerge`, `runtimeInjection: false`,
+  `unstable_moduleResolution: {type: 'commonJS'}`). Those options are not a
+  preference: the class names in a compiled module have to be the class names in
+  the extracted CSS, and `unstable_moduleResolution` is what lets
+  `spacingVars['--spacing-3']` be resolved to `var(--spacing-3)` at compile time
+  rather than by running `defineVars` in a browser, where it throws.
+- `useCSSLayers: {before: ['reset', 'astryx-base', 'astryx-theme']}` puts
+  StyleX's own priority layers after the design system's, so a rule an example
+  writes about a component outranks the component's theme.
+- The extracted classes are written into **`src/styles/stylex.css`, on its own
+  sheet**, not into `global.css`: Tailwind v4 rebuilds the stylesheet it is
+  handed from its own tree, and rules appended to that sheet do not survive it.
+- The last step is `scripts/vite-stylex-css.mjs`. The hook that would normally
+  write the collected CSS into an asset belongs to the StyleX plugin's Vite
+  adapter, and it does not survive `unplugin`'s own adapter, which forwards the
+  hooks it knows about and drops the rest. So the plugin's collector is called
+  from a plugin of ours at the end of the client build, and the stylesheet is
+  re-emitted under a name hashed from its new contents — a reader with
+  yesterday's sheet in cache has to be handed a new URL. The server build is
+  bundled afterwards with the old name baked into the `<link>` it renders, so it
+  is pointed at the new one as it goes past.
+- `package.json` carries a modern `browserslist`, which is what the plugin's
+  Lightning CSS pass targets when it prints the extracted sheet.
 
 ## The gallery and the templates
 
@@ -291,11 +377,13 @@ copied verbatim from upstream and credited in `THIRD-PARTY-NOTICES.md`.
 
 ## Search
 
-`src/app/api/search/route.ts` is `staticGET` from `fumadocs-core/search/server`.
-Under `output: 'export'` Next writes its result to `out/api/search`: one JSON
-document holding the Orama index of every page the loader knows about, built
-from the MDX's structured content — titles, descriptions, headings and
-paragraphs. There is no server.
+`src/routes/api/search.ts` is `staticGET` from `fumadocs-core/search/server`, as
+the `GET` handler of a server route. `vite.config.ts` lists it among the pages to
+prerender, with an `outputPath` of `/api/search` so it lands as one document
+rather than as a directory with an `index.html` in it. That document holds the
+Orama index of every page the loader knows about, built from the MDX's
+structured content — titles, descriptions, headings and paragraphs. There is no
+server.
 
 `src/components/search.tsx` uses `staticClient()` from
 `fumadocs-core/search/client/orama-static`. The first time the dialog is opened
@@ -315,13 +403,23 @@ because Tecton's roles are `light-dark()` pairs resolved against
 `color-scheme`, one mapping covers both modes. Text is Figtree and code is IBM
 Plex Mono, the two families the theme names.
 
-`<html>` is served with `data-astryx-theme="tecton"` and `data-theme="dark"`
-already on it: the theme's custom properties are scoped to that attribute, so a
-page that waited for hydration to add it would paint once without the design
-system's colours. Dark is the default, as Tecton is designed dark.
+`<html>` is served with `data-astryx-theme="tecton"`, `data-theme="dark"`, the
+`dark` class and `color-scheme: dark` already on it: the theme's custom
+properties are scoped to that attribute, so a page that waited for hydration to
+add it would paint once without the design system's colours. Dark is the
+default, as Tecton is designed dark.
+
+It also carries `suppressHydrationWarning`, which is what fumadocs prescribes
+and what this element needs: the theme script runs before React hydrates and,
+for a reader who last chose light, will already have rewritten the class and the
+`style` attribute from what the server sent. React is told to accept the
+difference on this one element rather than warn about it. Nothing else on the
+site is allowed to differ — `pnpm docs:site:e2e` fails any page that logs a
+console error, and a hydration mismatch is one.
 
 The two theme systems are kept apart on purpose. fumadocs switches modes with a
-class on `<html>` (`next-themes`); Tecton switches with `data-theme` and
+class on `<html>`, through the theme provider its `RootProvider` mounts; Tecton
+switches with `data-theme` and
 `color-scheme`. `src/components/provider.tsx` reads the resolved theme and hands
 it to `TectonProvider`, so each writes only its own attribute — the registry
 inside `TectonProvider` reverts foreign writes to `data-theme`, and a second
@@ -341,7 +439,7 @@ runs against the generated trees and the built export:
    page's import path is a subpath the package actually exports;
 2. every page the generator claims exists on disk;
 3. every ported example is rendered by exactly one page, and no page renders an
-   example that is not in the registry;
+   example that is not in the index;
 4. every example and every template has a source file and a loader entry;
 5. every guide and every section is in the sidebar, and every component page is
    in the grouped component sidebar exactly once;
@@ -374,9 +472,9 @@ Both are outside `pnpm check` because they launch a browser.
 
 ```bash
 pnpm --filter @tecton/react build     # the site reads dist/ for tokens
-pnpm --filter @tecton/docs dev        # generates, then next dev --webpack
-pnpm --filter @tecton/docs build      # generates, then a static export into out/
-pnpm --filter @tecton/docs serve      # serves out/ the way a static host would
+pnpm --filter @tecton/docs dev        # generates, then vite dev
+pnpm --filter @tecton/docs build      # generates, then prerenders into dist/client
+pnpm --filter @tecton/docs serve      # serves dist/client the way a static host would
 pnpm --filter @tecton/docs test:e2e   # Playwright against the export
 node scripts/check-docs-site.mjs      # the guard
 ```

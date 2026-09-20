@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * A hook's parameters and what it hands back.
  *

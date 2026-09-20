@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * The props table with a knob on every row it can draw one for.
  *

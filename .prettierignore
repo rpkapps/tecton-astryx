@@ -3,6 +3,8 @@ dist/
 coverage/
 pnpm-lock.yaml
 apps/docs/src/generated/
+# Written by the TanStack Router plugin from the files under src/routes.
+apps/docs/src/routeTree.gen.ts
 design/
 tokens/
 screenshots/

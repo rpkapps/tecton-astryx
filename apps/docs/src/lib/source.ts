@@ -12,10 +12,18 @@ import {componentSidebar} from '@/generated/componentSidebar';
  * printed from the package or from an authored source under `guides/`. Adding a
  * module to `@tecton/react` therefore adds a page here, and to the sidebar, and
  * to the search index, with nothing to edit on the site.
+ *
+ * The collection is **async**, which on a site with 217 pages is not a detail:
+ * each page's compiled MDX is its own chunk, fetched when that page is opened.
+ * Eagerly, one module would hold all of them — the bundler would compile every
+ * page to serve any page, which is what made this site slow to start and
+ * expensive to keep running. What stays eager is the frontmatter and the
+ * `meta.json` files, which is what the sidebar and the page tree are built
+ * from.
  */
 const docs = defineDocs({
   dir: 'content/docs',
-  docs: {schema: pageSchema},
+  docs: {schema: pageSchema, async: true},
   meta: {schema: metaSchema},
 });
 
@@ -118,7 +126,16 @@ function groupComponentTree(root: PageTree.Root): PageTree.Root {
   };
 }
 
-/** The tree the docs layout draws, with the component groups folded in. */
+let cachedTree: PageTree.Root | undefined;
+
+/**
+ * The tree the docs layout draws, with the component groups folded in.
+ *
+ * It is worked out once: every page on the site draws the same sidebar, and
+ * folding 144 pages into their groups on every render is work the reader pays
+ * for on every navigation.
+ */
 export function getSidebarTree(): PageTree.Root {
-  return groupComponentTree(source.getPageTree());
+  cachedTree ??= groupComponentTree(source.getPageTree());
+  return cachedTree;
 }

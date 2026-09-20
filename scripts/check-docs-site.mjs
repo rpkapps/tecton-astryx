@@ -41,7 +41,9 @@ const APP_ROOT = path.join(REPO_ROOT, 'apps/docs');
 const CONTENT = path.join(APP_ROOT, 'content/docs');
 const GENERATED = path.join(APP_ROOT, 'src/generated');
 const EXAMPLES = path.join(APP_ROOT, 'examples');
-const EXPORT = path.join(APP_ROOT, 'out');
+// `vite build` prerenders every route into `dist/client`, which is the whole
+// static export: the HTML, the assets and the search index, and nothing else.
+const EXPORT = path.join(APP_ROOT, 'dist/client');
 const PACKAGE_ROOT = path.join(REPO_ROOT, 'packages/react');
 const UPSTREAM_SRC = path.join(
   PACKAGE_ROOT,
@@ -76,10 +78,10 @@ if (!fs.existsSync(CONTENT) || !fs.existsSync(GENERATED)) {
   process.exit(1);
 }
 
-const components = readGenerated('componentRegistry');
-const examples = readGenerated('exampleRegistry');
-const templates = readGenerated('templateRegistry');
-const guides = readGenerated('guideRegistry');
+const components = readGenerated('componentIndex');
+const examples = readGenerated('exampleIndex');
+const templates = readGenerated('templateIndex');
+const guides = readGenerated('guideIndex');
 const foundations = readGenerated('foundationPages');
 const sidebar = readGenerated('componentSidebar');
 const pages = readGenerated('sitePages');
@@ -374,7 +376,7 @@ if (!fs.existsSync(EXPORT)) {
 } else {
   const index = path.join(EXPORT, 'api/search');
   if (!fs.existsSync(index)) {
-    fail('The static export has no search index at out/api/search.');
+    fail('The static export has no search index at dist/client/api/search.');
   } else {
     const indexed = new Set(
       JSON.parse(read(index)).internalDocumentIDStore.internalIdToId.map(id =>

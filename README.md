@@ -146,9 +146,10 @@ Phase 4: the documentation site. `apps/docs` is the Tecton docsite — a landing
 page, nine written guides, the foundations printed from the built theme, a page
 for each of the 144 modules the package publishes with every one of the 646
 examples running and its source beside it, the icon gallery, 53 page templates
-and the changelog — built on fumadocs and Next.js, exported as static HTML. Its
-component pages are printed from the documentation objects the component system
-ships, and its shape is ported from that system's own documentation site. See
+and the changelog — built on fumadocs and TanStack Start, prerendered to static
+HTML. Its component pages are printed from the documentation objects the
+component system ships, and its shape is ported from that system's own
+documentation site. See
 `docs/engineering/docs-site.md`.
 
 - `docs/engineering/surface.md` — what `@tecton/react` publishes, how the

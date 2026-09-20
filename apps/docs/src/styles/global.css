@@ -15,7 +15,8 @@
  * generated and gitignored, which Tailwind skips by default.
  */
 @source '../components';
-@source '../app';
+@source '../routes';
+@source '../lib';
 
 /* -------------------------------------------------------------------------- *
  * The chrome, in Tecton's colours

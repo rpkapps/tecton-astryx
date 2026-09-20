@@ -1036,31 +1036,79 @@ const write = async (file, body) => {
   await fsp.writeFile(file, body, 'utf8');
 };
 
+/**
+ * The component pages: an index, and one module each.
+ *
+ * These used to be one registry of all 144 entries — props, theming targets,
+ * accessibility requirements, every part of every module — which is over a
+ * megabyte, and every page on the site imported it, because the gallery needs
+ * the names and a component page needs its own entry. Splitting it is the
+ * difference between a page costing one component's documentation and costing
+ * all of them: `src/lib/component-entry.tsx` fetches the one module the page
+ * being read needs, and nothing else imports any of them.
+ */
 await write(
-  path.join(OUT_DIR, 'componentRegistry.ts'),
+  path.join(OUT_DIR, 'componentIndex.ts'),
   renderModule({
-    typeName: 'ComponentEntry',
-    constName: 'componentRegistry',
-    data: pages,
+    typeName: 'ComponentSummary',
+    constName: 'componentIndex',
+    data: pages.map(page => ({
+      name: page.name,
+      displayName: page.displayName,
+      module: page.module,
+      moduleName: page.moduleName,
+      importPath: page.importPath,
+      group: page.group,
+      category: page.category,
+      summary: page.summary,
+      isHook: page.isHook,
+      isHiddenFromOverview: page.isHiddenFromOverview,
+      showcase: page.showcase,
+      exampleCount: page.examples.length,
+    })),
   }),
 );
 
+for (const page of pages) {
+  await write(
+    path.join(OUT_DIR, 'components', `${page.name}.ts`),
+    `${BANNER}
+//
+// One component page's doc entry. The \`/docs/$\` route's loader fetches this
+// module — and only this one — when this page is opened.
+import type {ComponentEntry} from '../../types/docs';
+
+export const componentEntry: ComponentEntry = ${JSON.stringify(page, null, 2)};
+`,
+  );
+}
+
+/*
+ * The examples and the templates, without their source.
+ *
+ * An example's source is in the MDX of the page that renders it, as a fenced
+ * block, which is what gives it highlighting and a copy button. Repeating it
+ * here made two more modules of a megabyte each — the text of all 646 examples
+ * and all 53 templates — that the landing page pulled in to count them.
+ */
 await write(
-  path.join(OUT_DIR, 'exampleRegistry.ts'),
+  path.join(OUT_DIR, 'exampleIndex.ts'),
   renderModule({
     typeName: 'ExampleEntry',
-    constName: 'exampleRegistry',
-    // The module path is the loader map's business, not the registry's.
-    data: blocks.map(block => omit(block, 'modulePath')),
+    constName: 'exampleIndex',
+    // The module path is the loader map's business, not the index's.
+    data: blocks.map(block => omit(omit(block, 'modulePath'), 'source')),
   }),
 );
 
 await write(
-  path.join(OUT_DIR, 'templateRegistry.ts'),
+  path.join(OUT_DIR, 'templateIndex.ts'),
   renderModule({
     typeName: 'TemplateEntry',
-    constName: 'templateRegistry',
-    data: templates.map(template => omit(template, 'modulePath')),
+    constName: 'templateIndex',
+    data: templates.map(template =>
+      omit(omit(template, 'modulePath'), 'source'),
+    ),
   }),
 );
 
@@ -1183,12 +1231,18 @@ ${eager.map(entry => `  ${JSON.stringify(entry.name)}: ${entry.id},`).join('\n')
 `,
 );
 
+// A guide's own prose is in its MDX; what the index tiles need is its name,
+// its title and its one-line description.
 await write(
-  path.join(OUT_DIR, 'guideRegistry.ts'),
+  path.join(OUT_DIR, 'guideIndex.ts'),
   renderModule({
-    typeName: 'DocTopic',
-    constName: 'guideRegistry',
-    data: orderedGuides,
+    typeName: 'GuideSummary',
+    constName: 'guideIndex',
+    data: orderedGuides.map(topic => ({
+      name: topic.name,
+      title: topic.title,
+      description: topic.description,
+    })),
   }),
 );
 
@@ -1212,6 +1266,34 @@ await write(
       sources: page.sources,
     })),
   }),
+);
+
+/*
+ * What the landing page counts.
+ *
+ * Seven numbers. They used to be `registry.length` on four registries plus the
+ * length of the icon list inside the foundation data, which is how a page that
+ * prints five figures came to import the source of every example on the site.
+ */
+await write(
+  path.join(OUT_DIR, 'siteCounts.ts'),
+  `${BANNER}
+import type {SiteCounts} from '../types/docs';
+
+export const siteCounts: SiteCounts = ${JSON.stringify(
+    {
+      components: pages.filter(page => !page.isHook).length,
+      hooks: pages.filter(page => page.isHook).length,
+      examples: blocks.length,
+      templates: templates.length,
+      guides: orderedGuides.length,
+      foundations: foundationPages.length,
+      icons: foundations.iconNames.length,
+    },
+    null,
+    2,
+  )};
+`,
 );
 
 const changelog = buildChangelog();

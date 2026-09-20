@@ -1,0 +1,18 @@
+/*
+ * The StyleX classes, on their own sheet.
+ *
+ * Eighteen of the ported examples style themselves with `@stylexjs/stylex`.
+ * The Vite plugin compiles them as they are transformed and appends every class
+ * it extracted to this stylesheet at the end of the build, which is why the file
+ * is otherwise empty: what is in it is written by the build, not by hand.
+ *
+ * It cannot live in `global.css`. Tailwind v4 rebuilds the stylesheet it is
+ * handed from its own tree, and rules appended to that sheet do not survive it.
+ * On its own sheet nothing rewrites them.
+ *
+ * It is linked after `global.css`, so `reset`, `astryx-base` and `astryx-theme`
+ * are already declared by the design system's stylesheet and StyleX's own
+ * priority layers are appended after them — the order an example needs, because
+ * a rule an example writes about a component has to outrank the component's
+ * theme.
+ */

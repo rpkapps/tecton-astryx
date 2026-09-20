@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * Prose out of a doc object.
  *

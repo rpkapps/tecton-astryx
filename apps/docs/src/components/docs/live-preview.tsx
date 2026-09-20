@@ -1,9 +1,9 @@
-'use client';
 import {
   Suspense,
   lazy,
   useCallback,
   useState,
+  useSyncExternalStore,
   type ComponentType,
   type ReactNode,
 } from 'react';
@@ -63,9 +63,41 @@ function Pending() {
   );
 }
 
-export function LivePreview({id}: {id: string}) {
-  const Component = EXAMPLES[id];
+/**
+ * Whether this is the browser, after the first render.
+ *
+ * An example is a running program: it reads the browser it is in, measures
+ * elements, asks whether speech recognition exists. Rendering it into the
+ * prerendered HTML would mean rendering it somewhere none of that is true, and
+ * a reader's browser would then disagree with the file it was served — which
+ * React reports as a hydration error and repairs by drawing the page twice.
+ * The frame, the description and the source are prerendered; what runs, runs
+ * where it was written to run.
+ */
+const neverChanges = () => () => {};
+
+function useMounted(): boolean {
+  // The server snapshot is what is rendered into the HTML and what the first
+  // client render has to agree with; the client snapshot is what every render
+  // after hydration sees.
+  return useSyncExternalStore(
+    neverChanges,
+    () => true,
+    () => false,
+  );
+}
+
+function Live({
+  id,
+  components,
+}: {
+  id: string;
+  components: Record<string, ComponentType>;
+}) {
+  const mounted = useMounted();
+  const Component = components[id];
   if (!Component) return <Missing id={id} />;
+  if (!mounted) return <Pending />;
   return (
     <Suspense fallback={<Pending />}>
       <Component />
@@ -73,14 +105,12 @@ export function LivePreview({id}: {id: string}) {
   );
 }
 
+export function LivePreview({id}: {id: string}) {
+  return <Live id={id} components={EXAMPLES} />;
+}
+
 export function LiveTemplate({id}: {id: string}) {
-  const Component = TEMPLATES[id];
-  if (!Component) return <Missing id={id} />;
-  return (
-    <Suspense fallback={<Pending />}>
-      <Component />
-    </Suspense>
-  );
+  return <Live id={id} components={TEMPLATES} />;
 }
 
 /**

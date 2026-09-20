@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * A component's showcase, cropped and scaled down to a gallery tile.
  *

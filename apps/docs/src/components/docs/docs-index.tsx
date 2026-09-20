@@ -1,22 +1,19 @@
-'use client';
-
 /**
  * The "start here" tiles on `/docs`: every section the site has, printed from
  * the same registries the sidebar is built from.
  */
 
-import Link from 'next/link';
+import {Link} from 'fumadocs-core/framework';
 import {Card} from '@tecton/react/Card';
 import {VStack} from '@tecton/react/Layout';
 import {Text} from '@tecton/react/Text';
-import {componentRegistry} from '@/generated/componentRegistry';
-import {templateRegistry} from '@/generated/templateRegistry';
-import {guideRegistry} from '@/generated/guideRegistry';
+import {guideIndex} from '@/generated/guideIndex';
 import {foundationPages} from '@/generated/foundationPages';
+import {siteCounts} from '@/generated/siteCounts';
 
 export function DocsIndex() {
   const tiles = [
-    ...guideRegistry.map(guide => ({
+    ...guideIndex.map(guide => ({
       href: `/docs/${guide.name}`,
       title: guide.title,
       description: guide.description,
@@ -31,13 +28,13 @@ export function DocsIndex() {
     {
       href: '/docs/components',
       title: 'Components',
-      description: `All ${componentRegistry.length} modules, each with live examples.`,
+      description: `All ${siteCounts.components + siteCounts.hooks} modules, each with live examples.`,
       group: 'Library',
     },
     {
       href: '/docs/templates',
       title: 'Templates',
-      description: `${templateRegistry.length} whole pages, assembled from Tecton components.`,
+      description: `${siteCounts.templates} whole pages, assembled from Tecton components.`,
       group: 'Library',
     },
   ];

@@ -25,9 +25,10 @@ export default tseslint.config(
       // upstream, not in a file this repository regenerates.
       'apps/docs/examples/**',
       'apps/docs/content/**',
-      'apps/docs/.next/**',
       'apps/docs/.source/**',
-      'apps/docs/out/**',
+      'apps/docs/.tanstack/**',
+      // Written by the TanStack Router plugin from the files under src/routes.
+      'apps/docs/src/routeTree.gen.ts',
       'design/**',
       'tokens/**',
       'screenshots/**',

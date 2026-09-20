@@ -1,4 +1,3 @@
-'use client';
 import {Badge} from '@tecton/react/Badge';
 import {Heading, Text} from '@tecton/react/Text';
 import {changelog} from '@/generated/changelog';

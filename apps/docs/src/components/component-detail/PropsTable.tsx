@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * A component's props, as the doc beside it declares them.
  *

@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * The stage everything live on this site renders on.
  *
@@ -12,7 +10,7 @@
  */
 
 import {useState, type ReactNode} from 'react';
-import {useTheme} from 'next-themes';
+import {useTheme} from 'fumadocs-ui/provider/base';
 import {TectonProvider} from '@tecton/react';
 import {ToggleButton, ToggleButtonGroup} from '@tecton/react/ToggleButton';
 

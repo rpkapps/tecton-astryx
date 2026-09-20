@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * The page templates.
  *
@@ -14,11 +12,11 @@
  */
 
 import {useMemo, useState} from 'react';
-import Link from 'next/link';
+import {Link} from 'fumadocs-core/framework';
 import {ToggleButton, ToggleButtonGroup} from '@tecton/react/ToggleButton';
 import {VStack} from '@tecton/react/Layout';
 import {Text} from '@tecton/react/Text';
-import {templateRegistry} from '@/generated/templateRegistry';
+import {templateIndex} from '@/generated/templateIndex';
 import {LiveTemplate, WhenVisible} from './live-preview';
 import {PreviewStage, useSiteMode} from './preview-frame';
 
@@ -83,7 +81,7 @@ export function TemplateGallery() {
 
   const items = useMemo(
     () =>
-      templateRegistry
+      templateIndex
         .filter(template => !template.isHiddenFromOverview)
         .map(template => ({...template, group: groupOf(template.category)}))
         .sort(
@@ -129,7 +127,7 @@ export function TemplateGallery() {
         {shown.map(template => (
           <Link
             key={template.slug}
-            href={`/docs/templates/${template.slug}`}
+            href={`/docs/templates/${template.slug}/`}
             className="grid gap-2 rounded-lg no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fd-ring"
           >
             <TemplateThumbnail slug={template.slug} height={240} />
@@ -149,7 +147,7 @@ export function TemplateGallery() {
 /** One template on its own page: the whole screen, live, at half size. */
 export function TemplatePreview({slug}: {slug: string}) {
   const mode = useSiteMode();
-  const template = templateRegistry.find(entry => entry.slug === slug);
+  const template = templateIndex.find(entry => entry.slug === slug);
   if (!template) {
     return (
       <p className="text-sm" style={{color: 'var(--color-error)'}}>

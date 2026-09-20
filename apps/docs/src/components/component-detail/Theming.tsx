@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * How a component is restyled.
  *
