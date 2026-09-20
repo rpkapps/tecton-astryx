@@ -1,21 +1,24 @@
 /**
  * `@tecton/react/icons` — the Tecton icon set.
  *
- * 131 glyphs drawn for Tecton, each available as a component (`DrillBitIcon`)
- * and by name through {@link Icon}. Both cuts — outlined and filled — and the
- * three foundation sizes (16, 20 and 24 px) come from the same artwork, and
- * every glyph paints in `currentColor`, so an icon takes the colour of the text
- * beside it.
+ * 131 glyphs drawn for Tecton, each an ordinary SVG component
+ * (`DrillBitIcon`, `SearchIcon`, …) that paints in `currentColor`, so a glyph
+ * takes the colour of the text beside it and can be handed to any prop that
+ * takes an icon.
+ *
+ * The same glyphs also back the theme's icon registry (`src/theme/icons.ts`),
+ * which is what replaces the component system's default glyphs wherever a
+ * component asks the theme for one by role. So an application that never
+ * imports from here still gets Tecton's icons inside Tecton's components;
+ * these exports are for the icons an application draws itself.
  *
  * @example
- * import {Icon, DrillBitIcon} from '@tecton/react/icons';
+ * import {DrillBitIcon} from '@tecton/react/icons';
+ * import {Button} from '@tecton/react';
  *
- * <Icon name="drill-bit" size={20} />
- * <Button label="Start" icon="play" />
+ * <Button label="Start" icon={DrillBitIcon} />
+ * <DrillBitIcon width={20} height={20} aria-hidden="true" />
  */
-export {Icon} from '../components/Icon/Icon.js';
-export type {IconProps} from '../components/Icon/Icon.js';
-
 export {tectonIconNames} from './names.js';
 export type {TectonIconName} from './names.js';
 export {tectonIconRegistry} from './registry.js';
@@ -25,6 +28,5 @@ export type {
   TectonIconSize,
   TectonIconVariant,
 } from './glyph.js';
-export type {TectonIconRef} from './renderIcon.js';
 
 export * from './generated/index.js';
