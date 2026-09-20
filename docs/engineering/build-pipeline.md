@@ -21,10 +21,14 @@ ships pre-built CSS and compiled ESM. Two constraints follow from that:
    ships compiled JavaScript plus the extracted atomic CSS, exactly as the
    upstream library does.
 
-A third constraint shapes the code rather than the build: several versions of
-`@tecton/react` may end up on one page in a micro-frontend. Nothing in the
-package keeps mutable module-level state, so no copy can stomp another. No MFE
-machinery exists yet; the rule is simply not to introduce the problem.
+A third constraint now shapes both: several versions of `@tecton/react` may end
+up on one page in a micro-frontend. Nothing in the package keeps mutable
+module-level state, so no copy can stomp another, and the page-level state that
+copies would otherwise fight over is arbitrated through a document-keyed
+registry (`src/runtime/rootRegistry.ts`). The build's share of that constraint
+is two things: the **token-coverage manifest** (step 6) and the **five
+stylesheet entry points** (step 7). Both are explained below, and the consumer
+rules are in `docs/engineering/micro-frontends/README.md`.
 
 ## Commands
 
@@ -43,6 +47,9 @@ node scripts/upgrade-astryx.mjs --to <version>   # stub, a later phase fills it 
 
 pnpm --filter @tecton/react generate:palette     # regenerate the palette module
 pnpm palette:check                               # fail if it has drifted
+
+pnpm check:mfe                                   # build + run the micro-frontend harness
+pnpm --filter @tecton/react build -- --update-manifest   # re-pin the theme's token set
 ```
 
 `pnpm check` deliberately runs `build` **before** `typecheck`: the docs site and
@@ -51,7 +58,7 @@ those have to exist first.
 
 ## The package build
 
-`packages/react/scripts/build.mjs` runs eight steps in order. Every step is
+`packages/react/scripts/build.mjs` runs nine steps in order. Every step is
 verified — the script fails loudly rather than producing half a package.
 
 ### 0. Check the generated palette
@@ -168,7 +175,46 @@ Three details are easy to get wrong:
   That is why step 5 must run after steps 2 and 4, and why the build asserts the
   generated module is flagged as built.
 
-### 6. Assemble the stylesheet
+### 6. Check the theme's token coverage
+
+```bash
+node scripts/build.mjs --update-manifest   # to re-pin it on purpose
+```
+
+`packages/react/theme-token-manifest.json` lists every custom property the
+built `dist/theme/theme.css` sets — 260 of them today. The build compares the
+manifest against the theme that was just compiled and fails on **any omission
+or any unexpected extra**, naming them.
+
+This exists because of a measured micro-frontend failure mode, not out of
+tidiness. Every Tecton version names its theme `tecton`, so every version's
+`theme.css` declares its tokens under the identical
+`@scope ([data-astryx-theme="tecton"])` in the identical `@layer astryx-theme`.
+Equal specificity, equal layer, equal scope proximity — which means:
+
+- for a token **both** versions set, source order decides, and it decides for
+  every container on the page, not just the one that shipped last;
+- for a token only **one** version sets, that version wins outright, in either
+  load order, because the other version's value is one layer down in
+  `astryx-base` among the upstream defaults.
+
+The second case is the dangerous one: coverage that differs between releases
+makes a version silently inherit another version's colour, and a version that
+_drops_ an override hands that token away. Keeping the token **set** identical
+across versions removes it. The manifest is what makes that a build error
+instead of a support ticket.
+
+Token _values_ may change — but they are a cross-container contract too: change
+one and every other version on the page changes with it. Treat it like a
+wire-format change, land it in a coordinated release, and say so in the
+changelog. `--update-manifest` is for a deliberate change to the set itself;
+the diff it produces is the review.
+
+The names include the component-local custom properties the theme's own
+component overrides declare (`--_button-radius` and friends). They are part of
+what the sheet sets, so they are part of the contract.
+
+### 7. Assemble the stylesheets
 
 `dist/tecton.css` is one self-contained file, concatenated at build time from
 files read out of `node_modules` (never hand-copied):
@@ -191,9 +237,51 @@ still beats all of it, which is what an application expects.
 The same pieces are also written separately to `dist/css/` — `reset.css`,
 `foundation.css`, `tecton-components.css`, `tecton-theme.css` — for debugging a
 cascade problem without bisecting a 190 kB file. They are not part of the public
-API.
+API. (`dist/css/tecton-components.css` is the raw StyleX extract;
+`dist/tecton-components.css`, one directory up, is the public entry point
+below.)
 
-### 7. Verify
+**Four more entry points come out of the same bytes.** They are the bundle with
+whole at-rule blocks removed — never re-generated content — so nothing can drift
+between them. A brace matcher does the removal, because CSS comments and quoted
+strings contain braces and the theme's blocks nest three deep.
+
+| File                                  | Export                                  | Contents                                         |
+| ------------------------------------- | --------------------------------------- | ------------------------------------------------ |
+| `dist/tecton.css`                     | `@tecton/react/styles.css`              | everything                                       |
+| `dist/tecton-no-reset.css`            | `@tecton/react/styles-no-reset.css`     | everything except the `@layer reset` blocks      |
+| `dist/tecton-tokens.css`              | `@tecton/react/tokens.css`              | the theme layer only                             |
+| `dist/tecton-components.css`          | `@tecton/react/components.css`          | reset + foundation + Tecton components, no theme |
+| `dist/tecton-components-no-reset.css` | `@tecton/react/components-no-reset.css` | the same without the reset                       |
+
+All five open with the same `@layer reset, astryx-base, astryx-theme;`
+statement, so a page that mixes entry points — or Tecton versions — still gets
+one correct layer order.
+
+Why they exist:
+
+- **No reset.** A global reset that arrives from a container restyles markup the
+  container does not own: the host shell's `<h1>` measured 32px/700 bare and
+  24px/500/Figtree with Tecton loaded. Removing the reset layer restores the
+  host's markup exactly while leaving the container fully themed (measured, and
+  asserted by the harness). Note that the theme's **prose** styles live in the
+  same layer, so they go with it: `no-reset` hands raw `<h1>`/`<p>` markup back
+  to the host, inside the container as well as outside it.
+- **The token/component split.** In a micro-frontend the host provides the
+  tokens: it loads exactly one `tokens.css` — the newest Tecton it knows about —
+  and each container loads its own `components.css` and mounts with
+  `scope="nested"`. One theme layer on the page means nothing is contested, and
+  component CSS stays version-correct because a StyleX atomic class name is a
+  hash of its declaration. `docs/engineering/micro-frontends/README.md` is the
+  consumer-facing version of this.
+
+`tokens.css` is the whole of `theme.css`, which includes the theme's own
+component overrides (`.astryx-button` rules inside `@layer astryx-theme`). That
+is what a theme is: those rules ship with the tokens, and they are all inside
+the theme's `@scope`. The build asserts the honest form of "no component
+styling" — no `.astryx`/`.tecton` rule _outside_ that scope.
+
+### 8. Verify
 
 The build refuses to finish unless:
 
@@ -203,7 +291,16 @@ The build refuses to finish unless:
 - `dist/tecton.css` contains `@layer reset`, `@layer astryx-base` and
   `[data-astryx-theme="tecton"]`;
 - `dist/css/tecton-components.css` contains at least one `.tecton` class, i.e.
-  StyleX really ran.
+  StyleX really ran;
+- every entry point declares the layer order;
+- the two reset-free entry points contain no `@layer reset` block, and
+  `tecton-no-reset.css` is still themed and still carries Tecton's components;
+- `tecton-tokens.css` has no `.astryx`/`.tecton` rule outside the theme
+  `@scope`, and does contain that scope;
+- `tecton-components.css` and `tecton-components-no-reset.css` contain no
+  `[data-astryx-theme=` scope at all, and do contain Tecton's components;
+- every `.css` path in `package.json#exports` resolves to a file that was just
+  written, and there are exactly as many of them as the build produced.
 
 ## dist layout
 
@@ -211,9 +308,14 @@ The build refuses to finish unless:
 dist/
   index.js / index.d.ts            entry point (the barrel)
   tecton.css                       @tecton/react/styles.css
+  tecton-no-reset.css              @tecton/react/styles-no-reset.css
+  tecton-tokens.css                @tecton/react/tokens.css
+  tecton-components.css            @tecton/react/components.css
+  tecton-components-no-reset.css   @tecton/react/components-no-reset.css
   components/Button/…              Button, compiled + declarations
   components/Panel/…               Panel, compiled + declarations
   provider/TectonProvider.js       the provider
+  runtime/rootRegistry.js          the document-keyed root-ownership registry
   theme/
     index.js                       @tecton/react/theme
     tecton.js / tecton.d.ts        GENERATED built theme (overwrites the placeholder)
@@ -230,8 +332,8 @@ dist/
     reset.css, foundation.css, tecton-components.css, tecton-theme.css
 ```
 
-`package.json#exports` maps `.`, `./styles.css`, `./theme`, `./Button`,
-`./Panel` and `./package.json`. Adding a component means adding a directory
+`package.json#exports` maps `.`, the five `*.css` entry points, `./theme`,
+`./Button`, `./Panel` and `./package.json`. Adding a component means adding a directory
 under `src/components/`, exporting it from `src/index.ts`, and adding an
 `exports` entry — the build picks it up with no further configuration.
 
@@ -287,6 +389,17 @@ in Tecton's own terms. `apps/docs/scripts/generate-data.mjs` loads every
 and writes sorted, typed modules into `apps/docs/src/generated/`, which is the
 only place the site reads documentation from. That directory is generated and
 git-ignored; `dev`, `build` and `typecheck` all regenerate it first.
+
+## The micro-frontend harness
+
+`fixtures/consumers/mfe-harness` builds the package, derives a second "released
+version" from the built `dist/` (three retuned tokens and a Panel whose padding
+moved, so its StyleX class is a different hash), bundles both into separate
+IIFEs with their own React, and drives a two-container page in Chromium.
+
+`pnpm check:mfe` builds and runs it. It is **not** part of `pnpm check`: it
+rebuilds the package a second time and launches a browser, and neither is worth
+adding to every check. The fixture's own README lists what the spec asserts.
 
 ## Extending this
 

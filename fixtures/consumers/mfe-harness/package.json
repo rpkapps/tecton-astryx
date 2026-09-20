@@ -1,0 +1,25 @@
+{
+  "name": "@tecton-fixture/mfe-harness",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Two independently built versions of @tecton/react on one page, driven by Playwright, asserting the multi-version mitigations.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test:e2e": "playwright test",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "clean": "rm -rf dist test-results playwright-report"
+  },
+  "dependencies": {
+    "@tecton/react": "workspace:*",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "@types/node": "^24.10.1",
+    "@vitejs/plugin-react": "^5.2.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.6"
+  }
+}

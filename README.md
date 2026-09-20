@@ -9,6 +9,7 @@ one stylesheet, one provider.
 packages/react/              @tecton/react — the published package
 apps/docs/                   @tecton/docs — documentation site (private)
 fixtures/consumers/vite-app/ a minimal consumer, built in CI to prove the surface
+fixtures/consumers/mfe-harness/ two Tecton versions on one page, driven by Playwright
 scripts/                     repository-level tooling
 docs/engineering/            how the pipeline works
 design/, tokens/             design exploration (owned by the design phase)
@@ -18,16 +19,17 @@ design/, tokens/             design exploration (owned by the design phase)
 
 Run from the repository root:
 
-| Command             | What it does                                                          |
-| ------------------- | --------------------------------------------------------------------- |
-| `pnpm install`      | Install every workspace                                               |
-| `pnpm build`        | Build the packages, then the apps, then the consumer fixtures         |
-| `pnpm test`         | Run the unit tests                                                    |
-| `pnpm typecheck`    | Type-check every workspace (after a build — apps consume built types) |
-| `pnpm lint`         | ESLint across the repository                                          |
-| `pnpm format:check` | Prettier, check only (`pnpm format` writes)                           |
-| `pnpm check`        | Everything above, in the order CI runs it                             |
-| `pnpm clean`        | Remove build output                                                   |
+| Command             | What it does                                                            |
+| ------------------- | ----------------------------------------------------------------------- |
+| `pnpm install`      | Install every workspace                                                 |
+| `pnpm build`        | Build the packages, then the apps, then the consumer fixtures           |
+| `pnpm test`         | Run the unit tests                                                      |
+| `pnpm typecheck`    | Type-check every workspace (after a build — apps consume built types)   |
+| `pnpm lint`         | ESLint across the repository                                            |
+| `pnpm format:check` | Prettier, check only (`pnpm format` writes)                             |
+| `pnpm check`        | Everything above, in the order CI runs it                               |
+| `pnpm check:mfe`    | Build and run the micro-frontend harness (browser, not part of `check`) |
+| `pnpm clean`        | Remove build output                                                     |
 
 Per workspace, for example:
 
@@ -45,6 +47,13 @@ pnpm --filter @tecton/docs dev
 | `scripts/check-docs-drift.mjs`                        | a component has no doc, a documented prop does not exist, a declared prop is undocumented, or an example is missing or does not compile       |
 | `packages/react/scripts/generate-palette.mjs --check` | the generated colour palette has drifted from `tokens/tecton.tokens.json`                                                                     |
 | `packages/react/scripts/generate-icons.mjs --check`   | the generated icon components have drifted from `design/icons/tecton/`                                                                        |
+
+`pnpm check:mfe` builds `fixtures/consumers/mfe-harness` — two independently
+built versions of `@tecton/react` on one page — and asserts the multi-version
+mitigations in Chromium. It is deliberately separate from `pnpm check`: it
+rebuilds the package a second time and launches a browser. Read
+`docs/engineering/micro-frontends/README.md` before shipping Tecton into a
+micro-frontend.
 
 `node scripts/capture-fidelity.mjs` screenshots the theme gallery at
 `/preview/theme` in both colour modes into `docs/design/fidelity/`; the renders
@@ -64,6 +73,8 @@ Phase 4 builds that.
   on, how its props map, and where Tecton's design and the upstream model
   disagree.
 - `docs/engineering/build-pipeline.md` — how the package is built.
+- `docs/engineering/micro-frontends/README.md` — what a host shell must do when
+  several Tecton versions share a page, and what is unsupported.
 - `docs/design/fidelity-report.md` — what survived the port from the design, what
   was approximated, and what could not be expressed. Read its open questions.
 - `docs/design/light-mode.md` — Tecton is designed dark; this is how light mode

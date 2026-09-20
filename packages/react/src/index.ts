@@ -14,6 +14,11 @@ export type {
   TectonProviderProps,
   TectonColorMode,
 } from './provider/TectonProvider.js';
+export {
+  configureTectonRoot,
+  type TectonScope,
+  type ConfigureTectonRootOptions,
+} from './provider/TectonProvider.js';
 
 /* Actions --------------------------------------------------------------- */
 
