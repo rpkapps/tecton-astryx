@@ -9,6 +9,18 @@ components are also rendered by somebody else's theme.
 
 This is the answer, measured rather than eyeballed.
 
+It is in **two parts**, because there are two ways for a theme to be wrong and
+only one of them shows up in a render nobody has touched.
+
+- **Part one — the resting render.** Geometry, props and focus rings, diffed
+  element by element against the reference theme. Sections up to "What is not
+  covered".
+- **Part two — states and paints.** The paint of every stateful control through
+  rest, hover, press, the state change and keyboard focus, on both renders.
+  Sections from "States and paints" onward. Part one came back clean while a
+  `ToggleButton` was painting nothing at all when pressed; part two is why that
+  is no longer possible.
+
 ## What was measured, and against what
 
 Upstream's own documentation site renders its examples under
@@ -408,13 +420,10 @@ and a severity fill is not the page.
 
 ## What is not covered
 
-- **Hover and pressed states.** The diff measures a resting render. The hover
-  and pressed fills are checked by the theme tests against
-  `design/foundations/colors.json` and shown in the state matrix in
-  `docs/design/fidelity/`, but nothing here drives a pointer over 646 examples.
-  What *is* covered is the mechanism: §4 and §5 are both about a theme having
-  taken away the component's say in **when** a hover happens, which is visible
-  at rest in the rules rather than in a render, and both are pinned by tests.
+- **Hover and pressed states** — not by *this* diff, which measures a resting
+  render. They are measured in Part two, which drives a pointer over all 646
+  examples; §4 and §5 above are the part of the mechanism that is visible at
+  rest, and §14 below is the rest of it.
 - **Light mode, structurally.** The diff runs in dark, the mode the design was
   transcribed from. Every token's light side is derived by the rule in
   `docs/design/light-mode.md` and asserted numerically, including its contrast,
@@ -423,3 +432,484 @@ and a severity fill is not the page.
   larger page-scale examples exceed.
 - **`apps/docs`**, which renders these examples for people rather than for a
   diff, and is somebody else's to change.
+---
+
+## Part two — states and paints
+
+Everything above measures a render **nobody has touched**. That was enough to
+find a theme taking a button group apart and a theme that had stopped drawing
+focus rings, and it is structurally blind to the other half of what a theme
+says: a control's paint when it is hovered, held down, checked, pressed or
+selected. A resting diff cannot tell a `ToggleButton` whose activated fill is
+right from one whose activated fill compiles to a selector that matches nothing
+in the document — both render an unpressed toggle correctly, and the run comes
+back clean.
+
+It came back clean. The toggle painted nothing.
+
+So `fixtures/theme-audit/scripts/state-audit.mjs` drives the controls.
+
+## States and paints — what was measured
+
+The same 646 examples, the same two renders — Tecton dark, and the identical
+example files resolved onto `@astryxdesign/core` under
+`@astryxdesign/theme-neutral`. In each one, the harness collects every
+**stateful control**:
+
+`[aria-pressed]`, `[role="switch"]`, `input[type=checkbox]`,
+`input[type=radio]`, `[role="tab"]`, `[role="radio"]` (segmented control),
+`[aria-selected]`, `[aria-expanded]`, `[role="menuitemcheckbox"]` /
+`[role="menuitemradio"]`, `[role="treeitem"]`, `[aria-current]`,
+`[role="slider"]`, a selectable or clickable card, and a link — up to three of
+each kind and eight per example, and only the ones inside the 1100×900 viewport,
+because the driver points a real mouse at them.
+
+A checkbox's focusable element is a visually hidden `<input>` and a switch's is
+a sibling of its track, so the paint is read from the control's **paint root**:
+the nearest ancestor that occupies space, which is the box holding both the
+input and whatever draws for it. That root and up to 24 of its visual
+descendants are recorded — `background-color`, `background-image`, `color`, all
+four border colours and widths, `box-shadow`, `outline`, `opacity`, `transform`,
+`font-weight` and `text-decoration` — in five conditions:
+
+| | |
+| --- | --- |
+| **rest** | the page as loaded, pointer parked in the corner |
+| **hover** | the mouse moved onto the control |
+| **active** | the mouse button held down on it |
+| **changed** | after the click completes, with the pointer moved away |
+| **focused** | a keypress to establish keyboard modality, then focus moved programmatically — a real Tab lands wherever the tab order says, which is what Part one walks |
+
+Every control gets a **freshly loaded page** before its turn, because a click on
+one control moves others: a radio group, an accordion, a menu that opens over
+the next item. A "rest" measured after that is not rest.
+
+Both renders are driven in parallel, and `--light` adds a Tecton light capture
+of the first control of each example, recorded rather than charged — the design
+was transcribed from the dark rendering, and light is derived from it by the
+rule in `docs/design/light-mode.md`.
+
+### What counts as a finding
+
+| Kind | Meaning |
+| --- | --- |
+| `flattened` | the reference render's paint moves between rest and this state and Tecton's does not — a theme rule has painted over a state the component draws |
+| `flat-hover` | the same, for hover, which is the one state a user meets without committing to anything |
+| `indistinct` | Tecton's paint in this state is the same as Tecton's own hover paint, so the state cannot be told from a passing pointer |
+| `contrast` | ink inside the control, in this state, on the surface that state paints behind it: under 4.5:1 for text or 3:1 for a glyph (WCAG 1.4.3, 1.4.11), where the reference clears the same bar |
+
+Two things are deliberately **not** charged. A state neither render reaches — a
+click that toggled nothing on either side — compares nothing. And a disabled
+control is exempt from the contrast rule, because "greyed out" is the platform's
+disabled affordance and WCAG 1.4.3 exempts it.
+
+Colours are compared with a tolerance, and the tolerance is the difference
+between measuring a state and measuring a rounding. Almost every state style in
+the reference theme is a `color-mix()` with 5–15 % of a tint, and at either end
+of a ramp that mix moves a channel by two or three units: upstream's link goes
+`#f1f1f1` → `#f3f3f3` on hover, and on an inverted surface `#1b1b1b` →
+`#171717`. Compared exactly, those read as "the reference paints a hover state",
+and any theme that does not match them to the last digit is charged with
+flattening something nobody can see.
+
+So two colours count as the same paint when they are within **four units out of
+255 on every channel**, *or* within **1.06:1** of each other. The second
+yardstick is there because a flat channel count is the wrong measure at the dark
+end, and it leaves a comfortable margin: the smallest real state change in
+either theme — a row lifting to its hover fill — is 1.15:1. Everything that is
+*not* a colour — a shadow that gains an offset, an outline that changes style, a
+weight that steps up, an underline that appears — is compared exactly.
+
+One bug in the instrument is worth naming, because it silently weakened the
+contrast rule: Chromium serialises a resolved `color-mix()` as
+`color(srgb 0.22 0.2 0.24)`, with 0–1 floats. The probe's colour parser only
+knew `rgb()`, so a hovered row's fill read as "not a colour", the compositor
+fell through to the page, and every ratio measured on a hovered control was
+measured against the wrong surface. Fixed, and the numbers below are from after
+it was.
+
+Reproduce with:
+
+```
+pnpm --filter @tecton/react build
+pnpm --filter @tecton-fixture/theme-audit audit:states -- --out <dir>
+node fixtures/theme-audit/summarise-states.mjs <dir>/results.json
+```
+
+## States and paints — result
+
+All 646 examples, dark mode, **672 stateful controls**. Both columns are
+measured with the same instrument — the "before" run is the theme as it stood at
+the end of Part one, rebuilt and re-driven.
+
+| | Before | After |
+| --- | ---: | ---: |
+| Examples with a finding | **81** of 646 | **0** of 646 |
+| Total findings | **252** | **0** |
+| — a state Tecton does not paint and the reference does (`flattened`) | 58 | 0 |
+| — the same, on hover (`flat-hover`) | 40 | 0 |
+| — a state that paints exactly like hover (`indistinct`) | 0 | 0 |
+| — ink under its contrast bar in some state (`contrast`) | 154 | 0 |
+
+Grouped by root cause, which is how they were fixed:
+
+| Root cause | Before | After |
+| --- | ---: | ---: |
+| 13. A state key that compiles to a selector nothing matches | 18 | 0 |
+| 14. A state colour said as the property instead of as the token the component mixes from | 80 | 0 |
+| 15. A fill colour used as ink | 54 | 0 |
+| 16. The hover and press washes lifted the surface out from under its ink | 97 | 0 |
+| 17. The page's ghost ink on a banner's severity fill | 3 | 0 |
+
+Two more entries below carry no row here, because neither is something this
+audit can see. §18 is the instrument. §19 is a place where the theme and the
+*reference* agree with each other and both disagree with the Tecton design —
+which a diff against the reference cannot, by construction, report.
+
+The numbering continues Part one's twelve. §18 below is a sixth entry with no
+row in this table: it is the instrument being taught the difference between a
+paint and a rounding, and it is why the "before" column reads 252 where the
+first, cruder run reported 300.
+
+**Part one is unaffected.** The resting audit, re-run on the same build, still
+reports 646 examples, **0 structural findings**, 4 examples with a finding and 5
+focus findings — all of them the one recorded deviation in its own Result
+section, the focus pink on a light surface.
+
+### Before and after
+
+Tecton dark on the left of each pair, the reference render for comparison.
+
+| | Before | After | Reference |
+| --- | --- | --- | --- |
+| §13 `ToggleButton` — "Pressed" identical to "Default", then an activated fill | ![](theme-audit/toggle-button-pressed-before.png) | ![](theme-audit/toggle-button-pressed-after.png) | ![](theme-audit/toggle-button-pressed-neutral.png) |
+| §13 `ToggleButton`, activated, hovered — nothing, then a step lighter | ![](theme-audit/toggle-button-hover-before.png) | ![](theme-audit/toggle-button-hover-after.png) | ![](theme-audit/toggle-button-hover-neutral.png) |
+| §14 `Switch` off — a featureless mauve blob, then an outlined track with a knob in it | ![](theme-audit/switch-off-before.png) | ![](theme-audit/switch-off-after.png) | ![](theme-audit/switch-off-neutral.png) |
+| §14 `Switch` on — the design's violet track and near-white knob, in all three | ![](theme-audit/switch-on-before.png) | ![](theme-audit/switch-on-after.png) | ![](theme-audit/switch-on-neutral.png) |
+| §14 `Switch` on, hovered — inert, then the track brightens | ![](theme-audit/switch-hover-before.png) | ![](theme-audit/switch-hover-after.png) | ![](theme-audit/switch-hover-neutral.png) |
+| §19 `TextInput` validation — a solid tinted box bleeding into the field, then a coloured rule and plain coloured helper text | ![](theme-audit/text-input-validation-before.png) | ![](theme-audit/text-input-validation-after.png) | ![](theme-audit/text-input-validation-neutral.png) |
+| §14 `CheckboxInput`, checked, hovered — inert, then the chip brightens a step | ![](theme-audit/checkbox-hover-before.png) | ![](theme-audit/checkbox-hover-after.png) | ![](theme-audit/checkbox-hover-neutral.png) |
+| §14 `RadioList`, checked — the ring, the transparent centre and the near-white dot | ![](theme-audit/radio-before.png) | ![](theme-audit/radio-after.png) | ![](theme-audit/radio-neutral.png) |
+| §15 `Stepper` — the accent glyphs at 2.2:1 and the number badge at 2.0:1, then in the adornment lilac | ![](theme-audit/accent-as-ink-before.png) | ![](theme-audit/accent-as-ink-after.png) | ![](theme-audit/accent-as-ink-neutral.png) |
+| §16 `SideNav`, an item held down — the row lifted 20 % under a glyph chosen against the page, then 10 % | ![](theme-audit/pressed-row-before.png) | ![](theme-audit/pressed-row-after.png) | ![](theme-audit/pressed-row-neutral.png) |
+| §17 `Banner` — the collapse chevron and the close mark at 1.2:1 on the warning band, then in the band's own ink | ![](theme-audit/banner-ghost-before.png) | ![](theme-audit/banner-ghost-after.png) | ![](theme-audit/banner-ghost-neutral.png) |
+| §18 `Link`, hovered — unchanged, which is what the design asks for | ![](theme-audit/link-hover-before.png) | ![](theme-audit/link-hover-after.png) | ![](theme-audit/link-hover-neutral.png) |
+
+## States and paints — findings, by root cause
+
+### 13. A state key that compiles to a selector nothing matches
+
+`components.ts`, `toggle-button: {isPressed: {…}}`.
+
+The theme compiler turns a **bare** state key into
+`[data-<state>="<state>"]` — `checked` becomes `[data-checked="checked"]`,
+`selected` becomes `[data-selected="selected"]` — and that is right for every
+state in the system but two. `ToggleButton` writes
+`themeProps('toggle-button', {isPressed: isPressed ? 'true' : 'false'})`, so the
+attribute is `data-is-pressed="true"`. The bare key compiled to
+`.astryx-toggle-button[data-is-pressed="isPressed"]`, which matches nothing at
+all: the toggle flipped `aria-pressed` correctly, announced itself correctly,
+and painted **nothing**, in all six `ToggleButton` and `ToggleButtonGroup`
+examples.
+
+The compiler can express it. `parseStyleKey` splits a key on `:` and only the
+*prop* half is validated against the component's known props and states, so
+`'isPressed:true'` is accepted and compiles to `[data-is-pressed="true"]`. That
+is the fix.
+
+`SelectableCard` is the only other target that reflects a state as
+`true`/`false`; Tecton does not theme it. `builtTheme.test.ts` now asserts
+against the built stylesheet that `[data-is-pressed="true"]` is present, that
+`[data-is-pressed="isPressed"]` is not, and — generically — that the only
+attributes whose value repeats their own name are the three states that really
+do reflect that way.
+
+**The second half of the same bug, and the thing that makes it interesting.**
+`ToggleButton` paints its pressed background from `--color-overlay-pressed`
+(`pressedStyles.background` in core's `ToggleButton.tsx`), and `NO_OVERLAY_TINT`
+on the `button` base sets that token to `transparent`. So even with the selector
+fixed there would be no fill — *if that were the mechanism in play*. It is not,
+and re-pointing the token does not work:
+
+- `ToggleButton` renders `<Button variant="ghost">`, and the theme's
+  `variant:ghost` rule sets `background-color` from `@layer astryx-theme`, which
+  beats **any** StyleX declaration regardless of specificity. The component's
+  own pressed paint never gets a say.
+- `Button` also composites its press state as a `background-image` **gradient**
+  of that same token. The design's activated fill is opaque, so a re-pointed
+  token would paint the resting activated fill *over* the `:active` one and
+  flatten the press — trading one flattened state for another.
+
+So the fill is the theme's own `background-color` on `isPressed:true`, and
+`:hover` and `:active` are stated beside it for the same cascade reason: without
+them the ghost variant's hover fill (`#3a343e`, *darker* than the activated
+`#4e4853`) wins on a pressed toggle, and hovering an activated toggle looks like
+turning it off. `design/components/toggle-button.md` measures the activated
+square at `~#433d47`–`#4e4853` with a brighter icon `~#cbc4d5`; the hover and
+press steps are the next two stops of the same graphite ramp, because the matrix
+documents no hover or pressed column for the control.
+
+`--color-overlay-pressed` therefore stays suppressed on the button family and
+stays live everywhere else — rows, menu items, cards, thumbnails, which have no
+Tecton fill of their own and press through it. That is pinned by a test.
+
+### 14. A state colour said as the property instead of as the token the component mixes from
+
+`components.ts`, `checkbox-indicator`, `radio-indicator`, `switch`,
+`switch-thumb`, `slider-thumb`.
+
+This is §5 of Part one — *"the colour goes into the mechanism"* — one level
+down. Part one was about a theme taking away the component's say in **when** a
+hover happens. This is about taking away its ability to compute **what** the
+hover is.
+
+Every one of these controls paints a state from a token and derives the next
+state from the *same* token with a `color-mix()`:
+
+```
+backgroundColor: {
+  default: colorVars['--color-accent'],
+  [when.ancestor(':hover', scope)]:
+    `color-mix(in srgb, ${colorVars['--color-accent']}, ${colorVars['--color-tint-hover']} 15%)`,
+}
+```
+
+A theme rule that sets `background-color` on `checked` lands in the later layer
+and overrides **both** branches. The resting colour comes out right, so a
+resting diff sees nothing, and the control is inert under the pointer.
+
+Measured: 36 findings on the checkbox indicator, 36 on the radio indicator, 8 on
+the switch. Said as the token — `--color-background-surface` for the box,
+`--color-border-emphasized` for its rule, `--color-accent` for the checked chip,
+`--color-background-gray` for the switch's off track — the component keeps its
+mix and lands on the value the design asks for anyway:
+`design/components/checkbox.md` says *"Hovered: the box border/fill brightens a
+step (`#bab3c0` → `#cac5d2`)"*, and a 20 % white mix of `#bab3c0` **is**
+`#c8c2cc`.
+
+Three more things fell out of doing it this way:
+
+- **The off switch was a blob.** `design/components/switch.md` gives the off
+  track and the off knob *the same* mauve `#aaa1b2`, because one of them is a
+  1px ring: *"the off track is an outline, not a filled grey pill — a
+  distinctive, low-ink treatment"*. Part one removed a 1px border from the
+  switch (correctly — it ate 2px of a border-box track and overrode the
+  forced-colours rule) and replaced it with a **fill** in the border's colour.
+  Track and knob then cancelled out and the knob disappeared. The ring is now an
+  inset `box-shadow`, which costs no layout, leaves `border-width: 0` and the
+  `CanvasText` forced-colours branch alone, and displaces nothing — `Switch`
+  draws no shadow of its own. `checked+disabled` is expressible as a key, so the
+  design's "disabled-on drops the violet to neutral grey" is now reachable too.
+- **Forced colours survives.** `switch-thumb`, and the radio's dot, both carry a
+  `@media (forced-colors: active)` branch (`CanvasText` / `HighlightText`) that a
+  `background-color` from the theme layer overrode with a colour that does not
+  exist in that mode. Re-pointing the token they read leaves the branch standing.
+- **`radio-indicator-dot` stopped being a target at all** — the dot paints from
+  `--color-on-accent`, which the checked ring re-points.
+
+`Link` belongs to the same family, and is the one place where saying it as the
+token does not get the state back. It is treated in §18.
+
+`slider-thumb` was the same rule with no finding behind it — no example in the
+catalogue puts a slider thumb where the driver can point at one — so it is
+fixed on inspection rather than on measurement, which is noted here rather than
+counted above.
+
+### 15. A fill colour used as ink
+
+`tectonTheme.ts` maps `--color-accent` to the design's *primary button
+background* and `--color-error` / `--color-success` to the *filled* severity
+colours. That is right: those are the roles the design gives those names.
+
+But several components read those same tokens as a **foreground**:
+
+| Component | What it paints with the fill token | Measured |
+| --- | ---: | ---: |
+| `Icon color="accent"` | the glyph | 2.20:1 |
+| `Stepper` indicator | the completed/in-progress glyph | 2.20:1 |
+| `Stepper` number badge | its own digit, on its own accent fill | 1.98:1 |
+| `MetadataList` "Show more" | the button's label | 2.20:1 |
+| `ChatToolCalls` | the `+6` / `-3` diff stat | 4.02:1 hovered |
+
+Tecton already draws this distinction for text — `--color-text-accent` is the
+design's *adornment* lilac, and `--color-icon-accent` is the same value — so the
+fix is to hand the components that use accent as ink the ink. Scoped to the
+targets that need it, never globally: `--color-accent` on `stepper` itself would
+reach a primary button inside a step's content panel, whose fill this is.
+
+- `icon: {'color:accent': …}` — the same shape as `link`'s, on the one prop
+  value that means it.
+- `step-indicator`, `step-connector` — one re-point fixes the glyph *and* the
+  number badge at once, because the adornment lilac is light where the accent is
+  dark, and the badge's digit is `--color-background-surface`.
+- `metadata-list`.
+- `chat-tool-calls` — `--color-success` → `--color-text-green`,
+  `--color-error` → `--color-text-red`: the same two severities as ink, four
+  ramp steps lighter.
+
+### 16. The hover and press washes lifted the surface out from under its ink
+
+`tectonTheme.ts`, `--color-overlay-hover: ink('10')`,
+`--color-overlay-pressed: ink('20')`.
+
+These two wash every row, nav item, tree item, menu item and calendar day that
+Tecton has no named fill for. The ink on top of them is chosen against the
+**page**, and at 20 % white a pressed row came up to `#4a494c` — which took
+`--color-icon-secondary` on it to **2.44:1**, under the 3:1 bar, on the side
+nav, the top nav, the tree list, the mega menu and a multi-selector's field
+icons at once. 97 findings across 44 examples, and every one of them the same
+arithmetic.
+
+The washes are the one part of this theme with no design source: Tecton states
+are named fills, and these were invented here at 10 % and 20 %. At 5 % and 10 %
+— which is exactly what the layer underneath uses, so nothing is being invented
+to get there — the same glyph clears the bar everywhere, and every marginal case
+in the list goes with it.
+
+One more shortfall of the same shape needed a different answer.
+`<Icon color="secondary" />` *inside a button* keeps `--color-icon-secondary`
+while the button under it fills with its own hover or press colour, and on the
+tertiary press fill that pairing measures 2.88:1 whatever the wash does. The
+design already says what should happen — `design/components/toggle-button.md`,
+*"Enabled: icon `~#9a91a2`; Activated: a brighter icon `~#cbc4d5`"* — so the
+`secondary`, `ghost` and `outlined` emphases now re-point
+`--color-icon-secondary` on `:hover` and `:active` to the ink their label
+already takes.
+
+### 17. The page's ghost ink on a banner's severity fill
+
+`components.ts`, `button['variant:ghost'].color`.
+
+A ghost button has no fill at rest, so it wears whatever is behind it — and one
+of the places it is dropped is inside a `Banner`, on a saturated severity band.
+A banner's collapse chevron measured **1.21:1** on the warning fill.
+
+This is the same shape as §8 of Part one, which re-pointed the *focus ring*
+inside a banner to the ink the design already puts on that fill. `bannerStatus()`
+already re-points `--color-text-*` and `--color-icon-*`; the ghost button's ink
+was the one thing on that surface still stated as a literal value. It is now a
+theme-local token, `--tecton-color-action-tertiary-text`, which `bannerStatus()`
+re-points alongside the others. No palette value changed.
+
+### 18. A link whose reference hover is below a just-noticeable difference
+
+This one is the instrument, not the theme, and it is worth writing down because
+the first reading of it was wrong.
+
+Six findings said Tecton's `Link` does not paint a hover or an active state
+where the reference does. It does not — but neither does the reference, to any
+perceptible degree: upstream's link mixes 15 % of `--color-tint-hover` into an
+ink that is already `#f1f1f1` and comes out at `#f3f3f3`; inside a `Toast`,
+where the surface is inverted, `#1b1b1b` becomes `#171717`. Four units of a
+channel, 1.04:1, on text.
+
+And the design is explicit that Tecton's link should not move.
+`design/components/link.md` tabulates both underline policies and gives the
+hovered row as *"underline appears; text unchanged"* and *"underlined,
+unchanged"*. The affordance is the underline, which Tecton draws — and all six
+findings were on the two examples that set `hasUnderline`, where the underline
+is there at rest and there is nothing else to change.
+
+Two consequences:
+
+1. The comparison gained the two tolerances described above, so a
+   sub-perceptual reference change is no longer counted as a state the theme
+   failed to match. Non-colour differences are still exact. That is the whole
+   of the difference between the 300 findings the first run reported and the
+   252 in the table.
+2. While looking at it, one real thing turned up. The moment a theme names
+   `link`, `text` or `heading` as a target, the compiler emits its own
+   `.astryx-link[data-color="accent"] { color: var(--color-text-accent) }`
+   (`generateColorOverrides`, so a colour prop always beats a token change),
+   later in the same layer. Tecton's `link` rule set `color` directly, which
+   that rule overwrote anyway. Saying it as `--color-text-accent` is what
+   actually reaches the emitted rule, and it leaves every other value of the
+   `color` prop alone. The link renders identically and the theme now says it
+   in the one place that is not overwritten. It also means `Link`'s own hover
+   `color-mix()` is unreachable for *any* theme that styles `link` — which
+   costs Tecton nothing, and would cost a theme whose design did want a
+   coloured link hover quite a lot.
+
+### 19. Validation drawn as a box where the design draws ink
+
+`components.ts`, `field-status`.
+
+This one has no finding behind it, and it could not have. `FieldStatus` paints
+its message on a `--color-{error,warning,success}-muted` wash — that is what
+the component is drawn as, and the reference theme draws it the same way — so
+the diff sees two renders agreeing and says nothing. It is in this report
+because it is one of the three things a person looked at and called broken, and
+because the fix belongs with the rest.
+
+`design/components/textfield.md` draws validation as *"Helper text below the
+field … replaced by 'Validation failed' in red in the Error state"*, and the
+state matrix gives the error as *"border, label and helper all red"*: ink on
+the page, with nothing behind it. There is no box anywhere in the
+transcription.
+
+Worse, on Tecton the box did not stay under the field. The `attached` message
+carries `margin-top: calc(-1 * 6px)` so it tucks under the control, which
+upstream hides behind an **opaque** input surface — and Tecton's field is
+transparent, because `design/components/textfield.md` says the outlined field
+is *"transparent fill, 1px grey border"*. So the wash showed through the bottom
+6px of every errored, warned and succeeded field in the system. That is the
+"the field body itself is tinted" half of the report.
+
+`field-status` now sets `background-color: transparent` on its base, which
+removes both at once and costs no geometry: the padding that positioned the
+text still positions it, and the per-type inks the theme already set are what
+is left. The `--color-*-muted` tokens are untouched — `Banner`'s muted
+severities and `ChatComposer`'s error strip are drawn as tinted surfaces on
+purpose, and both read correctly in dark and light.
+
+The fidelity report had this recorded as a gap under "TextField" and as
+deviation 2 in §5; both now say what the theme does instead.
+
+## States and paints — what was deliberately left
+
+- **No palette value moved.** Every colour above is a stop of a ramp in
+  `tokens/tecton.tokens.json`, reached through `semantic.ts`. Five new roles
+  were *named* (`toggleButton.activatedFill` / `activatedHoverFill` /
+  `activatedPressFill` / `activatedText`, and `switch.disabledBorder`) and one
+  new theme-local token added (`--tecton-color-action-tertiary-text`, which is
+  in `theme-token-manifest.json`); every one of them resolves to a value the
+  design already measures.
+- **No component behaviour.** Everything here is a colour, said in a different
+  place. The one geometric-looking change — the switch's ring as an inset
+  shadow rather than a border — is the *removal* of a geometric change: a border
+  resizes a border-box track, an inset shadow does not.
+- **The `--color-*-muted` washes.** Turning off `FieldStatus`'s box was done on
+  the `field-status` target, not by re-weighting the tokens, because `Banner`'s
+  muted severities and `ChatComposer`'s error strip are drawn as tinted surfaces
+  on purpose and read correctly in both modes.
+- **`--color-accent` itself.** It is the design's primary-button fill and it
+  stays that. Only the targets that read it as ink were re-pointed.
+
+## States and paints — what is still not covered
+
+- **Drag.** A slider thumb is captured at rest, hovered, pressed and focused,
+  but nothing here drags one along its track. `[role="slider"]` is excluded from
+  the state comparison for that reason — a driver that presses a thumb and
+  releases without moving is not exercising the control.
+- **Long-press, double-click, multi-select, and any state reached by more than
+  one gesture.** The driver does one click per control.
+- **Controls below the fold.** Only what is inside the 1100×900 viewport can be
+  pointed at; the resting audit measures the whole tree.
+- **More than eight controls per example, or three of a kind.** A page with 300
+  links would otherwise become the audit.
+- **Light mode, as a bar.** `--light` records the light render's contrast
+  failures per example; they are not counted as findings. Light is derived, and
+  the derivation's own numbers are asserted in
+  `packages/react/src/theme/__tests__/contrast.test.ts`.
+
+  What it recorded on the final run, for the record: **125 shortfalls across 14
+  of the 294 examples** that had a light capture, in three groups. 51 of them
+  are content inside the **top-nav band**, which Tecton paints black in *both*
+  modes while the ink inside it resolves light mode's near-black primary and
+  secondary — 1.21:1 and 2.81:1. 44 are `--color-text-disabled` on the light
+  page at 2.22:1, which is the platform's disabled affordance and exempt from
+  WCAG 1.4.3. The remaining two are a 4.15:1 pairing. The top-nav one is a real
+  derivation gap and belongs with the six already listed in
+  `docs/design/light-mode.md`; it is not fixed here, because the band's ink
+  reaches a dozen components through inheritance and getting it right needs the
+  light render measured as a first-class target rather than as a footnote.

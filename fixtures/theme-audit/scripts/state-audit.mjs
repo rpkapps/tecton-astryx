@@ -103,16 +103,156 @@ const READY_SETTLE = 350;
 /** The states captured for every control, in the order the driver walks them. */
 const STATES = ['hover', 'active', 'changed', 'focused'];
 
-function signature(paint) {
-  if (!paint) return null;
-  return paint.rows
-    .map(
-      row =>
-        `${row.path}|${row.bg}|${row.bgImage}|${row.color}|${row.border}|` +
-        `${row.shadow}|${row.outline}|${row.opacity}|${row.transform}|` +
-        `${row.weight}|${row.decoration}`,
-    )
-    .join('\n');
+/** The paint fields compared, in the order a row records them. */
+const PAINT_FIELDS = [
+  'bg',
+  'bgImage',
+  'color',
+  'border',
+  'shadow',
+  'outline',
+  'opacity',
+  'transform',
+  'weight',
+  'decoration',
+];
+
+const COLOUR_IN_VALUE =
+  /(?:rgba?|color|hsla?|oklch|oklab|lab|lch)\([^()]*\)|#[0-9a-fA-F]{3,8}\b/g;
+
+/**
+ * How far two colours may sit apart and still count as the same paint.
+ *
+ * Not zero, and that matters. Several of the reference theme's state styles
+ * are a `color-mix()` with 5–15 % of a tint, and where the resting value is
+ * already at one end of the ramp the mix moves a channel by two or three
+ * units: upstream's link goes `#f1f1f1` → `#f3f3f3` on hover. Compared
+ * exactly, that reads as "the reference paints a hover state", and any theme
+ * that does not match it to the last digit is charged with flattening a state
+ * nobody can see.
+ *
+ * Two yardsticks, because one is not enough. Four units out of 255 is below a
+ * just-noticeable difference and above the rounding — but a flat channel count
+ * is the wrong measure at the *dark* end, where the same mix takes `#1b1b1b`
+ * to `#171717`: four units and change, and invisible. So a pair also counts as
+ * the same paint when the two colours are within 1.06:1 of each other, which
+ * is the instrument's own vocabulary and leaves a comfortable margin: the
+ * smallest state change in either theme — a row lifting to its hover fill — is
+ * 1.15:1.
+ */
+const COLOUR_TOLERANCE = 4;
+const COLOUR_RATIO_TOLERANCE = 1.06;
+
+const channelLuminance = value => {
+  const s = Math.min(Math.max(value, 0), 255) / 255;
+  return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+};
+
+const luminance = colour =>
+  0.2126 * channelLuminance(colour.r) +
+  0.7152 * channelLuminance(colour.g) +
+  0.0722 * channelLuminance(colour.b);
+
+const contrastBetween = (a, b) => {
+  const la = luminance(a);
+  const lb = luminance(b);
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+};
+
+/** Parse the colour notations `getComputedStyle` actually returns. */
+function parseColour(token) {
+  const hex = /^#([0-9a-fA-F]{3,8})$/.exec(token);
+  if (hex) {
+    let digits = hex[1];
+    if (digits.length === 3 || digits.length === 4) {
+      digits = [...digits].map(char => char + char).join('');
+    }
+    if (digits.length !== 6 && digits.length !== 8) return null;
+    const value = Number.parseInt(digits.slice(0, 6), 16);
+    return {
+      r: (value >> 16) & 255,
+      g: (value >> 8) & 255,
+      b: value & 255,
+      a: digits.length === 8 ? Number.parseInt(digits.slice(6), 16) / 255 : 1,
+    };
+  }
+  const fn = /^(rgba?|color)\(([^()]*)\)$/.exec(token);
+  if (!fn) return null;
+  let parts = fn[2]
+    .trim()
+    .split(/[\s,/]+/)
+    .filter(Boolean);
+  // `color(srgb r g b / a)` — drop the colour space and scale 0–1 to 0–255.
+  let scale = 1;
+  if (fn[1] === 'color') {
+    if (parts[0] !== 'srgb') return null;
+    parts = parts.slice(1);
+    scale = 255;
+  }
+  const numbers = parts.map(Number);
+  if (numbers.length < 3 || numbers.slice(0, 3).some(Number.isNaN)) return null;
+  return {
+    r: numbers[0] * scale,
+    g: numbers[1] * scale,
+    b: numbers[2] * scale,
+    a: numbers.length > 3 && !Number.isNaN(numbers[3]) ? numbers[3] : 1,
+  };
+}
+
+function colourDiffers(a, b) {
+  const left = parseColour(a);
+  const right = parseColour(b);
+  if (!left || !right) return a !== b;
+  // A fully transparent colour is the same paint whatever its channels say.
+  if (left.a < 0.004 && right.a < 0.004) return false;
+  if (Math.abs(left.a - right.a) > 0.02) return true;
+  const withinChannels =
+    Math.abs(left.r - right.r) <= COLOUR_TOLERANCE &&
+    Math.abs(left.g - right.g) <= COLOUR_TOLERANCE &&
+    Math.abs(left.b - right.b) <= COLOUR_TOLERANCE;
+  if (withinChannels) return false;
+  return contrastBetween(left, right) > COLOUR_RATIO_TOLERANCE;
+}
+
+/**
+ * Two computed values, compared as "a skeleton plus a list of colours".
+ *
+ * The skeleton — everything that is not a colour — has to match exactly: a
+ * shadow that gains an offset, an outline that changes style, a weight that
+ * steps up are all real. The colours in it are compared with the tolerance
+ * above, in order.
+ */
+function valueDiffers(a, b) {
+  const left = String(a ?? '');
+  const right = String(b ?? '');
+  if (left === right) return false;
+  const leftColours = left.match(COLOUR_IN_VALUE) ?? [];
+  const rightColours = right.match(COLOUR_IN_VALUE) ?? [];
+  if (leftColours.length !== rightColours.length) return true;
+  if (
+    left.replace(COLOUR_IN_VALUE, '<c>') !==
+    right.replace(COLOUR_IN_VALUE, '<c>')
+  ) {
+    return true;
+  }
+  return leftColours.some((colour, index) =>
+    colourDiffers(colour, rightColours[index]),
+  );
+}
+
+/** Does this control paint differently in these two captures? */
+function paintDiffers(a, b) {
+  if (a == null || b == null) return a !== b;
+  if (a.rows.length !== b.rows.length) return true;
+  for (let i = 0; i < a.rows.length; i += 1) {
+    const left = a.rows[i];
+    const right = b.rows[i];
+    if (left.path !== right.path || left.tag !== right.tag) return true;
+    for (const field of PAINT_FIELDS) {
+      if (valueDiffers(left[field], right[field])) return true;
+    }
+  }
+  return false;
 }
 
 /**
@@ -162,8 +302,10 @@ async function captureControl(page, control) {
   return shot;
 }
 
-async function loadExample(page, origin, file, id) {
-  await page.goto(`${origin}/${file}?ex=${encodeURIComponent(id)}&mode=dark`);
+async function loadExample(page, origin, file, id, mode = 'dark') {
+  await page.goto(
+    `${origin}/${file}?ex=${encodeURIComponent(id)}&mode=${mode}`,
+  );
   await page
     .waitForFunction(
       () =>
@@ -202,13 +344,9 @@ function compare(tectonControls, neutralControls, id) {
     if (!neutral || !tecton.shot || !neutral.shot) continue;
     const label = tecton.astryx || tecton.tag;
 
-    const tRest = signature(tecton.shot.rest);
-    const nRest = signature(neutral.shot.rest);
-    const tHover = signature(tecton.shot.hover);
-
     for (const state of STATES) {
-      const tState = signature(tecton.shot[state]);
-      const nState = signature(neutral.shot[state]);
+      const tState = tecton.shot[state];
+      const nState = neutral.shot[state];
       if (tState == null || nState == null) continue;
       if (NO_STATE_KINDS.has(tecton.kind)) continue;
 
@@ -220,8 +358,8 @@ function compare(tectonControls, neutralControls, id) {
         if (!tMoved || !nMoved) continue;
       }
 
-      const neutralMoved = nState !== nRest;
-      const tectonMoved = tState !== tRest;
+      const neutralMoved = paintDiffers(nState, neutral.shot.rest);
+      const tectonMoved = paintDiffers(tState, tecton.shot.rest);
       if (neutralMoved && !tectonMoved) {
         findings.push({
           kind: state === 'hover' ? 'flat-hover' : 'flattened',
@@ -240,9 +378,9 @@ function compare(tectonControls, neutralControls, id) {
       if (
         state !== 'hover' &&
         tectonMoved &&
-        tHover != null &&
-        tState === tHover &&
-        signature(neutral.shot[state]) !== signature(neutral.shot.hover)
+        tecton.shot.hover != null &&
+        !paintDiffers(tState, tecton.shot.hover) &&
+        paintDiffers(nState, neutral.shot.hover)
       ) {
         findings.push({
           kind: 'indistinct',
@@ -408,16 +546,13 @@ async function main() {
         // rendering, and light is derived from it.
         const lightList = await loadExample(
           rig.light,
-          `${tectonSide.origin}`,
+          tectonSide.origin,
           'tecton.html',
           id,
+          'light',
         );
         record.lightControls = lightList.length;
         if (lightList.length > 0) {
-          await rig.light.evaluate(() => {
-            document.documentElement.setAttribute('data-theme', 'light');
-          });
-          await rig.light.waitForTimeout(STATE_SETTLE);
           const shot = await captureControl(rig.light, lightList[0]);
           record.light = {
             control: lightList[0].kind,

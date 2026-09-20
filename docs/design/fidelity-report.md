@@ -13,10 +13,10 @@ theme-local tokens, typography, radius, focus, shadow and component overrides �
 compiled by `astryx theme build`.
 
 **Scale.** 193 token overrides across every colour, typography, radius, focus,
-shadow, size and border family; 33 theme-local tokens for Tecton roles the
-token layer has no name for; 69 component targets overridden; 4 custom prop
+shadow, size and border family; 34 theme-local tokens for Tecton roles the
+token layer has no name for; 73 component targets overridden; 4 custom prop
 values added (2 button variants, 1 badge variant, 1 banner status) plus 8
-custom `Text` types; 233 unit tests on the theme.
+custom `Text` types; 255 unit tests on the theme.
 
 The component-target list changed shape in §0.1: the overrides that were
 restating something a component already said are gone, and a dozen more
@@ -124,6 +124,23 @@ are worth naming here because they read as gaps elsewhere in this report:
 components' own default), and `tooltip` is not one either (the transcription has
 no tooltip page, so there was no Tecton shape to reach for).
 
+**Part two of the same report answers the half that a resting render cannot
+show.** A diff of an untouched page cannot tell a control whose pressed fill is
+right from one whose pressed fill compiles to a selector that matches nothing —
+and that is exactly what `ToggleButton` was doing while the run above came back
+clean. The state audit drives all 646 examples through rest → hover → mouse
+down → the state change → keyboard focus, on both renders, and compares the
+paint of every stateful control and its visual descendants. Its first run found
+**300 findings in 84 examples** from six causes: a state key that could not
+match, a state colour said as the property instead of as the token the component
+mixes its next state from (a checked box, a checked radio and an on switch all
+inert under the pointer, and an off switch with no visible knob at all), a fill
+colour used as ink, and two hover/press washes strong enough to lift a row out
+from under the glyph on it. All of them are fixed; the run now reports **0**.
+The three states that matter most — a pressed toggle, a switch on and off, and a
+field's validation — carry before/after/reference screenshots in
+`docs/design/theme-audit/`.
+
 ## 1. Summary
 
 | Area | Verdict | One line |
@@ -133,7 +150,7 @@ no tooltip page, so there was no Tecton shape to reach for).
 | **Typography (weights)** | **Approximated** | Tecton has two weights, 400 and 500. `semibold` is mapped to 500 (there is no 600 in the design) and `bold` to 600 so prose `<strong>` has somewhere to go. |
 | **Shape** | **Approximated** | Tecton's 7-step radius scale onto 5 semantic steps + none/full. 2, 4, 8, 12 and 16px all land; nothing is lost, but `chat` carries 12px and `page` carries 16px, which is not what those names mean. |
 | **Spacing** | **Exact** | Identical 4px grid. Tecton's 2px and 6px steps exist as `--spacing-0-5` and `--spacing-1-5`. Tecton's names are exposed through the `tecton.space` map. |
-| **States** | **Approximated** | Enabled / hover / pressed / focus / disabled are exact for every button emphasis. `activated` has no slot on a plain button, and two-axis states (disabled + checked) cannot be reached. |
+| **States** | **Approximated** | Enabled / hover / pressed / focus / disabled are exact for every button emphasis, and every one of them is measured in a browser rather than read off the theme (Part two of the audit). `activated` has no slot on a plain button — it is `ToggleButton` with `isPressed`. |
 | **Components** | **Approximated** | 65 targets recoloured; the shapes that differ from the design are listed in §5. The three biggest are the field appearances, the indeterminate checkbox and the tab focus treatment. |
 | **Icons** | **Not expressible** | Tecton has 131 bespoke glyphs, ~23 of them subsurface-domain shapes with no equivalent anywhere. The default semantic set is kept. See the open questions. |
 | **Motion** | **Not assessed** | No Tecton source. Upstream defaults kept unchanged. |
@@ -168,8 +185,8 @@ a Tecton ramp used where the component composites rather than fills.
 | `--color-background-inverted` | Text primary | `#f6f5f8` | `#1e1825` | exact / derived |
 | `--color-background-error-inverted` | error Bright | `#e3a6a6` | `#8b1f0b` | exact / derived |
 | `--color-overlay` | textOnly Focus background (black 50 %) | `#00000080` | `#00000080` | approximated |
-| `--color-overlay-hover` | — (ink 10 %) | `#ffffff1a` | `#0000001a` | approximated |
-| `--color-overlay-pressed` | — (ink 20 %) | `#ffffff33` | `#00000033` | approximated |
+| `--color-overlay-hover` | — (ink 5 %) | `#ffffff0d` | `#0000000d` | approximated |
+| `--color-overlay-pressed` | — (ink 10 %) | `#ffffff1a` | `#0000001a` | approximated |
 
 ### Text and icon
 
@@ -263,12 +280,12 @@ on elevation does not break the look.
 | `--shadow-med` | `0px 2px 6px light-dark(#00000026, #00000080)` |
 | `--shadow-high` | `0px 8px 24px light-dark(#00000033, #00000099)` |
 | `--shadow-inset-hover` | `inset 0 0 0 2px` mauve 25 % |
-| `--shadow-inset-selected` | `inset 0 0 0 2px var(--focus-outline-color)` |
+| `--shadow-inset-selected` | `inset 0 0 0 2px` violet 50 % |
 | `--shadow-inset-success` / `-warning` / `-error` | `inset 0 0 0 2px` green / yellow / red 30 % |
 
 ### Theme-local tokens
 
-Tecton roles with no portable token. All 33 are `[light, dark]` pairs and all
+Tecton roles with no portable token. All 34 are `[light, dark]` pairs and all
 are asserted against `colors.json`.
 
 | Token | Tecton role | Dark | Light |
@@ -306,6 +323,7 @@ are asserted against `colors.json`.
 | `--tecton-color-input-text-only-rule` | input / text-only / contrast-text | `#98939d` | `#6d5a7d` |
 | `--tecton-color-action-outlined-border` | outlined Strong border | `#aaa1b2` | `#644a78` |
 | `--tecton-color-action-text-only` | textOnly Text | `#9a91a2` | `#725687` |
+| `--tecton-color-action-tertiary-text` | tertiary Text | `#bab3c0` | `#563f67` |
 
 ### Contrast
 
@@ -410,14 +428,19 @@ the strong border.
 graphite rule, near-white value ink, a placeholder two steps down, 4px corners,
 the pink focus ring. Error recolours the rule and the message.
 
+Validation is now the design's: a coloured rule and plain coloured helper text,
+with no box. `FieldStatus` ships a tinted message surface, which on Tecton's
+*transparent* field also bled up into the bottom of the control (the `attached`
+message overlaps the field by 6px, which upstream hides behind an opaque input
+surface). Turning the fill off on the `field-status` target removes both and
+costs no geometry — see §17 of `theme-audit.md`. The `--color-*-muted` washes
+themselves are untouched, because `Banner` and `ChatComposer` draw tinted
+surfaces from them on purpose.
+
 Gaps: `Filled` and `TextOnly` have no variant axis to hang off, so the theme can
-only express one of Tecton's three field appearances (see §5). The status
-message uses the library's `attached` treatment — a bordered, tinted box under
-the field — where Tecton draws plain red helper text; a consumer can already get
-the Tecton shape with `statusVariant="detached"`, and Phase 2's wrapper should
-default to it. The dotted bottom rule on a disabled filled field, the solid-red
-filled error surface and the violet-tinted "Enabled + Active" interior are all
-unreachable.
+only express one of Tecton's three field appearances (see §5). The dotted bottom
+rule on a disabled filled field, the solid-red filled error surface and the
+violet-tinted "Enabled + Active" interior are all unreachable.
 
 ### Table — `screenshots/102_components-table__variant-matrix.png` vs `docs/design/fidelity/dark-table.png`
 
@@ -462,15 +485,26 @@ library's filled marks rather than Tecton's outlined ones.
 as a **bright chip**, not as the accent. A checked box is near-white `#e3e0e8`
 with a dark glyph; a checked radio is a near-white dot; only the switch carries
 the violet (`#80708b` on, `#e5e0eb` knob), and the off track is an outline with
-no fill — a distinctive low-ink treatment that survived intact.
+no fill — a distinctive low-ink treatment.
+
+All three brighten a step under the pointer, which is what
+`design/components/checkbox.md` asks for and what the components already
+compute: the theme states the *token* each control mixes its hover out of
+rather than the property, so the mix survives. §14 of `theme-audit.md` is the
+measurement, and the run before it is why the off switch had no visible knob at
+all (track and knob are the same mauve in the design, because one of them is a
+1px ring, and the theme was painting the ring's colour as a fill).
+
+`disabled + checked` **is** reachable — `checked+disabled` compiles to
+`[data-checked="checked"][data-disabled="disabled"]` — so the design's
+"disabled-on drops the violet to neutral grey" is expressed.
 
 Gaps: **indeterminate is not themeable.** The library styles the indeterminate
 box exactly like the unchecked one and only swaps the mark, and its
 `data-checked="indeterminate"` is not an addressable state — a theme can reach
 `checked` and `disabled` and nothing else. Tecton's indeterminate is a *filled*
 `#cac5d2` box with a dark dash; Tecton renders an unfilled box with a light
-dash. Likewise `disabled + checked` is one state too many: the switch cannot
-drop its violet to neutral grey the way the design does.
+dash.
 
 ### Tabs — `screenshots/097_components-tab__state-matrix.png` vs `docs/design/fidelity/dark-tabs.png`
 
@@ -524,9 +558,14 @@ is expressed entirely in tokens.
 ### Link — `screenshots/069`
 
 **Approximated.** Tecton links carry **no colour**: the only affordance is the
-underline. The theme sets the link base colour to `--color-text-primary` to
-match, keeping the accent ink available on `color="accent"`. The focus
-treatment (a tight rounded-rect ring) is close to the library's ring.
+underline. The theme re-points `--color-text-accent` on the default link to
+`--color-text-primary` to match, which is what reaches the rule the compiler
+emits for a colour prop (a `color` declaration here is overwritten by it). The
+focus treatment (a tight rounded-rect ring) is close to the library's ring.
+
+Gap: that emitted rule also flattens `Link`'s own hover `color-mix()`, which no
+theme can restore. It costs nothing — `design/components/link.md` gives the
+hovered link, in both underline policies, as "text unchanged".
 
 ### Menu, MenuItem, List, Item — `screenshots/075`, `072`, `077`
 
@@ -553,8 +592,15 @@ chip and trailing kebab are all structural and out of scope for a theme.
 
 ### Toggle button / SegmentedControl — `screenshots/110`, `107`
 
-**Approximated.** `isPressed` takes Tecton's "activated" fill. Tecton has four
-sizes against three, and no variant axis at all on the toggle.
+**Approximated.** `isPressed` takes Tecton's "activated" fill `#4e4853` with the
+brighter `#cac5d2` glyph, and stays activated under the pointer (two further
+steps of the same graphite ramp, since the matrix documents no hover or pressed
+column). The key is `isPressed:true`, not `isPressed`: `ToggleButton` reflects
+the state as `data-is-pressed="true"`, and the bare key compiled to a selector
+that matched nothing, so for one release the activated toggle painted nothing at
+all — see §13 of `theme-audit.md`.
+
+Tecton has four sizes against three, and no variant axis at all on the toggle.
 
 ### Icon button, FAB, Button group — `screenshots/060`, `053`, `032`
 
@@ -599,16 +645,24 @@ outside what a theme is allowed to do.
    *Here:* the portable tokens carry a 25 % alpha step of the same family, and
    the solid values live on `--tecton-color-{success,warning,error,info}-muted`.
    *Consumer sees:* tinted status surfaces rather than solid ones, which is what
-   the components were drawn for.
+   the components were drawn for — except on a field's status message, where
+   Tecton draws no box at all and the `field-status` target turns the fill off
+   directly.
 
-3. **Hover and pressed tints are switched off where Tecton names a fill.**
+3. **Hover and pressed tints are switched off on the button family only.**
    The base components composite `--color-overlay-hover` on top of whatever
-   background a button has. Tecton states are explicit fills, so the two
-   stacked: a `text-only` button grew a background it should never have.
-   *Here:* `button`, `item`, `list-item`, `dropdown-menu-item` and `table-row`
-   set the overlay tints to `transparent` and paint the Tecton fill directly.
-   *Consumer sees:* exactly the design's fills — but a component the theme has
-   not touched still uses the composited tint, so the two mechanisms coexist.
+   background a button has. The design's button matrix names a fill for enabled,
+   hover, pressed, focus and disabled on all five emphases, so the two stacked:
+   a `text-only` button grew a background it should never have.
+   *Here:* the `button` target sets both overlay tints to `transparent` and
+   paints the Tecton fill directly. Everywhere else — rows, list and menu items,
+   table rows — the Tecton fill goes *into* `--color-overlay-hover` instead, so
+   the component keeps deciding when a hover happens (§5 of `theme-audit.md`).
+   The two washes themselves are 5 % and 10 %, not 10 % and 20 %: at the heavier
+   weights a pressed row lifted far enough that the subtle icon on it fell to
+   2.44:1 (§16).
+   *Consumer sees:* exactly the design's fills on buttons, and the component's
+   own hover behaviour everywhere else.
 
 4. **Indeterminate is not addressable.** (See Checkbox above.) The box stays
    unfilled with a light dash instead of a filled light box with a dark dash.

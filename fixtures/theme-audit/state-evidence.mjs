@@ -22,8 +22,9 @@ const suffix = process.argv[3] ?? 'before';
 const side = suffix === 'neutral' ? 'neutral' : 'tecton';
 
 /**
- * [name, example id, {hover, press, click}] — a CSS selector inside `#stage`
- * to put into the named state before the shot, or nothing for a resting one.
+ * [name, example id, {hover, press, click, width}] — a CSS selector inside
+ * `#stage` to put into the named state before the shot, or nothing for a
+ * resting one, plus the capture width when the default 620 cuts something off.
  */
 const SHOTS = [
   ['toggle-button-pressed', 'ToggleButton/ToggleButtonStates', {}],
@@ -32,7 +33,8 @@ const SHOTS = [
     'ToggleButton/ToggleButtonStates',
     {hover: '[aria-pressed="true"]'},
   ],
-  ['switch', 'Switch/SwitchShowcase', {}],
+  ['switch-on', 'Switch/SwitchShowcase', {}],
+  ['switch-off', 'Switch/SwitchShowcase', {click: '[role="switch"]'}],
   ['switch-hover', 'Switch/SwitchShowcase', {hover: '[role="switch"]'}],
   ['text-input-validation', 'TextInput/TextInputStates', {}],
   ['checkbox', 'CheckboxInput/CheckboxInputShowcase', {}],
@@ -41,8 +43,19 @@ const SHOTS = [
     'CheckboxInput/CheckboxInputShowcase',
     {hover: 'input[type="checkbox"]:checked'},
   ],
-  ['radio', 'RadioList/RadioListShowcase', {}],
+  ['radio', 'RadioList/RadioListShowcase', {click: 'input[type="radio"]'}],
   ['link-hover', 'Link/LinkShowcase', {hover: 'a[href]'}],
+  // §15 — a fill colour used as ink: the Stepper's accent glyphs and its
+  // number badge, and an accent-coloured Icon on a toggle.
+  ['accent-as-ink', 'Stepper/StepperShowcase', {width: 900}],
+  // §16 — the press wash under a side-nav item's glyph.
+  [
+    'pressed-row',
+    'SideNav/SideNavShowcase',
+    {press: '[aria-current], a[href]'},
+  ],
+  // §17 — the ghost ink of a banner's collapse chevron on a severity fill.
+  ['banner-ghost', 'Banner/BannerCollapsibleContent', {width: 960}],
 ];
 
 const port = side === 'neutral' ? 5701 : 5702;
@@ -63,13 +76,14 @@ const file = side === 'neutral' ? 'neutral.html' : 'tecton.html';
 mkdirSync(out, {recursive: true});
 const browser = await chromium.launch();
 const context = await browser.newContext({
-  viewport: {width: 760, height: 620},
+  viewport: {width: 980, height: 620},
   deviceScaleFactor: 2,
   reducedMotion: 'reduce',
 });
 const page = await context.newPage();
 
 for (const [name, example, how] of SHOTS) {
+  const width = how.width ?? 620;
   await page.goto(
     `${origin}/${file}?ex=${encodeURIComponent(example)}&mode=dark`,
   );
@@ -105,7 +119,7 @@ for (const [name, example, how] of SHOTS) {
         ? {
             x: 0,
             y: 0,
-            width: Math.min(760, Math.ceil(box.x + box.width) + 16),
+            width: Math.min(width, Math.ceil(box.x + box.width) + 16),
             height: Math.min(620, Math.ceil(box.y + box.height) + 16),
           }
         : undefined,

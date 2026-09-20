@@ -18,8 +18,33 @@
 
   // ------------------------------------------------------------- colour --
 
+  /**
+   * The colour notations `getComputedStyle` actually hands back.
+   *
+   * `color(srgb …)` is not optional here. Every hover state in this system is
+   * a `color-mix()`, and Chromium serialises a resolved mix as
+   * `color(srgb 0.22 0.2 0.24)` — 0–1 floats, not 0–255 integers. Read as
+   * "not a colour", a hovered row's fill looked transparent, the compositor
+   * below fell through to the page, and every contrast ratio measured on a
+   * hovered control was measured against the wrong surface.
+   */
   const parseColor = value => {
-    const match = /rgba?\(([^)]+)\)/.exec(value || '');
+    const text = String(value || '');
+    const modern = /color\(\s*srgb\s+([^)]+)\)/.exec(text);
+    if (modern) {
+      const parts = modern[1]
+        .split(/[/\s]+/)
+        .filter(Boolean)
+        .map(Number);
+      if (parts.length < 3 || parts.slice(0, 3).some(Number.isNaN)) return null;
+      return {
+        r: parts[0] * 255,
+        g: parts[1] * 255,
+        b: parts[2] * 255,
+        a: parts.length > 3 && !Number.isNaN(parts[3]) ? parts[3] : 1,
+      };
+    }
+    const match = /rgba?\(([^)]+)\)/.exec(text);
     if (!match) return null;
     const parts = match[1]
       .split(/[,/\s]+/)
