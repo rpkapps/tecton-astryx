@@ -6,24 +6,32 @@
   "description": "Documentation site for the Tecton design system.",
   "scripts": {
     "generate": "node scripts/generate-data.mjs",
-    "dev": "pnpm generate && vite",
-    "build": "pnpm generate && vite build",
-    "preview": "vite preview",
-    "typecheck": "pnpm generate && tsc -p tsconfig.json --noEmit",
-    "clean": "rm -rf dist src/generated node_modules/.vite"
+    "dev": "pnpm generate && next dev",
+    "build": "pnpm generate && next build",
+    "serve": "node scripts/serve.mjs",
+    "typecheck": "pnpm generate && next typegen && tsc -p tsconfig.json --noEmit",
+    "test:e2e": "playwright test",
+    "clean": "rm -rf .next out .source src/generated content/docs/components content/docs/foundations content/docs/templates"
   },
   "dependencies": {
     "@tecton/react": "workspace:*",
+    "fumadocs-core": "16.15.12",
+    "fumadocs-mdx": "15.4.2",
+    "fumadocs-ui": "16.15.12",
+    "next": "16.3.5",
+    "next-themes": "^0.4.6",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0",
-    "react-router": "^7.18.4"
+    "react-dom": "^19.3.0"
   },
   "devDependencies": {
-    "@astryxdesign/core": "0.6.2",
+    "@playwright/test": "1.56.1",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/mdx": "^2.0.14",
+    "@types/node": "^24.10.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react": "^5.2.0",
-    "typescript": "^5.9.3",
-    "vite": "^7.3.6"
+    "postcss": "^8.5.28",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3"
   }
 }
