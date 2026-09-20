@@ -80,6 +80,18 @@ export const tectonLocalTokens = {
   /* Action variants Astryx has no variant slot for ------------------------ */
   '--tecton-color-action-outlined-border': tectonColor.action.outlined.text,
   '--tecton-color-action-text-only': tectonColor.action.textOnly.text,
+  /**
+   * The tertiary (ghost) button's ink, as a token rather than as a value.
+   *
+   * A ghost button has no fill at rest, so it wears whatever is behind it —
+   * and one of the places it sits is inside a `Banner`, on a saturated
+   * severity fill. The design's tertiary ink is chosen against the page and
+   * measures 1.2:1 on the warning band, which is what a banner's collapse
+   * chevron was drawn at. `bannerStatus()` re-points this alongside the text
+   * and icon inks it already re-points, so the ghost button inside a banner
+   * takes the ink the design puts on that fill.
+   */
+  '--tecton-color-action-tertiary-text': tectonColor.action.tertiary.text,
 } as const satisfies Record<`--tecton-${string}`, ColorPair>;
 
 /** The name of every theme-local token, for documentation and tests. */

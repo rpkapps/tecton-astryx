@@ -283,7 +283,11 @@ describe('component overrides', () => {
     const checked = (
       components['checkbox-indicator'] as Record<string, Record<string, string>>
     ).checked;
-    expect(checked.backgroundColor).toContain(row('tertiary Press text').dark);
+    // Said as the token the indicator fills, rules and hover-mixes from, so
+    // the chip colour reaches all three — see the state tests below.
+    expect(checked['--color-accent']).toContain(
+      row('tertiary Press text').dark,
+    );
   });
 });
 
@@ -375,9 +379,10 @@ describe('the theme leaves the components’ geometry alone', () => {
    * `CanvasText` one that makes the control perceivable under forced colours;
    * its track and thumb are sized in whole pixels on a border-box.
    */
-  it('colours the Switch track with a fill, not a border', () => {
+  it('colours the Switch track without a border', () => {
     expect(components.switch.base.borderWidth).toBeUndefined();
     expect(components.switch.base['--color-background-gray']).toBeTruthy();
+    expect(components.switch.base.boxShadow).toBeTruthy();
   });
 
   /**
@@ -415,7 +420,7 @@ describe('the theme leaves the components’ geometry alone', () => {
   /** `Link`'s `color` prop has five values; the design speaks about one. */
   it('sets the link ink on the default colour, not on every colour', () => {
     expect(components.link.base).toBeUndefined();
-    expect(components.link['color:accent'].color).toBe(
+    expect(components.link['color:accent']['--color-text-accent']).toBe(
       'var(--color-text-primary)',
     );
   });
@@ -441,5 +446,147 @@ describe('the theme leaves the components’ geometry alone', () => {
     expect(String(tokens['--shadow-inset-selected'])).not.toContain(
       '--focus-outline-color',
     );
+  });
+});
+
+/**
+ * Tecton is a look, not a *resting* look.
+ *
+ * Everything below is a paint that only exists once a control is touched —
+ * pressed, checked, selected, hovered — and every one of them was flat at some
+ * point because a theme rule said a colour on the property the component was
+ * animating instead of on the token the component reads. The evidence is the
+ * "States and paints" part of `docs/design/theme-audit.md`, which drives all
+ * 646 examples through rest → hover → active → changed → focus under this
+ * theme and under the theme the upstream docs site uses.
+ */
+describe('states paint, and paint differently from one another', () => {
+  const components = (tectonTheme.components ?? {}) as Record<
+    string,
+    Record<string, Record<string, unknown>>
+  >;
+
+  /**
+   * `ToggleButton` writes `data-is-pressed="true"`, not
+   * `data-is-pressed="isPressed"`, so a bare `isPressed` key compiles to a
+   * selector that can never match. The toggle flipped `aria-pressed` correctly
+   * and painted nothing at all.
+   */
+  it('keys the activated toggle on the value ToggleButton writes', () => {
+    expect(components['toggle-button'].isPressed).toBeUndefined();
+    expect(components['toggle-button']['isPressed:true']).toBeTruthy();
+  });
+
+  /**
+   * And the activated fill is its own colour in all three of rest, hover and
+   * press — otherwise hovering an activated toggle makes it look like turning
+   * it off, because `Button`'s `ghost` hover fill (which `ToggleButton`
+   * renders) is *darker* than the activated one.
+   */
+  it('keeps an activated toggle activated under the pointer', () => {
+    const pressed = components['toggle-button']['isPressed:true'] as Record<
+      string,
+      Record<string, string> | string
+    >;
+    const rest = pressed.backgroundColor as string;
+    const hover = (pressed[':hover'] as Record<string, string>).backgroundColor;
+    const press = (pressed[':active'] as Record<string, string>)
+      .backgroundColor;
+    for (const value of [rest, hover, press]) expect(value).toBeTruthy();
+    expect(new Set([rest, hover, press]).size).toBe(3);
+  });
+
+  /**
+   * `--color-overlay-pressed` is `Button`'s composited press wash, and every
+   * Tecton button emphasis names its own pressed fill — so the wash stays off
+   * on the button family. It is *not* off globally: rows, menu items, cards
+   * and thumbnails have no Tecton fill of their own and press through it.
+   */
+  it('suppresses the press wash only where a fill replaces it', () => {
+    expect(components.button.base['--color-overlay-pressed']).toBe(
+      'transparent',
+    );
+    const tokens = tectonTheme.tokens as Record<string, unknown>;
+    expect(String(tokens['--color-overlay-pressed'])).not.toContain(
+      'transparent',
+    );
+  });
+
+  /**
+   * Every one of these paints from a token the component also mixes its hover
+   * out of. Saying the colour as the property instead of as the token
+   * overrides the mix along with the resting value, and the control stops
+   * reacting to the pointer.
+   */
+  it.each([
+    ['switch', 'checked', '--color-accent'],
+    ['switch-thumb', 'base', '--color-background-surface'],
+    ['switch-thumb', 'checked', '--color-background-surface'],
+    ['checkbox-indicator', 'base', '--color-background-surface'],
+    ['checkbox-indicator', 'base', '--color-border-emphasized'],
+    ['checkbox-indicator', 'checked', '--color-accent'],
+    ['radio-indicator', 'base', '--color-border-emphasized'],
+    ['radio-indicator', 'checked', '--color-accent'],
+  ])('%s paints its %s state through %s', (target, state, token) => {
+    const rule = components[target][state] as Record<string, unknown>;
+    expect(rule[token]).toBeTruthy();
+  });
+
+  it.each([
+    ['switch', 'checked'],
+    ['switch-thumb', 'base'],
+    ['switch-thumb', 'checked'],
+    ['checkbox-indicator', 'base'],
+    ['checkbox-indicator', 'checked'],
+  ])('%s does not repaint its %s state over the mix', (target, state) => {
+    const rule = components[target][state] as Record<string, unknown>;
+    expect(rule.backgroundColor).toBeUndefined();
+  });
+
+  /**
+   * `design/components/switch.md`: the off track is "an outline, not a filled
+   * grey pill", and it gives the ring and the knob the same mauve. Filled,
+   * the two cancel out and the knob disappears — which is what an off switch
+   * looked like. The ring is an inset shadow, so the component keeps its
+   * whole-pixel track and its forced-colours border.
+   */
+  it('draws the off switch as an outline round a transparent track', () => {
+    const base = components.switch.base;
+    expect(base['--color-background-gray']).toBe('transparent');
+    expect(String(base.boxShadow)).toContain('inset');
+    expect(base.borderWidth).toBeUndefined();
+    expect(components.switch.checked.boxShadow).toBe('none');
+  });
+
+  /**
+   * `design/components/textfield.md` draws validation as a coloured rule with
+   * coloured helper text under it. `FieldStatus` ships a tinted box, and on
+   * Tecton's transparent field that tint also bled into the bottom of the
+   * control, which upstream hides behind an opaque input surface.
+   */
+  it('draws validation as ink, not as a box', () => {
+    expect(components['field-status'].base.backgroundColor).toBe('transparent');
+    for (const type of ['error', 'warning', 'success']) {
+      expect(components['field-status'][`type:${type}`].color).toBeTruthy();
+    }
+  });
+
+  /** And the muted washes the box was drawn from are still there for Banner. */
+  it('leaves the muted severity washes alone', () => {
+    const tokens = tectonTheme.tokens as Record<string, unknown>;
+    for (const name of [
+      '--color-error-muted',
+      '--color-warning-muted',
+      '--color-success-muted',
+    ]) {
+      expect(String(tokens[name])).toContain('light-dark(');
+    }
+  });
+
+  /** `Link` mixes its hover ink out of the token, so the token is what moves. */
+  it('gives the default link its ink through the token Link hovers from', () => {
+    const accent = components.link['color:accent'];
+    expect(accent.color).toBeUndefined();
+    expect(accent['--color-text-accent']).toBe('var(--color-text-primary)');
   });
 });

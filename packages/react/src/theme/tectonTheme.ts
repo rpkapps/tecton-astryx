@@ -115,10 +115,19 @@ export const tectonTheme = defineTheme({
      * Scrims and tints. Tecton states are explicit fills, not composited
      * alphas, so these three are the theme's own: a black scrim at the same
      * strength in both modes, and hover/pressed tints from the shade ladder.
+     *
+     * 5 % and 10 %, not 10 % and 20 %. These two wash every row, nav item,
+     * tree item and calendar day the theme has no named fill for, and the ink
+     * on top of them is chosen against the *page*. At 20 % a pressed row came
+     * up to `#4a494c`, and `--color-icon-secondary` on it measured 2.44:1 —
+     * under the 3:1 WCAG 1.4.11 asks of a meaningful glyph — on the side nav,
+     * the top nav, the tree list and the mega menu at once. Halved, the same
+     * glyph clears the bar everywhere, and these are the weights the layer
+     * underneath uses, so nothing is being invented to get there.
      */
     '--color-overlay': black('50'),
-    '--color-overlay-hover': ink('10'),
-    '--color-overlay-pressed': ink('20'),
+    '--color-overlay-hover': ink('5'),
+    '--color-overlay-pressed': ink('10'),
 
     /* Text */
     '--color-text-primary': text.primary,

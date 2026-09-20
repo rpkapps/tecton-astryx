@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Throwaway audit harness: renders every ported example under the Tecton theme and under upstream's neutral theme, and diffs geometry and focus.",
+  "description": "Throwaway audit harness: renders every ported example under the Tecton theme and under upstream's neutral theme, and diffs geometry, focus and the paint of every stateful control.",
   "scripts": {
-    "audit": "node scripts/audit.mjs"
+    "audit": "node scripts/audit.mjs",
+    "audit:states": "node scripts/state-audit.mjs"
   },
   "dependencies": {
     "@tecton/react": "workspace:*",
