@@ -185,8 +185,9 @@ every rule in it lands in `@layer astryx-theme` under
 One consequence is worth knowing, because the micro-frontend harness measures
 it: a per-component decision Tecton makes is a **cross-version contract**, in
 exactly the way a token is. Every Tecton version names its theme `tecton`, so
-two versions on one page put their card padding in the same scope in the same
-layer at the same specificity, and source order decides — for both containers.
+two versions on one page put their card banner's corner in the same scope in
+the same layer at the same specificity, and source order decides — for both
+containers.
 Tecton v1 had a second layer of its own component CSS, where a StyleX class
 name hashed the declaration and each version kept its own; v2 has none, because
 v2 has no components. `docs/engineering/micro-frontends/README.md` and

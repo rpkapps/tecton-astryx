@@ -16,6 +16,7 @@
  */
 import {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {
+  Banner,
   Button,
   Card,
   Dialog,
@@ -74,6 +75,18 @@ export function Container({id, version, mode, scope, handleRef}) {
             <Text data-testid={`${id}-probe`} type="supporting">
               token probe
             </Text>
+            {/*
+              The banner the styling checks read for a per-component decision:
+              on `container="card"` the theme hands the banner its own corner
+              radius, so the banner's computed `border-radius` is a Tecton
+              decision rather than an upstream default.
+            */}
+            <Banner
+              data-testid={`${id}-banner`}
+              status="info"
+              container="card"
+              title={`Banner ${upper}`}
+            />
             <Button
               data-testid={`${id}-btn-primary`}
               variant="primary"

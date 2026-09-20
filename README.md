@@ -244,7 +244,7 @@ Choices that differ from the briefs, and why.
   each.
 - **Tecton's per-component styling is now a cross-version contract.** Every
   Tecton rule is in the theme layer under one theme name, so two versions on a
-  page resolve a card's padding by source order exactly as they resolve a
+  page resolve a card banner's corner by source order exactly as they resolve a
   token. The old second layer of Tecton StyleX, where each version kept its own
   hashed class, does not exist because Tecton has no components.
 

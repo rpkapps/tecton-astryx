@@ -79,12 +79,18 @@ function container(page: Page, id: string) {
     );
     if (!panel) return null;
     const styles = getComputedStyle(panel);
+    // The banner's own corner: a per-component decision the theme makes. The
+    // theme sets `--_banner-radius` on `.astryx-banner[data-container="card"]`
+    // — the header, not the frame — so that is the element to measure.
+    const banner = document
+      .querySelector(`[data-testid="${containerId}-banner"]`)
+      ?.querySelector('.astryx-banner[data-container="card"]');
     const wrapper = document
       .querySelector(`[data-container="${containerId}"]`)
       ?.closest('[data-astryx-theme]');
     return {
       panelBackground: styles.backgroundColor,
-      panelPadding: styles.paddingTop,
+      bannerRadius: banner ? getComputedStyle(banner).borderRadius : null,
       buttonBackground: button
         ? getComputedStyle(button).backgroundColor
         : null,
@@ -207,12 +213,11 @@ test('styles-no-reset.css leaves host-owned markup alone', async ({page}) => {
   // The reset-free entry point does not.
   expect(withoutReset).toEqual(bare);
 
-  // ...while the container it serves is still completely themed. The padding
-  // is B's, because both versions' sheets are linked and B is linked last —
-  // see the cascade tests at the end of this file. (31px, not 32: the card's
-  // own rule takes its 1px border out of the padding it was given.)
+  // ...while the container it serves is still completely themed. The banner's
+  // corner is B's, because both versions' sheets are linked and B is linked
+  // last — see the cascade tests at the end of this file.
   expect(panel?.panelBackground).not.toBe('rgba(0, 0, 0, 0)');
-  expect(panel?.panelPadding).toBe('31px');
+  expect(panel?.bannerRadius).toBe('16px');
   expect(panel?.wrapperTheme).toBe('tecton');
 
   test.info().annotations.push({
@@ -246,12 +251,12 @@ test("the split entry points give both containers the host's tokens", async ({
   // Per-component decisions travel with the tokens. Tecton is a theme, not a
   // second component library: every rule it ships is in `@layer astryx-theme`
   // under the theme's own `@scope`, so the host's single tokens.css decides
-  // the card's padding for both containers exactly as it decides the accent.
-  // That is the whole point of the split — one theme layer, nothing contested
-  // — and it is why the token-coverage manifest covers the theme's component
-  // custom properties as well as its tokens.
-  expect(a?.panelPadding).toBe('31px');
-  expect(b?.panelPadding).toBe(a?.panelPadding);
+  // the card banner's corner for both containers exactly as it decides the
+  // accent. That is the whole point of the split — one theme layer, nothing
+  // contested — and it is why the token-coverage manifest covers the theme's
+  // component custom properties as well as its tokens.
+  expect(a?.bannerRadius).toBe('16px');
+  expect(b?.bannerRadius).toBe(a?.bannerRadius);
 
   // The layer order is still declared by every sheet, so it cannot depend on
   // which of them arrives first.
@@ -579,14 +584,14 @@ test('two full bundles: the last-loaded theme wins for every container', async (
   expect(ba.a?.surface).toBe(ba.b?.surface);
 
   // And the theme's per-component overrides go the same way as its tokens,
-  // for the same reason: one theme name, one scope, one layer. A's card and
-  // B's card both take the padding of whichever sheet was linked last.
-  expect(aAlone?.panelPadding).toBe('15px');
-  expect(bAlone?.panelPadding).toBe('31px');
-  expect(ab.a?.panelPadding).toBe(bAlone?.panelPadding);
-  expect(ab.b?.panelPadding).toBe(bAlone?.panelPadding);
-  expect(ba.a?.panelPadding).toBe(aAlone?.panelPadding);
-  expect(ba.b?.panelPadding).toBe(aAlone?.panelPadding);
+  // for the same reason: one theme name, one scope, one layer. A's banner and
+  // B's banner both take the corner of whichever sheet was linked last.
+  expect(aAlone?.bannerRadius).toBe('4px');
+  expect(bAlone?.bannerRadius).toBe('16px');
+  expect(ab.a?.bannerRadius).toBe(bAlone?.bannerRadius);
+  expect(ab.b?.bannerRadius).toBe(bAlone?.bannerRadius);
+  expect(ba.a?.bannerRadius).toBe(aAlone?.bannerRadius);
+  expect(ba.b?.bannerRadius).toBe(aAlone?.bannerRadius);
 
   // And the layer order is fixed by the statement line, not by arrival.
   for (const order of ['ab', 'ba']) {

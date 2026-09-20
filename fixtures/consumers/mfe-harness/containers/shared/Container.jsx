@@ -8,13 +8,13 @@
  *
  * Nothing here imports anything but `@tecton/react`: a container is an
  * ordinary consumer, and a consumer never sees what Tecton is built on. What
- * it does see is the component system's own API — `Card`, `Button`,
+ * it does see is the component system's own API — `Card`, `Banner`, `Button`,
  * `DropdownMenu`, `Dialog`, `useToast` — themed by Tecton.
  *
- * Beside the card the styling assertions read, each container can open the
- * three things that used to fight across containers: a modal dialog (which
- * pins the body), a menu (a dismissible layer, opened over everything else),
- * and a toast (which needs a viewport to land in).
+ * Beside the card and the banner the styling assertions read, each container
+ * can open the three things that used to fight across containers: a modal
+ * dialog (which pins the body), a menu (a dismissible layer, opened over
+ * everything else), and a toast (which needs a viewport to land in).
  *
  * The dialog and the menu are **controlled**, and the container exposes
  * open/close on its imperative handle, because a modal from container A
@@ -25,6 +25,7 @@
 import {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {
   TectonProvider,
+  Banner,
   Button,
   Card,
   Dialog,
@@ -86,6 +87,19 @@ export function Container({id, version, mode, scope, handleRef}) {
               @tecton/react {version} · mode={mode} · scope={scope}
             </Text>
             <p data-testid={`${id}-probe-body`}>token probe</p>
+            {/*
+              The banner the styling assertions read for a per-component
+              decision: on `container="card"` the theme hands the banner its
+              own corner radius, so the banner's computed `border-radius` is a
+              Tecton decision rather than an upstream default — measured beside
+              the accent, and resolved the same way.
+            */}
+            <Banner
+              data-testid={`${id}-banner`}
+              status="info"
+              container="card"
+              title={`Banner ${upper}`}
+            />
             <Button
               data-testid={`${id}-btn-primary`}
               variant="primary"

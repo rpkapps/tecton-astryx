@@ -49,10 +49,14 @@ A symlink hides all four.
    - **A** is `packages/react` exactly as it builds, at whatever version
      `packages/react/package.json` says.
    - **B** is the same build with the patch version bumped, `--color-accent`
-     retuned to a visibly different colour, and Panel's own padding moved one
-     step up the spacing scale — a new atomic class with a new declaration,
-     which is what a real rebuild from changed source produces, since a StyleX
-     class name is a hash of its declaration.
+     retuned to a visibly different colour, and one per-component decision
+     moved with it: the corner Tecton gives a `Banner` with
+     `container="card"`, from the control radius (`--radius-element`, 4px) to
+     the page radius (`--radius-page`, 16px). Both are plain declarations in
+     the built theme CSS — Tecton is a theme, so its per-component overrides
+     ship the same way its tokens do — which is what a rebuild from changed
+     source produces. The script reads the declared value out of the built CSS
+     rather than hard-coding it, and fails loudly if it is gone.
 
    Both are staged as **copies** under `node_modules/.cache/verdaccio/`.
    Nothing under `packages/react/` is modified, and the script asserts that.
@@ -100,8 +104,10 @@ A symlink hides all four.
      resolved out of `node_modules`;
    - both containers resolve the **host's** accent — version B's — because
      there is one theme layer on the page;
-   - each container's Panel padding and atomic class come from **its own**
-     version (A at `--spacing-4`, B at `--spacing-8`);
+   - both containers take the **host's** banner radius, for the same reason
+     they take its accent: Tecton's per-component decisions live in the theme
+     layer beside its tokens, under one theme name, so the host's single
+     `tokens.css` decides them for every container;
    - the shell owns the document root and the root registry counts three
      holders;
    - opening a Dialog in A and then in B and closing them in order leaves the
