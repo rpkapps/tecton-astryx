@@ -1,0 +1,14 @@
+packages:
+  - 'packages/*'
+  - 'apps/*'
+  - 'fixtures/consumers/*'
+  # The theme-audit harness: a dev-only Vite app that renders every ported
+  # example twice (Tecton and upstream's neutral theme) and diffs them. It is
+  # never published and is not part of `pnpm build`.
+  - 'fixtures/theme-audit'
+  # The registry fixtures depend on published versions of @tecton/react that
+  # only exist while `pnpm verify:registry` has its local registry running, and
+  # they are installed with npm, not pnpm. A workspace member would have the
+  # package linked instead of installed, which is the one thing they exist not
+  # to do.
+  - '!fixtures/consumers/registry-*'

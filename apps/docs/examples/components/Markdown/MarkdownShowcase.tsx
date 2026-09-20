@@ -1,0 +1,26 @@
+'use client';
+
+import {Markdown} from '@tecton/react/Markdown';
+import {Center} from '@tecton/react/Center';
+
+const content = [
+  '# Markdown Demo',
+  '',
+  'Renders **markdown** with *design-system-consistent* styling.',
+  '',
+  '## Features',
+  '',
+  '- Headings mapped to the Tecton type scale',
+  '- **Bold**, *italic*, and ~~strikethrough~~ text',
+  '- [Links](https://example.com) with external detection',
+  '',
+  '> Block quote indented text',
+].join('\n');
+
+export function MarkdownShowcase() {
+  return (
+    <Center width={400}>
+      <Markdown>{content}</Markdown>
+    </Center>
+  );
+}

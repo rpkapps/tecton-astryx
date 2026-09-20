@@ -1,0 +1,23 @@
+node_modules/
+dist/
+build/
+.vite/
+coverage/
+*.tsbuildinfo
+playwright-report/
+test-results/
+apps/docs/src/generated/
+apps/docs/content/docs/
+apps/docs/.source/
+# Build output of the docs site before it moved to Vite; a stale checkout may still hold them.
+apps/docs/.next/
+apps/docs/out/
+apps/docs/next-env.d.ts
+apps/docs/.tanstack/
+.DS_Store
+*.log
+# ...except the port's record, which is documentation: what the example port
+# substituted, dropped, refused and removed, and why.
+!docs/engineering/ported-examples.log
+.eslintcache
+.claude/worktrees/

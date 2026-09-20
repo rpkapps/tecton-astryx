@@ -1,0 +1,13 @@
+/* Ported by apps/docs/scripts/port-examples.mjs. Do not edit by hand. */
+export const doc = {
+  id: 'TopNavMegaMenu',
+  type: 'block',
+  exampleFor: 'TopNav',
+  name: 'TopNav — Mega Menu',
+  displayName: 'TopNav — Mega Menu',
+  description:
+    'Marketing-style navigation with a full-width mega menu featuring product items and a promotional featured card.',
+  isReady: true,
+  aspectRatio: 16 / 9,
+  componentsUsed: ['TopNav', 'TopNavMegaMenu', 'NavIcon', 'Button'],
+};

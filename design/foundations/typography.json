@@ -1,0 +1,248 @@
+{
+  "intro": {
+    "title": "Typography",
+    "lead": "Use Tecton typography tokens to keep hierarchy, density, and data readouts consistent across screens. TectonText applies Figtree for interface and data text, with IBM Plex Mono reserved for code and progress labels.",
+    "guidance": [
+      [
+        "Hierarchy",
+        "Display and heading styles establish page structure and section rhythm."
+      ],
+      [
+        "Interface Text",
+        "Large, medium, small, and tiny styles cover body copy, labels, and dense metadata."
+      ],
+      [
+        "Data Text",
+        "Data variants use tabular numbers so measurements and table values align cleanly."
+      ]
+    ],
+    "usageText": "Use the TectonText wrapper for product UI text. Reach for theme typography tokens only when building component internals or MUI theme overrides.",
+    "usageCards": [
+      [
+        "Product text",
+        "Render headings, labels, body copy, and metadata with TectonText variants that match the Figma text style names.",
+        "<TectonText variant=\"heading1\">Framework Model</TectonText>"
+      ],
+      [
+        "Data text",
+        "Use data variants for numeric values that need tabular number alignment in tables, metrics, and dense panels.",
+        "<TectonText variant=\"mediumData\">32.45% / 1,280 ft</TectonText>"
+      ],
+      [
+        "Action text",
+        "Buttons and controls apply action styles internally; use action variants only for custom action-like text.",
+        "<TectonText variant=\"actionSmall\">Apply filter</TectonText>"
+      ]
+    ]
+  },
+  "variants": [
+    {
+      "section": "Displays and Headings",
+      "token": "display1",
+      "description": "Largest editorial display text.",
+      "fontFamily": "\"Figtree\", \"Helvetica\", \"Arial\", sans-serif",
+      "sizeRem": "3rem",
+      "sizePx": 48,
+      "weight": 500,
+      "lineHeight": "1.2083333333333333",
+      "lineHeightPx": 58,
+      "sample": "Display 1",
+      "notes": "sizePx and lineHeightPx are derived (rem x 16px root); the page prints only the rem size and the unitless line height."
+    },
+    {
+      "section": "Displays and Headings",
+      "token": "display2",
+      "description": "Large page-level display text.",
+      "fontFamily": "\"Figtree\", \"Helvetica\", \"Arial\", sans-serif",
+      "sizeRem": "2.5rem",
+      "sizePx": 40,
+      "weight": 500,
+      "lineHeight": "1.2",
+      "lineHeightPx": 48,
+      "sample": "Display 2",
+      "notes": "sizePx and lineHeightPx are derived (rem x 16px root); the page prints only the rem size and the unitless line height."
+    },
+    {
+      "section": "Displays and Headings",
+      "token": "display3",
+      "description": "Overview page titles and compact display headings.",
+      "fontFamily": "\"Figtree\", \"Helvetica\", \"Arial\", sans-serif",
+      "sizeRem": "2rem",
+      "sizePx": 32,
+      "weight": 500,
+      "lineHeight": "1.1875",
+      "lineHeightPx": 38,
+      "sample": "Display 3",
+      "notes": "sizePx and lineHeightPx are derived (rem x 16px root); the page prints only the rem size and the unitless line height."
+    },
+    {
+      "section": "Displays and Headings",
+      "token": "heading1",
+      "description": "Major section headings.",
+      "fontFamily": "\"Figtree\", \"Helvetica\", \"Arial\", sans-serif",
+      "sizeRem": "1.5rem",
+      "sizePx": 24,
+      "weight": 500,
+      "lineHeight": "1.25",
+      "lineHeightPx": 30,
+      "sample": "Heading 1",
+      "notes": "sizePx and lineHeightPx are derived (rem x 16px root); the page prints only the rem size and the unitless line height."
+    },
+    {
+      "section": "Displays and Headings",
+      "token": "heading2",
+      "description": "Section headings inside documentation pages.",
+      "fontFamily": "\"Figtree\", \"Helvetica\", \"Arial\", sans-serif",
+      "sizeRem": "1.25rem",
+      "sizePx": 20,
+      "weight": 500,
+      "lineHeight": "1.2",
+      "lineHeightPx": 24,
+      "sample": "Heading 2",
+      "notes": "sizePx and lineHeightPx are derived (rem x 16px root); the page prints only the rem size and the unitless line height."
+    },
+    {
+      "section": "Text",
+      "token": "large",
+      "description": "Lead copy and prominent supporting text.",
+      "fontFamily": "\"Figtree\", \"Helvetica\", \"Arial\", sans-serif",
+      "sizeRem": "1rem",
+      "sizePx": 16,
+      "weight": 500,
+      "lineHeight": "1.25",
+      "lineHeightPx": 20,
+      "sample": "Large text",
+      "notes": "sizePx and lineHeightPx are derived (rem x 16px root); the page prints only the rem size and the unitless line height."
+    },
+    {
+      "section": "Text",
+      "token": "medium",
+      "description": "Default body text.",
+      "fontFamily": "\"Figtree\", \"Helvetica\", \"Arial\", sans-serif",
+      "sizeRem": "0.875rem",
+      "sizePx": 14,
+      "weight": 400,
+      "lineHeight": "1.2857142857142858",
+      "lineHeightPx": 18,
+      "sample": "Medium text",
+      "notes": "sizePx and lineHeightPx are derived (rem x 16px root); the page prints only the rem size and the unitless line height."
+    },
+    {
+      "section": "Text",
+      "token": "mediumStrong",
+      "description": "Table headers and emphasized body labels.",
+      "fontFamily": "\"Figtree\", \"Helvetica\", \"Arial\", sans-serif",
+      "sizeRem": "0.875rem",
+      "sizePx": 14,
+      "weight": 500,
+      "lineHeight": "1.2857142857142858",
+      "lineHeightPx": 18,
+      "sample": "Medium strong",
+      "notes": "sizePx and lineHeightPx are derived (rem x 16px root); the page prints only the rem size and the unitless line height."
+    },
+    {
+      "section": "Text",
+      "token": "small",
+      "description": "Supporting descriptions and compact metadata.",
+      "fontFamily": "\"Figtree\", \"Helvetica\", \"Arial\", sans-serif",
+      "sizeRem": "0.75rem",
+      "sizePx": 12,
+      "weight": 400,
+      "lineHeight": "1.3333333333333333",
+      "lineHeightPx": 16,
+      "sample": "Small text",
+      "notes": "sizePx and lineHeightPx are derived (rem x 16px root); the page prints only the rem size and the unitless line height."
+    },
+    {
+      "section": "Text",
+      "token": "smallStrong",
+      "description": "Compact labels and matrix headers.",
+      "fontFamily": "\"Figtree\", \"Helvetica\", \"Arial\", sans-serif",
+      "sizeRem": "0.75rem",
+      "sizePx": 12,
+      "weight": 500,
+      "lineHeight": "1.3333333333333333",
+      "lineHeightPx": 16,
+      "sample": "Small strong",
+      "notes": "sizePx and lineHeightPx are derived (rem x 16px root); the page prints only the rem size and the unitless line height."
+    },
+    {
+      "section": "Text",
+      "token": "tiny",
+      "description": "Small metadata and dense labels.",
+      "fontFamily": "\"Figtree\", \"Helvetica\", \"Arial\", sans-serif",
+      "sizeRem": "0.625rem",
+      "sizePx": 10,
+      "weight": 500,
+      "lineHeight": "1.4",
+      "lineHeightPx": 14,
+      "sample": "Tiny text",
+      "notes": "sizePx and lineHeightPx are derived (rem x 16px root); the page prints only the rem size and the unitless line height."
+    },
+    {
+      "section": "Data",
+      "token": "largeData",
+      "description": "Large numeric values and data readouts.",
+      "fontFamily": "\"IBM Plex Mono\", \"Consolas\", \"Monaco\", monospace",
+      "sizeRem": "1rem",
+      "sizePx": 16,
+      "weight": 400,
+      "lineHeight": "1.25",
+      "lineHeightPx": 20,
+      "sample": "1,248.75 bbl",
+      "notes": "sizePx and lineHeightPx are derived (rem x 16px root); the page prints only the rem size and the unitless line height."
+    },
+    {
+      "section": "Data",
+      "token": "mediumData",
+      "description": "Default numeric values in tables and panels.",
+      "fontFamily": "\"IBM Plex Mono\", \"Consolas\", \"Monaco\", monospace",
+      "sizeRem": "0.875rem",
+      "sizePx": 14,
+      "weight": 400,
+      "lineHeight": "1.2857142857142858",
+      "lineHeightPx": 18,
+      "sample": "32.45% / 1,280 ft",
+      "notes": "sizePx and lineHeightPx are derived (rem x 16px root); the page prints only the rem size and the unitless line height."
+    },
+    {
+      "section": "Data",
+      "token": "smallData",
+      "description": "Compact numeric metadata.",
+      "fontFamily": "\"IBM Plex Mono\", \"Consolas\", \"Monaco\", monospace",
+      "sizeRem": "0.75rem",
+      "sizePx": 12,
+      "weight": 400,
+      "lineHeight": "1.3333333333333333",
+      "lineHeightPx": 16,
+      "sample": "0.0037 sec",
+      "notes": "sizePx and lineHeightPx are derived (rem x 16px root); the page prints only the rem size and the unitless line height."
+    },
+    {
+      "section": "Actions",
+      "token": "actionMedium",
+      "description": "Medium button/action text.",
+      "fontFamily": "\"Figtree\", \"Helvetica\", \"Arial\", sans-serif",
+      "sizeRem": "0.875rem",
+      "sizePx": 14,
+      "weight": 500,
+      "lineHeight": "1.2857142857142858",
+      "lineHeightPx": 18,
+      "sample": "Action medium",
+      "notes": "sizePx and lineHeightPx are derived (rem x 16px root); the page prints only the rem size and the unitless line height."
+    },
+    {
+      "section": "Actions",
+      "token": "actionSmall",
+      "description": "Small button/action text.",
+      "fontFamily": "\"Figtree\", \"Helvetica\", \"Arial\", sans-serif",
+      "sizeRem": "0.75rem",
+      "sizePx": 12,
+      "weight": 500,
+      "lineHeight": "1.3333333333333333",
+      "lineHeightPx": 16,
+      "sample": "Action small",
+      "notes": "sizePx and lineHeightPx are derived (rem x 16px root); the page prints only the rem size and the unitless line height."
+    }
+  ]
+}

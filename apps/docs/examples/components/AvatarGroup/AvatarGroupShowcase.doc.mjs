@@ -1,0 +1,14 @@
+/* Ported by apps/docs/scripts/port-examples.mjs. Do not edit by hand. */
+export const doc = {
+  id: 'AvatarGroupShowcase',
+  type: 'block',
+  exampleFor: 'AvatarGroup',
+  name: 'AvatarGroup',
+  displayName: 'Avatar Group',
+  description:
+    'Overlapping avatar rows with a sliced visible set and a server-side overflow count. Shows team members in a compact facepile layout.',
+  isReady: true,
+  isShowcase: true,
+  aspectRatio: 16 / 9,
+  componentsUsed: ['AvatarGroup', 'Avatar', 'Layout', 'Text'],
+};

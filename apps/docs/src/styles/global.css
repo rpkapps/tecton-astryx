@@ -1,0 +1,185 @@
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+
+/*
+ * The design system itself, as a consumer loads it — minus its reset, because
+ * Tailwind's preflight is already doing that job and two resets fighting over
+ * the same elements is how a documentation site stops looking like the system
+ * it documents.
+ */
+@import '@tecton/react/styles-no-reset.css';
+
+/*
+ * Tailwind scans the files it can see, and everything this site renders from is
+ * generated and gitignored, which Tailwind skips by default.
+ */
+@source '../components';
+@source '../routes';
+@source '../lib';
+
+/* -------------------------------------------------------------------------- *
+ * The chrome, in Tecton's colours
+ *
+ * fumadocs draws its shell from `--color-fd-*`. Every one of them is pointed at
+ * a Tecton role here, so the sidebar, the search dialog, the table of contents
+ * and the code blocks are colours out of the design system rather than
+ * fumadocs' own greys.
+ *
+ * Tecton's roles are `light-dark()` pairs that resolve against `color-scheme`,
+ * so one mapping covers both modes; the `html.dark` copy exists only to outrank
+ * fumadocs' own `.dark` block, which is more specific than a bare `:root`.
+ * -------------------------------------------------------------------------- */
+
+html,
+html.dark {
+  --color-fd-background: var(--color-background-body);
+  --color-fd-foreground: var(--color-text-primary);
+  --color-fd-muted: var(--color-background-muted);
+  --color-fd-muted-foreground: var(--color-text-secondary);
+  --color-fd-popover: var(--color-background-popover);
+  --color-fd-popover-foreground: var(--color-text-primary);
+  --color-fd-card: var(--color-background-card);
+  --color-fd-card-foreground: var(--color-text-primary);
+  --color-fd-border: var(--color-border);
+  --color-fd-primary: var(--color-text-accent);
+  --color-fd-primary-foreground: var(--color-on-accent);
+  --color-fd-secondary: var(--color-background-muted);
+  --color-fd-secondary-foreground: var(--color-text-primary);
+  --color-fd-accent: var(--color-overlay-hover);
+  --color-fd-accent-foreground: var(--color-text-primary);
+  --color-fd-ring: var(--color-text-accent);
+  --color-fd-overlay: var(--color-overlay);
+  --color-fd-info: var(--color-info);
+  --color-fd-warning: var(--color-warning);
+  --color-fd-error: var(--color-error);
+  --color-fd-success: var(--color-success);
+  --color-fd-idea: var(--color-accent);
+}
+
+/* Tecton sets interface text in Figtree and anything monospaced in IBM Plex. */
+html {
+  --font-sans:
+    'Figtree', ui-sans-serif, system-ui, -apple-system, 'Helvetica Neue', Arial,
+    sans-serif;
+  --font-mono:
+    'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Consolas, Monaco, monospace;
+  scrollbar-gutter: stable;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-fd-background);
+}
+
+code,
+kbd,
+pre,
+samp,
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+html > body[data-scroll-locked] {
+  margin-right: 0 !important;
+  --removed-body-scroll-bar-size: 0 !important;
+}
+
+/* Shiki's two themes, tinted onto Tecton's surfaces. */
+.shiki,
+.shiki span {
+  font-family: var(--font-mono);
+}
+
+figure[data-rehype-pretty-code-figure],
+#nd-docs-layout pre {
+  background-color: var(--color-background-surface) !important;
+}
+
+/* -------------------------------------------------------------------------- *
+ * Site furniture
+ * -------------------------------------------------------------------------- */
+
+/*
+ * A preview frame: the neutral stage an example renders on. It carries its own
+ * Tecton provider, so the surface under it has to come from the mode that
+ * provider is in, not from the page's.
+ */
+.tecton-stage {
+  background-color: var(--color-background-body);
+  color: var(--color-text-primary);
+  border-radius: 0.5rem;
+}
+
+/*
+ * The Code tab of a preview frame. fumadocs' code block already has a border
+ * and a radius of its own; inside a frame that has both, it would draw them
+ * twice.
+ */
+.tecton-code > figure {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+/* The docs body should not restyle what a Tecton example renders. */
+.tecton-preview :where(h1, h2, h3, h4, h5, h6, p, ul, ol, li, table, a, code) {
+  all: revert-layer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tecton-animated {
+    transition: none !important;
+  }
+}
+
+/*
+ * A gallery tile.
+ *
+ * The showcase renders at twice the tile's width and is scaled back by half, so
+ * a 260px tile shows a 520px-wide composition: the example is drawn at a size it
+ * was designed for rather than squeezed into a thumbnail. Expressing it as
+ * `200%` plus `scale(0.5)` keeps it pure CSS — no measured width, so no
+ * ResizeObserver, so a tile can render on the server.
+ */
+.tecton-thumbnail-scaler {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  width: 200%;
+  height: 200%;
+  transform: scale(0.5);
+  transform-origin: top left;
+  pointer-events: none;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* A best-practice row's prose sits inside a card, outside the page's prose. */
+.tecton-guidance p {
+  margin: 0;
+}
+
+/*
+ * Keyboard focus, everywhere the chrome draws a control of its own.
+ *
+ * Tecton's components carry their own focus ring; these are the links and
+ * buttons this site draws itself, and a reader tabbing through the sidebar, the
+ * gallery or the related links has to be able to see where they are.
+ */
+#nd-docs-layout a:focus-visible,
+#nd-docs-layout button:focus-visible,
+#nd-nav a:focus-visible,
+#nd-nav button:focus-visible,
+#nd-subnav a:focus-visible,
+#nd-subnav button:focus-visible,
+#nd-sidebar a:focus-visible,
+#nd-sidebar button:focus-visible,
+#nd-tocnav a:focus-visible,
+#nd-toc a:focus-visible {
+  outline: 2px solid var(--color-fd-ring);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}

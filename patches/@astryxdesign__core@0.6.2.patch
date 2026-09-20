@@ -1,0 +1,672 @@
+diff --git a/dist/Layer/layerStack.js b/dist/Layer/layerStack.js
+index 0bfb5fd89146e61152adb225097f585b0b79cbda..4b18f85901f9b626ea28120fda5e5b4128536c2e 100644
+--- a/dist/Layer/layerStack.js
++++ b/dist/Layer/layerStack.js
+@@ -85,22 +85,87 @@ import { isImeKeyEvent } from "../utils/ime.js";
+  * lose the whole dialog. Guessing wrong the other way costs one keystroke.
+  */
+ 
+-const entries = [];
+-// Registration order per layer identity. A layer re-registers whenever its
+-// depth or behavior changes — a Dialog whose `purpose` flips while open, a focus trap
+-// that moves — and StrictMode remounts every effect once more on top of that.
+-// Counting registrations instead would hand the layer a fresh, higher seq each
+-// time and promote it above the layers opened over it.
+-let seqByToken = new WeakMap();
+-let nextSeq = 0;
+-let isListening = false;
+-function seqFor(token) {
+-  const existing = seqByToken.get(token);
++/**
++ * The whole stack — the entries, the registration counter and the document
++ * listeners — keyed on `document`.
++ *
++ * One page can carry more than one copy of this package (a micro-frontend, or
++ * a version bump half-way through a migration). With the state module-private
++ * each copy owned a separate stack AND a separate `keydown` listener, so an
++ * Escape press was resolved against whichever copy's listener ran first —
++ * registration order between copies, not what is actually on top. Measured:
++ * a dialog in one container and a popover opened later in another, one press,
++ * and the dialog closed while the popover stayed. Keying the state on the
++ * document gives the page one stack, one ordering and one listener, and the
++ * depth/containment/seq comparator below then sees every entry and picks the
++ * real top-most layer. Entries are plain objects carrying their own callbacks,
++ * so dispatching into an entry another copy registered is an ordinary function
++ * call.
++ *
++ * Same shape as the interaction-modality store (utils/interactionModality.js):
++ * created lazily, installed with `Object.defineProperty` so whichever copy
++ * creates it owns it for the document's lifetime, and versioned, because that
++ * makes the record a permanent cross-version contract. Importing this module
++ * still has no DOM side effects; server rendering falls back to a module-local
++ * store, which no listener is ever attached to.
++ *
++ * `seqByToken` is registration order per layer identity: a layer re-registers
++ * whenever its depth or behavior changes — a Dialog whose `purpose` flips
++ * while open, a focus trap that moves — and StrictMode remounts every effect
++ * once more on top of that. Counting registrations instead would hand the
++ * layer a fresh, higher seq each time and promote it above the layers opened
++ * over it.
++ */
++const layerStackStoreKey = Symbol.for('@astryxdesign/core/layer-stack/v1');
++
++/** Server rendering has no document to key on, and no listeners to attach. */
++let serverStore = null;
++function createStore() {
++  const store = {
++    version: 1,
++    entries: [],
++    seqByToken: new WeakMap(),
++    nextSeq: 0,
++    isListening: false,
++    isComposing: false,
++    // Reading the stack through `getStore()` on every press is what makes this
++    // listener correct for entries every other copy registered too.
++    onKeyDown: event => dispatchLayerEscapeKeyDown(event),
++    onCompositionStart: () => {
++      store.isComposing = true;
++    },
++    // Focus leaving the field ends the composition too. Clearing on blur as
++    // well means a compositionend this listener never sees cannot leave the
++    // flag stuck on, swallowing every later close request.
++    onCompositionEnd: () => {
++      store.isComposing = false;
++    }
++  };
++  return store;
++}
++function getStore() {
++  if (typeof document === 'undefined') {
++    serverStore ??= createStore();
++    return serverStore;
++  }
++  const singletonDocument = document;
++  const existingStore = singletonDocument[layerStackStoreKey];
++  if (existingStore != null) {
++    return existingStore;
++  }
++  const store = createStore();
++  Object.defineProperty(singletonDocument, layerStackStoreKey, {
++    value: store
++  });
++  return store;
++}
++function seqFor(store, token) {
++  const existing = store.seqByToken.get(token);
+   if (existing !== undefined) {
+     return existing;
+   }
+-  const seq = nextSeq++;
+-  seqByToken.set(token, seq);
++  const seq = store.nextSeq++;
++  store.seqByToken.set(token, seq);
+   return seq;
+ }
+ 
+@@ -152,10 +217,6 @@ function isPresentEntry(entry) {
+   return entry.isPresent?.() ?? true;
+ }
+ 
+-// Whether a text composition is running anywhere on the page. Tracked from
+-// composition events because the DOM offers no way to ask.
+-let isComposing = false;
+-
+ /**
+  * Whether the user is part-way through composing text with an IME.
+  *
+@@ -177,23 +238,13 @@ let isComposing = false;
+  * here: the listeners go on with the stack's own.
+  */
+ export function isTextComposing() {
+-  return isComposing;
+-}
+-function handleCompositionStart() {
+-  isComposing = true;
+-}
+-
+-// Focus leaving the field ends the composition too. Clearing on blur as well
+-// means a compositionend this listener never sees cannot leave the flag stuck
+-// on, swallowing every later close request.
+-function handleCompositionEnd() {
+-  isComposing = false;
++  return getStore().isComposing;
+ }
+ 
+ /** The top-most present layer, or null when nothing is on screen. */
+ function topPresentEntry() {
+   let top = null;
+-  for (const entry of entries) {
++  for (const entry of getStore().entries) {
+     if (!isPresentEntry(entry)) {
+       continue;
+     }
+@@ -264,26 +315,29 @@ export function dispatchLayerEscapeKeyDown(event) {
+     event.preventDefault();
+   }
+ }
+-function startListening() {
+-  if (isListening || typeof document === 'undefined') {
++// One listener per document, however many copies are loaded: the first copy
++// to register a layer attaches the store's own handlers, and every copy adds
++// its entries to the stack those handlers read.
++function startListening(store) {
++  if (store.isListening || typeof document === 'undefined') {
+     return;
+   }
+-  document.addEventListener('keydown', dispatchLayerEscapeKeyDown);
+-  document.addEventListener('compositionstart', handleCompositionStart, true);
+-  document.addEventListener('compositionend', handleCompositionEnd, true);
+-  document.addEventListener('blur', handleCompositionEnd, true);
+-  isListening = true;
++  document.addEventListener('keydown', store.onKeyDown);
++  document.addEventListener('compositionstart', store.onCompositionStart, true);
++  document.addEventListener('compositionend', store.onCompositionEnd, true);
++  document.addEventListener('blur', store.onCompositionEnd, true);
++  store.isListening = true;
+ }
+-function stopListening() {
+-  if (!isListening || typeof document === 'undefined') {
++function stopListening(store) {
++  if (!store.isListening || typeof document === 'undefined') {
+     return;
+   }
+-  document.removeEventListener('keydown', dispatchLayerEscapeKeyDown);
+-  document.removeEventListener('compositionstart', handleCompositionStart, true);
+-  document.removeEventListener('compositionend', handleCompositionEnd, true);
+-  document.removeEventListener('blur', handleCompositionEnd, true);
+-  isComposing = false;
+-  isListening = false;
++  document.removeEventListener('keydown', store.onKeyDown);
++  document.removeEventListener('compositionstart', store.onCompositionStart, true);
++  document.removeEventListener('compositionend', store.onCompositionEnd, true);
++  document.removeEventListener('blur', store.onCompositionEnd, true);
++  store.isComposing = false;
++  store.isListening = false;
+ }
+ 
+ /**
+@@ -291,28 +345,30 @@ function stopListening() {
+  * function; callers own calling it.
+  */
+ export function registerLayer(entry) {
++  const store = getStore();
+   const full = {
+     ...entry,
+-    seq: seqFor(entry.token)
++    seq: seqFor(store, entry.token)
+   };
+-  entries.push(full);
+-  startListening();
++  store.entries.push(full);
++  startListening(store);
+   return () => {
+-    const index = entries.indexOf(full);
++    const index = store.entries.indexOf(full);
+     if (index !== -1) {
+-      entries.splice(index, 1);
++      store.entries.splice(index, 1);
+     }
+-    if (entries.length === 0) {
+-      stopListening();
++    if (store.entries.length === 0) {
++      stopListening(store);
+     }
+   };
+ }
+ 
+ /** Test-only: drop all entries and detach the listener. */
+ export function resetLayerStackForTests() {
+-  entries.length = 0;
+-  seqByToken = new WeakMap();
+-  nextSeq = 0;
+-  isComposing = false;
+-  stopListening();
++  const store = getStore();
++  store.entries.length = 0;
++  store.seqByToken = new WeakMap();
++  store.nextSeq = 0;
++  stopListening(store);
++  store.isComposing = false;
+ }
+\ No newline at end of file
+diff --git a/dist/hooks/useScrollLock.js b/dist/hooks/useScrollLock.js
+index 10b0ad406a2b5601872b9faff9602e2149c7d893..6bfe6d43e8c118ee65f8fbbce3c7e858fa19d9bf 100644
+--- a/dist/hooks/useScrollLock.js
++++ b/dist/hooks/useScrollLock.js
+@@ -17,8 +17,42 @@
+  */
+ import { useEffect } from 'react';
+ import { holdScrollbarGutter } from "./scrollbarGutter.js";
+-let lockCount = 0;
+-let originalBodyState = null;
++/**
++ * The lock counter and the pristine snapshot, keyed on `document`.
++ *
++ * Both must be page-wide rather than module-wide. When two copies of this
++ * package are loaded on one page — a micro-frontend, or a version bump
++ * half-way through a migration — each copy would otherwise count only its own
++ * locks, so the second copy to pin the body records the FIRST copy's pinned
++ * styles as "original" and, on unlock, restores the page to
++ * `position: fixed; top: -NNNpx` with nothing open: the page is frozen for
++ * good. Keying the state on the document gives every copy one counter and one
++ * genuinely pristine snapshot.
++ *
++ * Same shape as the interaction-modality store (utils/interactionModality.js):
++ * created lazily, installed with `Object.defineProperty` so whichever copy
++ * creates it owns it for the document's lifetime, and versioned, because that
++ * makes the record a permanent cross-version contract. Nothing here runs at
++ * import time, and the store is only ever reached from inside the effect, so
++ * server rendering never touches a document.
++ */
++const scrollLockStoreKey = Symbol.for('@astryxdesign/core/scroll-lock/v1');
++function getScrollLockStore(targetDocument) {
++  const singletonDocument = targetDocument;
++  const existingStore = singletonDocument[scrollLockStoreKey];
++  if (existingStore != null) {
++    return existingStore;
++  }
++  const store = {
++    version: 1,
++    lockCount: 0,
++    originalBodyState: null
++  };
++  Object.defineProperty(singletonDocument, scrollLockStoreKey, {
++    value: store
++  });
++  return store;
++}
+ 
+ /**
+  * Locks body scroll when `isLocked` is true.
+@@ -45,13 +79,14 @@ export function useScrollLock(isLocked) {
+     const {
+       body
+     } = document;
+-    if (lockCount === 0) {
++    const store = getScrollLockStore(document);
++    if (store.lockCount === 0) {
+       const scrollX = window.scrollX;
+       const scrollY = window.scrollY;
+ 
+       // Taken before the pinning styles below hide the scrollbar.
+       const gutter = holdScrollbarGutter(body);
+-      originalBodyState = {
++      store.originalBodyState = {
+         scrollX,
+         scrollY,
+         overflow: body.style.overflow,
+@@ -68,14 +103,14 @@ export function useScrollLock(isLocked) {
+       body.style.right = '0';
+       gutter.settle();
+     }
+-    lockCount += 1;
++    store.lockCount += 1;
+     return () => {
+-      lockCount -= 1;
+-      if (lockCount !== 0 || originalBodyState == null) {
++      store.lockCount -= 1;
++      if (store.lockCount !== 0 || store.originalBodyState == null) {
+         return;
+       }
+-      const state = originalBodyState;
+-      originalBodyState = null;
++      const state = store.originalBodyState;
++      store.originalBodyState = null;
+       body.style.overflow = state.overflow;
+       body.style.position = state.position;
+       body.style.top = state.top;
+diff --git a/src/Layer/layerStack.ts b/src/Layer/layerStack.ts
+index 5f998f73bf4326bb7f6eadb568ff42eaa2efc90a..e966e9d2871b150dff0e97bc8ad2447efdabeb85 100644
+--- a/src/Layer/layerStack.ts
++++ b/src/Layer/layerStack.ts
+@@ -133,23 +133,108 @@ export interface LayerStackEntry {
+   dismiss: () => void;
+ }
+ 
+-const entries: LayerStackEntry[] = [];
+-// Registration order per layer identity. A layer re-registers whenever its
+-// depth or behavior changes — a Dialog whose `purpose` flips while open, a focus trap
+-// that moves — and StrictMode remounts every effect once more on top of that.
+-// Counting registrations instead would hand the layer a fresh, higher seq each
+-// time and promote it above the layers opened over it.
+-let seqByToken = new WeakMap<object, number>();
+-let nextSeq = 0;
+-let isListening = false;
++/**
++ * The whole stack — the entries, the registration counter and the document
++ * listeners — keyed on `document`.
++ *
++ * One page can carry more than one copy of this package (a micro-frontend, or
++ * a version bump half-way through a migration). With the state module-private
++ * each copy owned a separate stack AND a separate `keydown` listener, so an
++ * Escape press was resolved against whichever copy's listener ran first —
++ * registration order between copies, not what is actually on top. Measured:
++ * a dialog in one container and a popover opened later in another, one press,
++ * and the dialog closed while the popover stayed. Keying the state on the
++ * document gives the page one stack, one ordering and one listener, and the
++ * depth/containment/seq comparator below then sees every entry and picks the
++ * real top-most layer. Entries are plain objects carrying their own callbacks,
++ * so dispatching into an entry another copy registered is an ordinary function
++ * call.
++ *
++ * Same shape as the interaction-modality store (utils/interactionModality.ts):
++ * created lazily, installed with `Object.defineProperty` so whichever copy
++ * creates it owns it for the document's lifetime, and versioned, because that
++ * makes the record a permanent cross-version contract. Importing this module
++ * still has no DOM side effects; server rendering falls back to a module-local
++ * store, which no listener is ever attached to.
++ */
++interface LayerStackStore {
++  /** Record shape version. A reader must tolerate a lower number than its own. */
++  readonly version: 1;
++  entries: LayerStackEntry[];
++  /**
++   * Registration order per layer identity. A layer re-registers whenever its
++   * depth or behavior changes — a Dialog whose `purpose` flips while open, a
++   * focus trap that moves — and StrictMode remounts every effect once more on
++   * top of that. Counting registrations instead would hand the layer a fresh,
++   * higher seq each time and promote it above the layers opened over it.
++   */
++  seqByToken: WeakMap<object, number>;
++  nextSeq: number;
++  isListening: boolean;
++  /** Whether a text composition is running anywhere on the page. */
++  isComposing: boolean;
++  /**
++   * The listeners the document holds. They belong to the copy that created the
++   * store, and they are kept here so any copy can add or remove exactly them.
++   */
++  onKeyDown: (event: KeyboardEvent) => void;
++  onCompositionStart: () => void;
++  onCompositionEnd: () => void;
++}
++
++const layerStackStoreKey = Symbol.for('@astryxdesign/core/layer-stack/v1');
++
++/** Server rendering has no document to key on, and no listeners to attach. */
++let serverStore: LayerStackStore | null = null;
++
++function createStore(): LayerStackStore {
++  const store: LayerStackStore = {
++    version: 1,
++    entries: [],
++    seqByToken: new WeakMap(),
++    nextSeq: 0,
++    isListening: false,
++    isComposing: false,
++    // Reading the stack through `getStore()` on every press is what makes this
++    // listener correct for entries every other copy registered too.
++    onKeyDown: event => dispatchLayerEscapeKeyDown(event),
++    onCompositionStart: () => {
++      store.isComposing = true;
++    },
++    // Focus leaving the field ends the composition too. Clearing on blur as
++    // well means a compositionend this listener never sees cannot leave the
++    // flag stuck on, swallowing every later close request.
++    onCompositionEnd: () => {
++      store.isComposing = false;
++    },
++  };
++  return store;
++}
++
++function getStore(): LayerStackStore {
++  if (typeof document === 'undefined') {
++    serverStore ??= createStore();
++    return serverStore;
++  }
++  const singletonDocument = document as Document & {
++    [layerStackStoreKey]?: LayerStackStore;
++  };
++  const existingStore = singletonDocument[layerStackStoreKey];
++  if (existingStore != null) {
++    return existingStore;
++  }
++  const store = createStore();
++  Object.defineProperty(singletonDocument, layerStackStoreKey, {value: store});
++  return store;
++}
+ 
+-function seqFor(token: object): number {
+-  const existing = seqByToken.get(token);
++function seqFor(store: LayerStackStore, token: object): number {
++  const existing = store.seqByToken.get(token);
+   if (existing !== undefined) {
+     return existing;
+   }
+-  const seq = nextSeq++;
+-  seqByToken.set(token, seq);
++  const seq = store.nextSeq++;
++  store.seqByToken.set(token, seq);
+   return seq;
+ }
+ 
+@@ -202,10 +287,6 @@ function isPresentEntry(entry: LayerStackEntry): boolean {
+   return entry.isPresent?.() ?? true;
+ }
+ 
+-// Whether a text composition is running anywhere on the page. Tracked from
+-// composition events because the DOM offers no way to ask.
+-let isComposing = false;
+-
+ /**
+  * Whether the user is part-way through composing text with an IME.
+  *
+@@ -227,24 +308,13 @@ let isComposing = false;
+  * here: the listeners go on with the stack's own.
+  */
+ export function isTextComposing(): boolean {
+-  return isComposing;
+-}
+-
+-function handleCompositionStart(): void {
+-  isComposing = true;
+-}
+-
+-// Focus leaving the field ends the composition too. Clearing on blur as well
+-// means a compositionend this listener never sees cannot leave the flag stuck
+-// on, swallowing every later close request.
+-function handleCompositionEnd(): void {
+-  isComposing = false;
++  return getStore().isComposing;
+ }
+ 
+ /** The top-most present layer, or null when nothing is on screen. */
+ function topPresentEntry(): LayerStackEntry | null {
+   let top: LayerStackEntry | null = null;
+-  for (const entry of entries) {
++  for (const entry of getStore().entries) {
+     if (!isPresentEntry(entry)) {
+       continue;
+     }
+@@ -316,31 +386,34 @@ export function dispatchLayerEscapeKeyDown(event: KeyboardEvent): void {
+   }
+ }
+ 
+-function startListening(): void {
+-  if (isListening || typeof document === 'undefined') {
++// One listener per document, however many copies are loaded: the first copy
++// to register a layer attaches the store's own handlers, and every copy adds
++// its entries to the stack those handlers read.
++function startListening(store: LayerStackStore): void {
++  if (store.isListening || typeof document === 'undefined') {
+     return;
+   }
+-  document.addEventListener('keydown', dispatchLayerEscapeKeyDown);
+-  document.addEventListener('compositionstart', handleCompositionStart, true);
+-  document.addEventListener('compositionend', handleCompositionEnd, true);
+-  document.addEventListener('blur', handleCompositionEnd, true);
+-  isListening = true;
++  document.addEventListener('keydown', store.onKeyDown);
++  document.addEventListener('compositionstart', store.onCompositionStart, true);
++  document.addEventListener('compositionend', store.onCompositionEnd, true);
++  document.addEventListener('blur', store.onCompositionEnd, true);
++  store.isListening = true;
+ }
+ 
+-function stopListening(): void {
+-  if (!isListening || typeof document === 'undefined') {
++function stopListening(store: LayerStackStore): void {
++  if (!store.isListening || typeof document === 'undefined') {
+     return;
+   }
+-  document.removeEventListener('keydown', dispatchLayerEscapeKeyDown);
++  document.removeEventListener('keydown', store.onKeyDown);
+   document.removeEventListener(
+     'compositionstart',
+-    handleCompositionStart,
++    store.onCompositionStart,
+     true,
+   );
+-  document.removeEventListener('compositionend', handleCompositionEnd, true);
+-  document.removeEventListener('blur', handleCompositionEnd, true);
+-  isComposing = false;
+-  isListening = false;
++  document.removeEventListener('compositionend', store.onCompositionEnd, true);
++  document.removeEventListener('blur', store.onCompositionEnd, true);
++  store.isComposing = false;
++  store.isListening = false;
+ }
+ 
+ /**
+@@ -348,26 +421,28 @@ function stopListening(): void {
+  * function; callers own calling it.
+  */
+ export function registerLayer(entry: Omit<LayerStackEntry, 'seq'>): () => void {
+-  const full: LayerStackEntry = {...entry, seq: seqFor(entry.token)};
+-  entries.push(full);
+-  startListening();
++  const store = getStore();
++  const full: LayerStackEntry = {...entry, seq: seqFor(store, entry.token)};
++  store.entries.push(full);
++  startListening(store);
+ 
+   return () => {
+-    const index = entries.indexOf(full);
++    const index = store.entries.indexOf(full);
+     if (index !== -1) {
+-      entries.splice(index, 1);
++      store.entries.splice(index, 1);
+     }
+-    if (entries.length === 0) {
+-      stopListening();
++    if (store.entries.length === 0) {
++      stopListening(store);
+     }
+   };
+ }
+ 
+ /** Test-only: drop all entries and detach the listener. */
+ export function resetLayerStackForTests(): void {
+-  entries.length = 0;
+-  seqByToken = new WeakMap();
+-  nextSeq = 0;
+-  isComposing = false;
+-  stopListening();
++  const store = getStore();
++  store.entries.length = 0;
++  store.seqByToken = new WeakMap();
++  store.nextSeq = 0;
++  stopListening(store);
++  store.isComposing = false;
+ }
+diff --git a/src/hooks/useScrollLock.ts b/src/hooks/useScrollLock.ts
+index a9c042f50c027f194364b1c79c8c33fb5923f72a..9a0857985f4f8d0158360c1b92d9f6ed50d2e62d 100644
+--- a/src/hooks/useScrollLock.ts
++++ b/src/hooks/useScrollLock.ts
+@@ -30,8 +30,51 @@ interface ScrollLockSnapshot {
+   gutter: ScrollbarGutterHold;
+ }
+ 
+-let lockCount = 0;
+-let originalBodyState: ScrollLockSnapshot | null = null;
++/**
++ * The lock counter and the pristine snapshot, keyed on `document`.
++ *
++ * Both must be page-wide rather than module-wide. When two copies of this
++ * package are loaded on one page — a micro-frontend, or a version bump
++ * half-way through a migration — each copy would otherwise count only its own
++ * locks, so the second copy to pin the body records the FIRST copy's pinned
++ * styles as "original" and, on unlock, restores the page to
++ * `position: fixed; top: -NNNpx` with nothing open: the page is frozen for
++ * good. Keying the state on the document gives every copy one counter and one
++ * genuinely pristine snapshot.
++ *
++ * Same shape as the interaction-modality store (utils/interactionModality.ts):
++ * created lazily, installed with `Object.defineProperty` so whichever copy
++ * creates it owns it for the document's lifetime, and versioned, because that
++ * makes the record a permanent cross-version contract. Nothing here runs at
++ * import time, and the store is only ever reached from inside the effect, so
++ * server rendering never touches a document.
++ */
++interface ScrollLockStore {
++  /** Record shape version. A reader must tolerate a lower number than its own. */
++  readonly version: 1;
++  lockCount: number;
++  originalBodyState: ScrollLockSnapshot | null;
++}
++
++const scrollLockStoreKey = Symbol.for('@astryxdesign/core/scroll-lock/v1');
++
++function getScrollLockStore(targetDocument: Document): ScrollLockStore {
++  const singletonDocument = targetDocument as Document & {
++    [scrollLockStoreKey]?: ScrollLockStore;
++  };
++  const existingStore = singletonDocument[scrollLockStoreKey];
++  if (existingStore != null) {
++    return existingStore;
++  }
++
++  const store: ScrollLockStore = {
++    version: 1,
++    lockCount: 0,
++    originalBodyState: null,
++  };
++  Object.defineProperty(singletonDocument, scrollLockStoreKey, {value: store});
++  return store;
++}
+ 
+ /**
+  * Locks body scroll when `isLocked` is true.
+@@ -57,15 +100,16 @@ export function useScrollLock(isLocked: boolean): void {
+     }
+ 
+     const {body} = document;
++    const store = getScrollLockStore(document);
+ 
+-    if (lockCount === 0) {
++    if (store.lockCount === 0) {
+       const scrollX = window.scrollX;
+       const scrollY = window.scrollY;
+ 
+       // Taken before the pinning styles below hide the scrollbar.
+       const gutter = holdScrollbarGutter(body);
+ 
+-      originalBodyState = {
++      store.originalBodyState = {
+         scrollX,
+         scrollY,
+         overflow: body.style.overflow,
+@@ -85,17 +129,17 @@ export function useScrollLock(isLocked: boolean): void {
+       gutter.settle();
+     }
+ 
+-    lockCount += 1;
++    store.lockCount += 1;
+ 
+     return () => {
+-      lockCount -= 1;
++      store.lockCount -= 1;
+ 
+-      if (lockCount !== 0 || originalBodyState == null) {
++      if (store.lockCount !== 0 || store.originalBodyState == null) {
+         return;
+       }
+ 
+-      const state = originalBodyState;
+-      originalBodyState = null;
++      const state = store.originalBodyState;
++      store.originalBodyState = null;
+ 
+       body.style.overflow = state.overflow;
+       body.style.position = state.position;

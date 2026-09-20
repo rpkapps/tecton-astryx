@@ -1,0 +1,60 @@
+{
+  "name": "tecton-astryx",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Tecton design system monorepo.",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "setup": "pnpm install && pnpm build:package",
+    "doctor": "node scripts/doctor.mjs",
+    "dev": "pnpm install && pnpm build:package && pnpm --filter @tecton/docs dev",
+    "build:package": "pnpm --filter @tecton/react build",
+    "build": "pnpm build:packages && pnpm build:apps && pnpm build:fixtures",
+    "build:packages": "pnpm --filter \"./packages/*\" build",
+    "build:apps": "pnpm --filter \"./apps/*\" build",
+    "build:fixtures": "pnpm --filter \"./fixtures/consumers/*\" --filter \"!@tecton-fixture/mfe-harness\" build",
+    "test": "pnpm -r --if-present test",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "lint": "eslint . --max-warnings=0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "palette:check": "pnpm --filter @tecton/react palette:check",
+    "surface:check": "node scripts/check-consumer-surface.mjs",
+    "check:mfe": "pnpm --filter @tecton-fixture/mfe-harness build && pnpm --filter @tecton-fixture/mfe-harness test:e2e",
+    "verify:registry": "node scripts/verify-registry.mjs",
+    "check": "pnpm format:check && pnpm lint && pnpm palette:check && pnpm icons:check && pnpm modules:check && pnpm readme:check && pnpm examples:check && pnpm build && pnpm typecheck && pnpm test && pnpm surface:check && pnpm docs:site:check",
+    "clean": "pnpm -r --if-present clean && rm -rf node_modules/.cache",
+    "icons:check": "pnpm --filter @tecton/react icons:check",
+    "modules:check": "pnpm --filter @tecton/react modules:check",
+    "readme:check": "pnpm --filter @tecton/react readme:check",
+    "examples:port": "node apps/docs/scripts/port-examples.mjs",
+    "examples:check": "node apps/docs/scripts/port-examples.mjs --check",
+    "upgrade-astryx": "node scripts/upgrade-astryx.mjs",
+    "snapshot:astryx": "node scripts/upgrade-astryx.mjs --snapshot",
+    "docs:site:check": "node scripts/check-docs-site.mjs",
+    "docs:site:e2e": "pnpm --filter @tecton/docs test:e2e"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "1.56.1",
+    "@types/node": "^24.10.1",
+    "eslint": "^10.11.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.12.0",
+    "prettier": "^3.9.8",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.70.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ],
+    "patchedDependencies": {
+      "@astryxdesign/core@0.6.2": "patches/@astryxdesign__core@0.6.2.patch"
+    }
+  }
+}

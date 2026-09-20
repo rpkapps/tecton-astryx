@@ -1,0 +1,19 @@
+node_modules/
+dist/
+coverage/
+pnpm-lock.yaml
+apps/docs/src/generated/
+apps/docs/content/docs/
+apps/docs/.source/
+apps/docs/.tanstack/
+# Build output of the docs site before it moved to Vite; a stale checkout may still hold them.
+apps/docs/.next/
+apps/docs/out/
+# Written by the TanStack Router plugin from the files under src/routes.
+apps/docs/src/routeTree.gen.ts
+design/
+tokens/
+screenshots/
+.gitattributes
+fixtures/consumers/registry-vite-app/package-lock.json
+fixtures/consumers/registry-mfe-page/package-lock.json

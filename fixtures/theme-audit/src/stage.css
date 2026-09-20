@@ -1,0 +1,35 @@
+/*
+ * Harness chrome only. Nothing here may style anything inside `#stage` —
+ * the point of the audit is that the two renders differ only by theme.
+ */
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  padding: 24px;
+  /* Both themes define this. Painting it is what a real page does, and it is
+     what a focus ring's contrast has to be measured against. */
+  background: var(--color-background-body);
+  min-height: 100vh;
+  /*
+   * A ceiling on the document, not on the layout.
+   *
+   * A few examples — chat transcripts, app shells, anything with a `100vh`
+   * child inside a `100vh` parent — lay out to tens of thousands of pixels, and
+   * compositing a document that tall costs Chromium gigabytes of scratch space;
+   * two of them in a row took the renderer down mid-run. Clipping the view
+   * leaves layout untouched, so every box still measures exactly where it would
+   * have been. `scripts/probe.js` stops looking for clipping ancestors at
+   * `#stage`, so this rule never shows up as an overflow finding.
+   */
+  max-height: 6000px;
+  overflow: hidden;
+}
+
+#stage {
+  width: 960px;
+  box-sizing: border-box;
+}

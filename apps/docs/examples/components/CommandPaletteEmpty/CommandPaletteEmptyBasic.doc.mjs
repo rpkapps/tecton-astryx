@@ -1,0 +1,13 @@
+/* Ported by apps/docs/scripts/port-examples.mjs. Do not edit by hand. */
+export const doc = {
+  id: 'CommandPaletteEmptyBasic',
+  type: 'block',
+  exampleFor: 'CommandPaletteEmpty',
+  name: 'CommandPaletteEmpty — Basic',
+  displayName: 'CommandPaletteEmpty — Basic',
+  description:
+    'A command palette with no results, showing a custom empty message via emptyBootstrapText. Use to explain why the palette is empty and what the user can do next.',
+  isReady: true,
+  aspectRatio: 16 / 9,
+  componentsUsed: ['CommandPalette', 'CommandPaletteEmpty', 'Text'],
+};

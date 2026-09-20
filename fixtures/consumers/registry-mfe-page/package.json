@@ -1,0 +1,22 @@
+{
+  "name": "@tecton-fixture/registry-mfe-page",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Two registry-installed versions of @tecton/react on one page, each in its own IIFE bundle with its own React. Driven by scripts/verify-registry.mjs.",
+  "scripts": {
+    "build": "node scripts/build.mjs"
+  },
+  "dependencies": {
+    "react-a": "npm:react@^19.3.0",
+    "react-b": "npm:react@^19.3.0",
+    "react-dom-a": "npm:react-dom@^19.3.0",
+    "react-dom-b": "npm:react-dom@^19.3.0",
+    "tecton-a": "npm:@tecton/react@0.1.0",
+    "tecton-b": "npm:@tecton/react@0.1.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.2.0",
+    "vite": "^7.3.6"
+  }
+}

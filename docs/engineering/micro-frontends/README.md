@@ -1,0 +1,271 @@
+# Tecton in a micro-frontend
+
+**Draft.** This is the consumer-facing guide for putting `@tecton/react` on a
+page that has more than one of it. It states what a host shell must do, what
+Tecton now handles for you, and what is not supported at all.
+
+Everything here is anchored to measurement. [`analysis.md`](./analysis.md) is
+the experiment that produced the failure modes and their numbers;
+[`mitigation-proposal.md`](./mitigation-proposal.md) is the design;
+[`fixtures/consumers/mfe-harness/`](../../../fixtures/consumers/mfe-harness/)
+is the harness, and `pnpm check:mfe` re-runs it.
+
+---
+
+## 1. The recommended page shape: the host owns the tokens
+
+One theme layer on the page, one owner of the document root, one stylesheet per
+container for its own components.
+
+```html
+<!-- The shell loads exactly ONE tokens.css: the newest Tecton it knows about. -->
+<link rel="stylesheet" href="/assets/tecton-0.4.0/tokens.css" />
+
+<!-- Each container ships the component CSS that matches its own code. -->
+<link rel="stylesheet" href="/containers/orders/tecton-components.css" />
+<link rel="stylesheet" href="/containers/billing/tecton-components.css" />
+```
+
+```ts
+// The shell, before any container loads.
+import {configureTectonRoot} from '@tecton/react';
+
+configureTectonRoot({mode: 'dark'});
+```
+
+```tsx
+// Every container.
+<TectonProvider mode="dark" scope="nested">
+  <App />
+</TectonProvider>
+```
+
+Why this shape:
+
+- **Tokens stop being contested.** The token bleed (F2/F3) exists because two
+  complete bundles each put their own token values in `@layer astryx-theme`
+  under the same `@scope`, so source order decides — for _every_ container, not
+  just the one that shipped last. With one `tokens.css` there is nothing to
+  contest: every container renders in the host's token values, on purpose.
+- **Tecton's per-component decisions travel with its tokens.** Tecton is a
+  theme, not a second component library: an override it makes for one
+  component — the corner it gives a `Banner` with `container="card"`, say — is
+  a declaration in the same `@layer astryx-theme` under the same `@scope` as a
+  token, and ships in the same `tokens.css`. So the host's single `tokens.css`
+  decides it for every container, exactly as it decides the accent. That is
+  deliberate, and the harness measures it (_the split entry points give both
+  containers the host's tokens_).
+- **Component styles stay version-correct.** The component system's own CSS is
+  StyleX, and an atomic class name is a hash of its declaration, so two
+  versions' component rules coexist and each element carries only its own. A
+  container's `components.css` matches the code in its bundle.
+- **The root has an owner.** `configureTectonRoot()` claims `<html>` before any
+  container mounts, so the page canvas, the scrollbars and the native controls
+  follow the shell's decision and no container can change or remove them.
+
+The entry points:
+
+| Import                                  | Contains                                         | Who loads it                                 |
+| --------------------------------------- | ------------------------------------------------ | -------------------------------------------- |
+| `@tecton/react/styles.css`              | everything — reset, components, theme            | single-app pages                             |
+| `@tecton/react/styles-no-reset.css`     | everything but the global reset                  | a host that owns its own reset               |
+| `@tecton/react/tokens.css`              | the theme layer only                             | the host shell, **once**                     |
+| `@tecton/react/components.css`          | reset + foundation + Tecton components, no theme | each container                               |
+| `@tecton/react/components-no-reset.css` | the same without the reset                       | each container, when the host owns the reset |
+
+Every one of them opens with `@layer reset, astryx-base, astryx-theme;`. That
+line, not the order the sheets arrive in, is what fixes the cascade order:
+the first statement a page sees registers the names and later ones are no-ops.
+Mixing entry points and versions therefore still gives one correct layer order
+(measured in both load orders).
+
+### If you load complete bundles instead
+
+Sometimes you cannot split — a container ships one file and that is that. Then:
+
+1. **Load exactly one Tecton stylesheet if you possibly can**, and make it the
+   newest. Two complete bundles mean the last-loaded one's tokens win for every
+   container on the page.
+2. **Load them in a deterministic order** you control from the shell — a fixed
+   list of `<link>`s, not "whichever bundle initialises first".
+3. **Know the cost**: about +190 kB of CSS per extra concurrent version, roughly
+   half of it byte-identical to what is already there. Bound the number of
+   concurrent versions by release policy; it is cheaper than any technical
+   mitigation.
+
+---
+
+## 2. What the host shell must do
+
+- **Load exactly one Tecton stylesheet per layer role.** One `tokens.css` for
+  the page; one `components.css` per container.
+- **Call `configureTectonRoot({mode})` before any container loads.** It returns
+  a release function; a shell that lives as long as the page never calls it.
+- **Make every container pass `scope="nested"`.** A nested provider still themes
+  its own tree in its own `mode`, and still holds a non-owning claim so the
+  attributes survive _its_ unmount, but it does not try to decide the page.
+- **Toasts need no configuration, and one viewport is all the page ever gets.**
+  A `scope="nested"` provider normally renders no toast viewport — that is what
+  stops two of them landing in the same corner — but a page where _nothing_ is
+  `scope="root"`, which is exactly the shape this document recommends, is not a
+  page without toasts: the first nested provider to mount publishes a
+  **stand-in** viewport for the page. Toasts raised anywhere, by any copy of
+  Tecton, are shown in it.
+
+  If a `scope="root"` provider does mount — the shell renders its own
+  `TectonProvider`, or one container is deliberately the page's Tecton root —
+  it takes the viewport over and the stand-in takes its own down, in that
+  order, so the page never has two. When it unmounts again, a nested provider
+  stands in once more. Toasts on screen belong to the viewport showing them and
+  go when it does; a toast raised while the page has no viewport at all waits
+  for the next one.
+
+  There is nothing to opt into and nothing to arbitrate between containers —
+  the bus asks one provider at a time. The one thing worth knowing is _which_
+  copy of Tecton renders the stack: the stand-in is the first nested provider
+  on the page, so on a page mixing Tecton versions the toast styling is that
+  container's.
+
+- **Decide the colour mode once.** There is one `<html>`; a container cannot
+  have different browser chrome from its host.
+- **Own your own reset, or accept Tecton's.** `styles.css` and `components.css`
+  carry a global reset that restyles host-owned markup;
+  `styles-no-reset.css` / `components-no-reset.css` do not.
+- **Know that a container themes your prose.** The theme's prose styles are
+  scoped to `[data-astryx-theme]`, and the root provider puts that attribute on
+  `<html>`, so the scope root is the whole document. Host markup that sits
+  between `<html>` and the containers is inside it. The way to close the scope
+  is to render host content inside an element carrying a _different_
+  `data-astryx-theme` value; the reset-free entry points drop the prose styles
+  along with the reset layer.
+
+## 3. What is unsupported
+
+- **Cross-container layer nesting.** Rendering one container's dialog, popover
+  or tooltip into another container's DOM subtree. Escape now dismisses the
+  layer that is actually on top (patch 2), so the orphaning half of this is
+  fixed — but the other half is not and cannot be: a second React root left
+  rendering into a node the first root can detach at any moment. A container's
+  layers belong to that container's tree.
+- **Mixed upstream majors.** Two Tecton versions built against different majors
+  of the underlying library put two different `:root` default blocks in
+  `@layer astryx-base` and two `@property` registrations per name, and their
+  component selectors stop agreeing. Keep concurrent versions inside one
+  upstream major; the release policy, not the code, is what enforces this.
+- **Reaching past Tecton to the library underneath.** A container that imports
+  the upstream `Dialog`, `BottomSheet` or `Lightbox` directly is outside every
+  coordination mechanism here — Tecton can only coordinate document state it is
+  in the call path for.
+- **A non-Tecton consumer of the same underlying library on the page.** It will
+  keep fighting over the `<html>` attributes; nothing here reaches it.
+
+---
+
+## 4. Failure modes and where they stand
+
+Severity from `analysis.md` §10. "Fixed" means the failure cannot happen in the
+shape above; "fixed by patch" means the library underneath Tecton was patched
+and the patched code ships inside `@tecton/react` (see
+[`../upstream-patches.md`](../upstream-patches.md)); "mitigated" means the
+symptom is removed but something narrower remains; "documented" means the
+behaviour is understood, deterministic and written down, not changed.
+
+Every "fixed" row is asserted by the harness, and the assertion is named.
+
+| #   | Failure                                                                    | Sev | Status                                                                | What ships                                                                                                                                                                                                       |
+| --- | -------------------------------------------------------------------------- | --- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F1  | Modals in two containers overlap; body left `position: fixed`, page frozen | S1  | **fixed by patch**                                                    | One scroll lock per document (patch 1). Harness: _two containers, one scroll lock…_ and _…the other order_                                                                                                       |
+| F2  | Two versions' token values contest each other; last-loaded wins for all    | S2  | **fixed** in the split shape; **documented** for two complete bundles | `tokens.css` / `components.css`, one theme layer on the page; load order rule otherwise                                                                                                                          |
+| F3  | A version that overrides a token another does not wins it for both         | S2  | **fixed**                                                             | `theme-token-manifest.json` — the build fails if the built theme's token set drifts, so coverage cannot differ                                                                                                   |
+| F4  | Any container unmounting strips the `<html>` attributes for the whole page | S2  | **fixed**                                                             | `rootRegistry` — ref-counted claims, `MutationObserver` re-assertion, clean-up on the last release                                                                                                               |
+| F5  | Two containers with different `mode` fight over the page chrome            | S3  | **fixed**                                                             | First owning claim wins; `configureTectonRoot()` + `scope="nested"` make the shell the owner                                                                                                                     |
+| F6  | Escape closes the wrong layer across containers                            | S3  | **fixed by patch**                                                    | One layer stack and one listener per document (patch 2). Harness: _one Escape dismisses the layer on top…_ ×2                                                                                                    |
+| F7  | A layer nested into another container's DOM is orphaned by one Escape      | S2  | **fixed by patch**                                                    | Same stack: the press goes to the layer on top, not to the copy that listened first. Still unsupported by policy                                                                                                 |
+| F8  | Two toast viewports at identical coordinates; one toast invisible          | S3  | **fixed**                                                             | Document-keyed toast bus; one viewport per page, root-owned or stood in for. Harness: _toasts from both containers land in one viewport_, _the recommended split shape shows toasts with every container nested_ |
+| F9  | Any Tecton stylesheet restyles host-owned headings and prose               | S3  | **mitigated**                                                         | `styles-no-reset.css` / `components-no-reset.css`; the prose scope is documented and cannot be narrowed                                                                                                          |
+| F10 | A modal in one container makes every other container unreachable           | S3  | **documented**                                                        | Correct modal semantics; a policy question for the shell, not a bug                                                                                                                                              |
+| F11 | Duplicate live regions; double announcements                               | S4  | **not yet**                                                           | Announce singleton (proposal §8)                                                                                                                                                                                 |
+| F12 | One F6 press lands in the last-registered toast viewport                   | S4  | **fixed**                                                             | Falls out of the toast bus: there is only one viewport to land in                                                                                                                                                |
+| F13 | +190 kB of mostly duplicate CSS per extra version                          | S4  | **mitigated**                                                         | The split entry points remove the duplicated theme layer; bound concurrent versions by policy                                                                                                                    |
+| F14 | Two different upstream majors                                              | S2  | **documented**                                                        | Unsupported; complete token coverage makes the contested `:root` defaults unreachable                                                                                                                            |
+
+F11 is what is left of the "a wrapper can only coordinate the document-level
+state it is in the call path for" conclusion: Tecton's own announcements can be
+routed through one pair of live regions, but upstream components announce
+through their own copy's, and only an upstream change reaches those.
+
+The F1/F6/F7 rows say **patch**, not **wrapper**, on purpose. The wrapper-side
+designs for them — a scroll-lock watchdog that repairs the body afterwards, a
+registry that allows only one open modal per page — were corrective: they made
+the symptom rarer without removing the state that causes it, and neither reached
+a consumer who imports the underlying library directly. The patches remove the
+defect for every consumer of that library, and `@tecton/react` ships the patched
+code inside itself so its own consumers cannot end up with an unpatched copy.
+
+---
+
+## 5. The two upstream changes — applied as patches, proposed upstream
+
+Both are in `patches/@astryxdesign__core@0.6.2.patch`, both are re-applied by
+`pnpm install`, and both travel to consumers because the build vendors the
+patched library into `@tecton/react`. Neither could be done from the wrapper.
+[`../upstream-patches.md`](../upstream-patches.md) has the detail, the re-apply
+procedure for a new upstream release, and the proposal text for each.
+
+1. **The scroll lock's counter and snapshot are keyed on `document`**, the way
+   the interaction-modality store already is. This removes F1 — the S1 defect
+   where two containers' modals leave the body pinned with nothing open — for
+   every consumer of the library, not just Tecton.
+2. **The layer stack's entry list and its `document` listener are keyed on
+   `document`.** One stack, one ordering, one listener however many copies are
+   loaded. The existing depth/containment/sequence comparator already did the
+   right thing; it just could not see the other copy's entries. This removes F6
+   and F7.
+
+A third, smaller one is still worth raising and has **not** been decided: a
+`rootSync={false}` prop (or ref-counted root attributes) on the upstream theme
+provider, which would make the root registry unnecessary rather than corrective.
+
+Nothing about this changes how Tecton is installed: a consumer still installs
+`@tecton/react` alone, and the patched library is part of the package.
+
+---
+
+## 6. What Tecton does for you now
+
+- `TectonProvider` takes `scope?: 'root' | 'nested'`. Default `'root'`;
+  behaviour for a single provider on a page is unchanged.
+- `configureTectonRoot({mode?, themeName?})` claims the document root from a
+  host shell — a plain function, so a shell that is not a React application can
+  call it — and returns a release function.
+- Under the hood, a `Symbol.for('tecton.rootOwnership/v1')` record on `document`
+  is shared by every copy of Tecton on the page. The first owning claim decides
+  the attributes; a later owning claim that disagrees logs one development
+  warning and is ignored; non-owning claims keep the attributes alive; the last
+  release removes them. A `MutationObserver` puts back anything that disagrees.
+  You never touch this directly — but `document[Symbol.for('tecton.rootOwnership/v1')].inspect()`
+  tells you who holds the page when something looks wrong.
+- `useToast()` routes every toast through a `Symbol.for('tecton.toast/v1')` bus
+  on `document`, so the page has one toast stack however many copies of Tecton
+  raise into it. The payload is **data** — a title, a body, a kind, a duration
+  and one action descriptor — never a React node, because an element built by
+  one copy's React cannot be rendered by another's. The bus also decides who
+  renders the stack: a `scope="root"` provider owns it, and on a page with no
+  root provider the first `scope="nested"` provider stands in and hands over if
+  one appears later. See the host-shell rule in §2, and
+  `document[Symbol.for('tecton.toast/v1')].inspect()` for who is publishing.
+- The library underneath is **patched and shipped inside the package**: one
+  scroll lock and one layer stack per document, whatever is on the page
+  (`../upstream-patches.md`). You install `@tecton/react` and nothing else, so
+  there is no way to end up with an unpatched copy of it.
+- The theme's token coverage is pinned by `theme-token-manifest.json` and
+  checked on every build.
+- The stylesheet is published as five entry points (§1).
+
+Two things it deliberately does **not** do: it does not stop the underlying
+provider writing the attributes in the first place (there is a one-microtask
+window, before paint, in which a synchronous reader sees the wrong value), and
+it does not reach a non-Tecton consumer of the same library — although that
+consumer, if it loads its own copy of the library, is no longer able to corrupt
+Tecton's scroll lock or steal its Escape presses: those two are fixed in the
+library itself, for everybody on the page who has the patched code.

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tecton micro-frontend page</title>
+    <!--
+      The host shell. One page serves every scenario, driven by the query
+      string:
+
+        styles=full | no-reset | split | none   which entry points to link
+        css=ab | ba                             stylesheet link order
+        mount=ab | ba                           mount order
+        modeA / modeB = dark | light | system   each container's colour mode
+        scopeA / scopeB = root | nested         each container's TectonProvider scope
+        hostRoot=1                              the shell claims the root itself
+        hostMode=dark | light                   ...in this mode
+        only=a | b                              load and mount one container
+        autoMount=0                             load the bundles, mount nothing
+
+      `styles=split` is the recommended shape: the shell links exactly ONE
+      tokens.css — the newest Tecton it knows about, version B — and each
+      container links its own components.css.
+    -->
+    <script>
+      window.__params = new URLSearchParams(location.search);
+      window.__p = (k, d) => window.__params.get(k) ?? d;
+      (function () {
+        const p = window.__p;
+        const styles = p('styles', 'full');
+        const only = p('only', null);
+        const order =
+          only === 'a'
+            ? ['a']
+            : only === 'b'
+              ? ['b']
+              : p('css', 'ab') === 'ba'
+                ? ['b', 'a']
+                : ['a', 'b'];
+        const link = (href, sheet) =>
+          document.write(
+            '<link rel="stylesheet" href="./css/' +
+              href +
+              '" data-sheet="' +
+              sheet +
+              '">',
+          );
+        if (styles === 'none') return;
+        if (styles === 'split') {
+          // The host owns the tokens: exactly one theme layer on the page.
+          link('tecton-b-tokens.css', 'tokens-b');
+          for (const id of order) link('tecton-' + id + '-components.css', id);
+          return;
+        }
+        const suffix = styles === 'no-reset' ? '-no-reset' : '';
+        for (const id of order) link('tecton-' + id + suffix + '.css', id);
+      })();
+    </script>
+    <style>
+      /* Host shell chrome only — no design-system tokens are used here. */
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+      }
+      #shell {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        padding: 24px;
+      }
+      #tall {
+        height: 2000px;
+      }
+      .slot {
+        border: 1px dashed #8884;
+        min-height: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="host-title">Host shell</h1>
+    <p id="host-prose">Host-owned prose, rendered by no container.</p>
+    <div id="shell">
+      <div class="slot" id="slot-a"></div>
+      <div class="slot" id="slot-b"></div>
+    </div>
+    <div id="tall">spacer so the document can scroll</div>
+
+    <script>
+      // The bundles are plain IIFEs, so their execution order is script order.
+      (function () {
+        const p = window.__p;
+        const only = p('only', null);
+        const order = p('mount', 'ab') === 'ba' ? ['b', 'a'] : ['a', 'b'];
+        const ids = only === 'a' ? ['a'] : only === 'b' ? ['b'] : order;
+        if (p('hostRoot', '0') === '1' || p('styles', 'full') === 'split') {
+          document.write('<script src="./host-shell.js"><\/script>');
+        }
+        for (const id of ids) {
+          document.write('<script src="./container-' + id + '.js"><\/script>');
+        }
+      })();
+    </script>
+
+    <script>
+      window.__mfe = {
+        a: window.ContainerA?.default ?? window.ContainerA,
+        b: window.ContainerB?.default ?? window.ContainerB,
+        host: window.HostShell?.default ?? window.HostShell,
+        mounted: {},
+        mount(id, opts) {
+          this[id].mount(document.getElementById('slot-' + id), opts);
+          this.mounted[id] = true;
+        },
+        unmount(id) {
+          this[id].unmount();
+          this.mounted[id] = false;
+        },
+      };
+
+      (function () {
+        const p = window.__p;
+        const split = p('styles', 'full') === 'split';
+        if ((p('hostRoot', '0') === '1' || split) && window.__mfe.host) {
+          // The shell decides the page's mode once, before anything mounts.
+          window.__mfe.host.configureRoot({mode: p('hostMode', 'dark')});
+        }
+        if (p('autoMount', '1') !== '0') {
+          const only = p('only', null);
+          const order = p('mount', 'ab') === 'ba' ? ['b', 'a'] : ['a', 'b'];
+          const ids = only === 'a' ? ['a'] : only === 'b' ? ['b'] : order;
+          for (const id of ids) {
+            window.__mfe.mount(id, {
+              mode: p('mode' + id.toUpperCase(), 'dark'),
+              // In the split shape the shell owns the page, so containers are
+              // nested by default.
+              scope: p('scope' + id.toUpperCase(), split ? 'nested' : 'root'),
+            });
+          }
+        }
+        window.__ready = true;
+      })();
+    </script>
+  </body>
+</html>
