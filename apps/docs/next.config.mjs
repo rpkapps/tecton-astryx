@@ -18,6 +18,8 @@ const config = {
   trailingSlash: true,
   images: {unoptimized: true},
   typedRoutes: false,
+  // Next 16 otherwise writes AGENTS.md/CLAUDE.md into the app on `next dev`.
+  agentRules: false,
 };
 
 export default withMDX(config);

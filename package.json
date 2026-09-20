@@ -9,6 +9,10 @@
     "node": ">=22"
   },
   "scripts": {
+    "setup": "pnpm install && pnpm build:package",
+    "doctor": "node scripts/doctor.mjs",
+    "dev": "pnpm build:package && pnpm --filter @tecton/docs dev",
+    "build:package": "pnpm --filter @tecton/react build",
     "build": "pnpm build:packages && pnpm build:apps && pnpm build:fixtures",
     "build:packages": "pnpm --filter \"./packages/*\" build",
     "build:apps": "pnpm --filter \"./apps/*\" build",
@@ -21,6 +25,7 @@
     "palette:check": "pnpm --filter @tecton/react palette:check",
     "surface:check": "node scripts/check-consumer-surface.mjs",
     "check:mfe": "pnpm --filter @tecton-fixture/mfe-harness build && pnpm --filter @tecton-fixture/mfe-harness test:e2e",
+    "verify:registry": "node scripts/verify-registry.mjs",
     "check": "pnpm format:check && pnpm lint && pnpm palette:check && pnpm icons:check && pnpm build && pnpm typecheck && pnpm test && pnpm surface:check && pnpm docs:check && pnpm docs:site:check",
     "clean": "pnpm -r --if-present clean && rm -rf node_modules/.cache",
     "icons:check": "pnpm --filter @tecton/react icons:check",

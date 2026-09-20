@@ -3,6 +3,40 @@
 The monorepo for **Tecton**, a React design system: one package for consumers,
 one stylesheet, one provider.
 
+## Run it locally
+
+Three commands, from a fresh clone (Node 22+, `corepack enable` gives you the
+pinned pnpm):
+
+```bash
+pnpm setup      # install every workspace and build @tecton/react once
+pnpm dev        # docs site with live examples at http://localhost:3000
+pnpm check      # everything CI runs
+```
+
+`pnpm doctor` tells you which of those you still need to run and why. Nothing
+else is required: the docs site generates its own content when it starts, and
+every generated file inside `packages/react` (palette, icons, wrappers) is
+committed, so you never run a generator by hand — the build only checks that
+they are current.
+
+After editing anything under `packages/react/src`, run `pnpm build:package`
+(or `pnpm dev` again): the docs site and the fixtures consume the built
+package, not the source.
+
+### If `git status` shows generated files after a build
+
+That is a line-ending checkout, not a real change. The repository pins LF in
+`.gitattributes`; a clone made with `core.autocrlf=true` before that file
+existed has CRLF in the working tree, and the generators write LF. Fix it once:
+
+```bash
+git config core.autocrlf false
+git add --renormalize . && git checkout -- .
+```
+
+`pnpm doctor` reports this condition.
+
 ## Layout
 
 ```
@@ -10,34 +44,32 @@ packages/react/              @tecton/react — the published package
 apps/docs/                   @tecton/docs — documentation site (private)
 fixtures/consumers/vite-app/ a minimal consumer, built in CI to prove the surface
 fixtures/consumers/mfe-harness/ two Tecton versions on one page, driven by Playwright
+fixtures/consumers/registry-*/ consumers that install @tecton/react from a real registry
 scripts/                     repository-level tooling
 docs/engineering/            how the pipeline works
 design/, tokens/             design exploration (owned by the design phase)
 ```
 
-## Line endings
-
-The repository pins LF through `.gitattributes`. Generated-file drift checks and
-the docs example rewriter compare text byte for byte, so on Windows run
-`git config core.autocrlf false` (or re-checkout with
-`git add --renormalize . && git checkout -- .`) if a clone was made before the
-attributes file existed.
-
 ## Commands
 
 Run from the repository root:
 
-| Command             | What it does                                                            |
-| ------------------- | ----------------------------------------------------------------------- |
-| `pnpm install`      | Install every workspace                                                 |
-| `pnpm build`        | Build the packages, then the apps, then the consumer fixtures           |
-| `pnpm test`         | Run the unit tests                                                      |
-| `pnpm typecheck`    | Type-check every workspace (after a build — apps consume built types)   |
-| `pnpm lint`         | ESLint across the repository                                            |
-| `pnpm format:check` | Prettier, check only (`pnpm format` writes)                             |
-| `pnpm check`        | Everything above, in the order CI runs it                               |
-| `pnpm check:mfe`    | Build and run the micro-frontend harness (browser, not part of `check`) |
-| `pnpm clean`        | Remove build output                                                     |
+| Command                | What it does                                                                         |
+| ---------------------- | ------------------------------------------------------------------------------------ |
+| `pnpm setup`           | `pnpm install` plus one build of `@tecton/react`                                     |
+| `pnpm dev`             | Build the package, then start the docs site (Next.js dev server)                     |
+| `pnpm doctor`          | Check Node, pnpm, line endings, install state and the built package                  |
+| `pnpm build:package`   | Build `@tecton/react` only (do this after editing its source)                        |
+| `pnpm install`         | Install every workspace                                                              |
+| `pnpm build`           | Build the packages, then the apps, then the consumer fixtures                        |
+| `pnpm test`            | Run the unit tests                                                                   |
+| `pnpm typecheck`       | Type-check every workspace (after a build — apps consume built types)                |
+| `pnpm lint`            | ESLint across the repository                                                         |
+| `pnpm format:check`    | Prettier, check only (`pnpm format` writes)                                          |
+| `pnpm check`           | Everything above, in the order CI runs it                                            |
+| `pnpm check:mfe`       | Build and run the micro-frontend harness (browser, not part of `check`)              |
+| `pnpm verify:registry` | Publish to a local registry and install it as a consumer would (not part of `check`) |
+| `pnpm clean`           | Remove build output                                                                  |
 
 Upgrading the library Tecton is built on is one command:
 
@@ -78,6 +110,14 @@ rebuilds the package a second time and launches a browser. Read
 `docs/engineering/micro-frontends/README.md` before shipping Tecton into a
 micro-frontend.
 
+`pnpm verify:registry` starts a local Verdaccio, publishes `@tecton/react` into
+it twice — the current version and a derived next one — and installs both with
+plain `npm` into two applications that are not workspace members: one ordinary
+Vite consumer, and one page running both published versions side by side. It is
+what proves `files`, `exports` and the vendored upstream library survive a real
+publish, which a workspace symlink cannot. Read
+`docs/engineering/registry-verification.md`; run it before a release.
+
 `pnpm docs:site:e2e` runs the documentation site's Playwright suite against its
 static export — live examples, the icon and colour pages, and search. Like
 `check:mfe` it launches a browser, so it is deliberately outside `pnpm check`.
@@ -108,6 +148,9 @@ exported as static HTML, and generated from the package itself. See
   applying. Two worked examples are in `docs/engineering/upgrades/`.
 - `docs/engineering/micro-frontends/README.md` — what a host shell must do when
   several Tecton versions share a page, and what is unsupported.
+- `docs/engineering/registry-verification.md` — how `pnpm verify:registry`
+  publishes the package to a local registry and installs it as a consumer
+  would, including two versions on one page.
 - `docs/design/fidelity-report.md` — what survived the port from the design, what
   was approximated, and what could not be expressed. Read its open questions.
 - `docs/design/light-mode.md` — Tecton is designed dark; this is how light mode
