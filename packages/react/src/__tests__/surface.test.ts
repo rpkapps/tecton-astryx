@@ -75,7 +75,17 @@ describe('the package root', () => {
  * The hand-written entry points (`.`, `./theme`, `./icons`, the stylesheets)
  * are not generated modules and are covered above and in their own files.
  */
-const HAND_WRITTEN = new Set(['.', './theme', './icons', './package.json']);
+const HAND_WRITTEN = new Set([
+  '.',
+  './theme',
+  './icons',
+  './package.json',
+  // Published straight from the vendored files, with no module in between —
+  // StyleX has to see the real `defineVars()` call site, and JSON has nothing
+  // to wrap it in. Checked separately below.
+  './theme/tokens.stylex',
+  './locales/*.json',
+]);
 
 const subpaths = Object.keys(tectonPackage.exports)
   .filter(subpath => !HAND_WRITTEN.has(subpath) && !subpath.endsWith('.css'))
@@ -99,6 +109,32 @@ describe('the subpath modules', () => {
       expect(published).toHaveProperty(exported);
       expect(published[exported]).toBe(upstream[exported]);
     }
+  });
+});
+
+describe('the directly published entries', () => {
+  it('points at the vendored files rather than at a module', () => {
+    const exports = tectonPackage.exports as Record<
+      string,
+      string | {types: string; default: string}
+    >;
+    const stylex = exports['./theme/tokens.stylex'];
+    expect(typeof stylex).toBe('object');
+    expect((stylex as {default: string}).default).toBe(
+      './dist/vendor/core/dist/theme/tokens.stylex.js',
+    );
+    expect(exports['./locales/*.json']).toBe(
+      './dist/vendor/core/locales/*.json',
+    );
+  });
+
+  it('serves the same token variables the theme is built against', async () => {
+    const published = (await import(
+      '@astryxdesign/core/theme/tokens.stylex'
+    )) as Record<string, unknown>;
+    // The defineVars call sites StyleX has to resolve through.
+    expect(published.colorVars).toBeDefined();
+    expect(published.spacingVars).toBeDefined();
   });
 });
 

@@ -207,9 +207,12 @@ test('styles-no-reset.css leaves host-owned markup alone', async ({page}) => {
   // The reset-free entry point does not.
   expect(withoutReset).toEqual(bare);
 
-  // ...while the container it serves is still completely themed.
+  // ...while the container it serves is still completely themed. The padding
+  // is B's, because both versions' sheets are linked and B is linked last —
+  // see the cascade tests at the end of this file. (31px, not 32: the card's
+  // own rule takes its 1px border out of the padding it was given.)
   expect(panel?.panelBackground).not.toBe('rgba(0, 0, 0, 0)');
-  expect(panel?.panelPadding).toBe('16px');
+  expect(panel?.panelPadding).toBe('31px');
   expect(panel?.wrapperTheme).toBe('tecton');
 
   test.info().annotations.push({
@@ -240,11 +243,15 @@ test("the split entry points give both containers the host's tokens", async ({
   expect(a?.panelBackground).toBe(b?.panelBackground);
   expect(a?.buttonBackground).toBe(b?.buttonBackground);
 
-  // Component styles stay each version's own: A's Panel keeps its padding and
-  // B's keeps the retuned one, because the atomic class name is a hash of the
-  // declaration.
-  expect(a?.panelPadding).toBe('16px');
-  expect(b?.panelPadding).toBe('32px');
+  // Per-component decisions travel with the tokens. Tecton is a theme, not a
+  // second component library: every rule it ships is in `@layer astryx-theme`
+  // under the theme's own `@scope`, so the host's single tokens.css decides
+  // the card's padding for both containers exactly as it decides the accent.
+  // That is the whole point of the split — one theme layer, nothing contested
+  // — and it is why the token-coverage manifest covers the theme's component
+  // custom properties as well as its tokens.
+  expect(a?.panelPadding).toBe('31px');
+  expect(b?.panelPadding).toBe(a?.panelPadding);
 
   // The layer order is still declared by every sheet, so it cannot depend on
   // which of them arrives first.
@@ -442,7 +449,7 @@ test('one Escape dismisses the layer on top with the containers the other way ro
 });
 
 // ---------------------------------------------------------------------------
-// One toast viewport for the page
+// Toasts: one viewport per copy, raised through the component system's own hook
 // ---------------------------------------------------------------------------
 
 /** Every toast on the page, and how many viewports they are spread across. */
@@ -456,80 +463,76 @@ function toasts(page: Page) {
   });
 }
 
-test('toasts from both containers land in one viewport', async ({page}) => {
+/**
+ * Toasts are the component system's own `useToast`, and Tecton does not stand
+ * between a consumer and it. A toast is raised into the viewport its own
+ * provider mounted, so a page with two separately bundled containers has two
+ * viewports on it — one per copy of the package, each rendering the toasts of
+ * the copy that raised them.
+ *
+ * Tecton v1 routed toast *data* across copies so that one viewport showed them
+ * all (F8/F12 in `docs/engineering/micro-frontends/analysis.md`). That routing
+ * hung off a Tecton-owned `useToast` whose payload was strings rather than
+ * elements, and a Tecton-owned hook is exactly what v2 removed: the toast API
+ * is the component system's, with the component system's `ToastOptions`, whose
+ * `body` is a `ReactNode` — and an element built by one copy's React cannot be
+ * rendered by another's. So the routing is gone with it, and the viewports it
+ * merged are visible again. `docs/design/fidelity-report.md` records the
+ * trade.
+ *
+ * What does still hold is everything the root registry owns: the page's mode,
+ * its theme name and the fact that a container leaving does not take them
+ * away. Those are asserted throughout the rest of this file.
+ */
+test('every container’s toasts land in its own provider’s viewport', async ({
+  page,
+}) => {
   await open(page, '?styles=full&mount=ab');
 
   await page.click('[data-testid="a-raise-toast"]');
   await page.click('[data-testid="b-raise-toast"]');
   await page.waitForTimeout(200);
 
-  // Two viewports used to sit at identical coordinates with their toasts drawn
-  // on top of each other, one of them invisible (analysis.md F8/F12). The
-  // document-keyed toast bus gives the page one viewport: the first
-  // scope="root" provider's, whichever copy of Tecton raised the toast.
   const shown = await toasts(page);
-  expect(shown.viewports).toBe(1);
   expect(shown.bodies.join(' ')).toContain('toast from container a');
   expect(shown.bodies.join(' ')).toContain('toast from container b');
+  // One viewport per copy of the package on the page.
+  expect(shown.viewports).toBe(2);
 });
 
-/** What the page's toast bus reports about itself. */
-function toastBus(page: Page) {
-  return page.evaluate(() => {
-    const record = (
-      document as unknown as Record<symbol, {inspect?: () => unknown}>
-    )[Symbol.for('tecton.toast/v1')];
-    return (record?.inspect?.() ?? null) as {
-      publishers: number;
-      owners?: number;
-      standInRequests?: number;
-      standingIn?: boolean;
-      queued: number;
-    } | null;
-  });
-}
-
-test('the recommended split shape shows toasts with every container nested', async ({
-  page,
-}) => {
-  // The shape §1 of the README recommends, exactly as written: the shell owns
-  // the page through configureTectonRoot() and BOTH containers are nested, so
-  // nothing on the page is scope="root". Every toast raised here used to queue
-  // for ever, because a nested provider rendered no viewport and no other
-  // provider was going to.
+test('a nested container still shows its toasts', async ({page}) => {
+  // The recommended split shape: the shell owns the page through
+  // configureTectonRoot() and BOTH containers are nested. A nested provider is
+  // still a provider — it mounts the layer its own tree resolves toasts
+  // through — so nothing queues for ever.
   await open(page, '?styles=split');
 
   await page.click('[data-testid="a-raise-toast"]');
   await page.click('[data-testid="b-raise-toast"]');
   await page.waitForTimeout(200);
 
-  // One viewport — the stand-in published by the first nested provider — and
-  // both containers' toasts in it, each rendered by the copy that raised it.
   const shown = await toasts(page);
-  expect(shown.viewports).toBe(1);
   expect(shown.bodies.join(' ')).toContain('toast from container a');
   expect(shown.bodies.join(' ')).toContain('toast from container b');
 
-  // Standing in claims nothing else: the shell still owns the root, and the
+  // Being nested claims nothing else: the shell still owns the root, and the
   // page still has the same three holders it had before.
-  expect(await toastBus(page)).toMatchObject({
-    publishers: 1,
-    owners: 0,
-    standInRequests: 2,
-    standingIn: true,
-    queued: 0,
-  });
   expect(await registry(page)).toMatchObject({holders: 3});
   expect(await root(page)).toMatchObject({mode: 'dark', theme: 'tecton'});
 });
 
-test('the stand-in passes to the next container when the first one leaves', async ({
+test('a container that leaves takes its own viewport with it', async ({
   page,
 }) => {
   await open(page, '?styles=split');
 
-  // Container A is standing in for the page. It goes away — a container being
-  // unmounted is routine in a shell — and B picks the viewport up.
+  await page.click('[data-testid="a-raise-toast"]');
+  await page.waitForTimeout(200);
+  expect((await toasts(page)).bodies.join(' ')).toContain(
+    'toast from container a',
+  );
+
+  // A container being unmounted is routine in a shell.
   await page.evaluate(() => window.__mfe.unmount('a'));
   await page.waitForTimeout(100);
 
@@ -537,39 +540,11 @@ test('the stand-in passes to the next container when the first one leaves', asyn
   await page.waitForTimeout(200);
 
   const shown = await toasts(page);
-  expect(shown.viewports).toBe(1);
   expect(shown.bodies.join(' ')).toContain('toast from container b');
-  expect(await toastBus(page)).toMatchObject({
-    publishers: 1,
-    owners: 0,
-    standInRequests: 1,
-    standingIn: true,
-  });
+  expect(shown.bodies.join(' ')).not.toContain('toast from container a');
+  expect(shown.viewports).toBe(1);
 });
 
-test("a nested container's toast lands in the root provider's viewport", async ({
-  page,
-}) => {
-  // The same split shape with container A mounted scope="root" instead: A owns
-  // the page's toast surface outright, so B's standing offer to cover for a
-  // page with no owner is never taken up and only A renders a viewport.
-  await open(page, '?styles=split&scopeA=root&scopeB=nested');
-
-  await page.click('[data-testid="b-raise-toast"]');
-  await page.click('[data-testid="a-raise-toast"]');
-  await page.waitForTimeout(200);
-
-  const shown = await toasts(page);
-  expect(shown.viewports).toBe(1);
-  expect(shown.bodies.join(' ')).toContain('toast from container a');
-  expect(shown.bodies.join(' ')).toContain('toast from container b');
-  expect(await toastBus(page)).toMatchObject({
-    publishers: 1,
-    owners: 1,
-    standInRequests: 1,
-    standingIn: false,
-  });
-});
 
 // ---------------------------------------------------------------------------
 // The cascade: recorded, not fixed
@@ -604,11 +579,15 @@ test('two full bundles: the last-loaded theme wins for every container', async (
   expect(ab.a?.surface).toBe(ab.b?.surface);
   expect(ba.a?.surface).toBe(ba.b?.surface);
 
-  // Component styles are version-safe in every configuration.
-  for (const shape of [ab, ba]) {
-    expect(shape.a?.panelPadding).toBe('16px');
-    expect(shape.b?.panelPadding).toBe('32px');
-  }
+  // And the theme's per-component overrides go the same way as its tokens,
+  // for the same reason: one theme name, one scope, one layer. A's card and
+  // B's card both take the padding of whichever sheet was linked last.
+  expect(aAlone?.panelPadding).toBe('15px');
+  expect(bAlone?.panelPadding).toBe('31px');
+  expect(ab.a?.panelPadding).toBe(bAlone?.panelPadding);
+  expect(ab.b?.panelPadding).toBe(bAlone?.panelPadding);
+  expect(ba.a?.panelPadding).toBe(aAlone?.panelPadding);
+  expect(ba.b?.panelPadding).toBe(aAlone?.panelPadding);
 
   // And the layer order is fixed by the statement line, not by arrival.
   for (const order of ['ab', 'ba']) {

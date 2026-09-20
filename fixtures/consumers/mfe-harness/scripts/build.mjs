@@ -4,22 +4,28 @@
  * three IIFE bundles and the host shell.
  *
  *   version A = @tecton/react exactly as it is built in packages/react (0.1.0)
- *   version B = the same build with three retuned theme tokens and Panel's own
+ *   version B = the same build with three retuned theme tokens and the card
  *               padding moved one step up the scale                    (0.2.0)
  *
- * B is what a second release train plausibly ships: a couple of design tokens
- * that moved and one component whose own declaration moved with them. Both
- * keep the theme NAME `tecton`, which is the strategy under test.
+ * B is what a second release train plausibly ships: a few design decisions
+ * that moved. Both keep the theme NAME `tecton`, which is the strategy under
+ * test.
+ *
+ * Both of B's edits are made in the THEME layer, and that is not an accident
+ * of the fixture: since Tecton became a theme rather than a second component
+ * library, every Tecton declaration — tokens and per-component overrides alike
+ * — lives in `@layer astryx-theme`, scoped by the theme name. So a component
+ * override is a cross-version contract in exactly the way a token is, and the
+ * page resolves both the same way. That is what the cascade tests measure.
  *
  * ## Why B is patched in `dist/` rather than rebuilt from patched source
  *
  * The investigation harness patched `packages/react/src` in place, built it a
  * second time and restored the tree. That is a lot of trust to place in a
  * fixture's `finally` block, and it costs a full second build. Patching the
- * built artefacts produces the same page: the theme tokens live in the built
- * CSS as plain declarations, and a component whose StyleX declaration changed
- * gets a NEW atomic class name — which is exactly what is reproduced here, so
- * the two versions' component rules coexist the way real releases' do.
+ * built artefacts produces the same page: everything the theme decides lives
+ * in the built CSS as plain declarations, so retuning them there is the same
+ * page a rebuild would produce.
  *
  * Nothing outside this fixture's own `dist/` is written.
  *
@@ -89,7 +95,7 @@ fs.mkdirSync(VERSIONS, {recursive: true});
 fs.cpSync(PACKAGE_DIST, path.join(VERSIONS, 'tecton-a'), {recursive: true});
 
 // --- 2. version B = the same build, retuned ----------------------------------
-log('▸ Deriving version B (0.2.0): retuned tokens + Panel padding');
+log('▸ Deriving version B (0.2.0): retuned tokens + card padding');
 const B = path.join(VERSIONS, 'tecton-b');
 fs.cpSync(PACKAGE_DIST, B, {recursive: true});
 
@@ -112,37 +118,25 @@ if (tokenEdits === 0) {
   throw new Error('No theme token was retuned — did the token names change?');
 }
 
-// Panel's padding: find the atomic class the built CSS gives it, and give
-// version B its own class with its own declaration — which is what a real
-// rebuild produces, since a StyleX class name is a hash of the declaration.
-const bundlePath = path.join(B, 'tecton.css');
-const paddingRule = fs
-  .readFileSync(bundlePath, 'utf8')
-  .match(/\.(tecton[a-z0-9]+)\{padding:var\(--spacing-4\)\}/);
-if (!paddingRule) {
-  throw new Error(
-    "Could not find Panel's padding class in the built CSS — has Panel changed?",
-  );
-}
-const [, classA] = paddingRule;
-const classB = 'tectonb2pad8';
+// The card's padding: a per-component decision the theme makes, retuned one
+// step up the spacing scale. It is a custom property the theme sets inside its
+// own @scope, so it travels with the tokens — which is the point.
+const CARD_PADDING = '--astryx-card-padding';
 let paddingEdits = 0;
 for (const sheet of STYLESHEETS) {
   paddingEdits += rewrite(path.join(B, sheet), css =>
     css.replaceAll(
-      `.${classA}{padding:var(--spacing-4)}`,
-      `.${classB}{padding:var(--spacing-8)}`,
+      `${CARD_PADDING}: var(--spacing-4)`,
+      `${CARD_PADDING}: var(--spacing-8)`,
     ),
   );
 }
-const panelJs = path.join(B, 'components/Panel/Panel.js');
-if (rewrite(panelJs, code => code.replaceAll(classA, classB)) === 0) {
-  throw new Error(`Panel.js does not reference ${classA}`);
-}
 if (paddingEdits === 0) {
-  throw new Error(`No stylesheet carried .${classA}`);
+  throw new Error(
+    `No stylesheet set ${CARD_PADDING} to var(--spacing-4) — has the theme's card override changed?`,
+  );
 }
-log(`  .${classA} (16px) → .${classB} (32px) in ${paddingEdits} stylesheets`);
+log(`  ${CARD_PADDING} 16px → 32px in ${paddingEdits} stylesheets`);
 
 for (const [dir, version] of [
   [path.join(VERSIONS, 'tecton-a'), '0.1.0'],

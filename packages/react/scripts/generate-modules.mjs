@@ -15,15 +15,27 @@
  * the Tecton subpath with it, and `--check` fails the build when the committed
  * files no longer match — the same drift guard the palette and the icons have.
  *
- * Five kinds of upstream entry are deliberately skipped (`SKIPPED` below): the
- * stylesheets, which Tecton assembles into its own entry points; the
- * build-time StyleX token module, which is not a runtime module at all; and
- * the documentation data files, which belong to the documentation site.
+ * Three kinds of upstream entry get no module of their own. The stylesheets
+ * (`SKIPPED` below) are assembled into Tecton's own entry points and the
+ * documentation data files belong to the documentation site, so neither is
+ * published at all. `./theme` is published but hand-written
+ * (`src/theme/public.ts`): it is Tecton's theme public API *and* the theme
+ * runtime, which is more than a generated one-liner.
  *
- * `./theme` is skipped here too, but for the opposite reason: it is not
- * missing, it is hand-written. `@tecton/react/theme` is Tecton's theme public
- * API *and* the upstream theme runtime, which needs a real module
- * (`src/theme/public.ts`) rather than a generated one-liner.
+ * `DIRECT` is the third: two entries that are published, but as the vendored
+ * file itself rather than through a re-export module.
+ *
+ *   `./theme/tokens.stylex`  StyleX's compiler has to see the real
+ *                            `defineVars()` call site to resolve a token to a
+ *                            `var(--…)`. A module that re-exported it would
+ *                            hide that call from the compiler and every token
+ *                            reference in a consumer's StyleX would break.
+ *   `./locales/*.json`       JSON. There is nothing to wrap it in.
+ *
+ * Both point straight into `dist/vendor/core`, which is otherwise internal.
+ * That is the exception, and it is the reason the directory is named for its
+ * role: the published path says `@tecton/react/theme/tokens.stylex`, and the
+ * target is plumbing a consumer never writes.
  *
  *   node scripts/generate-modules.mjs           # write the modules and exports
  *   node scripts/generate-modules.mjs --check   # fail if they have drifted
@@ -61,12 +73,25 @@ const SKIPPED = new Map([
   ['./reset.css', 'assembled into Tecton’s own stylesheet entry points'],
   ['./astryx.css', 'assembled into Tecton’s own stylesheet entry points'],
   ['./tailwind-theme.css', 'a Tailwind bridge Tecton does not publish'],
-  ['./theme/tokens.stylex', 'build-time StyleX input, not a runtime module'],
   ['./docs.mjs', 'documentation data, consumed by the documentation site'],
   ['./groups.doc.mjs', 'documentation data, consumed by the documentation site'],
-  ['./locales/*.json', 'message catalogues, vendored as data not as a module'],
   ['./theme', 'hand-written: src/theme/public.ts, Tecton’s theme plus this one'],
+  ['./theme/tokens.stylex', 'published straight from the vendored file: see DIRECT'],
+  ['./locales/*.json', 'published straight from the vendored files: see DIRECT'],
 ]);
+
+/**
+ * The entries published as the vendored file itself, with no module in
+ * between. The paths mirror the upstream exports map's own targets under
+ * `dist/vendor/core/`, which is where the build puts the vendored package.
+ */
+const DIRECT = {
+  './theme/tokens.stylex': {
+    types: './dist/vendor/core/dist/theme/tokens.stylex.d.ts',
+    default: './dist/vendor/core/dist/theme/tokens.stylex.js',
+  },
+  './locales/*.json': './dist/vendor/core/locales/*.json',
+};
 
 /** The upstream subpaths that become `@tecton/react/<Path>`, in map order. */
 export function upstreamModulePaths() {
@@ -133,7 +158,7 @@ const changed = [...wanted].filter(
 // The exports map ------------------------------------------------------------
 const manifestText = fs.readFileSync(MANIFEST, 'utf8');
 const manifest = JSON.parse(manifestText);
-const nextExports = {...fixedExports(manifest.exports ?? {})};
+const nextExports = {...fixedExports(manifest.exports ?? {}), ...DIRECT};
 for (const subpath of paths) {
   nextExports[`./${subpath}`] = {
     types: `./dist/modules/${subpath}/index.d.ts`,
@@ -187,6 +212,7 @@ if (manifestDrifted) fs.writeFileSync(MANIFEST, nextManifest);
 
 console.log(
   `${paths.length} subpath modules written from ${CORE}@${corePkg.version}` +
-    ` (${changed.length} changed, ${stale.length} removed)` +
+    ` (${changed.length} changed, ${stale.length} removed), plus ` +
+    `${Object.keys(DIRECT).length} published straight from the vendored files` +
     `${manifestDrifted ? ', package.json#exports updated' : ''}.`,
 );

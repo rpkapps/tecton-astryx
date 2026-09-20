@@ -7,7 +7,8 @@
  * two bundles, which is exactly the micro-frontend situation.
  *
  * Nothing here imports anything but `@tecton/react`: a container is an
- * ordinary consumer, and a consumer never sees what Tecton is built on.
+ * ordinary consumer, and a consumer never sees what Tecton is built on. What
+ * it does see is the component system's own API, themed by Tecton.
  *
  * The dialog and the menu are controlled and driven from the imperative
  * handle, because a modal from container A covers container B's buttons — a
@@ -16,11 +17,14 @@
 import {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {
   Button,
+  Card,
   Dialog,
-  Menu,
-  Panel,
+  DialogHeader,
+  DropdownMenu,
+  Heading,
   TectonProvider,
   Text,
+  VStack,
   useToast,
 } from '@tecton/react';
 
@@ -61,42 +65,44 @@ export function Container({id, version, mode, scope, handleRef}) {
     <TectonProvider mode={mode} scope={scope}>
       <ToastBinding toastRef={toastRef} />
       <div data-container={id} data-version={version}>
-        <Panel
-          data-testid={`${id}-panel`}
-          title={`Container ${upper}`}
-          description={`@tecton/react ${version} · scope=${scope}`}
-        >
-          <Text data-testid={`${id}-probe`} variant="small">
-            token probe
-          </Text>
-          <Button
-            data-testid={`${id}-btn-primary`}
-            variant="primary"
-            label="Primary"
-          />
-          <Menu
-            data-testid={`${id}-menu`}
-            label={`${upper} menu`}
-            isOpen={isMenuOpen}
-            onOpenChange={setIsMenuOpen}
-            items={[{label: `Rename ${upper}`, onSelect: () => {}}]}
-          />
-          <Button
-            data-testid={`${id}-raise-toast`}
-            variant="tertiary"
-            label={`Toast from ${upper}`}
-            onClick={() =>
-              toastRef.current?.({body: `toast from container ${id}`})
-            }
-          />
-        </Panel>
+        <Card data-testid={`${id}-panel`}>
+          <VStack gap={3}>
+            <Heading level={2}>Container {upper}</Heading>
+            <Text type="supporting">
+              @tecton/react {version} · scope={scope}
+            </Text>
+            <Text data-testid={`${id}-probe`} type="supporting">
+              token probe
+            </Text>
+            <Button
+              data-testid={`${id}-btn-primary`}
+              variant="primary"
+              label="Primary"
+            />
+            <DropdownMenu
+              data-testid={`${id}-menu`}
+              button={{label: `${upper} menu`}}
+              isMenuOpen={isMenuOpen}
+              onOpenChange={setIsMenuOpen}
+              items={[{label: `Rename ${upper}`, onClick: () => {}}]}
+            />
+            <Button
+              data-testid={`${id}-raise-toast`}
+              variant="ghost"
+              label={`Toast from ${upper}`}
+              onClick={() =>
+                toastRef.current?.({body: `toast from container ${id}`})
+              }
+            />
+          </VStack>
+        </Card>
 
         <Dialog
           data-testid={`${id}-dialog`}
           isOpen={isDialogOpen}
           onOpenChange={setIsDialogOpen}
-          title={`Dialog ${upper}`}
         >
+          <DialogHeader title={`Dialog ${upper}`} />
           <Text data-testid={`${id}-dialog-body`}>
             A modal from container {upper}.
           </Text>

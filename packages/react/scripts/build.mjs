@@ -1043,16 +1043,34 @@ for (const [file, css] of [
   console.log(`  ✓ dist/${file} carries components but no theme scope`);
 }
 
-/** The export map has to actually point at what was just written. */
-for (const [subpath, target] of Object.entries(pkg.exports)) {
-  if (!subpath.endsWith('.css')) continue;
-  const file = path.join(PACKAGE_ROOT, target);
-  if (!fs.existsSync(file)) {
-    throw new Error(
-      `exports["${subpath}"] points at a missing file: ${target}`,
+/**
+ * The export map has to actually point at what was just written — every entry,
+ * not just the stylesheets. Two of them (`./theme/tokens.stylex` and the
+ * `./locales/*.json` pattern) point straight into the vendored copy, which is
+ * exactly why they are worth checking here: nothing else would notice if the
+ * vendoring stopped putting them where the map says they are.
+ */
+let resolvedTargets = 0;
+for (const [subpath, entry] of Object.entries(pkg.exports)) {
+  if (subpath === './package.json') continue;
+  const targets = typeof entry === 'string' ? [entry] : Object.values(entry);
+  for (const target of targets) {
+    // A pattern entry names a directory of files; check the directory and one
+    // real file in it rather than inventing a name.
+    const star = target.indexOf('*');
+    const file = path.join(
+      PACKAGE_ROOT,
+      star === -1 ? target : path.dirname(target.slice(0, star)),
     );
+    if (!fs.existsSync(file)) {
+      throw new Error(
+        `exports["${subpath}"] points at a missing path: ${target}`,
+      );
+    }
+    resolvedTargets += 1;
   }
 }
+console.log(`  ✓ ${resolvedTargets} export targets resolve`);
 const cssExports = Object.keys(pkg.exports).filter(s => s.endsWith('.css'));
 if (cssExports.length !== entryPoints.length) {
   throw new Error(

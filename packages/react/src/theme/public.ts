@@ -20,6 +20,10 @@
  */
 export * from '@astryxdesign/core/theme';
 
+// The theme's custom variants and text types, as declarations a consumer
+// type-checks against. Imported for the side effect: it declares no value.
+import './variants.js';
+
 import {tectonTheme as builtTectonTheme} from './tecton.js';
 
 /**

@@ -23,19 +23,24 @@ in `TectonProvider`:
 
 ```tsx
 import '@tecton/react/styles.css';
-import {TectonProvider, Card, Layout, Text, Button} from '@tecton/react';
+import {
+  TectonProvider,
+  Card,
+  Heading,
+  Text,
+  VStack,
+  Button,
+} from '@tecton/react';
 
 export function App() {
   return (
     <TectonProvider mode="dark">
       <Card>
-        <Layout.Header title="Deployments" />
-        <Layout.Content>
+        <VStack gap={3}>
+          <Heading level={2}>Deployments</Heading>
           <Text>Everything shipped in the last hour.</Text>
-        </Layout.Content>
-        <Layout.Footer>
           <Button label="Run" variant="primary" />
-        </Layout.Footer>
+        </VStack>
       </Card>
     </TectonProvider>
   );
@@ -68,51 +73,52 @@ Everything below is exported from the package root as well, so
 the subpath when you would rather not pull the whole surface through one
 module.
 
-120 subpaths, plus 5 stylesheet entry points
+122 subpaths, plus 5 stylesheet entry points
 (`@tecton/react/styles.css`, `@tecton/react/styles-no-reset.css`, `@tecton/react/tokens.css`, `@tecton/react/components.css`, `@tecton/react/components-no-reset.css`).
 
-|                                 |                                        |                                  |
-| ------------------------------- | -------------------------------------- | -------------------------------- |
-| `@tecton/react/AlertDialog`     | `@tecton/react/Grid`                   | `@tecton/react/ScrollableArea`   |
-| `@tecton/react/AppShell`        | `@tecton/react/Heading`                | `@tecton/react/Section`          |
-| `@tecton/react/AspectRatio`     | `@tecton/react/hooks`                  | `@tecton/react/SegmentedControl` |
-| `@tecton/react/Avatar`          | `@tecton/react/HoverCard`              | `@tecton/react/SelectableCard`   |
-| `@tecton/react/AvatarGroup`     | `@tecton/react/HStack`                 | `@tecton/react/Selector`         |
-| `@tecton/react/Badge`           | `@tecton/react/i18n`                   | `@tecton/react/Selector/utils`   |
-| `@tecton/react/Banner`          | `@tecton/react/Icon`                   | `@tecton/react/SideNav`          |
-| `@tecton/react/BaseProps`       | `@tecton/react/IconButton`             | `@tecton/react/SizeContext`      |
-| `@tecton/react/Blockquote`      | `@tecton/react/icons`                  | `@tecton/react/Skeleton`         |
-| `@tecton/react/BottomSheet`     | `@tecton/react/Indicator`              | `@tecton/react/Slider`           |
-| `@tecton/react/Breadcrumbs`     | `@tecton/react/InputGroup`             | `@tecton/react/Spinner`          |
-| `@tecton/react/Button`          | `@tecton/react/InteractiveRoleContext` | `@tecton/react/Stack`            |
-| `@tecton/react/ButtonGroup`     | `@tecton/react/Item`                   | `@tecton/react/StatusDot`        |
-| `@tecton/react/Calendar`        | `@tecton/react/Kbd`                    | `@tecton/react/Stepper`          |
-| `@tecton/react/Calendar/utils`  | `@tecton/react/Layer`                  | `@tecton/react/Switch`           |
-| `@tecton/react/Card`            | `@tecton/react/Layout`                 | `@tecton/react/Table`            |
-| `@tecton/react/Carousel`        | `@tecton/react/Lightbox`               | `@tecton/react/Table/utils`      |
-| `@tecton/react/Center`          | `@tecton/react/Link`                   | `@tecton/react/TabList`          |
-| `@tecton/react/Chat`            | `@tecton/react/List`                   | `@tecton/react/Text`             |
-| `@tecton/react/CheckboxInput`   | `@tecton/react/Markdown`               | `@tecton/react/TextArea`         |
-| `@tecton/react/CheckboxList`    | `@tecton/react/Markdown/utils`         | `@tecton/react/TextInput`        |
-| `@tecton/react/Citation`        | `@tecton/react/MetadataList`           | `@tecton/react/theme`            |
-| `@tecton/react/ClickableCard`   | `@tecton/react/MobileNav`              | `@tecton/react/theme/syntax`     |
-| `@tecton/react/Code`            | `@tecton/react/MoreMenu`               | `@tecton/react/theme/tokens`     |
-| `@tecton/react/CodeBlock`       | `@tecton/react/MultiSelector`          | `@tecton/react/Thumbnail`        |
-| `@tecton/react/Collapsible`     | `@tecton/react/naming`                 | `@tecton/react/TimeInput`        |
-| `@tecton/react/CommandPalette`  | `@tecton/react/NavIcon`                | `@tecton/react/Timestamp`        |
-| `@tecton/react/ComplexSelector` | `@tecton/react/NavMenu`                | `@tecton/react/Toast`            |
-| `@tecton/react/ContextMenu`     | `@tecton/react/NumberInput`            | `@tecton/react/ToggleButton`     |
-| `@tecton/react/DateInput`       | `@tecton/react/Outline`                | `@tecton/react/Token`            |
-| `@tecton/react/DateRangeInput`  | `@tecton/react/OverflowList`           | `@tecton/react/Tokenizer`        |
-| `@tecton/react/DateTimeInput`   | `@tecton/react/Overlay`                | `@tecton/react/Toolbar`          |
-| `@tecton/react/Dialog`          | `@tecton/react/Pagination`             | `@tecton/react/Tooltip`          |
-| `@tecton/react/Divider`         | `@tecton/react/Popover`                | `@tecton/react/TopNav`           |
-| `@tecton/react/DropdownMenu`    | `@tecton/react/PowerSearch`            | `@tecton/react/TreeList`         |
-| `@tecton/react/EmptyState`      | `@tecton/react/PowerSearch/utils`      | `@tecton/react/Typeahead`        |
-| `@tecton/react/Field`           | `@tecton/react/ProgressBar`            | `@tecton/react/Typeahead/utils`  |
-| `@tecton/react/FieldStatus`     | `@tecton/react/RadioList`              | `@tecton/react/utils`            |
-| `@tecton/react/FileInput`       | `@tecton/react/Resizable`              | `@tecton/react/VisuallyHidden`   |
-| `@tecton/react/FormLayout`      | `@tecton/react/Resizable/utils`        | `@tecton/react/VStack`           |
+|                                 |                                        |                                     |
+| ------------------------------- | -------------------------------------- | ----------------------------------- |
+| `@tecton/react/AlertDialog`     | `@tecton/react/Heading`                | `@tecton/react/Section`             |
+| `@tecton/react/AppShell`        | `@tecton/react/hooks`                  | `@tecton/react/SegmentedControl`    |
+| `@tecton/react/AspectRatio`     | `@tecton/react/HoverCard`              | `@tecton/react/SelectableCard`      |
+| `@tecton/react/Avatar`          | `@tecton/react/HStack`                 | `@tecton/react/Selector`            |
+| `@tecton/react/AvatarGroup`     | `@tecton/react/i18n`                   | `@tecton/react/Selector/utils`      |
+| `@tecton/react/Badge`           | `@tecton/react/Icon`                   | `@tecton/react/SideNav`             |
+| `@tecton/react/Banner`          | `@tecton/react/IconButton`             | `@tecton/react/SizeContext`         |
+| `@tecton/react/BaseProps`       | `@tecton/react/icons`                  | `@tecton/react/Skeleton`            |
+| `@tecton/react/Blockquote`      | `@tecton/react/Indicator`              | `@tecton/react/Slider`              |
+| `@tecton/react/BottomSheet`     | `@tecton/react/InputGroup`             | `@tecton/react/Spinner`             |
+| `@tecton/react/Breadcrumbs`     | `@tecton/react/InteractiveRoleContext` | `@tecton/react/Stack`               |
+| `@tecton/react/Button`          | `@tecton/react/Item`                   | `@tecton/react/StatusDot`           |
+| `@tecton/react/ButtonGroup`     | `@tecton/react/Kbd`                    | `@tecton/react/Stepper`             |
+| `@tecton/react/Calendar`        | `@tecton/react/Layer`                  | `@tecton/react/Switch`              |
+| `@tecton/react/Calendar/utils`  | `@tecton/react/Layout`                 | `@tecton/react/Table`               |
+| `@tecton/react/Card`            | `@tecton/react/Lightbox`               | `@tecton/react/Table/utils`         |
+| `@tecton/react/Carousel`        | `@tecton/react/Link`                   | `@tecton/react/TabList`             |
+| `@tecton/react/Center`          | `@tecton/react/List`                   | `@tecton/react/Text`                |
+| `@tecton/react/Chat`            | `@tecton/react/locales/*.json`         | `@tecton/react/TextArea`            |
+| `@tecton/react/CheckboxInput`   | `@tecton/react/Markdown`               | `@tecton/react/TextInput`           |
+| `@tecton/react/CheckboxList`    | `@tecton/react/Markdown/utils`         | `@tecton/react/theme`               |
+| `@tecton/react/Citation`        | `@tecton/react/MetadataList`           | `@tecton/react/theme/syntax`        |
+| `@tecton/react/ClickableCard`   | `@tecton/react/MobileNav`              | `@tecton/react/theme/tokens`        |
+| `@tecton/react/Code`            | `@tecton/react/MoreMenu`               | `@tecton/react/theme/tokens.stylex` |
+| `@tecton/react/CodeBlock`       | `@tecton/react/MultiSelector`          | `@tecton/react/Thumbnail`           |
+| `@tecton/react/Collapsible`     | `@tecton/react/naming`                 | `@tecton/react/TimeInput`           |
+| `@tecton/react/CommandPalette`  | `@tecton/react/NavIcon`                | `@tecton/react/Timestamp`           |
+| `@tecton/react/ComplexSelector` | `@tecton/react/NavMenu`                | `@tecton/react/Toast`               |
+| `@tecton/react/ContextMenu`     | `@tecton/react/NumberInput`            | `@tecton/react/ToggleButton`        |
+| `@tecton/react/DateInput`       | `@tecton/react/Outline`                | `@tecton/react/Token`               |
+| `@tecton/react/DateRangeInput`  | `@tecton/react/OverflowList`           | `@tecton/react/Tokenizer`           |
+| `@tecton/react/DateTimeInput`   | `@tecton/react/Overlay`                | `@tecton/react/Toolbar`             |
+| `@tecton/react/Dialog`          | `@tecton/react/Pagination`             | `@tecton/react/Tooltip`             |
+| `@tecton/react/Divider`         | `@tecton/react/Popover`                | `@tecton/react/TopNav`              |
+| `@tecton/react/DropdownMenu`    | `@tecton/react/PowerSearch`            | `@tecton/react/TreeList`            |
+| `@tecton/react/EmptyState`      | `@tecton/react/PowerSearch/utils`      | `@tecton/react/Typeahead`           |
+| `@tecton/react/Field`           | `@tecton/react/ProgressBar`            | `@tecton/react/Typeahead/utils`     |
+| `@tecton/react/FieldStatus`     | `@tecton/react/RadioList`              | `@tecton/react/utils`               |
+| `@tecton/react/FileInput`       | `@tecton/react/Resizable`              | `@tecton/react/VisuallyHidden`      |
+| `@tecton/react/FormLayout`      | `@tecton/react/Resizable/utils`        | `@tecton/react/VStack`              |
+| `@tecton/react/Grid`            | `@tecton/react/ScrollableArea`         |                                     |
 
 ## Theme
 

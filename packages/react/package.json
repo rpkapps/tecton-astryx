@@ -27,6 +27,11 @@
       "default": "./dist/icons/index.js"
     },
     "./package.json": "./package.json",
+    "./theme/tokens.stylex": {
+      "types": "./dist/vendor/core/dist/theme/tokens.stylex.d.ts",
+      "default": "./dist/vendor/core/dist/theme/tokens.stylex.js"
+    },
+    "./locales/*.json": "./dist/vendor/core/locales/*.json",
     "./BaseProps": {
       "types": "./dist/modules/BaseProps/index.d.ts",
       "default": "./dist/modules/BaseProps/index.js"

@@ -1123,7 +1123,18 @@ function regenerate(options) {
   // Measured while `dist/` is still the last build, i.e. the old release.
   const sizeBefore = measurePackage();
 
-  // The theme build is the whole of it: the new CLI compiles the theme, the
+  // The subpath modules come straight out of the new release's exports map,
+  // and the README's module list out of the package's. Both have to be written
+  // BEFORE the build, which checks them for drift and would otherwise stop at
+  // the first one the new release moved. The diff they leave in the tree is
+  // the record of what the release added, moved or removed.
+  for (const script of ['generate-modules.mjs', 'generate-readme.mjs']) {
+    mustRun(process.execPath, [path.join(REACT, 'scripts', script)], {
+      cwd: REACT,
+    });
+  }
+
+  // The theme build is the rest of it: the new CLI compiles the theme, the
   // token coverage is checked against the committed manifest, and the patched
   // upstream dist is re-vendored and re-asserted.
   let build = sh(process.execPath, [path.join(REACT, 'scripts', 'build.mjs')], {
@@ -1212,6 +1223,22 @@ function regenerate(options) {
     mustRun(process.execPath, [file], {cwd: REACT});
     mustRun(process.execPath, [file, '--check'], {cwd: REACT});
     regenerated.push(name);
+  }
+
+  // The documentation site's examples and page templates are ported from the
+  // new release's own showcase blocks, so they move with it. The port script
+  // belongs to the documentation site; if it is not there, say so rather than
+  // failing the upgrade — everything the package needs is already done.
+  const portScript = path.join(ROOT, 'apps', 'docs', 'scripts', 'port-examples.mjs');
+  if (fs.existsSync(portScript)) {
+    mustRun(process.execPath, [portScript], {cwd: ROOT});
+    regenerated.push('ported examples');
+  } else {
+    warn(
+      `apps/docs/scripts/port-examples.mjs is not in the tree — the examples and
+    page templates were NOT re-ported from ${to}. Run it yourself once it is
+    there, or the documentation site will show the previous release's code.`,
+    );
   }
 
   const sizeAfter = measurePackage();
